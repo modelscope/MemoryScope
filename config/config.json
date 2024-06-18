@@ -1,0 +1,13 @@
+{
+    "thread_pool_max_count": "",
+    "worker": "config/worker.json",
+    "pipeline": {
+        "summary_short": "",
+        "summary_long": "",
+        "retrieve": ""
+    },
+    "model_embedding": "config/model/dash_embedding.json",
+    "model_rerank": "config/model/dash_rerank.json",
+    "model_generate": "config/model/dash_generate.json",
+    "db": ""
+}

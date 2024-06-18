@@ -6,12 +6,15 @@
             "es_insight_top_k": 128
         }
     },
-    "EsKeywordWorker": {
+    "es_keyword": {
+        "name": "EsKeywordWorker",
+        "path": "memory_scope/worker",
+        "es_keyword_top_k": 10
+    },
+    "es_keyword2": {
         "module_name": "EsKeywordWorker",
         "module_path": "memory_scope/worker",
-        "kwargs": {
-            "es_keyword_top_k": 10
-        }
+        "es_keyword_top_k": 10
     },
     "EsNewObsWorker": {
         "module_name": "EsNewObsWorker",
