@@ -7,12 +7,18 @@ from constants.common_constants import REFLECTED, DT, NEW_OBS_NODES, TIME_INFER,
     DATATIME_WORD_LIST
 from enumeration.memory_node_status import MemoryNodeStatus
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory_wrap_node import MemoryWrapNode
+from model.memory.memory_wrap_node import MemoryWrapNode
 from model.message import Message
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class GetObservationWorker(MemoryBaseWorker):
+    def __init__(self, summary_messages_model, summary_messages_max_token, summary_messages_temperature, summary_messages_top_k, *args, **kwargs):
+        super(GetObservationWorker, self).__init__(*args,**kwargs)
+        self.summary_messages_model = summary_messages_model
+        self.summary_messages_max_token = summary_messages_max_token
+        self.summary_messages_temperature = summary_messages_temperature
+        self.summary_messages_top_k = summary_messages_top_k
 
     def add_observation(self, message: Message, obs_content: str, keywords: str):
         created_dt: datetime = datetime.fromtimestamp(float(message.time_created))
@@ -28,17 +34,17 @@ class GetObservationWorker(MemoryBaseWorker):
             TIME_INFER: "",  # 推断的时间
             KEY_WORD: keywords,  # 关键词
         }
-        meta_data.update({f"msg_{k}": str(v) for k, v in get_datetime_info_dict(created_dt).items()})
+        meta_data.update({k: str(v) for k, v in get_datetime_info_dict(created_dt).items()})
 
         return MemoryWrapNode.init_from_attrs(content=obs_content,
-                                              memoryId=self.config.memory_id,
+                                              memoryId=self.memory_id,
                                               timeCreated=message.time_created,
                                               scene=self.scene,
                                               memoryType=MemoryTypeEnum.OBSERVATION.value,
                                               content_modified=True,  # 新增的obs需要置为true
                                               metaData=meta_data,
                                               status=MemoryNodeStatus.ACTIVE.value,
-                                              tenantId=self.config.tenant_id)
+                                              tenantId=self.tenant_id)
 
     def _run(self):
         # gene prompt
@@ -66,10 +72,10 @@ class GetObservationWorker(MemoryBaseWorker):
 
         # call LLM
         response_text: str = self.gene_client.call(messages=obtain_obs_message,
-                                                   model_name=self.config.summary_messages_model,
-                                                   max_token=self.config.summary_messages_max_token,
-                                                   temperature=self.config.summary_messages_temperature,
-                                                   top_k=self.config.summary_messages_top_k)
+                                                   model_name=self.summary_messages_model,
+                                                   max_token=self.summary_messages_max_token,
+                                                   temperature=self.summary_messages_temperature,
+                                                   top_k=self.summary_messages_top_k)
 
         # return if empty
         if not response_text:

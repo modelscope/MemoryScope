@@ -4,11 +4,17 @@ from common.response_text_parser import ResponseTextParser
 from constants.common_constants import NEW_OBS_NODES, TODAY_OBS_NODES, MSG_TIME, NEW_OBS_WITH_TIME_NODES, \
     MODIFIED_MEMORIES
 from enumeration.memory_node_status import MemoryNodeStatus
-from model.memory_wrap_node import MemoryWrapNode
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from model.memory.memory_wrap_node import MemoryWrapNode
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class ContraRepeatWorker(MemoryBaseWorker):
+    def __init__(self, merge_obs_model, merge_obs_max_token, merge_obs_temperature, merge_obs_top_k, *args, **kwargs):
+        super(ContraRepeatWorker, self).__init__(*args, **kwargs)
+        self.merge_obs_model = merge_obs_model
+        self.merge_obs_max_token = merge_obs_max_token
+        self.merge_obs_temperature = merge_obs_temperature
+        self.merge_obs_top_k = merge_obs_top_k
 
     def _run(self):
         # 合并当前的obs和今日的obs
@@ -39,10 +45,10 @@ class ContraRepeatWorker(MemoryBaseWorker):
 
         # call LLM
         response_text = self.gene_client.call(messages=merge_obs_message,
-                                              model_name=self.config.merge_obs_model,
-                                              max_token=self.config.merge_obs_max_token,
-                                              temperature=self.config.merge_obs_temperature,
-                                              top_k=self.config.merge_obs_top_k)
+                                              model_name=self.merge_obs_model,
+                                              max_token=self.merge_obs_max_token,
+                                              temperature=self.merge_obs_temperature,
+                                              top_k=self.merge_obs_top_k)
 
         # return if empty
         if not response_text:

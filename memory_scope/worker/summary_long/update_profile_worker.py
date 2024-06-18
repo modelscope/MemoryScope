@@ -3,12 +3,25 @@ from typing import List
 from common.response_text_parser import ResponseTextParser
 from constants.common_constants import NEW_OBS_NODES, NEW_USER_PROFILE
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory_wrap_node import MemoryWrapNode
+from model.memory.memory_wrap_node import MemoryWrapNode
 from model.user_attribute import UserAttribute
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class UpdateProfileWorker(MemoryBaseWorker):
+    def __init__(update_profile_max_thread, update_profile_threshold, extra_user_attrs, update_profile_model, update_profile_max_token, update_profile_temperature, update_profile_top_k, *args, **kwargs):
+        super(UpdateProfileWorker,self).__init__(*args, **kwargs)
+        self.update_profile_max_thread = update_profile_max_thread
+        self.extra_user_attrs = extra_user_attrs
+        self.update_profile_threshold = update_profile_threshold
+        self.update_profile_model = update_profile_model
+        self.update_profile_max_token = update_profile_max_token
+        self.update_profile_temperature = update_profile_temperature
+        self.update_profile_top_k = update_profile_top_k
+
+    # @property
+    # def extra_user_attrs(self):
+    #     return self.request.extra_user_attrs
 
     def filter_obs_nodes(self,
                          user_attr: UserAttribute,
@@ -29,7 +42,7 @@ class UpdateProfileWorker(MemoryBaseWorker):
             score = rank_node["relevance_score"]
             node = new_obs_nodes[index]
             keep_flag = "filtered"
-            if score >= self.config.update_profile_threshold:
+            if score >= self.update_profile_threshold:
                 filtered_nodes.append(node)
                 keep_flag = "keep"
                 max_score = max(max_score, score)
@@ -71,10 +84,10 @@ class UpdateProfileWorker(MemoryBaseWorker):
 
         # call LLM
         response_text: str = self.gene_client.call(messages=update_profile_message,
-                                                   model_name=self.config.update_profile_model,
-                                                   max_token=self.config.update_profile_max_token,
-                                                   temperature=self.config.update_profile_temperature,
-                                                   top_k=self.config.update_profile_top_k)
+                                                   model_name=self.update_profile_model,
+                                                   max_token=self.update_profile_max_token,
+                                                   temperature=self.update_profile_temperature,
+                                                   top_k=self.update_profile_top_k)
 
         # return if empty
         if not response_text:
@@ -105,7 +118,7 @@ class UpdateProfileWorker(MemoryBaseWorker):
 
     def add_extra_user_attrs(self):
         # 解析为空返回
-        extra_user_attr_list = [x.strip() for x in self.config.extra_user_attrs if x.strip()]
+        extra_user_attr_list = [x.strip() for x in self.extra_user_attrs if x.strip()]
         if not extra_user_attr_list:
             return
 
@@ -152,7 +165,7 @@ class UpdateProfileWorker(MemoryBaseWorker):
             return
 
         # 增加环境变量配置的属性
-        if self.config.extra_user_attrs:
+        if self.extra_user_attrs:
             self.add_extra_user_attrs()
 
         new_user_profile: List[UserAttribute] = []
@@ -178,8 +191,8 @@ class UpdateProfileWorker(MemoryBaseWorker):
                 continue
             result_list.append(result)
         result_sorted = sorted(result_list, key=lambda x: x[2], reverse=True)
-        if len(result_sorted) > self.config.update_profile_max_thread:
-            result_sorted = result_sorted[:self.config.update_profile_max_thread]
+        if len(result_sorted) > self.update_profile_max_thread:
+            result_sorted = result_sorted[:self.update_profile_max_thread]
 
         # 提交LLM update任务
         for user_attr, filtered_nodes, _ in result_sorted:

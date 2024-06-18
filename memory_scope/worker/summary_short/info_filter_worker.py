@@ -1,9 +1,16 @@
 from common.response_text_parser import ResponseTextParser
 from enumeration.message_role_enum import MessageRoleEnum
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class InfoFilterWorker(MemoryBaseWorker):
+    def __init__(self, info_filter_msg_max_size, info_filter_model, info_filter_max_token, info_filter_temperature, info_filter_top_k, *args, **kwargs):
+        super(InfoFilterWorker,self).__init__(*args,**kwargs)
+        self.info_filter_msg_max_size
+        self.info_filter_model = info_filter_model
+        self.info_filter_max_token = info_filter_max_token
+        self.info_filter_temperature = info_filter_temperature
+        self.info_filter_top_k = info_filter_top_k
 
     def _run(self):
         # filter user msg
@@ -11,7 +18,7 @@ class InfoFilterWorker(MemoryBaseWorker):
         for msg in self.messages:
             if msg.role != MessageRoleEnum.USER.value:
                 continue
-            if len(msg.content) >= self.config.info_filter_msg_max_size:
+            if len(msg.content) >= self.info_filter_msg_max_size:
                 continue
             info_messages.append(msg)
 
@@ -25,10 +32,10 @@ class InfoFilterWorker(MemoryBaseWorker):
 
         # call llm
         response_text = self.gene_client.call(messages=info_filter_message,
-                                              model_name=self.config.info_filter_model,
-                                              max_token=self.config.info_filter_max_token,
-                                              temperature=self.config.info_filter_temperature,
-                                              top_k=self.config.info_filter_top_k)
+                                              model_name=self.info_filter_model,
+                                              max_token=self.info_filter_max_token,
+                                              temperature=self.info_filter_temperature,
+                                              top_k=self.info_filter_top_k)
 
         # return if empty
         if not response_text:
@@ -49,7 +56,7 @@ class InfoFilterWorker(MemoryBaseWorker):
                 continue
             score = info_score[0]
             # if score in ("1", "2",):
-            if score in ("3",):
+            if score in ("2",):
                 msg.info_score = score
                 filtered_messages.append(msg)
 

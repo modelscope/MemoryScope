@@ -4,8 +4,8 @@ from common.user_profile_handler import UserProfileHandler
 from constants.common_constants import SIMILAR_OBS_NODES, RECALL_TYPE, KEYWORD_OBS_NODES, ALL_ONLINE_NODES, \
     QUERY_KEYWORDS
 from enumeration.memory_recall_type import MemoryRecallType
-from model.memory_wrap_node import MemoryWrapNode
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from model.memory.memory_wrap_node import MemoryWrapNode
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class SemanticRankWorker(MemoryBaseWorker):

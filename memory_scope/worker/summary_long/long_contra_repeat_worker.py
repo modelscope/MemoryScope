@@ -10,6 +10,13 @@ from worker.bailian.memory_base_worker import MemoryBaseWorker
 
 
 class LongContraRepeatWorker(MemoryBaseWorker):
+    def __init__(es_contra_repeat_similar_top_k, long_contra_repeat_threshold, merge_obs_model, merge_obs_max_token, merge_obs_temperature, merge_obs_top_k, *args, **kwargs):
+        super(LongContraRepeatWorker, self).__init__(*args, **kwargs)
+        self.es_contra_repeat_similar_top_k = es_contra_repeat_similar_top_k
+        self.merge_obs_model = merge_obs_model
+        self.merge_obs_max_token = merge_obs_max_token
+        self.merge_obs_temperature = merge_obs_temperature
+        self.merge_obs_top_k = merge_obs_top_k
 
     def _run(self):
         # 合并当前的obs和今日的obs
@@ -20,9 +27,9 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         for new_obs_node in new_obs_nodes:
             text = new_obs_node.memory_node.content
             hits = self.es_client.similar_search(text=text,
-                                                 size=self.config.es_contra_repeat_similar_top_k,
+                                                 size=self.es_contra_repeat_similar_top_k,
                                                  exact_filters={
-                                                     "memoryId": self.config.memory_id,
+                                                     "memoryId": self.memory_id,
                                                      "status": MemoryNodeStatus.ACTIVE.value,
                                                      "scene": self.scene.lower(),
                                                      "memoryType": [MemoryTypeEnum.OBSERVATION.value,
@@ -33,7 +40,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
 
             has_match = False
             for related_node in related_nodes:
-                if related_node.score_similar < self.config.long_contra_repeat_threshold:
+                if related_node.score_similar < self.long_contra_repeat_threshold:
                     continue
                 else:
                     has_match = True
@@ -58,10 +65,10 @@ class LongContraRepeatWorker(MemoryBaseWorker):
 
         # call LLM
         response_text = self.gene_client.call(messages=merge_obs_message,
-                                              model_name=self.config.merge_obs_model,
-                                              max_token=self.config.merge_obs_max_token,
-                                              temperature=self.config.merge_obs_temperature,
-                                              top_k=self.config.merge_obs_top_k)
+                                              model_name=self.merge_obs_model,
+                                              max_token=self.merge_obs_max_token,
+                                              temperature=self.merge_obs_temperature,
+                                              top_k=self.merge_obs_top_k)
 
         # return if empty
         if not response_text:

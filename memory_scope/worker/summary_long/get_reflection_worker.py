@@ -3,11 +3,19 @@ from typing import List
 from common.response_text_parser import ResponseTextParser
 from constants.common_constants import NEW_OBS_NODES, NOT_REFLECTED_OBS_NODES, REFLECTED, INSIGHT_NODES, INSIGHT_KEY, \
     NEW_INSIGHT_KEYS, NOT_REFLECTED_MERGE_NODES
-from model.memory_wrap_node import MemoryWrapNode
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from model.memory.memory_wrap_node import MemoryWrapNode
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class GetReflectionWorker(MemoryBaseWorker):
+    def __init__(self, reflect_obs_cnt_threshold, reflect_num_questions, reflect_obs_model, reflect_obs_max_token, reflect_obs_temperature, reflect_obs_top_k, *args, **kwargs):
+        super(GetReflectionWorker,self).__init__(*args, **kwargs)
+        self.reflect_obs_cnt_threshold = reflect_obs_cnt_threshold
+        self.reflect_num_questions = reflect_num_questions
+        self.reflect_obs_model = reflect_obs_model
+        self.reflect_obs_max_token = reflect_obs_max_token
+        self.reflect_obs_temperature = reflect_obs_temperature
+        self.reflect_obs_top_k = reflect_obs_top_k
 
     def _run(self):
         # 过滤得到 not_reflected_merge_nodes
@@ -23,7 +31,7 @@ class GetReflectionWorker(MemoryBaseWorker):
 
         # count
         not_reflected_count = len(not_reflected_merge_nodes)
-        if not_reflected_count <= self.config.reflect_obs_cnt_threshold:
+        if not_reflected_count <= self.reflect_obs_cnt_threshold:
             self.logger.info(f"not_reflected_count={not_reflected_count} is not enough, stop reflect.")
             return
 
@@ -48,18 +56,18 @@ class GetReflectionWorker(MemoryBaseWorker):
         user_query_list = [n.memory_node.content for n in not_reflected_merge_nodes]
         reflect_message = self.prompt_to_msg(
             system_prompt=self.prompt_config.get_reflect_system.format(
-                num_questions=self.config.reflect_num_questions),
+                num_questions=self.reflect_num_questions),
             few_shot=self.prompt_config.get_reflect_few_shot,
             user_query=self.prompt_config.get_reflect_user_query.format(exist_keys="，".join(exist_keys),
                                                                         user_query="\n".join(user_query_list)))
         self.logger.info(f"reflect_message={reflect_message}")
 
-        # call LLM
+        # # call LLM
         response_text = self.gene_client.call(messages=reflect_message,
-                                              model_name=self.config.reflect_obs_model,
-                                              max_token=self.config.reflect_obs_max_token,
-                                              temperature=self.config.reflect_obs_temperature,
-                                              top_k=self.config.reflect_obs_top_k)
+                                              model_name=self.reflect_obs_model,
+                                              max_token=self.reflect_obs_max_token,
+                                              temperature=self.reflect_obs_temperature,
+                                              top_k=self.reflect_obs_top_k)
 
         # return if empty
         if not response_text:

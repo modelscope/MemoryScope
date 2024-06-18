@@ -3,10 +3,16 @@ import re
 from common.tool_functions import time_to_formatted_str
 from constants.common_constants import DATATIME_WORD_LIST, DATATIME_KEY_MAP
 from constants.common_constants import EXTRACT_TIME_DICT
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class ExtractTimeWorker(MemoryBaseWorker):
+    def __init__(self, parse_time_model, parse_time_max_token, parse_time_temperature, parse_time_top_k, *args, **kwargs):
+        super(ExtractTimeWorker, self).__init__(*args, **kwargs)
+        self.parse_time_model = parse_time_model
+        self.parse_time_max_token = parse_time_max_token
+        self.parse_time_temperature = parse_time_temperature
+        self.parse_time_top_k = parse_time_top_k
 
     @staticmethod
     def get_parse_time_prompt(query: str, query_time_str: str):
@@ -46,10 +52,10 @@ class ExtractTimeWorker(MemoryBaseWorker):
 
         # call sft model
         response_text = self.gene_client.call(prompt=extract_time_prompt,
-                                              model_name=self.config.parse_time_model,
-                                              max_token=self.config.parse_time_max_token,
-                                              temperature=self.config.parse_time_temperature,
-                                              top_k=self.config.parse_time_top_k)
+                                              model_name=self.parse_time_model,
+                                              max_token=self.parse_time_max_token,
+                                              temperature=self.parse_time_temperature,
+                                              top_k=self.parse_time_top_k)
 
         # if empty, return
         if not response_text:

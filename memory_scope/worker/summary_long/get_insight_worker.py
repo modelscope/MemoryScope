@@ -6,11 +6,19 @@ from constants.common_constants import NEW_INSIGHT_NODES, DT, NOT_REFLECTED_MERG
     INSIGHT_VALUE, REFLECTED
 from enumeration.memory_node_status import MemoryNodeStatus
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory_wrap_node import MemoryWrapNode
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from model.memory.memory_wrap_node import MemoryWrapNode
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class GetInsightWorker(MemoryBaseWorker):
+    def __init__(self, insight_obs_max_cnt, es_insight_similar_top_k, get_insight_model, get_insight_max_token, get_insight_temperature, get_insight_top_k, **kwargs):
+        super(GetInsightWorker,self).__init__(*args,**kwargs)
+        self.insight_obs_max_cnt = insight_obs_max_cnt
+        self.get_insight_model = get_insight_model
+        self.get_insight_max_token = get_insight_max_token
+        self.get_insight_temperature = get_insight_temperature
+        self.get_insight_top_k = get_insight_top_k
+        self.es_insight_similar_top_k = es_insight_similar_top_k
 
     def new_insight_node(self, insight_key: str, insight_value: str) -> MemoryWrapNode:
         created_dt = datetime.now()
@@ -22,17 +30,17 @@ class GetInsightWorker(MemoryBaseWorker):
             INSIGHT_KEY: insight_key,
             INSIGHT_VALUE: insight_value,
         }
-        meta_data.update({f"msg_{k}": str(v) for k, v in get_datetime_info_dict(created_dt).items()})
+        meta_data.update({k: str(v) for k, v in get_datetime_info_dict(created_dt).items()})
 
         content = f"用户的{insight_key}：{insight_value}"
         return MemoryWrapNode.init_from_attrs(content=content,
-                                              memoryId=self.config.memory_id,
+                                              memoryId=self.memory_id,
                                               scene=self.scene,
                                               memoryType=MemoryTypeEnum.INSIGHT.value,
                                               content_modified=True,  # 新增的insight需要置为true
                                               metaData=meta_data,
                                               status=MemoryNodeStatus.ACTIVE.value,
-                                              tenantId=self.config.tenant_id)
+                                              tenantId=self.tenant_id)
 
     def reflect_new_insight_key(self,
                                 insight_key: str,
@@ -40,9 +48,9 @@ class GetInsightWorker(MemoryBaseWorker):
 
         # 检索历史memory
         hits = self.es_client.similar_search(text=insight_key,
-                                             size=self.config.es_insight_similar_top_k,
+                                             size=self.es_insight_similar_top_k,
                                              exact_filters={
-                                                 "memoryId": self.config.memory_id,
+                                                 "memoryId": self.memory_id,
                                                  "status": MemoryNodeStatus.ACTIVE.value,
                                                  "scene": self.scene.lower(),
                                                  "memoryType": [MemoryTypeEnum.OBSERVATION.value,
@@ -70,7 +78,7 @@ class GetInsightWorker(MemoryBaseWorker):
             score = rank_node["relevance_score"]
             related_nodes[index].score_rank = score
         related_nodes_sorted = sorted(related_nodes, key=lambda x: x.score_rank, reverse=True)[
-                               :self.config.insight_obs_max_cnt]
+                               :self.insight_obs_max_cnt]
 
         # 生成prompt
         user_query_list = [x.memory_node.content for x in related_nodes_sorted]
@@ -83,10 +91,10 @@ class GetInsightWorker(MemoryBaseWorker):
 
         # call LLM, 提取insight
         response_text = self.gene_client.call(messages=get_insight_message,
-                                              model_name=self.config.get_insight_model,
-                                              max_token=self.config.get_insight_max_token,
-                                              temperature=self.config.get_insight_temperature,
-                                              top_k=self.config.get_insight_top_k)
+                                              model_name=self.get_insight_model,
+                                              max_token=self.get_insight_max_token,
+                                              temperature=self.get_insight_temperature,
+                                              top_k=self.get_insight_top_k)
 
         # return if empty
         if not response_text:

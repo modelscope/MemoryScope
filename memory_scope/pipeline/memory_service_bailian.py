@@ -6,6 +6,8 @@ from importlib import import_module
 from itertools import zip_longest
 from typing import Dict, Any
 
+from worker.memory.base_worker import BaseWorker
+
 from common.context_handler import ContextHandler
 from common.logger import Logger
 from common.timer import timer, Timer
@@ -14,31 +16,17 @@ from constants import common_constants
 from constants.common_constants import RESPONSE_EXT_INFO, MAX_WORKERS, PIPELINE
 from enumeration.memory_method_enum import MemoryMethodEnum
 from request.memory import MemoryServiceRequestModel
-from worker.bailian.base_worker import BaseWorker
+from config.env_config import C, Workers
+from utils.tool_functions import init_instance_by_config
 
 
-class MemoryServiceBailian(object):
-    THREAD_POOL_MAX_COUNT: int = 5
-
-    MEMORY_WORKER_PATH: str = "worker.bailian"
-
-    def __init__(self, request: MemoryServiceRequestModel, method: MemoryMethodEnum):
-        # 全局上下文，worker之间交换参数和变量
-        self.context_handler = ContextHandler(scene=request.scene,
-                                              method=method.value,
-                                              algo_version=request.algo_version)
-        self.context_handler.set_context(common_constants.REQUEST, request)
+class MemoryService(object):
+    def __init__(self, method: MemoryMethodEnum):
+        self.method = method
+        self.context_handler = ContextHandler()
 
         # 线程池
-        max_workers = self.context_handler.get_env_config(MAX_WORKERS)
-        if max_workers:
-            self.max_workers = int(max_workers)
-        else:
-            self.max_workers = self.THREAD_POOL_MAX_COUNT
-        self.thread_pool = ThreadPoolExecutor(max_workers=self.max_workers)
-
-        # 运行信息
-        self.run_infos = []
+        self.thread_pool = ThreadPoolExecutor(max_workers=C.THREAD_POOL_MAX_COUNT)
 
         # 全部初始化的worker
         self.worker_dict: Dict[str, BaseWorker] = {}
@@ -46,23 +34,18 @@ class MemoryServiceBailian(object):
         # 日志
         self.logger: Logger = Logger.get_memory_logger()
 
+        # 初始化pipeline
+        self.pipeline_list = self.get_pipeline()
+        self.print_and_init_worker(self.pipeline_list)
+
     def get_worker(self, worker_name: str, is_multi_thread: bool = False) -> BaseWorker:
-        # 更新worker name
-        worker_name_split = worker_name.split(".")
-        worker_name = worker_name_split[-1]
-        if common_constants.WORKER not in worker_name:
-            worker_name = f"{worker_name}_{common_constants.WORKER}"
-
-        # 构造path
-        worker_paths = [self.MEMORY_WORKER_PATH]
-        worker_paths.extend(worker_name_split[:-1])
-        worker_paths.append(worker_name)
-        module = import_module(".".join(worker_paths))
-
-        worker_clazz_name = under_line_to_hump(worker_name)
-        return getattr(module, worker_clazz_name)(context_handler=self.context_handler,
-                                                  is_multi_thread=is_multi_thread,
-                                                  thread_pool=self.thread_pool)
+        return init_instance_by_config(
+            config = W.get(worker_name),
+            try_kwargs={
+                "is_multi_thread": is_multi_thread,
+                "thread_pool": self.thread_pool
+            }
+            )
 
     def worker_run(self, worker_list: list[str]) -> bool:
         for worker_name in worker_list:
@@ -99,9 +82,19 @@ class MemoryServiceBailian(object):
     def get_context(self, key: str, default=None) -> Any:
         return self.context_handler.get_context(key, default)
 
+    def flush(self, request: MemoryServiceRequestModel):
+        # 全局上下文，worker之间交换参数和变量
+        self.context_handler.flush()
+    
+        # 运行信息
+        self.run_infos = []
+        self.context_handler.set_context(common_constants.REQUEST, request)
+        for pipeline_part in self.pipeline_list:
+            pipeline_part.flush(self.context_handler)
+
     @timer
     def get_pipeline(self) -> list[list]:
-        pipeline_str = self.context_handler.get_env_config(PIPELINE)
+        pipeline_str = C.pipeline.get(self.method)
         self.logger.info(f"pipeline={pipeline_str}")
 
         # re-match e.g., [a|b],c,[d,e,f|g,h],j
@@ -126,12 +119,9 @@ class MemoryServiceBailian(object):
         return pipeline_list
 
     def run(self):
-        pipeline_list = self.get_pipeline()
-        self.print_and_init_worker(pipeline_list)
-
         # run workers in multi threads
         with self.thread_pool, Timer("ALL_PIPELINE"):
-            for pipeline_part in pipeline_list:
+            for pipeline_part in self.pipeline_list:
                 if len(pipeline_part) == 1:
                     if not self.worker_run(pipeline_part[0]):
                         break

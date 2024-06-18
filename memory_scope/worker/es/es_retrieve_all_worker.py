@@ -2,8 +2,8 @@ from typing import List
 
 from constants.common_constants import ALL_NODES, ALL_MEMORIES
 from enumeration.memory_node_status import MemoryNodeStatus
-from model.memory_wrap_node import MemoryWrapNode
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from model.memory.memory_wrap_node import MemoryWrapNode
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class EsRetrieveAllWorker(MemoryBaseWorker):
@@ -12,7 +12,7 @@ class EsRetrieveAllWorker(MemoryBaseWorker):
         # msg_time_created = self.messages[-1].time_created
         hits = self.es_client.exact_search_v2(size=1000,
                                               term_filters={
-                                                  "memoryId": self.config.memory_id,
+                                                  "memoryId": self.memory_id,
                                                   "status": MemoryNodeStatus.ACTIVE.value,
                                                   "scene": self.scene.lower(),
                                                   # "memoryType": MemoryTypeEnum.OBSERVATION.value,

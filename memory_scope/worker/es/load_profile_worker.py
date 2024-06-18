@@ -4,10 +4,10 @@ from common.user_profile_handler import UserProfileHandler
 from constants import common_constants
 from enumeration.memory_node_status import MemoryNodeStatus
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory_wrap_node import MemoryWrapNode
+from model.memory.memory_wrap_node import MemoryWrapNode
 from model.user_attribute import UserAttribute
 from request.memory import MemoryServiceRequestModel
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class LoadProfileWorker(MemoryBaseWorker):
@@ -15,7 +15,7 @@ class LoadProfileWorker(MemoryBaseWorker):
     def _run(self):
         hits = self.es_client.exact_search_v2(size=10000,
                                               term_filters={
-                                                  "memoryId": self.config.memory_id,
+                                                  "memoryId": self.memory_id,
                                                   "status": MemoryNodeStatus.ACTIVE.value,
                                                   "scene": self.scene.lower(),
                                                   "memoryType": [MemoryTypeEnum.PROFILE.value,

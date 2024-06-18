@@ -1,12 +1,22 @@
 from typing import Dict, List
 
-from constants.common_constants import RELATED_MEMORIES, EXTRACT_TIME_DICT, ALL_ONLINE_NODES, DEFAULT_SYSTEM_PROMPT, \
+from constants.common_constants import RELATED_MEMORIES, EXTRACT_TIME_DICT, ALL_ONLINE_NODES, \
     TIME_MATCHED
-from model.memory_wrap_node import MemoryWrapNode
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from model.memory.memory_wrap_node import MemoryWrapNode
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class FuseRerankWorker(MemoryBaseWorker):
+    def __init__(self, fuse_time_ratio, fuse_score_threshold, fuse_ratio_dict, *args, **kwargs):
+        super(FuseRerankWorker, self).__init__(*args, **kwargs)
+        self.fuse_score_threshold = fuse_score_threshold
+        self.fuse_ratio_dict = fuse_ratio_dict
+        # self.default_system_prompt = default_system_prompt
+        self.fuse_time_ratio = fuse_time_ratio
+
+    @property
+    def output_max_count(self):
+        return self.request.user.output_max_count
 
     @staticmethod
     def format_time_infer(time_infer: str, extract_time_dict: Dict[str, str], meta_data: Dict[str, str]):
@@ -53,11 +63,11 @@ class FuseRerankWorker(MemoryBaseWorker):
 
         filtered_nodes = []
         for node in all_online_nodes:
-            if node.score_rank < self.config.fuse_score_threshold:
+            if node.score_rank < self.fuse_score_threshold:
                 continue
 
             # 根据类型给ratio
-            type_ratio: float = self.config.fuse_ratio_dict.get(node.memory_node.memoryType, 0.1)
+            type_ratio: float = self.fuse_ratio_dict.get(node.memory_node.memoryType, 0.1)
 
             # 时间系数，完全匹配才行
             fuse_time_ratio: float = 1.0
@@ -83,7 +93,7 @@ class FuseRerankWorker(MemoryBaseWorker):
                         break
 
                 if match_event_flag or match_msg_flag:
-                    fuse_time_ratio = self.config.fuse_time_ratio
+                    fuse_time_ratio = self.fuse_time_ratio
                     node.memory_node.metaData[TIME_MATCHED] = "1"
 
             node.score_rerank = node.score_rank * type_ratio * fuse_time_ratio
@@ -93,7 +103,7 @@ class FuseRerankWorker(MemoryBaseWorker):
 
         # get output & save context
         filtered_nodes = sorted(filtered_nodes, key=lambda x: x.score_rerank, reverse=True)
-        filtered_nodes = filtered_nodes[: self.config.output_max_count]
+        filtered_nodes = filtered_nodes[: self.output_max_count]
         related_memories: List[str] = []
         for node in filtered_nodes:
             content = node.memory_node.content
@@ -112,4 +122,4 @@ class FuseRerankWorker(MemoryBaseWorker):
             related_memories.append(content)
 
         self.set_context(RELATED_MEMORIES, related_memories)
-        self.set_context(DEFAULT_SYSTEM_PROMPT, self.config.default_system_prompt)
+        # self.set_context(DEFAULT_SYSTEM_PROMPT, self.default_system_prompt)

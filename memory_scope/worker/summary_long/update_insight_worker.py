@@ -1,14 +1,20 @@
-from datetime import datetime
 from typing import List
 
 from common.response_text_parser import ResponseTextParser
-from common.tool_functions import time_to_formatted_str, get_datetime_info_dict
-from constants.common_constants import INSIGHT_NODES, NEW_OBS_NODES, INSIGHT_KEY, INSIGHT_VALUE, DT
-from model.memory_wrap_node import MemoryWrapNode
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from constants.common_constants import INSIGHT_NODES, NEW_OBS_NODES, INSIGHT_KEY, INSIGHT_VALUE
+from model.memory.memory_wrap_node import MemoryWrapNode
+from worker.memory.memory_base_worker import MemoryBaseWorker
 
 
 class UpdateInsightWorker(MemoryBaseWorker):
+    def __init__(update_insight_threshold, update_insight_max_thread, update_insight_model, update_insight_max_token, update_insight_temperature, update_insight_top_k,*args, **kwargs):
+        super(UpdateInsightWorker, self).__init__(*args, **kwargs)
+        self.update_insight_threshold = update_insight_threshold
+        self.update_insight_max_thread = update_insight_max_thread
+        self.update_insight_model = update_insight_model
+        self.update_insight_max_token = update_insight_max_token
+        self.update_insight_temperature = update_insight_temperature
+        self.update_insight_top_k = update_insight_top_k
 
     def filter_obs_nodes(self,
                          insight_node: MemoryWrapNode,
@@ -36,7 +42,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
             score = rank_node["relevance_score"]
             node = new_obs_nodes[index]
             keep_flag = "filtered"
-            if score >= self.config.update_insight_threshold:
+            if score >= self.update_insight_threshold:
                 filtered_nodes.append(node)
                 keep_flag = "keep"
                 max_score = max(max_score, score)
@@ -47,23 +53,6 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.info(f"update_insight={insight_key} filtered_nodes is empty!")
 
         return insight_node, filtered_nodes, max_score
-
-    def update_insight_node(self, insight_node: MemoryWrapNode, insight_key: str, insight_value: str):
-        created_dt = datetime.now()
-        dt = time_to_formatted_str(time=created_dt)
-        meta_data = {
-            DT: dt,
-            INSIGHT_KEY: insight_key,
-            INSIGHT_VALUE: insight_value,
-        }
-        meta_data.update({f"msg_{k}": str(v) for k, v in get_datetime_info_dict(created_dt).items()})
-
-        content = f"用户的{insight_key}：{insight_value}"
-        insight_node.memory_node.content = content
-        insight_node.memory_node.content_modified = True
-        insight_node.memory_node.metaData = meta_data
-        insight_node.memory_node.tenantId = self.config.tenant_id
-        return insight_node
 
     def update_insight(self,
                        insight_node: MemoryWrapNode,
@@ -89,10 +78,10 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         # call LLM
         response_text: str = self.gene_client.call(messages=update_insight_message,
-                                                   model_name=self.config.update_insight_model,
-                                                   max_token=self.config.update_insight_max_token,
-                                                   temperature=self.config.update_insight_temperature,
-                                                   top_k=self.config.update_insight_top_k)
+                                                   model_name=self.update_insight_model,
+                                                   max_token=self.update_insight_max_token,
+                                                   temperature=self.update_insight_temperature,
+                                                   top_k=self.update_insight_top_k)
 
         # return if empty
         if not response_text:
@@ -113,7 +102,9 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.info(f"insight_value={insight_value}, skip.")
             return insight_node
 
-        return self.update_insight_node(insight_node, insight_key, insight_value)
+        insight_node.memory_node.metaData[INSIGHT_VALUE] = insight_value
+        insight_node.memory_node.content_modified = True
+        return insight_node
 
     def _run(self):
         # 获取新的obs和insight
@@ -141,8 +132,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
                 continue
             result_list.append(result)
         result_sorted = sorted(result_list, key=lambda x: x[2], reverse=True)
-        if len(result_sorted) > self.config.update_insight_max_thread:
-            result_sorted = result_sorted[:self.config.update_insight_max_thread]
+        if len(result_sorted) > self.update_insight_max_thread:
+            result_sorted = result_sorted[:update_insight_max_thread]
 
         # 提交LLM update任务
         for insight_node, filtered_nodes, _ in result_sorted:

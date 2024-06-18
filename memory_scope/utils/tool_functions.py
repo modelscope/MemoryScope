@@ -5,6 +5,7 @@ from typing import Dict, List
 
 from constants.common_constants import WEEKDAYS
 from enumeration.env_type import EnvType
+from importlib import import_module
 
 global_env_type = None
 
@@ -162,3 +163,12 @@ def time_to_formatted_str(time: datetime | str | int | float = None,
         return_str = string_format.format(**get_datetime_info_dict(current_dt))
 
     return return_str
+
+
+def init_instance_by_config(config, default_module_path=None, try_kwargs={}):
+    import_module(config.get("module_path", default_module_path))
+    clazz = getattr(module, config.get("module_name"))
+    try:
+        return clazz(**config.get("kwargs"),**try_kwargs)
+    except:
+        return clazz(**config.get("kwargs"))

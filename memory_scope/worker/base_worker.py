@@ -10,18 +10,14 @@ from common.timer import Timer
 class BaseWorker(object):
 
     def __init__(self,
-                 context_handler: ContextHandler,
                  is_multi_thread: bool = False,
-                 thread_pool: ThreadPoolExecutor = None,
                  raise_exception: bool = True,
                  logger: Logger = None,
                  **kwargs):
         super(BaseWorker, self).__init__(**kwargs)
 
         # 原始参数
-        self.context_handler: ContextHandler = context_handler
         self.is_multi_thread: bool = is_multi_thread
-        self.thread_pool: ThreadPoolExecutor = thread_pool
         self.raise_exception: bool = raise_exception
         self.logger: Logger = logger
 
@@ -36,14 +32,19 @@ class BaseWorker(object):
         # True 为正常运行，False会结束整个pipeline
         self.continue_run: bool = True
 
+        # 短name
+        self._name_simple: str = ""
+
+    def flush(self, context_handler: ContextHandler, thread_pool: ThreadPoolExecutor):
+        # 原始参数
+        self.context_handler = context_handler
+        self.thread_pool: ThreadPoolExecutor = thread_pool
+
         # 运行信息，保存到ext_info
         self.run_infos: List[str] = []
 
         # 运行时间
         self.run_cost: float = 0
-
-        # 短name
-        self._name_simple: str = ""
 
     def _run(self):
         pass
@@ -81,25 +82,6 @@ class BaseWorker(object):
 
     def set_context(self, key: str, value: Any):
         self.context_handler.set_context(key, value, self.is_multi_thread)
-
-    def get_param(self, key: str, default=None):
-        return self.context_handler.env_configs.get(key, default)
-
-    @property
-    def env_type(self) -> str:
-        return self.context_handler.env_type.value
-
-    @property
-    def scene(self) -> str:
-        return self.context_handler.scene
-
-    @property
-    def method(self) -> str:
-        return self.context_handler.method
-
-    @property
-    def algo_version(self) -> str:
-        return self.context_handler.algo_version
 
     @property
     def name_simple(self) -> str:
