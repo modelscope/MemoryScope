@@ -1,4 +1,4 @@
-class ChatAgent(object):
+class MemoryChat(object):
 
     def __init__(self):
         pass
