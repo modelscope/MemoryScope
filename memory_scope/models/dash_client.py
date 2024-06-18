@@ -89,3 +89,36 @@ class DashClient(object):
                 time.sleep(self.retry_sleep_time)
 
         return None
+
+
+class LLIClient(object):
+
+    def __init__(self,
+                 model_name: str,
+                 timeout: int = None,
+                 max_retry_count: int = 2,
+                 retry_sleep_time: float = 1.0,
+                 **kwargs):
+
+        self.model_name: str = model_name
+        self.timeout: int = timeout
+        self.max_retry_count: int = max_retry_count
+        self.retry_sleep_time: float = retry_sleep_time
+        self.kwargs: dict = kwargs
+
+        self.data = {}
+        self.logger = Logger.get_logger()
+    
+
+    def before_call(self, **kwargs):
+        pass
+
+    def after_call(self, **kwargs):
+        pass
+
+    def call_once(self, **kwargs):
+        pass
+
+    def call(self, **kwargs):
+        pass
+    
