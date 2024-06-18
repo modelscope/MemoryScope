@@ -1,3 +1,4 @@
 {
-
+    "method": "DashScopeEmbedding",
+    "model_name": "text-embedding-v2"
 }
