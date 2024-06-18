@@ -1,11 +1,14 @@
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 
-from common.dash_embedding_client import DashEmbeddingClient
-from common.logger import Logger
+from memory_scope.models.dash_embedding_client import DashEmbeddingClient, LLIEmbedding
 from constants.common_constants import ES_ENV_URL_DICT
 from enumeration.env_type import EnvType
-
+from memory_scope.utils.logger import Logger
+from llama_index.core import VectorStoreIndex, StorageContext, ServiceContext
+from llama_index.vector_stores.elasticsearch import ElasticsearchStore
+from llama_index.core.schema import TextNode
+from llama_index.vector_stores.elasticsearch import AsyncDenseVectorStrategy
 
 class ElasticSearchClient(object):
     def __init__(self,
@@ -339,3 +342,73 @@ class ElasticSearchClient(object):
             self.print_hits(hits)
 
         return hits
+    
+ 
+class LLIElasticSearch(object):
+    def __init__(self,
+                 es_index_name: str,
+                 embedding_client: LLIEmbedding | None = None,
+                 retrieve_topk: int = 3,
+                 content_key: str = "text",
+                 ):
+        self.es_index_name = es_index_name
+        self.content_key = content_key
+        self.embedding_client: LLIEmbedding = embedding_client
+        self.es_client = ElasticsearchStore(index_name="my_index",
+                                            es_url="http://localhost:9200",
+                                            retrieval_strategy=AsyncDenseVectorStrategy(hybrid=True))
+        
+        self.service_context = ServiceContext.from_defaults(embed_model=self.embedding_client, llm=None)
+        self.storage_context = StorageContext.from_defaults(vector_store=self.es_client)
+        self.index = VectorStoreIndex(storage_context=self.storage_context, 
+                                      service_context=self.service_context)
+
+        self.retriever = self.index.as_retriever(similarity_top_k=retrieve_topk)
+        self.logger = Logger.get_logger()
+
+    def log_index_info(self, ):
+        pass
+
+    def print_hits(self, hits: list):
+        for hit in hits:
+            print_kwargs = {
+                "_id": hit['_id'],
+                "_score": hit['_score'],
+            }
+            for k, v in hit['_source'].items():
+                # 不打印vector
+                if k == self.vector_key:
+                    v = len(v)
+                print_kwargs[k] = v
+            self.logger.info(" ".join([f"{k}={v}" for k, v in print_kwargs.items()]))
+
+    def similar_search(self,
+                       text: str, 
+                       size: int, ):
+        
+        ret_nodes = self.retriever.retrieve(text)
+        return ret_nodes
+    
+    def insert_batch(self, doc_list:list[str]):
+        node_list = []
+        for doc in doc_list:
+            assert "_id" in doc and "_source" in doc
+            content = doc["_source"]["text"]
+            doc["_source"].pop("text")
+            meta = doc["_source"]
+            node = TextNode(text=content, metadata=meta)
+            node.node_id(doc['_id'])
+            node_list.append(node)
+        self.index.insert_nodes(node_list)
+
+
+    def insert(self, _id: str, body: dict):
+        assert body and self.content_key in body, f"body={body} is illegal!"        
+        content = body[self.content_key]
+        body.pop(self.content_key)
+        meta = body
+        node = TextNode(text=content, metadata=meta)
+        self.index.insert_nodes([node])
+
+
+  
