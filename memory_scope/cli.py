@@ -1,15 +1,14 @@
 # 使用argparse库的示例
 import argparse
+import fire
+from config import C, init
+from chat.memory_chat import MemoryChat
 
-
-def main():
-    parser = argparse.ArgumentParser(description="示例CLI程序")
-    parser.add_argument('--echo', help="输出传入的消息")
-
-    args = parser.parse_args()
-    if args.echo:
-        print(f"收到的消息: {args.echo}")
-
+def main(config_path:str):
+    init(config_path)
+    
+    agent = MemoryChat()
+    agent.run()
 
 if __name__ == "__main__":
-    main()
+    fire.Fire(main)

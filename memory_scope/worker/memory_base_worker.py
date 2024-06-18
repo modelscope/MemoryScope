@@ -8,6 +8,7 @@ from node.user_attribute import UserAttribute
 from pipeline.memory import MemoryServiceRequestModel
 from worker.base_worker import BaseWorker
 from cli.cli_config import C
+from utils.tool_functions import init_instance_by_config
 
 class MemoryBaseWorker(BaseWorker):
     def __init__(self, **kwargs):
@@ -21,7 +22,7 @@ class MemoryBaseWorker(BaseWorker):
     def messages(self) -> List[Message]:
         messages: List[Message] = self.context_handler.get_context(MESSAGES)
         if messages is None:
-            messages = self.request.messages[-self.request.messages_pick_n:]
+            messages = self.request.messages
             self.context_handler.set_context(MESSAGES, messages)
         return messages
 
@@ -51,20 +52,32 @@ class MemoryBaseWorker(BaseWorker):
         return self.request.user.prompt
 
     @property
-    def emb_client(self):
-        return C.model_embedding
+    def client(self, model_type: str, model_name:str):
+        models = C.get(model_type)
+        models["model_name"] = init_instance_by_config(
+            config = models.get(model_name),
+            try_kwargs={
+                "is_multi_thread": is_multi_thread,
+                "thread_pool": self.thread_pool
+            }
+            )
+        return models["model_name"]
+
+    @property
+    def emb_client(self, model_name: str):
+        self.client("model_embedding", model_name)
 
     @property
     def gene_client(self):
-        return C.model_generate
+        self.client("model_generate", model_name)
 
     @property
     def rerank_client(self):
-        return C.model_rerank
+        self.client("model_rerank", model_name)
 
     @property
     def es_client(self):
-        return C.db
+        self.client("db", model_name)
 
     @property
     def tenant_id(self):

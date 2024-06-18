@@ -3,13 +3,13 @@ import os
 import time
 from typing import List, Dict
 
-from utils.logger import Logger
-from constants.common_constants import NEW_USER_PROFILE, MODIFIED_MEMORIES, RELATED_MEMORIES
-from enumeration.memory_method_enum import MemoryMethodEnum
-from node.memory_node import MemoryNode
-from node.user_attribute import UserAttribute
-from pipeline.memory import MemoryServiceRequestModel
-from service.memory_service_bailian import MemoryServiceBailian
+from memory_scope.utils.logger import Logger
+from memory_scope.constants.common_constants import NEW_USER_PROFILE, MODIFIED_MEMORIES, RELATED_MEMORIES
+from memory_scope.enumeration.memory_method_enum import MemoryMethodEnum
+from memory_scope.node.memory_node import MemoryNode
+from memory_scope.node.user_attribute import UserAttribute
+from memory_scope.pipeline.memory import MemoryServiceRequestModel
+from memory_scope.pipeline.memory_service import MemoryService
 
 """
 任务：随机生成一个用户的画像，随机种子0，并根据用户的画像虚拟一段用户和AI的对话。
@@ -139,10 +139,8 @@ for i, msg in enumerate(messages3):
 
 
 def summary_short(messages):
-    messages_pick_n = len(messages)
     request: MemoryServiceRequestModel = MemoryServiceRequestModel(
         messages=messages,
-        messages_pick_n=messages_pick_n,
         memory_id=memory_id,
         workspace_id=workspace_id,
         api_key=api_key,
@@ -171,7 +169,6 @@ def summary_short(messages):
 def summary_long():
     request: MemoryServiceRequestModel = MemoryServiceRequestModel(
         messages=[],
-        messages_pick_n=0,
         memory_id=memory_id,
         workspace_id=workspace_id,
         api_key=api_key,
@@ -204,7 +201,6 @@ def summary_long():
 def retrieve(messages):
     request: MemoryServiceRequestModel = MemoryServiceRequestModel(
         messages=messages,
-        messages_pick_n=1,
         memory_id=memory_id,
         workspace_id=workspace_id,
         api_key=api_key,

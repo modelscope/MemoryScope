@@ -11,4 +11,8 @@ class MemoryServiceRequestModel(BaseModel):
     messages: List[Message] = Field(...,
                                     description="summary: 多轮对话的list,默认按照时间正序，最后一条是最新的; retrieve: 最后一条是query")
 
-    messages_pick_n: int = Field(1, description="summary：传需要总结的msg的个数;retrieve：不传")
+    user_profile: List[UserAttribute] = Field([], description="user_profile")
+
+    ext_info: Dict[str, str] = Field({}, description="extra information")
+
+    extra_user_attrs: List = []

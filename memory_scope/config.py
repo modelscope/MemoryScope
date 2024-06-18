@@ -19,9 +19,7 @@ class Wrapper:
             raise AttributeError("Please run __init__ first!")
         return getattr(self._provider, key)
 
-
 C = Wrapper()
-
 
 def init(config_path: str):
     config = json.loads(config_path)

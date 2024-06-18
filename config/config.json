@@ -2,9 +2,9 @@
     "thread_pool_max_count": "",
     "worker": "config/worker.json",
     "pipeline": {
-        "summary_short": "",
-        "summary_long": "",
-        "retrieve": ""
+        "summary_short": "parse_params,[load_profile|es_new_obs|es_insight],[update_insight|get_reflection,get_insight|update_profile],summary_collect,memory_store",
+        "summary_long": "parse_params,info_filter,[es_today_obs|get_observation|get_observation_with_time],contra_repeat,memory_store",
+        "retrieve": "parse_params,load_profile,[extract_time|es_similar|es_keyword],semantic_rank,fuse_rerank"
     },
     "model_embedding": "config/model/dash_embedding.json",
     "model_rerank": "config/model/dash_rerank.json",

@@ -1,52 +1,45 @@
 {
-    "EsInsightWorker": {
-        "module_name": "EsInsightWorker",
-        "module_path": "memory_scope/worker",
-        "kwargs": {
-            "es_insight_top_k": 128
-        }
+    "es_insight": {
+        "name": "EsInsightWorker",
+        "path": "memory_scope/worker",
+        "es_insight_top_k": 128
     },
     "es_keyword": {
         "name": "EsKeywordWorker",
         "path": "memory_scope/worker",
         "es_keyword_top_k": 10
     },
-    "es_keyword2": {
-        "module_name": "EsKeywordWorker",
-        "module_path": "memory_scope/worker",
-        "es_keyword_top_k": 10
-    },
     "EsNewObsWorker": {
-        "module_name": "EsNewObsWorker",
-        "module_path": "memory_scope/worker",
+        "name": "EsNewObsWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "es_new_obs_top_k": 256
         }
     },
     "EsNotReflectedWorker": {
-        "module_name": "EsNotReflectedWorker",
-        "module_path": "memory_scope/worker",
+        "name": "EsNotReflectedWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "es_not_reflected_top_k": 256
         }
     },
     "EsSimilarWorker": {
-        "module_name": "EsSimilarWorker",
-        "module_path": "memory_scope/worker",
+        "name": "EsSimilarWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "es_similar_top_k": 128
         }
     },
     "EsTodayObsWorker": {
-        "module_name": "EsTodayObsWorker",
-        "module_path": "memory_scope/worker",
+        "name": "EsTodayObsWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "es_today_obs_top_k": 128
         }
     },
     "GetInsightWorker": {
-        "module_name": "GetInsightWorker",
-        "module_path": "memory_scope/worker",
+        "name": "GetInsightWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "es_insight_similar_top_k": 128,
             "insight_obs_max_cnt": 10,
@@ -57,17 +50,16 @@
         }
     },
     "ExtractTimeWorker": {
-        "module_name": "ExtractTimeWorker",
-        "module_path": "memory_scope/worker",
-        "parse_time_model": "",
+        "name": "ExtractTimeWorker",
+        "path": "memory_scope/worker",
         "parse_time_model": "qwen_1_8_parse_time_service",
         "parse_time_max_token": 100,
         "parse_time_temperature": 0.6,
-        "parse_time_top_k": 1,
+        "parse_time_top_k": 1
     },
     "InfoFilterWorker": {
-        "module_name": "InfoFilterWorker",
-        "module_path": "memory_scope/worker",
+        "name": "InfoFilterWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "info_filter_msg_max_size": 200,
             "info_filter_model": "qwen_max",
@@ -77,8 +69,8 @@
         }
     },
     "GetObservationWithTimeWorker": {
-        "module_name": "GetObservationWithTimeWorker",
-        "module_path": "memory_scope/worker",
+        "name": "GetObservationWithTimeWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "summary_messages_model": "qwen_max",
             "summary_messages_max_token": 500,
@@ -87,8 +79,8 @@
         }
     },
     "GetObservationWorker": {
-        "module_name": "GetObservationWorker",
-        "module_path": "memory_scope/worker",
+        "name": "GetObservationWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "summary_messages_model": "qwen_max",
             "summary_messages_max_token": 500,
@@ -97,8 +89,8 @@
         }
     },
     "ContraRepeatWorker": {
-        "module_name": "ContraRepeatWorker",
-        "module_path": "memory_scope/worker",
+        "name": "ContraRepeatWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "merge_obs_model": "qwen_max",
             "merge_obs_max_token": 500,
@@ -107,8 +99,8 @@
         }
     },
     "FuseRerankWorker": {
-        "module_name": "FuseRerankWorker",
-        "module_path": "memory_scope/worker",
+        "name": "FuseRerankWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "fuse_score_threshold": 0.1,
             "fuse_ratio_dict": {
@@ -123,8 +115,8 @@
         }
     },
     "UpdateProfileWorker": {
-        "module_name": "UpdateProfileWorker",
-        "module_path": "memory_scope/worker",
+        "name": "UpdateProfileWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "update_profile_threshold": 0.1,
             "update_profile_model": "qwen_max",
@@ -135,8 +127,8 @@
         }
     },
     "GetReflectionWorker": {
-        "module_name": "GetReflectionWorker",
-        "module_path": "memory_scope/worker",
+        "name": "GetReflectionWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "reflect_obs_cnt_threshold": 40,
             "reflect_num_questions": 3,
@@ -147,8 +139,8 @@
         }
     },
     "UpdateInsightWorker": {
-        "module_name": "UpdateInsightWorker",
-        "module_path": "memory_scope/worker",
+        "name": "UpdateInsightWorker",
+        "path": "memory_scope/worker",
         "kwargs": {
             "update_insight_threshold": 0.1,
             "update_insight_model": "qwen_max",

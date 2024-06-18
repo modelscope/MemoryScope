@@ -144,10 +144,13 @@ def time_to_formatted_str(time: datetime | str | int | float = None,
     return return_str
 
 
-def init_instance_by_config(config: dict, default_module_path=None, try_kwargs={}):
+def init_instance_by_config(config: dict|object, default_module_path: str = None, try_kwargs: dict = {}, accept_types: type = None):
+    if isinstance(config, accept_types):
+        return config
+
     import_module(config.pop("path", default_module_path))
     clazz = getattr(module, config.pop("name"))
     try:
-        return clazz(**config,**try_kwargs)
+        return clazz(**config, **try_kwargs)
     except:
         return clazz(**config)
