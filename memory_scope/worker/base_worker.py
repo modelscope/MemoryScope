@@ -2,9 +2,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, List
 
-from common.context_handler import ContextHandler
-from common.logger import Logger
-from common.timer import Timer
+from utils.context_handler import ContextHandler
+from utils.logger import Logger
+from utils.timer import Timer
 
 
 class BaseWorker(object):

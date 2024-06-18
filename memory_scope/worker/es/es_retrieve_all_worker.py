@@ -2,8 +2,8 @@ from typing import List
 
 from constants.common_constants import ALL_NODES, ALL_MEMORIES
 from enumeration.memory_node_status import MemoryNodeStatus
-from model.memory.memory_wrap_node import MemoryWrapNode
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class EsRetrieveAllWorker(MemoryBaseWorker):

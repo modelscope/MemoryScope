@@ -4,28 +4,7 @@ from datetime import datetime
 from typing import Dict, List
 
 from constants.common_constants import WEEKDAYS
-from enumeration.env_type import EnvType
 from importlib import import_module
-
-global_env_type = None
-
-
-def get_global_env_type():
-    global global_env_type
-
-    if global_env_type is None:
-        env = os.environ.get("APP_ENV", "")
-        if env is None or not env:
-            raise EnvironmentError("Environment variable APP_ENV must be set")
-        env = env.split("-")[-1]
-
-        if env not in EnvType.__members__.values():
-            global_env_type = EnvType.DAILY
-        else:
-            global_env_type = EnvType(env)
-
-    return global_env_type
-
 
 def under_line_to_hump(underline_str):
     sub = re.sub(r'(_\w)', lambda x: x.group(1)[1].upper(), underline_str)
@@ -165,10 +144,10 @@ def time_to_formatted_str(time: datetime | str | int | float = None,
     return return_str
 
 
-def init_instance_by_config(config, default_module_path=None, try_kwargs={}):
-    import_module(config.get("module_path", default_module_path))
-    clazz = getattr(module, config.get("module_name"))
+def init_instance_by_config(config: dict, default_module_path=None, try_kwargs={}):
+    import_module(config.pop("path", default_module_path))
+    clazz = getattr(module, config.pop("name"))
     try:
-        return clazz(**config.get("kwargs"),**try_kwargs)
+        return clazz(**config,**try_kwargs)
     except:
-        return clazz(**config.get("kwargs"))
+        return clazz(**config)

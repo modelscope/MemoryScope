@@ -1,12 +1,11 @@
 from typing import List
 
-from common.user_profile_handler import UserProfileHandler
+from utils.user_profile_handler import UserProfileHandler
 from constants.common_constants import MODIFIED_MEMORIES, NEW_USER_PROFILE
-from model.memory_node import MemoryNode
-from model.memory.memory_wrap_node import MemoryWrapNode
-from model.user_attribute import UserAttribute
-from worker.memory.memory_base_worker import MemoryBaseWorker
-
+from node.memory_node import MemoryNode
+from node.memory_wrap_node import MemoryWrapNode
+from node.user_attribute import UserAttribute
+from worker.memory_base_worker import MemoryBaseWorker
 
 class MemoryStoreWorker(MemoryBaseWorker):
 

@@ -1,6 +1,6 @@
 import re
 
-from common.logger import Logger
+from utils.logger import Logger
 
 
 class ResponseTextParser(object):

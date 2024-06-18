@@ -3,9 +3,9 @@ from typing import List
 from common.response_text_parser import ResponseTextParser
 from constants.common_constants import NEW_OBS_NODES, NEW_USER_PROFILE
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory.memory_wrap_node import MemoryWrapNode
-from model.user_attribute import UserAttribute
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from node.user_attribute import UserAttribute
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class UpdateProfileWorker(MemoryBaseWorker):

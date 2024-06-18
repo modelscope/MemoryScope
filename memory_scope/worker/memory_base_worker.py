@@ -3,11 +3,11 @@ from typing import List, Dict, Optional
 from constants import common_constants
 from constants.common_constants import CONFIG, MESSAGES, PROMPT_CONFIG
 from enumeration.message_role_enum import MessageRoleEnum
-from model.message import Message
-from model.user_attribute import UserAttribute
-from request.memory import MemoryServiceRequestModel
-from worker.memory.base_worker import BaseWorker
-from config.env_config import EnvConfig
+from node.message import Message
+from node.user_attribute import UserAttribute
+from pipeline.memory import MemoryServiceRequestModel
+from worker.base_worker import BaseWorker
+from cli.cli_config import C
 
 class MemoryBaseWorker(BaseWorker):
     def __init__(self, **kwargs):
@@ -52,19 +52,19 @@ class MemoryBaseWorker(BaseWorker):
 
     @property
     def emb_client(self):
-        return C.emb_client
+        return C.model_embedding
 
     @property
     def gene_client(self):
-        return C.gene_client
+        return C.model_generate
 
     @property
     def rerank_client(self):
-        return C.rerank_client
+        return C.model_rerank
 
     @property
     def es_client(self):
-        return C.es_client
+        return C.db
 
     @property
     def tenant_id(self):

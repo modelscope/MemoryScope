@@ -3,12 +3,12 @@ import os
 import time
 from typing import List, Dict
 
-from common.logger import Logger
+from utils.logger import Logger
 from constants.common_constants import NEW_USER_PROFILE, MODIFIED_MEMORIES, RELATED_MEMORIES
 from enumeration.memory_method_enum import MemoryMethodEnum
-from model.memory_node import MemoryNode
-from model.user_attribute import UserAttribute
-from request.memory import MemoryServiceRequestModel
+from node.memory_node import MemoryNode
+from node.user_attribute import UserAttribute
+from pipeline.memory import MemoryServiceRequestModel
 from service.memory_service_bailian import MemoryServiceBailian
 
 """

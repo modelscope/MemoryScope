@@ -2,7 +2,7 @@ import os
 import threading
 from typing import Dict, Any
 
-from common.logger import Logger
+from utils.logger import Logger
 
 class ContextHandler(object):
     def __init__(self):

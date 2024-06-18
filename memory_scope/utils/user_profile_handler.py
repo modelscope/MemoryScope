@@ -2,8 +2,8 @@ import json
 from typing import List, Dict
 
 from enumeration.memory_node_status import MemoryNodeStatus
-from model.memory_wrap_node import MemoryWrapNode
-from model.user_attribute import UserAttribute
+from node.memory_wrap_node import MemoryWrapNode
+from node.user_attribute import UserAttribute
 
 
 class UserProfileHandler(object):

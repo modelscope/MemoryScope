@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 
 from common.dash_embedding_client import DashEmbeddingClient
-from common.logger import Logger
+from utils.logger import Logger
 from constants.common_constants import ES_ENV_URL_DICT
 from enumeration.env_type import EnvType
 

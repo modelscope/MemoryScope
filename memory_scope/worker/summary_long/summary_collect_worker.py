@@ -2,8 +2,8 @@ from typing import List, Dict
 
 from constants.common_constants import NEW_INSIGHT_NODES, MODIFIED_MEMORIES, INSIGHT_NODES, NEW_OBS_NODES, \
     NOT_REFLECTED_OBS_NODES, NEW, NOT_REFLECTED_MERGE_NODES
-from model.memory.memory_wrap_node import MemoryWrapNode
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class SummaryCollectWorker(MemoryBaseWorker):

@@ -5,8 +5,8 @@ from constants.common_constants import NEW_OBS_NODES, TODAY_OBS_NODES, MSG_TIME,
     MODIFIED_MEMORIES
 from enumeration.memory_node_status import MemoryNodeStatus
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory_wrap_node import MemoryWrapNode
-from worker.bailian.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class LongContraRepeatWorker(MemoryBaseWorker):

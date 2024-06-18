@@ -1,12 +1,11 @@
 from typing import List, Dict
 
-from pydantic import Field
+from pydantic import Field, BaseModel
 
-from model.message import Message
-from model.user_attribute import UserAttribute
-from request.base_model import RequestBaseModel
+from node.message import Message
+from node.user_attribute import UserAttribute
 
-class MemoryServiceRequestModel(RequestBaseModel):
+class MemoryServiceRequestModel(BaseModel):
     user: UserConfig = None
 
     messages: List[Message] = Field(...,
