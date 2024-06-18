@@ -59,12 +59,11 @@
     "ExtractTimeWorker": {
         "module_name": "ExtractTimeWorker",
         "module_path": "memory_scope/worker",
-        "kwargs": {
-            "parse_time_model": "qwen_1_8_parse_time_service",
-            "parse_time_max_token": 100,
-            "parse_time_temperature": 0.6,
-            "parse_time_top_k": 1
-        }
+        "parse_time_model": "",
+        "parse_time_model": "qwen_1_8_parse_time_service",
+        "parse_time_max_token": 100,
+        "parse_time_temperature": 0.6,
+        "parse_time_top_k": 1,
     },
     "InfoFilterWorker": {
         "module_name": "InfoFilterWorker",
