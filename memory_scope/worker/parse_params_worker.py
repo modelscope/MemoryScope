@@ -2,8 +2,8 @@ import json
 
 from config.bailian_memory_config import BailianMemoryConfig
 from constants.common_constants import REQUEST, CONFIG
-from request.memory import MemoryServiceRequestModel
-from worker.memory.base_worker import BaseWorker
+from pipeline.memory import MemoryServiceRequestModel
+from worker.base_worker import BaseWorker
 
 
 class ParseParamsWorker(BaseWorker):

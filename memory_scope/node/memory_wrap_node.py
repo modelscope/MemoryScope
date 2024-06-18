@@ -1,6 +1,6 @@
 from pydantic import Field, BaseModel
 
-from model.memory_node import MemoryNode
+from node.memory_node import MemoryNode
 
 
 class MemoryWrapNode(BaseModel):

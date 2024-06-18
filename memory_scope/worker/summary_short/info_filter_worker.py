@@ -1,6 +1,6 @@
 from common.response_text_parser import ResponseTextParser
 from enumeration.message_role_enum import MessageRoleEnum
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class InfoFilterWorker(MemoryBaseWorker):

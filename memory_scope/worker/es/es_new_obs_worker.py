@@ -3,8 +3,8 @@ from typing import List
 from constants.common_constants import NEW, NEW_OBS_NODES
 from enumeration.memory_node_status import MemoryNodeStatus
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory.memory_wrap_node import MemoryWrapNode
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class EsNewObsWorker(MemoryBaseWorker):

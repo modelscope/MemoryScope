@@ -3,8 +3,8 @@ from typing import List
 from common.response_text_parser import ResponseTextParser
 from constants.common_constants import NEW_OBS_NODES, NOT_REFLECTED_OBS_NODES, REFLECTED, INSIGHT_NODES, INSIGHT_KEY, \
     NEW_INSIGHT_KEYS, NOT_REFLECTED_MERGE_NODES
-from model.memory.memory_wrap_node import MemoryWrapNode
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class GetReflectionWorker(MemoryBaseWorker):

@@ -6,7 +6,7 @@ date: 20221106
 
 import time
 
-from common.logger import Logger
+from utils.logger import Logger
 
 
 class Timer(object):

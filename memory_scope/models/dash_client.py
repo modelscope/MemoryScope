@@ -4,8 +4,8 @@ from http import HTTPStatus
 
 import requests
 
-from common.logger import Logger
-from common.timer import Timer
+from utils.logger import Logger
+from utils.timer import Timer
 from enumeration.env_type import EnvType
 
 

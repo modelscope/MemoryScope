@@ -2,8 +2,8 @@ from typing import List
 
 from common.response_text_parser import ResponseTextParser
 from constants.common_constants import INSIGHT_NODES, NEW_OBS_NODES, INSIGHT_KEY, INSIGHT_VALUE
-from model.memory.memory_wrap_node import MemoryWrapNode
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class UpdateInsightWorker(MemoryBaseWorker):

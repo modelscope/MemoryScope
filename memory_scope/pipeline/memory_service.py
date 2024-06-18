@@ -6,17 +6,16 @@ from importlib import import_module
 from itertools import zip_longest
 from typing import Dict, Any
 
-from worker.memory.base_worker import BaseWorker
-
-from common.context_handler import ContextHandler
-from common.logger import Logger
-from common.timer import timer, Timer
+from worker.base_worker import BaseWorker
+from utils.context_handler import ContextHandler
+from utils.logger import Logger
+from utils.timer import timer, Timer
 from common.tool_functions import under_line_to_hump
 from constants import common_constants
 from constants.common_constants import RESPONSE_EXT_INFO, MAX_WORKERS, PIPELINE
 from enumeration.memory_method_enum import MemoryMethodEnum
-from request.memory import MemoryServiceRequestModel
-from config.env_config import C, Workers
+from pipeline.memory import MemoryServiceRequestModel
+from cli.cli_config import C
 from utils.tool_functions import init_instance_by_config
 
 
@@ -26,7 +25,7 @@ class MemoryService(object):
         self.context_handler = ContextHandler()
 
         # 线程池
-        self.thread_pool = ThreadPoolExecutor(max_workers=C.THREAD_POOL_MAX_COUNT)
+        self.thread_pool = ThreadPoolExecutor(max_workers=C.thread_pool_max_count)
 
         # 全部初始化的worker
         self.worker_dict: Dict[str, BaseWorker] = {}
@@ -40,7 +39,7 @@ class MemoryService(object):
 
     def get_worker(self, worker_name: str, is_multi_thread: bool = False) -> BaseWorker:
         return init_instance_by_config(
-            config = W.get(worker_name),
+            config = C.worker.get(worker_name),
             try_kwargs={
                 "is_multi_thread": is_multi_thread,
                 "thread_pool": self.thread_pool

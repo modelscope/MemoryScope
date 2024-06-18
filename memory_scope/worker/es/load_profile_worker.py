@@ -1,13 +1,13 @@
 from typing import List, Dict
 
-from common.user_profile_handler import UserProfileHandler
+from utils.user_profile_handler import UserProfileHandler
 from constants import common_constants
 from enumeration.memory_node_status import MemoryNodeStatus
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory.memory_wrap_node import MemoryWrapNode
-from model.user_attribute import UserAttribute
-from request.memory import MemoryServiceRequestModel
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from node.user_attribute import UserAttribute
+from pipeline.memory import MemoryServiceRequestModel
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class LoadProfileWorker(MemoryBaseWorker):

@@ -4,8 +4,8 @@ from common.response_text_parser import ResponseTextParser
 from constants.common_constants import NEW_OBS_NODES, TODAY_OBS_NODES, MSG_TIME, NEW_OBS_WITH_TIME_NODES, \
     MODIFIED_MEMORIES
 from enumeration.memory_node_status import MemoryNodeStatus
-from model.memory.memory_wrap_node import MemoryWrapNode
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class ContraRepeatWorker(MemoryBaseWorker):

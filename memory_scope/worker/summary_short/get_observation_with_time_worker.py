@@ -7,9 +7,9 @@ from constants.common_constants import REFLECTED, DT, TIME_INFER, NEW, MSG_TIME,
     NEW_OBS_WITH_TIME_NODES
 from enumeration.memory_node_status import MemoryNodeStatus
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory.memory_wrap_node import MemoryWrapNode
-from model.message import Message
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from node.message import Message
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class GetObservationWithTimeWorker(MemoryBaseWorker):

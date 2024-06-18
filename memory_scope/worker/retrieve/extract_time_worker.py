@@ -3,7 +3,7 @@ import re
 from common.tool_functions import time_to_formatted_str
 from constants.common_constants import DATATIME_WORD_LIST, DATATIME_KEY_MAP
 from constants.common_constants import EXTRACT_TIME_DICT
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class ExtractTimeWorker(MemoryBaseWorker):

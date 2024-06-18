@@ -4,8 +4,8 @@ from constants.common_constants import SIMILAR_OBS_NODES, RECALL_TYPE
 from enumeration.memory_node_status import MemoryNodeStatus
 from enumeration.memory_recall_type import MemoryRecallType
 from enumeration.memory_type_enum import MemoryTypeEnum
-from model.memory.memory_wrap_node import MemoryWrapNode
-from worker.memory.memory_base_worker import MemoryBaseWorker
+from node.memory_wrap_node import MemoryWrapNode
+from worker.memory_base_worker import MemoryBaseWorker
 
 
 class EsSimilarWorker(MemoryBaseWorker):
