@@ -6,12 +6,12 @@ date: 20221106
 
 import time
 
-from utils.logger import Logger
+from memory_scope.utils.logger import Logger
 
 
 class Timer(object):
 
-    def __init__(self, name: str, log_time: bool = True, use_ms: bool = True, **kwargs):
+    def __init__(self, name: str, log_time: bool = True, use_ms: bool = False, **kwargs):
         self.name: str = name
         self.log_time: bool = log_time
         self.use_ms: bool = use_ms
@@ -61,11 +61,12 @@ class Timer(object):
 
             self.logger.info(line, stacklevel=3)
 
-    def get_cost_info(self):
+    @property
+    def cost_str(self):
         if self.use_ms:
-            return f"cost={self.cost:.1f}ms"
+            return f"{self.cost:.1f}ms"
         else:
-            return f"cost={self.cost:.4f}s"
+            return f"{self.cost:.4f}s"
 
 
 def timer(func):

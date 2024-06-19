@@ -2,8 +2,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from constants.common_constants import MEMORY
-
 # remove %(thread)s .%(funcName)s
 LOG_FORMAT = "%(asctime)s %(levelname)s %(trace_id)s %(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -90,13 +88,9 @@ class Logger(logging.Logger):
             if LOGGER_DICT:
                 name = list(LOGGER_DICT.keys())[0]
             else:
-                name = MEMORY
+                name = "default"
 
         if name not in LOGGER_DICT:
             LOGGER_DICT[name] = Logger(name=name, **kwargs)
 
         return LOGGER_DICT[name]
-
-    @classmethod
-    def get_memory_logger(cls, **kwargs):
-        return cls.get_logger(MEMORY, **kwargs)

@@ -85,7 +85,7 @@ class LLIReRank(LLIClient):
         }
         
 
-    def after_call(self, nodes, **kwargs):
+    def after_call(self, nodes: List[NodeWithScore], **kwargs) -> List[dict]:
         results = []
         for node in nodes:
             results.append(dict(relevance_score=node.score,
