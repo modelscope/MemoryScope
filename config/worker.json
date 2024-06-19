@@ -51,7 +51,7 @@
     },
     "ExtractTimeWorker": {
         "name": "ExtractTimeWorker",
-        "path": "memory_scope/worker",
+        "clazz": "worker.summary_long.get_insight",
         "parse_time_model": "qwen_1_8_parse_time_service"
     },
     "InfoFilterWorker": {

@@ -8,7 +8,9 @@ class ModelResponse(BaseModel):
 
     embedding_results: Dict[int, List[float]] | List[float] = Field([], description="")
 
-    rank_scores: List[float] = Field([], description="")
+    rank_scores: Dict[int, float] = Field({}, description="")
+
+    model_type: str = Field("", description="")
 
     status: bool = Field(True, description="")
 

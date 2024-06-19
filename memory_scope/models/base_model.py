@@ -19,6 +19,7 @@ class BaseModel(metaclass=ABCMeta):
                  retry_interval: float = 1.0,
                  kwargs_filter: bool = True,
                  **kwargs):
+
         self.model_name: str = model_name
         self.method_type: str = method_type
         self.timeout: int = timeout
