@@ -52,7 +52,6 @@ class DashReRankClient(DashClient):
     def after_call(self, response_obj, **kwargs):
         return response_obj["output"]["results"]
 
-
 class LLIReRank(LLIClient):
    
     def __init__(self, method, model_name, **kwargs):
@@ -75,9 +74,7 @@ class LLIReRank(LLIClient):
         if top_n is None:
             top_n = len(documents)
         
-        nodes = [NodeWithScore(Node(text=text, score=1.0)) for text in documents]
-        self.reranker = self.reranker(top_n=top_n, 
-                                   return_documents=return_documents)
+        nodes = [NodeWithScore(node=Node(text=text), score=1.0) for text in documents]
 
         self.data = {
             "nodes": nodes,
@@ -85,10 +82,11 @@ class LLIReRank(LLIClient):
         }
         
 
-    def after_call(self, nodes: List[NodeWithScore], **kwargs) -> List[dict]:
+    def after_call(self, nodes, **kwargs):
         results = []
-        for node in nodes:
-            results.append(dict(relevance_score=node.score,
+        for idx, node in enumerate(nodes):
+            results.append(dict(index=idx,
+                                relevance_score=node.score,
                                 document=node.node.text))
         return results
 
@@ -102,11 +100,12 @@ class LLIReRank(LLIClient):
         with Timer(self.__class__.__name__, log_time=False) as t:
             self.logger.debug(f"data={self.data} timeout={self.timeout}")
             try:
-                results = self.reranker.postprocess_nodes(*self.data)    
+                results = self.reranker.postprocess_nodes(**self.data)    
                 results = self.after_call(results)
                 return results, True
-            except:
-                return None, False
+            except Exception as e:
+                self.logger.debug(f"Rerank falls, data={self.data}")
+            #    return None, False
         
 
     def call(self, model_name: str = None, **kwargs):
@@ -117,3 +116,4 @@ class LLIReRank(LLIClient):
             else:
                 time.sleep(self.retry_sleep_time)
         return None
+    
