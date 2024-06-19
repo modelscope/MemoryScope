@@ -1,5 +1,0 @@
-{
-    "method": "DashScopeRerank",
-    "model_name": "gte-rerank",
-    "top_n": 3
-}

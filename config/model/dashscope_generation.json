@@ -1,0 +1,5 @@
+{
+    "clazz": "models.base_generation_model",
+    "model_name": "qwen-max",
+    "method": "DashScope"
+}

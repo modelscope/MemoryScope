@@ -1,0 +1,9 @@
+{
+    "update_insight": {
+        "clazz": "worker.summary_long.update_insight",
+        "update_insight_model": "qwen_max",
+        "generation_model": "dashscope_generation",
+        "embedding_model": "dashscope_embedding",
+        "rank_model": "dashscope_rank"
+    }
+}

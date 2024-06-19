@@ -5,7 +5,7 @@ from memory_scope.models.base_model import BaseModel
 from memory_scope.models.response import ModelResponse, ModelResponseGen
 
 
-class BaseGenerateModel(BaseModel):
+class BaseGenerationModel(BaseModel):
     MODEL_REGISTRY.batch_register([
         DashScopeLLM
     ])

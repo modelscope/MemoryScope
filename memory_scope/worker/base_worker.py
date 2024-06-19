@@ -1,33 +1,15 @@
-import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, List
+from typing import Any, Dict
 
-from utils.context_handler import ContextHandler
-from utils.logger import Logger
-from utils.timer import Timer
+from memory_scope.utils.logger import Logger
+from memory_scope.utils.timer import Timer
 
 
 class BaseWorker(object):
 
-    def __init__(self,
-                 is_multi_thread: bool = False,
-                 raise_exception: bool = True,
-                 logger: Logger = None,
-                 **kwargs):
+    def __init__(self, raise_exception: bool = True, **kwargs):
         super(BaseWorker, self).__init__(**kwargs)
-
-        # 原始参数
-        self.is_multi_thread: bool = is_multi_thread
+        # 异常是否继续执行
         self.raise_exception: bool = raise_exception
-        self.logger: Logger = logger
-
-        # 日志
-        if not self.logger:
-            self.logger: Logger = Logger.get_logger()
-        self.logger.debug(f"init {self.__class__.__name__} is_multi_thread={is_multi_thread}")
-
-        # 提交的线程池
-        self.thread_list: list = []
 
         # True 为正常运行，False会结束整个pipeline
         self.continue_run: bool = True
@@ -35,33 +17,21 @@ class BaseWorker(object):
         # 短name
         self._name_simple: str = ""
 
-    def flush(self, context_handler: ContextHandler, thread_pool: ThreadPoolExecutor):
-        # 原始参数
-        self.context_handler = context_handler
-        self.thread_pool: ThreadPoolExecutor = thread_pool
+        # 是否多线程环境
+        self.is_multi_thread: bool = False
 
-        # 运行信息，保存到ext_info
-        self.run_infos: List[str] = []
+        # pipeline 上下文
+        self.context: Dict[str, Any] | None = None
+        self.context_lock = None
 
-        # 运行时间
-        self.run_cost: float = 0
+        # 日志
+        self.logger: Logger = Logger.get_logger()
+
+        # worker 参数
+        self.kwargs: dict = kwargs
 
     def _run(self):
-        pass
-
-    def submit_thread(self, fn, /, *args, sleep_time: float = 0, **kwargs):
-        if self.thread_list:
-            time.sleep(sleep_time)
-        t = self.thread_pool.submit(fn, *args, **kwargs)
-        self.thread_list.append(t)
-        return t
-
-    def join_threads(self):
-        result_list = []
-        for future in as_completed(self.thread_list):
-            result_list.append(future.result())
-        self.thread_list.clear()
-        return result_list
+        raise NotImplementedError
 
     def run(self):
         self.logger.info(f"----- Begin {self.name_simple} -----")
@@ -72,16 +42,20 @@ class BaseWorker(object):
                 try:
                     self._run()
                 except Exception as e:
-                    self.add_run_info(f"run {self.name_simple} failed! args={e.args}")
+                    self.logger.exception(f"run {self.name_simple} failed! args={e.args}")
 
-        self.run_cost = t.cost
-        self.logger.info(f"----- End {self.name_simple} {t.get_cost_info()}-----")
+            self.logger.info(f"----- End {self.name_simple} cost={t.cost_str}-----")
 
     def get_context(self, key: str, default=None):
-        return self.context_handler.get_context(key, default)
+        return self.context.get(key, default)
 
     def set_context(self, key: str, value: Any):
-        self.context_handler.set_context(key, value, self.is_multi_thread)
+        if self.is_multi_thread:
+            # add lock to multi thread
+            with self.context_lock:
+                self.context[key] = value
+        else:
+            self.context[key] = value
 
     @property
     def name_simple(self) -> str:
@@ -89,20 +63,3 @@ class BaseWorker(object):
             self._name_simple = self.__class__.__name__.replace("Worker", "")
         return self._name_simple
 
-    def add_run_info(self, msg: str, log_warning: bool = True, continue_run: bool = True):
-        if not continue_run:
-            self.continue_run = False
-            msg = f"{msg} pipeline is ended by {self.name_simple}!"
-
-        if log_warning:
-            self.logger.warning(msg, stacklevel=2)
-
-        self.run_infos.append(msg)
-
-    @property
-    def run_info_dict(self):
-        return {
-            "name": self.name_simple,
-            "cost": self.run_cost,
-            "info": self.run_infos,
-        }

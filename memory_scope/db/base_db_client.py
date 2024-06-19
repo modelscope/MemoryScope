@@ -47,3 +47,9 @@ class BaseDBClient(metaclass=ABCMeta):
         """
         :return:
         """
+
+    @abstractmethod
+    def flush(self):
+        """
+        :return:
+        """

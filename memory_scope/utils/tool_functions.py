@@ -175,3 +175,9 @@ def init_instance_by_config_v2(config: dict, default_clazz_path: str = "", suffi
 
     cls_name = under_line_to_hump(clazz_name)
     return getattr(module, cls_name)(**config, **kwargs)
+
+
+def complete_config_name(config_name: str, suffix: str = ".json"):
+    if not config_name.endswith(suffix):
+        config_name += suffix
+    return config_name

@@ -1,15 +1,12 @@
 import fire
 
-from memory_scope.chat.memory_chat import MemoryChat
-from memory_scope.handler.init_handler import InitHandler
+from memory_scope.job import Job
 
 
 def main(config_path: str):
-    init_handler = InitHandler(config_path)
-    init_handler.init()
-
-    memory_chat = MemoryChat(init_handler)
-    memory_chat.chat()
+    job = Job(config_path=config_path)
+    job.init_instance_by_config()
+    job.run()
 
 
 if __name__ == "__main__":
