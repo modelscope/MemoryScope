@@ -88,7 +88,7 @@ class LLILLM(LLIClient):
             input_type: llama_input,
         }
 
-    def after_call(self, response_obj, **kwargs):
+    def after_call(self, response_obj: ChatResponse | CompletionResponse, **kwargs) -> str:
         self.logger.debug(f"response_obj={response_obj}")
         if isinstance(response_obj, CompletionResponse):
             return response_obj.text

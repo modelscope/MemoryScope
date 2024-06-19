@@ -1,8 +1,8 @@
-# 使用argparse库的示例
-import argparse
 import fire
-from config import C, init
+
 from chat.memory_chat import MemoryChat
+from config import init
+
 
 def main(config_path:str):
     init(config_path)
