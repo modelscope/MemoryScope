@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import Dict, List
 
 from memory_scope.models.base_model import BaseModel
 
@@ -12,10 +13,20 @@ class BaseDBClient(metaclass=ABCMeta):
         self.kwargs: dict = kwargs
 
     @abstractmethod
-    def retrieve(self, text: str, limit_size: int):
+    def retrieve(self, text: str, limit_size: int, filter_dict: Dict[str, List[str]]):
         """
         :param text:
         :param limit_size:
+        :param filter_dict:
+        :return:
+        """
+
+    @abstractmethod
+    async def async_retrieve(self, text: str, limit_size: int, filter_dict: Dict[str, List[str]]):
+        """
+        :param text:
+        :param limit_size:
+        :param filter_dict:
         :return:
         """
 

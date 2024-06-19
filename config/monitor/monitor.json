@@ -1,0 +1,5 @@
+{
+    "model_name": "text-embedding-v2",
+    "method_type": "DashScopeEmbedding",
+    "clazz": "models.base_embedding_model"
+}

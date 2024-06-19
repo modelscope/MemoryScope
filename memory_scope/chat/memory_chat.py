@@ -1,6 +1,7 @@
+from memory_scope.handler.init_handler import InitHandler
 class MemoryChat(object):
 
-    def __init__(self):
+    def __init__(self, init_handler: InitHandler):
         pass
 
     def memory_retrieve(self):
