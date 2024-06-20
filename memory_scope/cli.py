@@ -47,9 +47,6 @@ class CliJob(object):
             worker_config_dict = json.load(f)
 
         for worker_name, worker_config in worker_config_dict.items():
-            if worker_name in GLOBAL_CONTEXT.worker_dict:
-                raise RuntimeError(f"worker_name={worker_name} is repeated!")
-
             GLOBAL_CONTEXT.worker_dict[worker_name] = init_instance_by_config_v2(worker_config,
                                                                                  suffix_name="worker",
                                                                                  **GLOBAL_CONTEXT.global_configs)
