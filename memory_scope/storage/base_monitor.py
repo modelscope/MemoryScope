@@ -14,7 +14,7 @@ class BaseMonitor(metaclass=ABCMeta):
 
     @abstractmethod
     def add_token(self):
-        """ TODO @xianzhe
+        """
         :return:
         """
 

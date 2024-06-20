@@ -5,16 +5,18 @@ from concurrent.futures import as_completed
 from itertools import zip_longest
 from typing import Dict, Any, List
 
+from memory_scope.chat.global_context import GLOBAL_CONTEXT
 from memory_scope.constants.common_constants import MESSAGES, USER_NAME
+from memory_scope.definition.message import Message
 from memory_scope.enumeration.memory_method_enum import MemoryMethodEnum
-from memory_scope.handler.global_context import GLOBAL_CONTEXT
-from memory_scope.node.message import Message
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.timer import Timer
+from memory_scope.worker.base_worker import BaseWorker
 
 
-class PipelineHandler(object):
+class Pipeline(object):
     def __init__(self,
+                 chat_name: str,
                  user_name: str,
                  memory_method_type: MemoryMethodEnum,
                  pipeline_str: str,
@@ -22,6 +24,7 @@ class PipelineHandler(object):
                  loop_interval_time: int = 300,
                  loop_minimum_count: int = 20):
 
+        self.chat_name: str = chat_name
         self.user_name: str = user_name
         self.memory_method_type: MemoryMethodEnum = memory_method_type
         self.pipeline_str: str = pipeline_str
@@ -29,27 +32,31 @@ class PipelineHandler(object):
         self.loop_interval_time: int = loop_interval_time
         self.loop_minimum_count: int = loop_minimum_count
 
-        # 日志
-        self.logger: Logger = Logger.get_logger()
-
         # pipeline上下文和锁
         self.context: Dict[str, Any] = {}
         self.context_lock = threading.Lock()
 
         # pipeline run config
         self.loop_switch: bool = False
-
-        # 解析和打印 pipeline
         self.pipeline_list: list[list] = []
-        self._parse_pipeline()
-        self._print_pipeline()
+        self.worker_set: set[str] = set()
+        self.worker_dict: Dict[str, BaseWorker] = {}
+        self.injected: bool = False
 
         # message list
         self.history_message_list: List[Message] = []
         self.current_message_list: List[Message] = []
         self.message_lock = threading.Lock()
 
+        # 日志
+        self.logger: Logger = Logger.get_logger()
+
+        self._parse_pipeline()
+
     def _parse_pipeline(self):
+        if not self.pipeline_str:
+            return
+
         # re-match e.g., [a|b],c,[d,e,f|g,h],j
         pattern = r'(\[[^\]]*\]|[^,]+)'
         pipeline_split = re.findall(pattern, self.pipeline_str)
@@ -67,17 +74,31 @@ class PipelineHandler(object):
                 continue
 
             # e.g., ["d","e","f"]
-            self.pipeline_list.append([x.split(",") for x in line_split])
+            line_split_split = []
+            for sub_line_split in line_split:
+                sub_split = [x.strip() for x in sub_line_split.split(",")]
+                line_split_split.append(sub_split)
+                # add to workers
+                self.worker_set.update(sub_split)
+            self.pipeline_list.append(line_split_split)
 
-    def _print_pipeline(self):
-        self.logger.info(f"----- {self.user_name} {self.memory_method_type.value} Pipeline Begin -----")
+    def _visit_and_inject_workers(self):
+        if self.injected:
+            return
+
+        self.worker_dict = GLOBAL_CONTEXT.worker_dict[self.chat_name]
+
+        self.logger.info(f"----- {self.chat_name} {self.memory_method_type.value} Pipeline Begin -----")
         i: int = 0
         for pipeline_part in self.pipeline_list:
             if len(pipeline_part) == 1:
                 for w in pipeline_part[0]:
                     self.logger.info(f"stage{i}: {w}")
                     i += 1
-                    GLOBAL_CONTEXT.worker_dict[w].context = self.context
+                    if w not in self.worker_dict:
+                        raise RuntimeError(f"worker={w} is not inited.")
+                    # 注入context
+                    self.worker_dict[w].set_context_dict(self.context)
             else:
                 for w_zip in zip_longest(*pipeline_part, fillvalue="-"):
                     self.logger.info(f"stage{i}: {' | '.join(w_zip)}")
@@ -85,21 +106,26 @@ class PipelineHandler(object):
                     for w in w_zip:
                         if w == "-":
                             continue
-                        GLOBAL_CONTEXT.worker_dict[w].is_multi_thread = True
-                        GLOBAL_CONTEXT.worker_dict[w].context_lock = self.context_lock
-                        GLOBAL_CONTEXT.worker_dict[w].context = self.context
-        self.logger.info(f"----- {self.user_name} {self.memory_method_type.value} Pipeline End -----")
+                        if w not in self.worker_dict:
+                            raise RuntimeError(f"worker={w} is not inited.")
 
-    @staticmethod
-    def _worker_run(worker_list: list[str]) -> bool:
+                        # 注入context & lock
+                        self.worker_dict[w].set_context_dict(self.context, self.context_lock)
+
+        self.logger.info(f"----- {self.chat_name} {self.memory_method_type.value} Pipeline End -----")
+        self.injected = True
+
+    def _worker_run(self, worker_list: list[str]) -> bool:
         for worker_name in worker_list:
-            worker = GLOBAL_CONTEXT.worker_dict[worker_name]
+            worker = self.worker_dict[worker_name]
             worker.run()
             if not worker.continue_run:
                 return False
         return True
 
-    def _run(self, result_key: str = None):
+    def _run(self):
+        self._visit_and_inject_workers()
+
         with Timer(f"pipeline_{self.user_name}_{self.memory_method_type.value}"):
             self.context[MESSAGES] = self.history_message_list + self.current_message_list
             self.context[USER_NAME] = self.user_name
@@ -120,11 +146,6 @@ class PipelineHandler(object):
                             break
                     if not flag:
                         break
-            if result_key:
-                return self.context.get(result_key)
-            self.context.clear()
-
-            return None
 
     def _thread_loop(self):
         while self.loop_switch:

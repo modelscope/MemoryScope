@@ -1,8 +1,4 @@
-"""
-file: timer.py
-author: yuli
-date: 20221106
-"""
+
 
 import time
 

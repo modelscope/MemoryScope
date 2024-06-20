@@ -2,7 +2,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-# remove %(thread)s .%(funcName)s
 LOG_FORMAT = "%(asctime)s %(levelname)s %(trace_id)s %(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 

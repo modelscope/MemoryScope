@@ -1,15 +1,17 @@
 import json
 import os
 from concurrent.futures import ThreadPoolExecutor
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import fire
 
-from handler.global_context import GLOBAL_CONTEXT
-from memory_scope.enumeration.model_type import ModelType
+from memory_scope.chat.base_memory_chat import BaseMemoryChat
+from memory_scope.chat.global_context import GLOBAL_CONTEXT
+from memory_scope.enumeration.language_enum import LanguageEnum
+from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.timer import Timer
-from memory_scope.utils.tool_functions import complete_config_name, init_instance_by_config_v2
+from memory_scope.utils.tool_functions import complete_config_name, init_instance_by_config
 
 
 class CliJob(object):
@@ -17,18 +19,23 @@ class CliJob(object):
     def __init__(self, config_path: str):
         self.config_path: str = config_path
         self.config_base_dir: str = os.path.dirname(config_path)
-
         self.config: Dict[str, Any] = {}
 
+        self.worker_chat_dict: Dict[str, List[str]] = {}
         self.logger: Logger = Logger.get_logger("memory_chat")
 
     def init_memory_chat(self):
-        for chat in self.config["chat_list"]:
-            memory_chat_config = self.config[chat]
-            memory_chat = init_instance_by_config_v2(memory_chat_config)
-            GLOBAL_CONTEXT.memory_chat_dict[chat] = memory_chat
+        for chat_name in self.config["chat_list"]:
+            memory_chat_config = self.config[chat_name]
+            memory_chat: BaseMemoryChat = init_instance_by_config(memory_chat_config, chat_name=chat_name)
+            GLOBAL_CONTEXT.memory_chat_dict[chat_name] = memory_chat
 
-            generation_model = memory_chat_config[ModelType.GENERATION_MODEL.value]
+            for worker_name in memory_chat.memory_service.get_worker_list():
+                if worker_name not in self.worker_chat_dict:
+                    self.worker_chat_dict[worker_name] = []
+                self.worker_chat_dict[worker_name].append(chat_name)
+
+            generation_model = memory_chat_config[ModelEnum.GENERATION_MODEL.value]
             self.init_model(generation_model)
 
     def init_model(self, model_name: str):
@@ -37,7 +44,7 @@ class CliJob(object):
 
         with open(os.path.join(self.config_base_dir, "model", complete_config_name(model_name))) as f:
             model_config = json.load(f)
-        GLOBAL_CONTEXT.model_dict[model_name] = init_instance_by_config_v2(model_config)
+        GLOBAL_CONTEXT.model_dict[model_name] = init_instance_by_config(model_config)
 
     def init_workers(self):
         """ load worker config & init workers
@@ -47,17 +54,28 @@ class CliJob(object):
             worker_config_dict = json.load(f)
 
         for worker_name, worker_config in worker_config_dict.items():
-            GLOBAL_CONTEXT.worker_dict[worker_name] = init_instance_by_config_v2(worker_config,
-                                                                                 suffix_name="worker",
-                                                                                 **GLOBAL_CONTEXT.global_configs)
+            if worker_name not in self.worker_chat_dict:
+                continue
 
-            self.init_model(worker_config.get(ModelType.EMBEDDING_MODEL.value))
-            self.init_model(worker_config.get(ModelType.GENERATION_MODEL.value))
-            self.init_model(worker_config.get(ModelType.RANK_MODEL.value))
+            chat_name_list = self.worker_chat_dict[worker_name]
+            for chat_name in chat_name_list:
+                if chat_name not in GLOBAL_CONTEXT.worker_dict:
+                    GLOBAL_CONTEXT.worker_dict[chat_name] = {}
+                GLOBAL_CONTEXT.worker_dict[chat_name][worker_name] = init_instance_by_config(
+                    worker_config,
+                    suffix_name="worker",
+                    **GLOBAL_CONTEXT.global_configs)
 
-    def set_global_config(self):
-        """set global_configs & set apikey into env
+            self.init_model(worker_config.get(ModelEnum.EMBEDDING_MODEL.value))
+            self.init_model(worker_config.get(ModelEnum.GENERATION_MODEL.value))
+            self.init_model(worker_config.get(ModelEnum.RANK_MODEL.value))
+
+    @staticmethod
+    def set_global_config():
+        """ TODO set global_configs & set apikey into env
         """
+        GLOBAL_CONTEXT.language = LanguageEnum(GLOBAL_CONTEXT.global_configs["language"])
+        GLOBAL_CONTEXT.thread_pool = ThreadPoolExecutor(max_workers=int(GLOBAL_CONTEXT.global_configs["max_workers"]))
 
     def init_global_content_by_config(self):
         with open(complete_config_name(self.config_path)) as f:
@@ -65,17 +83,17 @@ class CliJob(object):
 
         GLOBAL_CONTEXT.global_configs = self.config["global_configs"]
         self.set_global_config()
-        GLOBAL_CONTEXT.thread_pool = ThreadPoolExecutor(max_workers=int(GLOBAL_CONTEXT.global_configs["max_workers"]))
-
-        self.init_workers()
-        GLOBAL_CONTEXT.db_client = init_instance_by_config_v2(self.config["db"])
-        GLOBAL_CONTEXT.monitor = init_instance_by_config_v2(self.config["monitor"])
 
         self.init_memory_chat()
+
+        self.init_workers()
+        GLOBAL_CONTEXT.vector_store = init_instance_by_config(self.config["vector_store"])
+        GLOBAL_CONTEXT.monitor = init_instance_by_config(self.config["monitor"])
 
     def run(self):
         with GLOBAL_CONTEXT.thread_pool, Timer("job", log_time=False) as t:
             memory_chat = list(GLOBAL_CONTEXT.memory_chat_dict.values())[0]
+            memory_chat.memory_service.start_memory_backend()
             while True:
                 query = input("wait for input:")
                 if query in ["stop", "停止"]:

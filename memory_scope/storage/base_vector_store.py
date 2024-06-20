@@ -4,7 +4,7 @@ from typing import Dict, List
 from memory_scope.models.base_model import BaseModel
 
 
-class BaseDBClient(metaclass=ABCMeta):
+class BaseVectorStore(metaclass=ABCMeta):
 
     def __init__(self, index_name: str, embedding_model: BaseModel, content_key: str = "text", **kwargs):
         self.index_name: str = index_name

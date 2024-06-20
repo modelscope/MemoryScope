@@ -21,7 +21,7 @@ class BaseWorker(object):
         self.is_multi_thread: bool = False
 
         # pipeline 上下文
-        self.context: Dict[str, Any] | None = None
+        self.context_dict: Dict[str, Any] | None = None
         self.context_lock = None
 
         # 日志
@@ -46,16 +46,22 @@ class BaseWorker(object):
 
             self.logger.info(f"----- End {self.name_simple} cost={t.cost_str}-----")
 
+    def set_context_dict(self, context_dict: dict, context_lock=None):
+        self.context_dict = context_dict
+        if context_lock is not None:
+            self.context_lock = context_lock
+            self.is_multi_thread = True
+
     def get_context(self, key: str, default=None):
-        return self.context.get(key, default)
+        return self.context_dict.get(key, default)
 
     def set_context(self, key: str, value: Any):
         if self.is_multi_thread:
             # add lock to multi thread
             with self.context_lock:
-                self.context[key] = value
+                self.context_dict[key] = value
         else:
-            self.context[key] = value
+            self.context_dict[key] = value
 
     @property
     def name_simple(self) -> str:
