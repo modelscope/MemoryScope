@@ -1,0 +1,28 @@
+{
+    "global_configs": {
+        "thread_pool_max_count": 5,
+        "dash_scope_apikey": "",
+        "open_ai_apikey": "",
+        "language": "en",
+        "chat_list": [
+            "memory_chat"
+        ]
+    },
+    "memory_chat": {
+        "memory_user_name": "用户",
+        "clazz": "chat.memory_chat",
+        "retrieve": "parse_params,load_profile,extract_time,es_similar,es_keyword,semantic_rank,fuse_rerank",
+        "generation_model": "dashscope_generation",
+        "history_msg_count": 3
+    },
+    "vector_store": {
+        "clazz": "storage.base_vector_store",
+        "index_name": "memory_test",
+        "password": ""
+    },
+    "monitor": {
+        "clazz": "storage.base_monitor",
+        "index_name": "memory_test"
+    },
+    "workers": "workers"
+}

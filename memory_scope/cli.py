@@ -90,17 +90,11 @@ class CliJob(object):
         GLOBAL_CONTEXT.vector_store = init_instance_by_config(self.config["vector_store"])
         GLOBAL_CONTEXT.monitor = init_instance_by_config(self.config["monitor"])
 
-    def run(self):
+    @staticmethod
+    def run():
         with GLOBAL_CONTEXT.thread_pool, Timer("job", log_time=False) as t:
             memory_chat = list(GLOBAL_CONTEXT.memory_chat_dict.values())[0]
-            memory_chat.memory_service.start_memory_backend()
-            while True:
-                query = input("wait for input:")
-                if query in ["stop", "停止"]:
-                    break
-                memory_chat.chat_with_memory(query=query)
-
-            self.logger.info(f"chat complete. cost={t.cost_str}")
+            memory_chat.run()
 
 
 def main(config_path: str):

@@ -16,3 +16,9 @@ class BaseMemoryChat(metaclass=ABCMeta):
         :param query:
         :return:
         """
+
+    @abstractmethod
+    def run(self):
+        """
+        :return:
+        """

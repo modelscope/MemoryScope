@@ -50,3 +50,11 @@ class MemoryChat(BaseMemoryChat):
         all_messages = [system_message] + self.history_message_list
         # TODO at xian zhe
         return self.generation_model.call(messages=all_messages, stream=True)
+
+    def run(self):
+        self.memory_service.start_memory_backend()
+        while True:
+            query = input("wait for input:")
+            if query in ["stop", "停止"]:
+                break
+            self.chat_with_memory(query=query)
