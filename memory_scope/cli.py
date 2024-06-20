@@ -10,7 +10,6 @@ from memory_scope.chat.global_context import GLOBAL_CONTEXT
 from memory_scope.enumeration.language_enum import LanguageEnum
 from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.utils.logger import Logger
-from memory_scope.utils.timer import Timer
 from memory_scope.utils.tool_functions import complete_config_name, init_instance_by_config
 
 
@@ -92,7 +91,7 @@ class CliJob(object):
 
     @staticmethod
     def run():
-        with GLOBAL_CONTEXT.thread_pool, Timer("job", log_time=False) as t:
+        with GLOBAL_CONTEXT.thread_pool:
             memory_chat = list(GLOBAL_CONTEXT.memory_chat_dict.values())[0]
             memory_chat.run()
 
