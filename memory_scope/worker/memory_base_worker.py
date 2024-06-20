@@ -1,101 +1,53 @@
-from typing import List, Dict, Optional
+from typing import List
 
-from constants import common_constants
-from constants.common_constants import CONFIG, MESSAGES, PROMPT_CONFIG
-from enumeration.message_role_enum import MessageRoleEnum
-from node.message import Message
-from node.user_attribute import UserAttribute
-from pipeline.memory import MemoryServiceRequestModel
-from worker.base_worker import BaseWorker
-from cli.cli_config import C
-from utils.tool_functions import init_instance_by_config
+from memory_scope.constants.common_constants import MESSAGES, USER_NAME
+from memory_scope.handler.global_context import GLOBAL_CONTEXT
+from memory_scope.models.base_model import BaseModel
+from memory_scope.node.message import Message
+from memory_scope.worker.base_worker import BaseWorker
+
 
 class MemoryBaseWorker(BaseWorker):
-    def __init__(self, **kwargs):
+    def __init__(self,
+                 embedding_model: str,
+                 generation_model: str,
+                 rank_model: str,
+                 **kwargs):
         super(MemoryBaseWorker, self).__init__(**kwargs)
+        self.embedding_model_name: str = embedding_model
+        self.generation_model_name: str = generation_model
+        self.rank_model_name: str = rank_model
 
-    @property
-    def request(self) -> MemoryServiceRequestModel:
-        return self.get_context(common_constants.REQUEST)
+        self._embedding_model: BaseModel | None = None
+        self._generation_model: BaseModel | None = None
+        self._rank_model: BaseModel | None = None
 
     @property
     def messages(self) -> List[Message]:
-        messages: List[Message] = self.context_handler.get_context(MESSAGES)
-        if messages is None:
-            messages = self.request.messages
-            self.context_handler.set_context(MESSAGES, messages)
-        return messages
+        return self.context[MESSAGES]
 
     @messages.setter
     def messages(self, value):
-        self.context_handler.set_context(MESSAGES, value)
-
-    def flush(self, context_handler):
-        super(MemoryBaseWorker, self).flush(context_handler)
-        self._user_profile_dict: Dict[str, UserAttribute] = {}
+        self.context[MESSAGES] = value
 
     @property
-    def user_profile_dict(self) -> Dict[str, UserAttribute]:
-        if not self._user_profile_dict:
-            self._user_profile_dict = {user_attr.memory_key: user_attr for user_attr in self.request.user.user_profile}
-        return self._user_profile_dict
+    def embedding_model(self):
+        if self._embedding_model is None:
+            GLOBAL_CONTEXT.model_dict.get(self.embedding_model_name)
+        return self._embedding_model
 
     @property
-    def request_ext_info(self):
-        return self.request.user.ext_info
-        # if not self._request_ext_info:
-        #     self._request_ext_info = self.request.ext_info
-        # return self._request_ext_info
+    def generation_model(self):
+        if self._generation_model is None:
+            GLOBAL_CONTEXT.model_dict.get(self.generation_model_name)
+        return self._generation_model
 
     @property
-    def prompt_config(self) -> BailianPromptConfig:
-        return self.request.user.prompt
+    def rank_model(self):
+        if self._rank_model is None:
+            GLOBAL_CONTEXT.model_dict.get(self.rank_model_name)
+        return self._rank_model
 
     @property
-    def client(self, model_type: str, model_name:str):
-        models = C.get(model_type)
-        models["model_name"] = init_instance_by_config(
-            config = models.get(model_name),
-            try_kwargs={
-                "is_multi_thread": is_multi_thread,
-                "thread_pool": self.thread_pool
-            }
-            )
-        return models["model_name"]
-
-    @property
-    def emb_client(self, model_name: str):
-        self.client("model_embedding", model_name)
-
-    @property
-    def gene_client(self):
-        self.client("model_generate", model_name)
-
-    @property
-    def rerank_client(self):
-        self.client("model_rerank", model_name)
-
-    @property
-    def es_client(self):
-        self.client("db", model_name)
-
-    @property
-    def tenant_id(self):
-        return self.request.user.tenant_id
-
-    @property
-    def memory_id(self):
-        return self.request.user.memory_id
-
-    @staticmethod
-    def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str):
-        return [
-            {
-                "role": MessageRoleEnum.SYSTEM.value,
-                "content": system_prompt.strip(),
-            },
-            {
-                "role": MessageRoleEnum.USER.value,
-                "content": "\n".join([x.strip() for x in [few_shot, system_prompt, user_query]])
-            },
-        ]
+    def user_name(self):
+        return self.context[USER_NAME]

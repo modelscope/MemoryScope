@@ -6,6 +6,8 @@ class MemoryMethodEnum(str, Enum):
 
     RETRIEVE = "retrieve"
 
+    RETRIEVE_ALL = "retrieve_all"
+
     SUMMARY_SHORT = "summary_short"
 
     SUMMARY_LONG = "summary_long"

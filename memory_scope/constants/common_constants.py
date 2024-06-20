@@ -9,6 +9,8 @@ WORKER = "worker"
 
 MEMORY = "memory"
 
+USER_NAME = "user_name"
+
 DEFAULT_SYSTEM_PROMPT = "default_system_prompt"
 
 RELATED_MEMORIES = "related_memories"

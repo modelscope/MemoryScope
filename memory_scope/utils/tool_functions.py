@@ -5,6 +5,8 @@ from typing import Dict, List
 
 from constants.common_constants import WEEKDAYS
 
+from memory_scope.enumeration.message_role_enum import MessageRoleEnum
+
 
 def under_line_to_hump(underline_str):
     sub = re.sub(r'(_\w)', lambda x: x.group(1)[1].upper(), underline_str)
@@ -181,3 +183,16 @@ def complete_config_name(config_name: str, suffix: str = ".json"):
     if not config_name.endswith(suffix):
         config_name += suffix
     return config_name
+
+
+def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str):
+    return [
+        {
+            "role": MessageRoleEnum.SYSTEM.value,
+            "content": system_prompt.strip(),
+        },
+        {
+            "role": MessageRoleEnum.USER.value,
+            "content": "\n".join([x.strip() for x in [few_shot, system_prompt, user_query]])
+        },
+    ]
