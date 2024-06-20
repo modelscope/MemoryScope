@@ -1,6 +1,3 @@
-from enumeration.dash_api_enum import DashApiEnum
-from enumeration.env_type import EnvType
-
 APP_ENV = "APP_ENV"
 
 PIPELINE = "pipeline"
@@ -82,37 +79,3 @@ MAX_WORKERS = "max_workers"
 TIME_MATCHED = "time_matched"
 
 QUERY_KEYWORDS = "query_keywords"
-
-DASH_ENV_URL_DICT = {
-    EnvType.DAILY: "https://dashscope.aliyuncs.com",
-    # EnvType.PRE: "https://dashscope.aliyuncs.com",
-    EnvType.PRE: "http://nlb-a3gi6od2xpdx16ezde.cn-beijing.nlb.aliyuncs.com",
-    EnvType.PROD: "http://ep-2zei3b9a7e2e447bd259.epsrv-2zexnj17q1p8mtjwe3dx.cn-beijing.privatelink.aliyuncs.com",
-}
-
-DASH_API_URL_DICT = {
-    DashApiEnum.GENERATION: "/api/v1/services/aigc/text-generation/generation",
-    DashApiEnum.EMBEDDING: "/api/v1/services/embeddings/text-embedding/text-embedding",
-    DashApiEnum.RERANK: "/api/v1/services/rerank/text-rerank/text-rerank",
-}
-
-ES_ENV_URL_DICT = {
-    EnvType.DAILY: "http://es-cn-lr53pmrna0002pffb.public.elasticsearch.aliyuncs.com:9200",
-    EnvType.PRE: "http://ep-bp1i04ae830e377a26a4.epsrv-bp15vzbd1o3umr1girls.cn-hangzhou.privatelink.aliyuncs.com:9200",
-    EnvType.PROD: "http://ep-2zeibdbbe2904414e741.epsrv-2zet33kwqg8bphgmm36f.cn-beijing.privatelink.aliyuncs.com:9200",
-}
-
-WEEKDAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
-
-DATATIME_WORD_LIST = ["天", "周", "月", "年", "星期", "点", "分钟", "小时", "秒", "上午", "下午", "早上", "早晨",
-                      "晚上", "中午", "日", "夜", "清晨", "傍晚", "凌晨", "岁"]
-
-TIME_FORMAT_V1 = "{year}年{month}月{day}日{weekday}{hour}点"
-
-DATATIME_KEY_MAP = {
-    "年": "year",
-    "月": "month",
-    "日": "day",
-    "周": "week",
-    "星期几": "weekday",
-}

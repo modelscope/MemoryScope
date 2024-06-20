@@ -2,8 +2,8 @@ import datetime
 from typing import List
 
 from memory_scope.chat.base_memory_chat import BaseMemoryChat
+from memory_scope.chat.global_context import GLOBAL_CONTEXT
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
-from memory_scope.handler.global_context import GLOBAL_CONTEXT
 from memory_scope.models.base_model import BaseModel
 from memory_scope.node.message import Message
 from memory_scope.prompts.prompt_cn import SYSTEM_PROMPT, MEMORY_PROMPT
