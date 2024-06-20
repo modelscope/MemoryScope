@@ -68,4 +68,3 @@ class BaseWorker(object):
         if not self._name_simple:
             self._name_simple = self.__class__.__name__.replace("Worker", "")
         return self._name_simple
-

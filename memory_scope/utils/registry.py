@@ -2,7 +2,6 @@
 Registry for different modules.
 Init class according to the class name and verify the input parameters.
 """
-import inspect
 from typing import Dict, Any, List
 
 
@@ -26,7 +25,3 @@ class Registry(object):
     def __getitem__(self, module_name: str):
         assert module_name in self.module_dict, f'{module_name} not found in {self.name}'
         return self.module_dict[module_name]
-
-
-
-

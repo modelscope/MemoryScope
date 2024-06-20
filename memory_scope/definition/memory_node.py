@@ -17,4 +17,3 @@ class MemoryNode(BaseModel):
     status: str = Field("active", description="active or expired")
 
     vector: List[float] = Field([], description="content embedding result, return empty")
-

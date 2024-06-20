@@ -1,5 +1,3 @@
-
-
 import time
 
 from memory_scope.utils.logger import Logger

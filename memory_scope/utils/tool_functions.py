@@ -1,5 +1,6 @@
-from importlib import import_module
 import re
+from importlib import import_module
+
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 
 
