@@ -9,7 +9,6 @@
         ]
     },
     "memory_chat": {
-        "memory_user_name": "用户",
         "clazz": "chat.memory_chat",
         "retrieve": "parse_params,load_profile,extract_time,es_similar,es_keyword,semantic_rank,fuse_rerank",
         "generation_model": "dashscope_generation",

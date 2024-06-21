@@ -78,7 +78,8 @@ class Logger(logging.Logger):
                    func=None, extra=None, sinfo=None):
         if extra is None:
             extra = {}
-        extra["trace_id"] = self.trace_id
+        if self.trace_id:
+            extra["trace_id"] = self.trace_id
         return super().makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra, sinfo)
 
     @classmethod
