@@ -50,4 +50,19 @@ class LLIEmbedding(BaseEmbeddingModel):
         return results
     
 
+    async def _async_call(self, **kwargs) -> ModelResponse:
+        """
+        :param kwargs:
+        :return:
+        """
+        results = ModelResponse()
+        try:
+            response = self.model.aget_text_embedding_batch(**self.data)  
+            results.raw = response
+            results.status = True
+        except Exception as e:
+            results.details = e
+            results.status = False
+        return results
+
    

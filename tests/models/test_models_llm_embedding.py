@@ -17,8 +17,13 @@ class TestLLIEmbedding(unittest.TestCase):
         embs = self.emb.call(text=text)
 
     def test_batch_embedding(self):
-        text = ["您吃了吗？", 
+        texts = ["您吃了吗？", 
                 "吃了吗您？"]
-        embs = self.emb.call(text=text)
+        embs = self.emb.call(text=texts)
 
+    async def test_async_embedding(self):
+        texts = ["您吃了吗？", 
+                "吃了吗您？"]
+        # 调用异步函数并等待其结果
+        embs = await self.emb.async_call(texts)
         
