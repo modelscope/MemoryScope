@@ -10,6 +10,12 @@ class MemoryNode(BaseModel):
 
     memoryId: str = Field("", description="unique memory id")
 
+    score_similar: float = Field(0, description="es similar score")
+
+    score_rank: float = Field(0, description="rank model score")
+
+    score_rerank: float = Field(0, description="rerank score")
+
     memoryType: str = Field("", description="conversation/observation/insight...")
 
     metaData: Dict[str, str] = Field({}, description="other data infos")
