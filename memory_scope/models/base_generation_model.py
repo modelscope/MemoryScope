@@ -31,7 +31,7 @@ class BaseGenerationModel(BaseModel):
         pass
 
 
-class LLILLM(BaseGenerateModel):
+class LLILLM(BaseGenerationModel):
 
     def before_call(self, **kwargs) -> None:
         prompt: str = kwargs.pop("prompt", "")

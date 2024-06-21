@@ -22,6 +22,6 @@ class Registry(object):
         module_name_dict = {m.__name__: m for m in modules}
         self.module_dict.update(module_name_dict)
 
-    def __getitem__(self, module_name: str):
+    def get(self, module_name: str):
         assert module_name in self.module_dict, f'{module_name} not found in {self.name}'
         return self.module_dict[module_name]
