@@ -358,6 +358,7 @@ class LLIElasticSearch(object):
         self.es_index_name = es_index_name
         self.content_key = content_key
         self.embedding_client: LLIEmbedding = embedding_client
+        # using local es for debug convenient
         self.es_client = ElasticsearchStore(index_name="my_index",
                                             es_url="http://localhost:9200",
                                             retrieval_strategy=AsyncDenseVectorStrategy(hybrid=True))
