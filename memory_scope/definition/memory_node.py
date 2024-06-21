@@ -8,7 +8,7 @@ class MemoryNode(BaseModel):
 
     content: str = Field("", description="memory content")
 
-    memoryId: str = Field("", description="unique memory id")
+    memory_id: str = Field("", description="unique memory id")
 
     score_similar: float = Field(0, description="es similar score")
 
@@ -16,9 +16,9 @@ class MemoryNode(BaseModel):
 
     score_rerank: float = Field(0, description="rerank score")
 
-    memoryType: str = Field("", description="conversation/observation/insight...")
+    memory_type: str = Field("", description="conversation/observation/insight...")
 
-    metaData: Dict[str, str] = Field({}, description="other data infos")
+    meta_data: Dict[str, str] = Field({}, description="other data infos")
 
     status: str = Field("active", description="active or expired")
 
