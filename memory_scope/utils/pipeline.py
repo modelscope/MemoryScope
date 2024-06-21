@@ -6,9 +6,9 @@ from itertools import zip_longest
 from typing import Dict, Any, List
 
 from memory_scope.chat.global_context import GLOBAL_CONTEXT
-from memory_scope.constants.common_constants import MESSAGES, USER_NAME
-from memory_scope.definition.message import Message
+from memory_scope.constants.common_constants import MESSAGES, CHAT_NAME
 from memory_scope.enumeration.memory_method_enum import MemoryMethodEnum
+from memory_scope.scheme.message import Message
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.timer import Timer
 from memory_scope.worker.base_worker import BaseWorker
@@ -17,7 +17,6 @@ from memory_scope.worker.base_worker import BaseWorker
 class Pipeline(object):
     def __init__(self,
                  chat_name: str,
-                 user_name: str,
                  memory_method_type: MemoryMethodEnum,
                  pipeline_str: str,
                  history_msg_count: int = 3,
@@ -25,7 +24,6 @@ class Pipeline(object):
                  loop_minimum_count: int = 20):
 
         self.chat_name: str = chat_name
-        self.user_name: str = user_name
         self.memory_method_type: MemoryMethodEnum = memory_method_type
         self.pipeline_str: str = pipeline_str
         self.history_msg_count: int = history_msg_count
@@ -126,9 +124,9 @@ class Pipeline(object):
     def _run(self):
         self._visit_and_inject_workers()
 
-        with Timer(f"pipeline_{self.user_name}_{self.memory_method_type.value}"):
+        with Timer(f"pipeline_{self.chat_name}_{self.memory_method_type.value}"):
             self.context[MESSAGES] = self.history_message_list + self.current_message_list
-            self.context[USER_NAME] = self.user_name
+            self.context[CHAT_NAME] = self.chat_name
 
             for pipeline_part in self.pipeline_list:
                 if len(pipeline_part) == 1:

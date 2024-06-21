@@ -3,10 +3,10 @@ from typing import List
 
 from memory_scope.chat.base_memory_chat import BaseMemoryChat
 from memory_scope.chat.global_context import GLOBAL_CONTEXT
-from memory_scope.definition.message import Message
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.models.base_model import BaseModel
 from memory_scope.prompts.memory_chat_prompt import SYSTEM_PROMPT, MEMORY_PROMPT
+from memory_scope.scheme.message import Message
 
 
 class MemoryChat(BaseMemoryChat):

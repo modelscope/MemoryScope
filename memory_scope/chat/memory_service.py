@@ -1,6 +1,6 @@
 from memory_scope.constants.common_constants import RELATED_MEMORIES
-from memory_scope.definition.message import Message
 from memory_scope.enumeration.memory_method_enum import MemoryMethodEnum
+from memory_scope.scheme.message import Message
 from memory_scope.utils.pipeline import Pipeline
 
 
@@ -8,7 +8,6 @@ class MemoryService(object):
 
     def __init__(self,
                  chat_name: str,
-                 memory_user_name: str,
                  retrieve_pipeline: str,
                  retrieve_all_pipeline: str,
                  summary_short_pipeline: str,
@@ -19,24 +18,20 @@ class MemoryService(object):
                  summary_long_minimum_count: int = 5 * 5,
                  **kwargs):
         self.retrieve_pipeline = Pipeline(chat_name=chat_name,
-                                          user_name=memory_user_name,
                                           memory_method_type=MemoryMethodEnum.RETRIEVE,
                                           pipeline_str=retrieve_pipeline)
 
         self.retrieve_all_pipeline = Pipeline(chat_name=chat_name,
-                                              user_name=memory_user_name,
                                               memory_method_type=MemoryMethodEnum.RETRIEVE_ALL,
                                               pipeline_str=retrieve_all_pipeline)
 
         self.summary_short_pipeline = Pipeline(chat_name=chat_name,
-                                               user_name=memory_user_name,
                                                memory_method_type=MemoryMethodEnum.SUMMARY_SHORT,
                                                pipeline_str=summary_short_pipeline,
                                                loop_interval_time=summary_short_interval_time,
                                                loop_minimum_count=summary_short_minimum_count)
 
         self.summary_long_pipeline = Pipeline(chat_name=chat_name,
-                                              user_name=memory_user_name,
                                               memory_method_type=MemoryMethodEnum.SUMMARY_LONG,
                                               pipeline_str=summary_long_pipeline,
                                               loop_interval_time=summary_long_interval_time,

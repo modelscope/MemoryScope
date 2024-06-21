@@ -1,9 +1,9 @@
 from typing import List
 
 from memory_scope.chat.global_context import GLOBAL_CONTEXT
-from memory_scope.constants.common_constants import MESSAGES, USER_NAME
-from memory_scope.definition.message import Message
+from memory_scope.constants.common_constants import MESSAGES, CHAT_NAME
 from memory_scope.models.base_model import BaseModel
+from memory_scope.scheme.message import Message
 from memory_scope.storage.base_monitor import BaseMonitor
 from memory_scope.storage.base_vector_store import BaseVectorStore
 from memory_scope.worker.base_worker import BaseWorker
@@ -36,8 +36,8 @@ class MemoryBaseWorker(BaseWorker):
         self.set_context(MESSAGES, value)
 
     @property
-    def user_name(self):
-        return self.get_context(USER_NAME)
+    def chat_name(self):
+        return self.get_context(CHAT_NAME)
 
     @property
     def embedding_model(self):
