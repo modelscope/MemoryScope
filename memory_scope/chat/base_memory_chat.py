@@ -15,8 +15,5 @@ class BaseMemoryChat(metaclass=ABCMeta):
         :return:
         """
 
-    @abstractmethod
     def run(self):
-        """
-        :return:
-        """
+        pass
