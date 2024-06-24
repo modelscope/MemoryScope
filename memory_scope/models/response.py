@@ -8,6 +8,8 @@ from memory_scope.enumeration.model_enum import ModelEnum
 class ModelResponse(BaseModel):
     text: str = Field("", description="generation model result")
 
+    delta: str = Field("", description="New text that just streamed in (only used when streaming)")
+
     embedding_results: List[List[float]] | List[float] = Field([], description="embedding vector")
 
     rank_scores: List[Dict[int, float]] = Field([], description="The rank scores of each documents. "
@@ -22,6 +24,5 @@ class ModelResponse(BaseModel):
 
     raw: Any = Field("", description="Raw response from model call")
 
-    delta: str = Field("", description="New text that just streamed in (only used when streaming)")
 
 ModelResponseGen = Generator[ModelResponse, None, None]
