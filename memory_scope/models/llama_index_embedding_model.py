@@ -22,6 +22,8 @@ class LlamaIndexEmbeddingModel(BaseModel):
     def after_call(self, model_response: ModelResponse, **kwargs) -> ModelResponse:
         embeddings = model_response.raw
         model_response.embedding_results = embeddings
+        if len(embeddings) == 1:
+            model_response.embedding_results = embeddings[0]
         return model_response
 
     def _call(self, **kwargs) -> ModelResponse:

@@ -4,7 +4,7 @@ from memory_scope.models.llama_index_generation_model import LlamaIndexGeneratio
 
 
 class TestLLILLM(unittest.TestCase):
-    """Tests for LLIEmbedding"""
+    """Tests for LlamaIndexGenerationModel"""
 
     def setUp(self):
         config = {
@@ -44,7 +44,6 @@ class TestLLILLM(unittest.TestCase):
             sys.stdout.flush()
             time.sleep(0.1)
         
-    @unittest.skip('tmp')
     def test_llm_messages(self):
         messages = [{"role": "system", "content": "you are a helpful assistant."},
                     {"role": "user", "content": "你如何看待黄金上涨？"}]

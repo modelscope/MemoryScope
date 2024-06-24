@@ -2,7 +2,7 @@ import unittest
 from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
 
 class TestLLIEmbedding(unittest.TestCase):
-    """Tests for LLIEmbedding"""
+    """Tests for LlamaIndexEmbeddingModel"""
 
     def setUp(self):
         config = {

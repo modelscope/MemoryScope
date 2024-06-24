@@ -2,7 +2,7 @@ import unittest
 from memory_scope.models.llama_index_rerank_model import LlamaIndexRerankModel
 
 class TestLLIReRank(unittest.TestCase):
-    """Tests for LLIEmbedding"""
+    """Tests for LlamaIndexRerankModel"""
 
     def setUp(self):
         config = {
