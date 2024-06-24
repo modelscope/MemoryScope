@@ -1,5 +1,7 @@
 import unittest
-from memory_scope.models.base_generation_model import LLILLM
+
+from memory_scope.models.llama_index_generation_model import LlamaIndexGenerationModel
+
 
 class TestLLILLM(unittest.TestCase):
     """Tests for LLIEmbedding"""
@@ -8,9 +10,9 @@ class TestLLILLM(unittest.TestCase):
         config = {
             "method_type": "DashScope",
             "model_name": "qwen-max",
-            "clazz": "models.base_generation_model"
+            "clazz": "models.llama_index_generation_model"
         }
-        self.llm = LLILLM(**config)
+        self.llm = LlamaIndexGenerationModel(**config)
 
     def test_llm_prompt(self):
         prompt = "你是谁？"
@@ -21,7 +23,7 @@ class TestLLILLM(unittest.TestCase):
         print(ans.text)
 
     def test_llm_messages(self):
-        messages = [{"role": "system", "content": "you are a helpful assistant."}, 
+        messages = [{"role": "system", "content": "you are a helpful assistant."},
                     {"role": "user", "content": "你是谁？"}]
         ans = self.llm.call(
             stream=False,

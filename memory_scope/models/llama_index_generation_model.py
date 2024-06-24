@@ -1,39 +1,24 @@
 from typing import List, Dict
 
-#from llama_index.llms.dashscope import DashScope as DashScopeLLM
-from llama_index.llms.dashscope import DashScope
-
 from llama_index.core.base.llms.types import ChatMessage
 from llama_index.core.base.llms.types import (
     ChatResponse,
     CompletionResponse,
 )
+from llama_index.llms.dashscope import DashScope
+
+from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.models import MODEL_REGISTRY
 from memory_scope.models.base_model import BaseModel
 from memory_scope.models.response import ModelResponse, ModelResponseGen
-from memory_scope.utils.timer import Timer
 
 
-class BaseGenerationModel(BaseModel):
+class LlamaIndexGenerationModel(BaseModel):
+    model_type: ModelEnum = ModelEnum.GENERATION_MODEL
+
     MODEL_REGISTRY.batch_register([
         DashScope,
     ])
-
-    def before_call(self, **kwargs) -> None:
-        pass
-
-    def after_call(self, model_response: ModelResponse | ModelResponseGen,
-                   **kwargs) -> ModelResponse | ModelResponseGen:
-        pass
-
-    def _call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
-        pass
-
-    async def _async_call(self, **kwargs) -> ModelResponse:
-        pass
-
-
-class LLILLM(BaseGenerationModel):
 
     def before_call(self, **kwargs) -> None:
         prompt: str = kwargs.pop("prompt", "")
@@ -91,3 +76,5 @@ class LLILLM(BaseGenerationModel):
             results.details = e
         return results
 
+    async def _async_call(self, **kwargs) -> ModelResponse:
+        pass

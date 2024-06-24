@@ -3,6 +3,7 @@ import inspect
 import time
 from abc import abstractmethod, ABCMeta
 
+from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.models import MODEL_REGISTRY
 from memory_scope.models.response import ModelResponse, ModelResponseGen
 from memory_scope.utils.logger import Logger
@@ -10,6 +11,7 @@ from memory_scope.utils.timer import Timer
 
 
 class BaseModel(metaclass=ABCMeta):
+    model_type: ModelEnum | None = None
 
     def __init__(self,
                  model_name: str,
