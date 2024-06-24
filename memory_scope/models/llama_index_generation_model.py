@@ -44,20 +44,30 @@ class LlamaIndexGenerationModel(BaseModel):
     def after_call(
             self, model_response: ModelResponse, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
         call_result = model_response.raw
-        if isinstance(call_result, CompletionResponse):
-            content = call_result.text
-        elif isinstance(call_result, ChatResponse):
-            content = call_result.message.content
+        if stream:
+            def gen() -> ModelResponseGen:
+                content = ""
+                for response in call_result:
+                    delta = response.delta
+                    content += delta
+                    model_response.text = content
+                    model_response.delta = delta
+                    yield model_response
+            return gen()
         else:
-            raise NotImplementedError
-        
-        return ModelResponse(text=content,
-                             model_type="LLM")
-    
+            if isinstance(call_result, CompletionResponse):
+                content = call_result.text
+            elif isinstance(call_result, ChatResponse):
+                content = call_result.message.content
+            else:
+                raise NotImplementedError
+            model_response.text = content
+            return model_response
+
     def _call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
 
         assert "prompt" in self.data or "messages" in self.data
-        results = ModelResponse()
+        results = ModelResponse(model_type=self.model_type)
         try:
             if 'prompt' in self.data:
                 if stream:
@@ -77,4 +87,4 @@ class LlamaIndexGenerationModel(BaseModel):
         return results
 
     async def _async_call(self, **kwargs) -> ModelResponse:
-        pass
+        raise NotImplementedError

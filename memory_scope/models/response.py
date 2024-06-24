@@ -20,7 +20,8 @@ class ModelResponse(BaseModel):
     details: str = Field("", description="The details information for model call, "
                                          "usually for storage of raw response or failure messages.")
 
-    raw: Any = Field("", description="raw response from model call")
+    raw: Any = Field("", description="Raw response from model call")
 
+    delta: str = Field("", description="New text that just streamed in (only used when streaming)")
 
 ModelResponseGen = Generator[ModelResponse, None, None]

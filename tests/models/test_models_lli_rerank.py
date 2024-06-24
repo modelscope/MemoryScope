@@ -1,5 +1,5 @@
 import unittest
-from memory_scope.models.base_rank_model import LLIReRank
+from memory_scope.models.llama_index_rerank_model import LlamaIndexRerankModel
 
 class TestLLIReRank(unittest.TestCase):
     """Tests for LLIEmbedding"""
@@ -8,9 +8,9 @@ class TestLLIReRank(unittest.TestCase):
         config = {
             "method_type": "DashScopeRerank",
             "model_name": "gte-rerank",
-            "clazz": "models.base_rank_model"
+            "clazz": "models.llama_index_rerank_model"
         }
-        self.reranker = LLIReRank(**config)
+        self.reranker = LlamaIndexRerankModel(**config)
 
     def test_rerank(self):
         query = "吃啥？"
@@ -20,3 +20,4 @@ class TestLLIReRank(unittest.TestCase):
                              stream=False,
                              documents=documents,
                              query=query)
+        print(embs)

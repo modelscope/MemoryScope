@@ -4,28 +4,14 @@ from llama_index.embeddings.dashscope import DashScopeEmbedding
 from memory_scope.models import MODEL_REGISTRY
 from memory_scope.models.base_model import BaseModel
 from memory_scope.models.response import ModelResponse, ModelResponseGen
+from memory_scope.enumeration.model_enum import ModelEnum
 
+class LlamaIndexEmbeddingModel(BaseModel):
+    model_type: ModelEnum = ModelEnum.EMBEDDING_MODEL
 
-class BaseEmbeddingModel(BaseModel):
     MODEL_REGISTRY.batch_register([
         DashScopeEmbedding,
     ])
-
-    def before_call(self, **kwargs) -> None:
-        pass
-
-    def after_call(self, model_response: ModelResponse | ModelResponseGen,
-                   **kwargs) -> ModelResponse | ModelResponseGen:
-        pass
-
-    def _call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
-        pass
-
-    async def _async_call(self, **kwargs) -> ModelResponse:
-        pass
-
-
-class LLIEmbedding(BaseEmbeddingModel):
 
     def before_call(self, **kwargs):
         text: str | List[str] = kwargs.pop("text", "")
@@ -39,7 +25,7 @@ class LLIEmbedding(BaseEmbeddingModel):
         return model_response
 
     def _call(self, **kwargs) -> ModelResponse:
-        results = ModelResponse()
+        results = ModelResponse(model_type=self.model_type)
         try:
             response = self.model.get_text_embedding_batch(**self.data)  
             results.raw = response
@@ -54,9 +40,9 @@ class LLIEmbedding(BaseEmbeddingModel):
         :param kwargs:
         :return:
         """
-        results = ModelResponse()
+        results = ModelResponse(model_type=self.model_type)
         try:
-            response = self.model.aget_text_embedding_batch(**self.data)  
+            response = await self.model.aget_text_embedding_batch(**self.data)  
             results.raw = response
             results.status = True
         except Exception as e:

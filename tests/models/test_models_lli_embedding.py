@@ -1,5 +1,5 @@
 import unittest
-from memory_scope.models.base_embedding_model import LLIEmbedding
+from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
 
 class TestLLIEmbedding(unittest.TestCase):
     """Tests for LLIEmbedding"""
@@ -10,7 +10,7 @@ class TestLLIEmbedding(unittest.TestCase):
             "model_name": "text-embedding-v2",
             "clazz": "models.base_embedding_model"
         }
-        self.emb = LLIEmbedding(**config)
+        self.emb = LlamaIndexEmbeddingModel(**config)
     
     def test_single_embedding(self):
         text = "您吃了吗？"
