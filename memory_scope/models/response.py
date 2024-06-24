@@ -6,14 +6,14 @@ from memory_scope.enumeration.model_enum import ModelEnum
 
 
 class ModelResponse(BaseModel):
-    text: str = Field("", description="")
+    text: str = Field("", description="generation model result")
 
-    embedding_results: List[List[float]] | List[float] = Field([], description="embedding result")
+    embedding_results: List[List[float]] | List[float] = Field([], description="embedding vector")
 
     rank_scores: List[Dict[int, float]] = Field([], description="The rank scores of each documents. "
                                                                 "key: index, value: rank score")
 
-    model_type: ModelEnum = Field("", description="One of LLM, EMB, RANK.")
+    model_type: ModelEnum = Field(ModelEnum.GENERATION_MODEL, description="One of LLM, EMB, RANK.")
 
     status: bool = Field(True, description="Indicates whether the model call was successful.")
 
