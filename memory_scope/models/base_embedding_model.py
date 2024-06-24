@@ -49,7 +49,6 @@ class LLIEmbedding(BaseEmbeddingModel):
             results.status = False
         return results
     
-
     async def _async_call(self, **kwargs) -> ModelResponse:
         """
         :param kwargs:

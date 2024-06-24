@@ -1,6 +1,8 @@
 from typing import List, Dict
 
-from llama_index.llms.dashscope import DashScope as DashScopeLLM
+#from llama_index.llms.dashscope import DashScope as DashScopeLLM
+from llama_index.llms.dashscope import DashScope
+
 from llama_index.core.base.llms.types import ChatMessage
 from llama_index.core.base.llms.types import (
     ChatResponse,
@@ -14,7 +16,7 @@ from memory_scope.utils.timer import Timer
 
 class BaseGenerationModel(BaseModel):
     MODEL_REGISTRY.batch_register([
-        DashScopeLLM
+        DashScope,
     ])
 
     def before_call(self, **kwargs) -> None:
@@ -55,7 +57,8 @@ class LLILLM(BaseGenerationModel):
         }
 
     def after_call(
-            self, call_result: ChatResponse | CompletionResponse) -> ModelResponse | ModelResponseGen:
+            self, model_response: ModelResponse, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
+        call_result = model_response.raw
         if isinstance(call_result, CompletionResponse):
             content = call_result.text
         elif isinstance(call_result, ChatResponse):
@@ -67,31 +70,24 @@ class LLILLM(BaseGenerationModel):
                              model_type="LLM")
     
     def _call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
-        if model_name is None:
-            model_name = self.model_name
 
-        self.before_call(model_name=model_name, **kwargs)
-
-        with Timer(self.__class__.__name__, log_time=False) as t:
-            assert "prompt" in self.data or "messages" in self.data
-
-            try:
-                if 'prompt' in self.data:
-                    if stream:
-                        response = self.llm.stream_complete(**self.data)
-                    else:
-                        response = self.llm.complete(**self.data)
+        assert "prompt" in self.data or "messages" in self.data
+        results = ModelResponse()
+        try:
+            if 'prompt' in self.data:
+                if stream:
+                    response = self.model.stream_complete(**self.data)
                 else:
-                    if stream:
-                        response = self.llm.stream_chat(**self.data)
-                    else:
-                        response = self.llm.chat(**self.data)    
-                results = self.after_call(response)
-                results.details = response
-            except Exception as e:
-                results = ModelResponse(model_type="LLM",
-                                        status=False,
-                                        details=e)
-
-            return results
+                    response = self.model.complete(**self.data)
+            else:
+                if stream:
+                    response = self.model.stream_chat(**self.data)
+                else:
+                    response = self.model.chat(**self.data)    
+            results.raw = response
+            results.status = True
+        except Exception as e:
+            results.status = False
+            results.details = e
+        return results
 
