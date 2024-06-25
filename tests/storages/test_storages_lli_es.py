@@ -69,13 +69,13 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 id="6"),
             
         ]
-    @unittest.skip("tmp")
+    # @unittest.skip("tmp")
     def test_insert(self, ):
         for node in self.data:
             self.es_store.insert(node)
 
     
-   #  @unittest.skip("tmp")
+    # @unittest.skip("tmp")
     def test_retrieve(self, ):
         
         filter = {
