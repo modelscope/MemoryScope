@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Dict, List
 
 from memory_scope.models.base_model import BaseModel
+from memory_scope.scheme.memory_node import MemoryNode
 
 
 class BaseVectorStore(metaclass=ABCMeta):
@@ -13,7 +14,7 @@ class BaseVectorStore(metaclass=ABCMeta):
         self.kwargs: dict = kwargs
 
     @abstractmethod
-    def retrieve(self, text: str, limit_size: int, filter_dict: Dict[str, List[str]]):
+    def retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]):
         """
         :param text:
         :param limit_size:
@@ -22,7 +23,7 @@ class BaseVectorStore(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    async def async_retrieve(self, text: str, limit_size: int, filter_dict: Dict[str, List[str]]):
+    async def async_retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]):
         """
         :param text:
         :param limit_size:
@@ -31,7 +32,7 @@ class BaseVectorStore(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def insert(self, text: str):
+    def insert(self, node: MemoryNode):
         """ TODO 是否overwrite
         :return:
         """

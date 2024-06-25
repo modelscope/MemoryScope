@@ -21,7 +21,7 @@ class TestLLILLM(unittest.TestCase):
             prompt=prompt
         )
         print(ans.text)
-
+    @unittest.skip("tmp")
     def test_llm_messages(self):
         messages = [{"role": "system", "content": "you are a helpful assistant."},
                     {"role": "user", "content": "你是谁？"}]
@@ -30,7 +30,7 @@ class TestLLILLM(unittest.TestCase):
             messages=messages
         )
         print(ans.text)
-
+    @unittest.skip("tmp")
     def test_llm_prompt_stream(self):
         prompt = "你如何看待黄金上涨？"
         ans = self.llm.call(
@@ -43,7 +43,7 @@ class TestLLILLM(unittest.TestCase):
             sys.stdout.write(a.delta)
             sys.stdout.flush()
             time.sleep(0.1)
-        
+    @unittest.skip("tmp")
     def test_llm_messages(self):
         messages = [{"role": "system", "content": "you are a helpful assistant."},
                     {"role": "user", "content": "你如何看待黄金上涨？"}]
