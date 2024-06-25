@@ -4,11 +4,11 @@ from pydantic import Field, BaseModel
 
 
 class MemoryNode(BaseModel):
-    id: str = Field("", description="uuid64")
+    user_id: str = Field("", description="unique memory id for user")
+
+    memory_id: str = Field("", description="unique id for memory item")
 
     content: str = Field("", description="memory content")
-
-    memory_id: str = Field("", description="unique memory id")
 
     score_similar: float = Field(0, description="es similar score")
 
@@ -23,3 +23,4 @@ class MemoryNode(BaseModel):
     status: str = Field("active", description="active or expired")
 
     vector: List[float] = Field([], description="content embedding result, return empty")
+
