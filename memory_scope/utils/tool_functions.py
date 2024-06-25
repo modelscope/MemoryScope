@@ -1,8 +1,8 @@
 import re
-from importlib import import_module
 from datetime import datetime
+from importlib import import_module
 
-from enumeration.message_role_enum import MessageRoleEnum
+from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 
 
 def under_line_to_hump(underline_str):
@@ -10,26 +10,24 @@ def under_line_to_hump(underline_str):
     return sub[0:1].upper() + sub[1:]
 
 
-def init_instance_by_config(
-    config: dict, default_clazz_path: str = "", suffix_name: str = "", **kwargs
-):
-    clazz_path = config.pop("clazz")
-    if not clazz_path:
-        raise RuntimeError("empty clazz_path!")
-    clazz_name_split = clazz_path.split(".")
-    clazz_name: str = clazz_name_split[-1]
-    if suffix_name and not clazz_name.endswith(suffix_name):
-        clazz_name = f"{clazz_name}_{suffix_name}"
+def init_instance_by_config(config: dict, default_class_path: str = "", suffix_name: str = "", **kwargs):
+    class_name = config.pop("class")
+    if not class_name:
+        raise RuntimeError("empty class_name!")
 
-    # 构造path
-    clazz_paths = []
-    if default_clazz_path:
-        clazz_paths.append(default_clazz_path)
-    clazz_paths.extend(clazz_name_split[:-1])
-    clazz_paths.append(clazz_name)
-    module = import_module(".".join(clazz_paths))
+    class_name_split = class_name.split(".")
+    class_name: str = class_name_split[-1]
+    if suffix_name and not class_name.lower().endswith(suffix_name.lower()):
+        class_name = f"{class_name}_{suffix_name}"
+        class_name_split[-1] = class_name
 
-    cls_name = under_line_to_hump(clazz_name)
+    class_paths = []
+    if default_class_path:
+        class_paths.append(default_class_path)
+    class_paths.extend(class_name_split)
+    module = import_module(".".join(class_paths))
+
+    cls_name = under_line_to_hump(class_name)
     return getattr(module, cls_name)(**config, **kwargs)
 
 

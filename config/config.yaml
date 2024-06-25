@@ -1,14 +1,16 @@
 global_config:
-  thread_pool_max_count: 5
+  language: en
+  max_workers: 5
   dash_scope_apikey:
   open_ai_apikey:
-  language: en
   chat_list:
     - memory_chat
 memory_chat:
   memory_service: memory_chat_service
+  generation_model: dashscope_generation
 memory_chat_service:
   class: memory.base_memory_service
+  history_msg_count: 5
   memory_operations:
     - name: read_memory
       class: memory.workflow.base_workflow
