@@ -1,5 +1,8 @@
+import asyncio
 import unittest
+
 from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
+
 
 class TestLLIEmbedding(unittest.TestCase):
     """Tests for LlamaIndexEmbeddingModel"""
@@ -11,19 +14,21 @@ class TestLLIEmbedding(unittest.TestCase):
             "clazz": "models.base_embedding_model"
         }
         self.emb = LlamaIndexEmbeddingModel(**config)
-    
+
     def test_single_embedding(self):
         text = "您吃了吗？"
-        embs = self.emb.call(text=text)
+        result = self.emb.call(text=text)
+        print(result)
 
     def test_batch_embedding(self):
-        texts = ["您吃了吗？", 
-                "吃了吗您？"]
-        embs = self.emb.call(text=texts)
+        texts = ["您吃了吗？",
+                 "吃了吗您？"]
+        result = self.emb.call(text=texts)
+        print(result)
 
-    async def test_async_embedding(self):
-        texts = ["您吃了吗？", 
-                "吃了吗您？"]
+    def test_async_embedding(self):
+        texts = ["您吃了吗？",
+                 "吃了吗您？"]
         # 调用异步函数并等待其结果
-        embs = await self.emb.async_call(texts)
-        
+        result = asyncio.run(self.emb.async_call(text=texts))
+        print(result)

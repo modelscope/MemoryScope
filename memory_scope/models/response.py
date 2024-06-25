@@ -1,3 +1,4 @@
+import json
 from typing import Generator, List, Dict, Any
 
 from pydantic import BaseModel, Field
@@ -12,10 +13,10 @@ class ModelResponse(BaseModel):
 
     embedding_results: List[List[float]] | List[float] = Field([], description="embedding vector")
 
-    rank_scores: List[Dict[int, float]] = Field([], description="The rank scores of each documents. "
-                                                                "key: index, value: rank score")
+    rank_scores: Dict[int, float] = Field({}, description="The rank scores of each documents. "
+                                                          "key: index, value: rank score")
 
-    model_type: ModelEnum = Field(ModelEnum.GENERATION_MODEL, description="One of LLM, EMB, RANK.")
+    m_type: ModelEnum = Field(ModelEnum.GENERATION_MODEL, description="One of LLM, EMB, RANK.")
 
     status: bool = Field(True, description="Indicates whether the model call was successful.")
 
@@ -23,6 +24,25 @@ class ModelResponse(BaseModel):
                                          "usually for storage of raw response or failure messages.")
 
     raw: Any = Field("", description="Raw response from model call")
+
+    def __str__(self, max_size=100, **kwargs):
+        result = {}
+        try:
+            all_dict = self.model_dump()
+        except Exception:
+            all_dict = self.dict()
+
+        for key, value in all_dict.items():
+            if key == "raw" or not value:
+                continue
+
+            if isinstance(value, str):
+                result[key] = value
+            elif isinstance(value, list | dict):
+                result[key] = f"{str(value)[:max_size]}... size={len(value)}"
+            elif isinstance(value, ModelEnum):
+                result[key] = value.value
+        return json.dumps(result, **kwargs)
 
 
 ModelResponseGen = Generator[ModelResponse, None, None]

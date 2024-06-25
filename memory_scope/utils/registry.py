@@ -18,8 +18,13 @@ class Registry(object):
             raise KeyError(f'{module_name} is already registered in {self.name}')
         self.module_dict[module_name] = module
 
-    def batch_register(self, modules: List[Any]):
-        module_name_dict = {m.__name__: m for m in modules}
+    def batch_register(self, modules: List[Any] | Dict[str, Any]):
+        if isinstance(modules, list):
+            module_name_dict = {m.__name__: m for m in modules}
+        elif isinstance(modules, dict):
+            module_name_dict = modules
+        else:
+            raise NotImplementedError
         self.module_dict.update(module_name_dict)
 
     def get(self, module_name: str):

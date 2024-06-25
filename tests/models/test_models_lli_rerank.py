@@ -1,5 +1,8 @@
+import json
 import unittest
+
 from memory_scope.models.llama_index_rerank_model import LlamaIndexRerankModel
+
 
 class TestLLIReRank(unittest.TestCase):
     """Tests for LlamaIndexRerankModel"""
@@ -14,10 +17,10 @@ class TestLLIReRank(unittest.TestCase):
 
     def test_rerank(self):
         query = "吃啥？"
-        documents = ["您吃了吗？", 
-                "吃了吗您？"]
-        embs = self.reranker.call(
-                             stream=False,
-                             documents=documents,
-                             query=query)
-        print(embs)
+        documents = ["您吃了吗？",
+                     "吃了吗您？"]
+        result = self.reranker.call(
+            stream=False,
+            documents=documents,
+            query=query)
+        print(result)

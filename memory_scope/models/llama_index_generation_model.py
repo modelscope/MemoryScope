@@ -14,8 +14,9 @@ from memory_scope.models.response import ModelResponse, ModelResponseGen
 
 
 class LlamaIndexGenerationModel(BaseModel):
-    model_type: ModelEnum = ModelEnum.GENERATION_MODEL
+    m_type: ModelEnum = ModelEnum.GENERATION_MODEL
 
+    # TODO rename module name at xianzhe
     MODEL_REGISTRY.batch_register([
         DashScope,
     ])
@@ -31,26 +32,24 @@ class LlamaIndexGenerationModel(BaseModel):
         elif messages:
             input_text = messages
             input_type = 'messages'
-            llama_input = [ChatMessage(
-                role=x['role'], content=x['content']
-            ) for x in input_text]
+            llama_input = [ChatMessage(role=x['role'], content=x['content']) for x in input_text]
         else:
             raise RuntimeError("prompt and messages is both empty!")
 
-        self.data = {
-            input_type: llama_input,
-        }
+        self.data = {input_type: llama_input}
 
-    def after_call(
-            self, model_response: ModelResponse, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
+    def after_call(self,
+                   model_response: ModelResponse,
+                   stream: bool = False,
+                   **kwargs) -> ModelResponse | ModelResponseGen:
         call_result = model_response.raw
         if stream:
             def gen() -> ModelResponseGen:
-                content = ""
+                text = ""
                 for response in call_result:
                     delta = response.delta
-                    content += delta
-                    model_response.text = content
+                    text += delta
+                    model_response.text = text
                     model_response.delta = delta
                     yield model_response
             return gen()
@@ -67,23 +66,19 @@ class LlamaIndexGenerationModel(BaseModel):
     def _call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
 
         assert "prompt" in self.data or "messages" in self.data
-        results = ModelResponse(model_type=self.model_type)
-        try:
-            if 'prompt' in self.data:
-                if stream:
-                    response = self.model.stream_complete(**self.data)
-                else:
-                    response = self.model.complete(**self.data)
+        results = ModelResponse(m_type=self.m_type)
+
+        if 'prompt' in self.data:
+            if stream:
+                response = self.model.stream_complete(**self.data)
             else:
-                if stream:
-                    response = self.model.stream_chat(**self.data)
-                else:
-                    response = self.model.chat(**self.data)    
-            results.raw = response
-            results.status = True
-        except Exception as e:
-            results.status = False
-            results.details = e
+                response = self.model.complete(**self.data)
+        else:
+            if stream:
+                response = self.model.stream_chat(**self.data)
+            else:
+                response = self.model.chat(**self.data)
+        results.raw = response
         return results
 
     async def _async_call(self, **kwargs) -> ModelResponse:

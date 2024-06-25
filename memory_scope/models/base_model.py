@@ -1,4 +1,3 @@
-import asyncio
 import inspect
 import time
 from abc import abstractmethod, ABCMeta
@@ -11,7 +10,7 @@ from memory_scope.utils.timer import Timer
 
 
 class BaseModel(metaclass=ABCMeta):
-    model_type: ModelEnum | None = None
+    m_type: ModelEnum | None = None
 
     def __init__(self,
                  model_name: str,
@@ -74,8 +73,12 @@ class BaseModel(metaclass=ABCMeta):
         self.before_call(stream=stream, **kwargs)
         with Timer(self.__class__.__name__, log_time=False) as t:
             for i in range(self.max_retries):
-                model_response = self._call(stream=stream, **kwargs)
-                if not model_response.status and not stream:
+                try:
+                    model_response = self._call(stream=stream, **kwargs)
+                except Exception as e:
+                    model_response = ModelResponse(m_type=self.m_type, status=False, details=e.args)
+
+                if isinstance(model_response, ModelResponse) and not model_response.status:
                     self.logger.warning(f"call model={self.model_name} failed! cost={t.cost_str} retry_cnt={i} "
                                         f"details={model_response.details}", stacklevel=2)
                     time.sleep(i * self.retry_interval)
@@ -97,10 +100,14 @@ class BaseModel(metaclass=ABCMeta):
         self.before_call(**kwargs)
         with Timer(self.__class__.__name__, log_time=False) as t:
             for i in range(self.max_retries):
-                model_response = await self._async_call(**kwargs)
+                try:
+                    model_response = await self._async_call(**kwargs)
+                except Exception as e:
+                    model_response = ModelResponse(status=False, details=e.args)
+
                 if not model_response.status:
                     self.logger.warning(f"async_call model={self.model_name} failed! cost={t.cost_str} retry_cnt={i} "
                                         f"details={model_response.details}", stacklevel=2)
-                    await asyncio.sleep(i * self.retry_interval)
+                    time.sleep(i * self.retry_interval)
                 else:
-                    return self.after_call(model_response, **kwargs)
+                    return self.after_call(model_response=model_response, **kwargs)
