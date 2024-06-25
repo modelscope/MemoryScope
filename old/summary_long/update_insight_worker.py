@@ -2,7 +2,7 @@ from typing import List
 
 from common.response_text_parser import ResponseTextParser
 from constants.common_constants import INSIGHT_NODES, NEW_OBS_NODES, INSIGHT_KEY, INSIGHT_VALUE
-from node.memory_wrap_node import MemoryWrapNode
+from scheme.memory_node import MemoryNode
 from worker.memory_base_worker import MemoryBaseWorker
 
 
@@ -17,13 +17,13 @@ class UpdateInsightWorker(MemoryBaseWorker):
         self.update_insight_top_k = update_insight_top_k
 
     def filter_obs_nodes(self,
-                         insight_node: MemoryWrapNode,
-                         new_obs_nodes: List[MemoryWrapNode]) -> (MemoryWrapNode, List[MemoryWrapNode], float):
+                         insight_node: MemoryNode,
+                         new_obs_nodes: List[MemoryNode]) -> (MemoryNode, List[MemoryNode], float):
         max_score: float = 0
-        filtered_nodes: List[MemoryWrapNode] = []
+        filtered_nodes: List[MemoryNode] = []
 
-        insight_key = insight_node.memory_node.metaData.get(INSIGHT_KEY, "")
-        insight_value = insight_node.memory_node.metaData.get(INSIGHT_VALUE, "")
+        insight_key = insight_scheme.memory_node.metaData.get(INSIGHT_KEY, "")
+        insight_value = insight_scheme.memory_node.metaData.get(INSIGHT_VALUE, "")
         if not insight_key or not insight_value:
             self.logger.warning(f"insight_key={insight_key} insight_value={insight_value} is empty!")
             return insight_node, filtered_nodes, max_score
@@ -55,18 +55,18 @@ class UpdateInsightWorker(MemoryBaseWorker):
         return insight_node, filtered_nodes, max_score
 
     def update_insight(self,
-                       insight_node: MemoryWrapNode,
-                       filtered_nodes: List[MemoryWrapNode]) -> MemoryWrapNode:
+                       insight_node: MemoryNode,
+                       filtered_nodes: List[MemoryNode]) -> MemoryNode:
 
-        insight_key = insight_node.memory_node.metaData.get(INSIGHT_KEY, "")
-        insight_value = insight_node.memory_node.metaData.get(INSIGHT_VALUE, "")
+        insight_key = insight_scheme.memory_node.metaData.get(INSIGHT_KEY, "")
+        insight_value = insight_scheme.memory_node.metaData.get(INSIGHT_VALUE, "")
         self.logger.info(f"update_insight insight_key={insight_key} insight_value={insight_value} "
                          f"doc.size={len(filtered_nodes)}")
 
         # gen prompt
         user_query_list = []
         for node in filtered_nodes:
-            user_query_list.append(f"句子：{node.memory_node.content}")
+            user_query_list.append(f"句子：{scheme.memory_node.content}")
         update_insight_message = self.prompt_to_msg(
             system_prompt=self.prompt_config.update_insight_system,
             few_shot=self.prompt_config.update_insight_few_shot,
@@ -102,14 +102,14 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.info(f"insight_value={insight_value}, skip.")
             return insight_node
 
-        insight_node.memory_node.metaData[INSIGHT_VALUE] = insight_value
-        insight_node.memory_node.content_modified = True
+        insight_scheme.memory_node.metaData[INSIGHT_VALUE] = insight_value
+        insight_scheme.memory_node.content_modified = True
         return insight_node
 
     def _run(self):
         # 获取新的obs和insight
-        new_obs_nodes: List[MemoryWrapNode] = self.get_context(NEW_OBS_NODES)
-        insight_nodes: List[MemoryWrapNode] = self.get_context(INSIGHT_NODES)
+        new_obs_nodes: List[MemoryNode] = self.get_context(NEW_OBS_NODES)
+        insight_nodes: List[MemoryNode] = self.get_context(INSIGHT_NODES)
         if not new_obs_nodes:
             self.logger.info("new_obs_nodes is empty, stop update sights!")
             return
@@ -145,7 +145,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
         # 等待结果
         for result in self.join_threads():
             if result:
-                insight_node: MemoryWrapNode = result
-                insight_key = insight_node.memory_node.metaData.get(INSIGHT_KEY, "")
-                insight_value = insight_node.memory_node.metaData.get(INSIGHT_VALUE, "")
+                insight_node: MemoryNode = result
+                insight_key = insight_scheme.memory_node.metaData.get(INSIGHT_KEY, "")
+                insight_value = insight_scheme.memory_node.metaData.get(INSIGHT_VALUE, "")
                 self.logger.info(f"after_update_insight insight_key={insight_key} insight_value={insight_value}")

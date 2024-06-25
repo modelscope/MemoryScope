@@ -1,4 +1,4 @@
-from memory_scope.enumeration.language_enum import LanguageEnum
+from enumeration.language_enum import LanguageEnum
 
 SYSTEM_PROMPT = {
     LanguageEnum.CN: """

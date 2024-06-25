@@ -1,12 +1,12 @@
 from typing import List
 
-from memory_scope.chat.global_context import GLOBAL_CONTEXT
-from memory_scope.constants.common_constants import MESSAGES, CHAT_NAME
-from memory_scope.models.base_model import BaseModel
-from memory_scope.scheme.message import Message
-from memory_scope.storage.base_monitor import BaseMonitor
-from memory_scope.storage.base_vector_store import BaseVectorStore
-from memory_scope.worker.base_worker import BaseWorker
+from chat.global_context import GLOBAL_CONTEXT
+from constants.common_constants import MESSAGES, CHAT_NAME
+from models.base_model import BaseModel
+from scheme.message import Message
+from storage.base_monitor import BaseMonitor
+from storage.base_vector_store import BaseVectorStore
+from worker.base_worker import BaseWorker
 
 
 class MemoryBaseWorker(BaseWorker):

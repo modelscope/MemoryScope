@@ -2,88 +2,27 @@ import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, Any, List
-import questionary
-from rich.console import Console
 import sys
 import time
 import fire
+from datetime import datetime
 
-from memory_scope.chat.base_memory_chat import BaseMemoryChat
-from memory_scope.chat.global_context import GLOBAL_CONTEXT
-from memory_scope.enumeration.language_enum import LanguageEnum
-from memory_scope.enumeration.model_enum import ModelEnum
-from memory_scope.utils.logger import Logger
-from memory_scope.utils.tool_functions import (
+from chat.global_context import GLOBAL_CONTEXT
+from enumeration.language_enum import LanguageEnum
+from enumeration.model_enum import ModelEnum
+from utils.logger import Logger
+from utils.tool_functions import (
     complete_config_name,
     init_instance_by_config,
+    under_line_to_hump,
 )
-from memory_scope.chat.memory_chat import MemoryChat
-
-
-class CliMemoryChat(object):  # object -> MemoryChat
-
-    USER_COMMANDS = {
-        "/exit": "exit the CLI",
-        "/memory": "print the current contents of agent memory",
-        "/retrieve": "retrieve related memory",
-        "/log": "log chat progress"
-        # TODO add more commands
-    }
-
-    def chat_with_memory(self, query):  # for testing
-        return query
-
-    def retrieve_all(self):  # for testing
-        return "memory 1. 2. 3."
-
-    def run(self):
-        console = Console()
-        while True:
-            query = questionary.text(
-                "Enter your message or command:",
-                multiline=False,
-                qmark=">",
-            ).ask()
-
-            query = query.rstrip()
-
-            if query == "":
-                console.print("Empty input received. Try again!")
-                continue
-
-            # Handle CLI commands
-            if query.startswith("/"):
-                if query.lower() == "/exit":
-                    break
-                elif query.lower() == "/memory":
-                    console.print(self.memory_service.retrieve_all())
-                elif query.lower() == "/help":
-                    questionary.print("CLI commands", "bold")
-                    for cmd, desc in self.USER_COMMANDS.items():
-                        questionary.print(cmd, "bold")
-                        questionary.print(f" {desc}")
-                    continue
-
-                continue
-
-            while True:
-                try:
-                    with console.status("[bold cyan]Thinking..."):
-                        messages = self.chat_with_memory(query=query)
-                        console.print(messages)
-                        break
-                except KeyboardInterrupt:
-                    console.print("User interrupt occurred.")
-                    retry = questionary.confirm("Retry chat_with_memory()?").ask()
-                    if not retry:
-                        break
-                except Exception as e:
-                    console.print(
-                        f"An exception occurred when running chat_with_memory(): {e}"
-                    )
-                    retry = questionary.confirm("Retry chat_with_memory()?").ask()
-                    if not retry:
-                        break
+from chat.memory_chat import MemoryChat
+from enumeration.message_role_enum import MessageRoleEnum
+from scheme.message import Message
+from chat.base_memory_chat import BaseMemoryChat
+from models.llama_index_generation_model import LlamaIndexGenerationModel
+from models.llama_index_embedding_model import LlamaIndexEmbeddingModel
+from models.llama_index_rerank_model import LlamaIndexRerankModel
 
 
 class CliJob(object):
@@ -97,7 +36,7 @@ class CliJob(object):
         self.logger: Logger = Logger.get_logger("memory_chat")
 
     def init_memory_chat(self):
-        for chat_name in self.config["chat_list"]:
+        for chat_name in GLOBAL_CONTEXT.global_configs["chat_list"]:
             memory_chat_config = self.config[chat_name]
             memory_chat: BaseMemoryChat = init_instance_by_config(
                 memory_chat_config, chat_name=chat_name
@@ -172,10 +111,12 @@ class CliJob(object):
         self.init_memory_chat()
 
         self.init_workers()
-        GLOBAL_CONTEXT.vector_store = init_instance_by_config(
-            self.config["vector_store"]
-        )
-        GLOBAL_CONTEXT.monitor = init_instance_by_config(self.config["monitor"])
+
+        ## TODO no db and monitor now
+        # GLOBAL_CONTEXT.vector_store = init_instance_by_config(
+        #     self.config["vector_store"]
+        # )
+        # GLOBAL_CONTEXT.monitor = init_instance_by_config(self.config["monitor"])
 
     @staticmethod
     def run():

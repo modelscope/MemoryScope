@@ -3,7 +3,7 @@ from typing import List
 from common.response_text_parser import ResponseTextParser
 from constants.common_constants import NEW_OBS_NODES, NEW_USER_PROFILE
 from enumeration.memory_type_enum import MemoryTypeEnum
-from node.memory_wrap_node import MemoryWrapNode
+from scheme.memory_node import MemoryNode
 from node.user_attribute import UserAttribute
 from worker.memory_base_worker import MemoryBaseWorker
 
@@ -25,9 +25,9 @@ class UpdateProfileWorker(MemoryBaseWorker):
 
     def filter_obs_nodes(self,
                          user_attr: UserAttribute,
-                         new_obs_nodes: List[MemoryWrapNode]) -> (UserAttribute, List[MemoryWrapNode], float):
+                         new_obs_nodes: List[MemoryNode]) -> (UserAttribute, List[MemoryNode], float):
         max_score: float = 0
-        filtered_nodes: List[MemoryWrapNode] = []
+        filtered_nodes: List[MemoryNode] = []
         result = self.rerank_client.call(query=user_attr.description,
                                          documents=[x.memory_node.content for x in new_obs_nodes])
 
@@ -36,7 +36,7 @@ class UpdateProfileWorker(MemoryBaseWorker):
             return user_attr, filtered_nodes, max_score
 
         # 找到大于阈值的obs node
-        filtered_nodes: List[MemoryWrapNode] = []
+        filtered_nodes: List[MemoryNode] = []
         for rank_node in result:
             index = rank_node["index"]
             score = rank_node["relevance_score"]
@@ -47,20 +47,20 @@ class UpdateProfileWorker(MemoryBaseWorker):
                 keep_flag = "keep"
                 max_score = max(max_score, score)
             self.logger.info(f"key={user_attr.memory_key} desc={user_attr.description} "
-                             f"content={node.memory_node.content} score={score} keep_flag={keep_flag}")
+                             f"content={scheme.memory_node.content} score={score} keep_flag={keep_flag}")
 
         if not filtered_nodes:
             self.logger.info(f"update_user_attr={user_attr} filtered_nodes is empty!")
         return user_attr, filtered_nodes, max_score
 
-    def update_user_attr(self, user_attr: UserAttribute, filtered_nodes: List[MemoryWrapNode]) -> UserAttribute:
+    def update_user_attr(self, user_attr: UserAttribute, filtered_nodes: List[MemoryNode]) -> UserAttribute:
         self.logger.info(f"update_user_attr memory_key={user_attr.memory_key} desc={user_attr.description} "
                          f"value={user_attr.value} doc.size={len(filtered_nodes)}")
 
         # 根据不同的参数类型是否多值，分别给出prompt
         user_query_list = []
         for node in filtered_nodes:
-            user_query_list.append(f"句子：{node.memory_node.content}")
+            user_query_list.append(f"句子：{scheme.memory_node.content}")
         update_profile = f"{user_attr.memory_key}（{user_attr.description}）"
         update_profile_value = update_profile + "：" + "，".join(user_attr.value)
 
@@ -158,7 +158,7 @@ class UpdateProfileWorker(MemoryBaseWorker):
             self.user_profile_dict[user_attr_key] = new_attr
 
     def _run(self):
-        new_obs_nodes: List[MemoryWrapNode] = self.get_context(NEW_OBS_NODES)
+        new_obs_nodes: List[MemoryNode] = self.get_context(NEW_OBS_NODES)
         if not new_obs_nodes:
             self.logger.info("new_obs_nodes is empty, stop user profile!")
             self.set_context(NEW_USER_PROFILE, list(self.user_profile_dict.values()))

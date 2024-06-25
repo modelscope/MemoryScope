@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Dict, List
 
-from memory_scope.models.base_model import BaseModel
-from memory_scope.scheme.memory_node import MemoryNode
+from models.base_model import BaseModel
 
 
 class BaseVectorStore(metaclass=ABCMeta):
@@ -21,6 +20,7 @@ class BaseVectorStore(metaclass=ABCMeta):
         :param filter_dict:
         :return:
         """
+        pass
 
     @abstractmethod
     async def async_retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]):
@@ -30,27 +30,32 @@ class BaseVectorStore(metaclass=ABCMeta):
         :param filter_dict:
         :return:
         """
+        pass
 
     @abstractmethod
     def insert(self, node: MemoryNode):
         """ TODO 是否overwrite
         :return:
         """
+        pass
 
     @abstractmethod
     def insert_batch(self):
         """
         :return:
         """
+        pass
 
     @abstractmethod
     def delete(self):
         """
         :return:
         """
+        pass
 
     @abstractmethod
     def flush(self):
         """
         :return:
         """
+        pass

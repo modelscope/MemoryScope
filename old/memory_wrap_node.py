@@ -1,9 +1,9 @@
 from pydantic import Field, BaseModel
 
-from node.memory_node import MemoryNode
+from scheme.memory_node import MemoryNode
 
 
-class MemoryWrapNode(BaseModel):
+class MemoryNode(BaseModel):
     id: str = Field("", description="uuid64")
 
     score_similar: float = Field(0, description="相似度打分")

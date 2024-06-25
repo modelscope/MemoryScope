@@ -1,21 +1,20 @@
 import datetime
 from typing import List
 
-from memory_scope.chat.base_memory_chat import BaseMemoryChat
-from memory_scope.chat.global_context import GLOBAL_CONTEXT
-from memory_scope.enumeration.message_role_enum import MessageRoleEnum
-from memory_scope.models.base_model import BaseModel
-from memory_scope.prompts.memory_chat_prompt import SYSTEM_PROMPT, MEMORY_PROMPT
-from memory_scope.scheme.message import Message
+from .base_memory_chat import BaseMemoryChat
+from .global_context import GLOBAL_CONTEXT
+from enumeration.message_role_enum import MessageRoleEnum
+from models.base_model import BaseModel
+from prompts.memory_chat_prompt import SYSTEM_PROMPT, MEMORY_PROMPT
+from scheme.message import Message
+from .memory_service import MemoryService
 
 
 class MemoryChat(BaseMemoryChat):
 
-    def __init__(self,
-                 generation_model: str,
-                 history_msg_count: int,
-                 **kwargs):
+    def __init__(self, generation_model: str, history_msg_count: int, chat_name: str, **kwargs):
         super().__init__(**kwargs)
+        self.memory_service = MemoryService(chat_name=chat_name, **kwargs)
         self.generation_model_name: str = generation_model
         self.history_msg_count: int = history_msg_count
 
@@ -25,7 +24,9 @@ class MemoryChat(BaseMemoryChat):
     @property
     def generation_model(self):
         if self._generation_model is None:
-            self._generation_model = GLOBAL_CONTEXT.model_dict[self.generation_model_name]
+            self._generation_model = GLOBAL_CONTEXT.model_dict[
+                self.generation_model_name
+            ]
         return self._generation_model
 
     @staticmethod
@@ -34,7 +35,11 @@ class MemoryChat(BaseMemoryChat):
         if related_memories:
             memory_prompt = MEMORY_PROMPT[GLOBAL_CONTEXT.language]
             system_prompt = "\n".join([system_prompt, memory_prompt] + related_memories)
-        return Message(role=MessageRoleEnum.SYSTEM, content=system_prompt.strip(), time_created=time_created)
+        return Message(
+            role=MessageRoleEnum.SYSTEM,
+            content=system_prompt.strip(),
+            time_created=time_created,
+        )
 
     def chat_with_memory(self, query: str):
         query = query.strip()
@@ -42,11 +47,13 @@ class MemoryChat(BaseMemoryChat):
             return
 
         time_created = int(datetime.datetime.now().timestamp())
-        new_message: Message = Message(role=MessageRoleEnum.USER, content=query, time_created=time_created)
+        new_message: Message = Message(
+            role=MessageRoleEnum.USER, content=query, time_created=time_created
+        )
         related_memories: List[str] = self.memory_service.retrieve(message=new_message)
         system_message = self.get_system_prompt(related_memories, time_created)
         self.history_message_list.append(new_message)
-        self.history_message_list = self.history_message_list[-self.history_msg_count:]
+        self.history_message_list = self.history_message_list[-self.history_msg_count :]
         all_messages = [system_message] + self.history_message_list
         # TODO at xian zhe
         return self.generation_model.call(messages=all_messages, stream=True)

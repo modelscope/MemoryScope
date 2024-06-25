@@ -5,7 +5,7 @@ from typing import Dict, List
 
 from constants.common_constants import WEEKDAYS
 
-from memory_scope.enumeration.message_role_enum import MessageRoleEnum
+from enumeration.message_role_enum import MessageRoleEnum
 
 
 def under_line_to_hump(underline_str):
@@ -150,7 +150,7 @@ def init_instance_by_config(config: dict|object, default_module_path: str = None
     if isinstance(config, accept_types):
         return config
 
-    import_module(config.pop("path", default_module_path))
+  import_module(config.pop("path", default_module_path))
     clazz = getattr(module, config.pop("name"))
     try:
         return clazz(**config, **try_kwargs)

@@ -10,12 +10,9 @@ class UserAttribute(BaseModel):
     如果code为空，则为新增，否则是更新。
     确保请求是10条，返回是原始10条+加上新增的条数（如果可以新增）。只会对正确的请求操作数据库。
     """
-    code: str = Field("", description="唯一主键 code")
+    id: str = Field("", description="唯一主键")
 
     memory_id: str = Field("", description="memory id")
-
-    # 上游可能没有传这个参数，可能隐藏在memory_id做区分
-    scene: str = Field("", description="source: TONGYI_MAIN_CHAT/TONGYI_CHAR_CHAT/BAILIAN/ASSISTANT")
 
     # 从key改成memory_key
     memory_key: str = Field("", description="memory key")

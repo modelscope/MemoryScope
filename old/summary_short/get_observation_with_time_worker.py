@@ -5,9 +5,9 @@ from common.response_text_parser import ResponseTextParser
 from common.tool_functions import time_to_formatted_str, get_datetime_info_dict, extract_date_parts
 from constants.common_constants import REFLECTED, DT, TIME_INFER, NEW, MSG_TIME, KEY_WORD, DATATIME_WORD_LIST, \
     NEW_OBS_WITH_TIME_NODES
-from enumeration.memory_node_status import MemoryNodeStatus
+from enumeration.memory_status_enum import MemoryNodeStatus
 from enumeration.memory_type_enum import MemoryTypeEnum
-from node.memory_wrap_node import MemoryWrapNode
+from scheme.memory_node import MemoryNode
 from node.message import Message
 from worker.memory_base_worker import MemoryBaseWorker
 
@@ -40,7 +40,7 @@ class GetObservationWithTimeWorker(MemoryBaseWorker):
         # 对话时间
         meta_data.update({f"msg_{k}": str(v) for k, v in get_datetime_info_dict(created_dt).items()})
 
-        return MemoryWrapNode.init_from_attrs(content=obs_content,
+        return MemoryNode.init_from_attrs(content=obs_content,
                                               memoryId=self.memory_id,
                                               timeCreated=message.time_created,
                                               scene=self.scene,
@@ -97,7 +97,7 @@ class GetObservationWithTimeWorker(MemoryBaseWorker):
             return
 
         # gene new obs nodes
-        new_obs_nodes: List[MemoryWrapNode] = []
+        new_obs_nodes: List[MemoryNode] = []
         for obs_content_list in idx_obs_list:
             if not obs_content_list:
                 continue

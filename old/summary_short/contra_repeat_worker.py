@@ -3,8 +3,8 @@ from typing import List
 from common.response_text_parser import ResponseTextParser
 from constants.common_constants import NEW_OBS_NODES, TODAY_OBS_NODES, MSG_TIME, NEW_OBS_WITH_TIME_NODES, \
     MODIFIED_MEMORIES
-from enumeration.memory_node_status import MemoryNodeStatus
-from node.memory_wrap_node import MemoryWrapNode
+from enumeration.memory_status_enum import MemoryNodeStatus
+from scheme.memory_node import MemoryNode
 from worker.memory_base_worker import MemoryBaseWorker
 
 
@@ -18,10 +18,10 @@ class ContraRepeatWorker(MemoryBaseWorker):
 
     def _run(self):
         # 合并当前的obs和今日的obs
-        new_obs_nodes: List[MemoryWrapNode] = self.get_context(NEW_OBS_NODES)
-        new_obs_with_time_nodes: List[MemoryWrapNode] = self.get_context(NEW_OBS_WITH_TIME_NODES)
-        today_obs_nodes: List[MemoryWrapNode] = self.get_context(TODAY_OBS_NODES)
-        all_obs_nodes: List[MemoryWrapNode] = []
+        new_obs_nodes: List[MemoryNode] = self.get_context(NEW_OBS_NODES)
+        new_obs_with_time_nodes: List[MemoryNode] = self.get_context(NEW_OBS_WITH_TIME_NODES)
+        today_obs_nodes: List[MemoryNode] = self.get_context(TODAY_OBS_NODES)
+        all_obs_nodes: List[MemoryNode] = []
         if new_obs_nodes:
             all_obs_nodes.extend(new_obs_nodes)
         if new_obs_with_time_nodes:
@@ -62,7 +62,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
             return
 
         # add merged obs
-        merge_obs_nodes: List[MemoryWrapNode] = []
+        merge_obs_nodes: List[MemoryNode] = []
         for obs_content_list in idx_merge_obs_list:
             if not obs_content_list:
                 continue
@@ -88,11 +88,11 @@ class ContraRepeatWorker(MemoryBaseWorker):
                 self.logger.warning(f"keep_flag={keep_flag} is invalid!")
                 continue
 
-            node: MemoryWrapNode = all_obs_nodes[idx]
+            node: MemoryNode = all_obs_nodes[idx]
             if keep_flag != "无":
-                node.memory_node.status = MemoryNodeStatus.EXPIRED.value
+                scheme.memory_node.status = MemoryNodeStatus.EXPIRED.value
             merge_obs_nodes.append(node)
-            self.logger.info(f"after contra repeat: {node.memory_node.content} {node.memory_node.status}")
+            self.logger.info(f"after contra repeat: {scheme.memory_node.content} {scheme.memory_node.status}")
 
         # save context
         self.set_context(MODIFIED_MEMORIES, merge_obs_nodes)

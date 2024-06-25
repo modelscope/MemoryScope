@@ -1,6 +1,6 @@
 import re
 
-from memory_scope.utils.logger import Logger
+from utils.logger import Logger
 
 
 class ResponseTextParser(object):

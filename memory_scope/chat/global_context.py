@@ -1,12 +1,12 @@
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, Any
 
-from memory_scope.chat.base_memory_chat import BaseMemoryChat
-from memory_scope.enumeration.language_enum import LanguageEnum
-from memory_scope.models.base_model import BaseModel
-from memory_scope.storage.base_monitor import BaseMonitor
-from memory_scope.storage.base_vector_store import BaseVectorStore
-from memory_scope.worker.base_worker import BaseWorker
+from chat.base_memory_chat import BaseMemoryChat
+from enumeration.language_enum import LanguageEnum
+from models.base_model import BaseModel
+from storage.base_monitor import BaseMonitor
+from storage.base_vector_store import BaseVectorStore
+from worker.base_worker import BaseWorker
 
 
 class GlobalContext(object):

@@ -4,9 +4,9 @@ from typing import List
 from common.tool_functions import time_to_formatted_str, get_datetime_info_dict
 from constants.common_constants import NEW_INSIGHT_NODES, DT, NOT_REFLECTED_MERGE_NODES, NEW_INSIGHT_KEYS, INSIGHT_KEY, \
     INSIGHT_VALUE, REFLECTED
-from enumeration.memory_node_status import MemoryNodeStatus
+from enumeration.memory_status_enum import MemoryNodeStatus
 from enumeration.memory_type_enum import MemoryTypeEnum
-from node.memory_wrap_node import MemoryWrapNode
+from scheme.memory_node import MemoryNode
 from worker.memory_base_worker import MemoryBaseWorker
 
 
@@ -20,7 +20,7 @@ class GetInsightWorker(MemoryBaseWorker):
         self.get_insight_top_k = get_insight_top_k
         self.es_insight_similar_top_k = es_insight_similar_top_k
 
-    def new_insight_node(self, insight_key: str, insight_value: str) -> MemoryWrapNode:
+    def new_insight_node(self, insight_key: str, insight_value: str) -> MemoryNode:
         created_dt = datetime.now()
         dt = time_to_formatted_str(time=created_dt)
 
@@ -33,7 +33,7 @@ class GetInsightWorker(MemoryBaseWorker):
         meta_data.update({k: str(v) for k, v in get_datetime_info_dict(created_dt).items()})
 
         content = f"用户的{insight_key}：{insight_value}"
-        return MemoryWrapNode.init_from_attrs(content=content,
+        return MemoryNode.init_from_attrs(content=content,
                                               memoryId=self.memory_id,
                                               scene=self.scene,
                                               memoryType=MemoryTypeEnum.INSIGHT.value,
@@ -44,7 +44,7 @@ class GetInsightWorker(MemoryBaseWorker):
 
     def reflect_new_insight_key(self,
                                 insight_key: str,
-                                not_reflected_merge_nodes: List[MemoryWrapNode]) -> MemoryWrapNode | None:
+                                not_reflected_merge_nodes: List[MemoryNode]) -> MemoryNode | None:
 
         # 检索历史memory
         hits = self.es_client.similar_search(text=insight_key,
@@ -58,7 +58,7 @@ class GetInsightWorker(MemoryBaseWorker):
                                              })
 
         # 转化成 MemoryNodeWrap 合并新增nodes
-        related_nodes: List[MemoryWrapNode] = [MemoryWrapNode.init_from_es(x) for x in hits]
+        related_nodes: List[MemoryNode] = [MemoryNode.init_from_es(x) for x in hits]
         related_nodes.extend(not_reflected_merge_nodes)
 
         # content去重
@@ -106,12 +106,12 @@ class GetInsightWorker(MemoryBaseWorker):
         return self.new_insight_node(insight_key=insight_key, insight_value=response_text)
 
     def _run(self):
-        new_insight_keys: List[MemoryWrapNode] = self.get_context(NEW_INSIGHT_KEYS)
+        new_insight_keys: List[MemoryNode] = self.get_context(NEW_INSIGHT_KEYS)
         if not new_insight_keys:
             self.add_run_info("new_insight_keys is empty! stop insight.")
             return
 
-        not_reflected_merge_nodes: List[MemoryWrapNode] = self.get_context(NOT_REFLECTED_MERGE_NODES)
+        not_reflected_merge_nodes: List[MemoryNode] = self.get_context(NOT_REFLECTED_MERGE_NODES)
         if not not_reflected_merge_nodes:
             self.add_run_info("not_reflected_merge_nodes is empty! stop get insight.")
             return
@@ -124,11 +124,11 @@ class GetInsightWorker(MemoryBaseWorker):
                                not_reflected_merge_nodes=not_reflected_merge_nodes)
 
         # save output
-        new_insight_nodes: List[MemoryWrapNode] = []
+        new_insight_nodes: List[MemoryNode] = []
         for result in self.join_threads():
             if result:
                 new_insight_nodes.append(result)
-                assert isinstance(result, MemoryWrapNode)
+                assert isinstance(result, MemoryNode)
                 insight_key = result.memory_node.metaData.get(INSIGHT_KEY, "")
                 insight_value = result.memory_node.metaData.get(INSIGHT_VALUE, "")
                 self.logger.info(f"after_get_insight insight_key={insight_key} insight_value={insight_value}")
@@ -137,4 +137,4 @@ class GetInsightWorker(MemoryBaseWorker):
 
         # set REFLECTED
         for node in not_reflected_merge_nodes:
-            node.memory_node.metaData[REFLECTED] = "1"
+            scheme.memory_node.metaData[REFLECTED] = "1"

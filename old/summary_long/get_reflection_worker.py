@@ -3,7 +3,7 @@ from typing import List
 from common.response_text_parser import ResponseTextParser
 from constants.common_constants import NEW_OBS_NODES, NOT_REFLECTED_OBS_NODES, REFLECTED, INSIGHT_NODES, INSIGHT_KEY, \
     NEW_INSIGHT_KEYS, NOT_REFLECTED_MERGE_NODES
-from node.memory_wrap_node import MemoryWrapNode
+from scheme.memory_node import MemoryNode
 from worker.memory_base_worker import MemoryBaseWorker
 
 
@@ -19,15 +19,15 @@ class GetReflectionWorker(MemoryBaseWorker):
 
     def _run(self):
         # 过滤得到 not_reflected_merge_nodes
-        new_obs_nodes: List[MemoryWrapNode] = self.get_context(NEW_OBS_NODES)
-        not_reflected_nodes: List[MemoryWrapNode] = self.get_context(NOT_REFLECTED_OBS_NODES)
-        not_reflected_merge_nodes: List[MemoryWrapNode] = []
+        new_obs_nodes: List[MemoryNode] = self.get_context(NEW_OBS_NODES)
+        not_reflected_nodes: List[MemoryNode] = self.get_context(NOT_REFLECTED_OBS_NODES)
+        not_reflected_merge_nodes: List[MemoryNode] = []
         if new_obs_nodes:
             not_reflected_merge_nodes.extend(new_obs_nodes)
         if not_reflected_nodes:
             not_reflected_merge_nodes.extend(not_reflected_nodes)
         not_reflected_merge_nodes = [node for node in not_reflected_merge_nodes
-                                     if node.memory_node.metaData.get(REFLECTED, "") == "0"]
+                                     if scheme.memory_node.metaData.get(REFLECTED, "") == "0"]
 
         # count
         not_reflected_count = len(not_reflected_merge_nodes)
@@ -45,7 +45,7 @@ class GetReflectionWorker(MemoryBaseWorker):
         self.logger.info(f"profile_keys={profile_keys}")
 
         # get insight_keys
-        insight_nodes: List[MemoryWrapNode] = self.get_context(INSIGHT_NODES)
+        insight_nodes: List[MemoryNode] = self.get_context(INSIGHT_NODES)
         if insight_nodes:
             insight_keys = [n.memory_node.metaData.get(INSIGHT_KEY) for n in insight_nodes]
             insight_keys = [x.strip() for x in insight_keys if x]

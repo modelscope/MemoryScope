@@ -1,5 +1,5 @@
 {
-    "clazz": "models.base_generation_model",
+    "clazz": "models.llama_index_generation_model",
     "model_name": "qwen-max",
-    "method": "DashScope"
+    "method_type": "DashScope"
 }

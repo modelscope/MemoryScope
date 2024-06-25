@@ -2,17 +2,17 @@ from typing import List
 
 from utils.user_profile_handler import UserProfileHandler
 from constants.common_constants import MODIFIED_MEMORIES, NEW_USER_PROFILE
-from node.memory_node import MemoryNode
-from node.memory_wrap_node import MemoryWrapNode
+from scheme.memory_node import MemoryNode
+from scheme.memory_node import MemoryNode
 from node.user_attribute import UserAttribute
 from worker.memory_base_worker import MemoryBaseWorker
 
 class MemoryStoreWorker(MemoryBaseWorker):
 
     def _run(self):
-        modified_memories: List[MemoryWrapNode] | List[MemoryNode] = self.get_context(MODIFIED_MEMORIES)
+        modified_memories: List[MemoryNode] | List[MemoryNode] = self.get_context(MODIFIED_MEMORIES)
         if modified_memories:
-            if isinstance(modified_memories[0], MemoryWrapNode):
+            if isinstance(modified_memories[0], MemoryNode):
                 modified_memories = [n.memory_node for n in modified_memories]
 
             for n in modified_memories:

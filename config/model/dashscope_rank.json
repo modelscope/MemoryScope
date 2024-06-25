@@ -1,5 +1,5 @@
 {
     "clazz": "models.base_rank_model",
     "model_name": "gte-rerank",
-    "method": "DashScopeRerank"
+    "method_type": "DashScopeRerank"
 }

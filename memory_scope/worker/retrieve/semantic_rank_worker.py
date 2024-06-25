@@ -4,38 +4,33 @@ from utils.user_profile_handler import UserProfileHandler
 from constants.common_constants import SIMILAR_OBS_NODES, RECALL_TYPE, KEYWORD_OBS_NODES, ALL_ONLINE_NODES, \
     QUERY_KEYWORDS
 from enumeration.memory_recall_type import MemoryRecallType
-from node.memory_wrap_node import MemoryWrapNode
+from scheme.memory_node import MemoryNode
 from worker.memory_base_worker import MemoryBaseWorker
 
 
 class SemanticRankWorker(MemoryBaseWorker):
 
-    def user_profile_to_nodes(self) -> List[MemoryWrapNode]:
-        user_profile_nodes: List[MemoryWrapNode] = UserProfileHandler.to_nodes(self.user_profile_dict, split_value=True)
+    def user_profile_to_nodes(self) -> List[MemoryNode]:
+        user_profile_nodes: List[MemoryNode] = UserProfileHandler.to_nodes(self.user_profile_dict, split_value=True)
         for node in user_profile_nodes:
             # 从画像侧召回
-            node.memory_node.metaData[RECALL_TYPE] = MemoryRecallType.PROFILE
-            self.logger.info(f"user profile node={node.memory_node.content}")
+            scheme.memory_node.metaData[RECALL_TYPE] = MemoryRecallType.PROFILE
+            self.logger.info(f"user profile node={scheme.memory_node.content}")
         return user_profile_nodes
 
     def _run(self):
-        all_node_dict: Dict[str, MemoryWrapNode] = {}
+        all_node_dict: Dict[str, MemoryNode] = {}
 
-        # 优先级: similar_obs_nodes < keyword_obs_nodes < profile_nodes
-        similar_obs_nodes: List[MemoryWrapNode] = self.get_context(SIMILAR_OBS_NODES)
+        # 优先级: similar_obs_nodes <  < profile_nodes
+        similar_obs_nodes: List[MemoryNode] = self.get_context(SIMILAR_OBS_NODES)
         if similar_obs_nodes:
             for node in similar_obs_nodes:
-                all_node_dict[node.memory_node.content] = node
+                all_node_dict[scheme.memory_node.content] = node
 
-        keyword_obs_nodes: List[MemoryWrapNode] = self.get_context(KEYWORD_OBS_NODES)
-        if keyword_obs_nodes:
-            for node in keyword_obs_nodes:
-                all_node_dict[node.memory_node.content] = node
-
-        profile_nodes: List[MemoryWrapNode] = self.user_profile_to_nodes()
+        profile_nodes: List[MemoryNode] = self.user_profile_to_nodes()
         if profile_nodes:
             for node in profile_nodes:
-                all_node_dict[node.memory_node.content] = node
+                all_node_dict[scheme.memory_node.content] = node
 
         if not all_node_dict:
             self.add_run_info(f"all_node_dict is empty!", continue_run=False)
@@ -61,8 +56,8 @@ class SemanticRankWorker(MemoryBaseWorker):
             content = documents[rank_node["index"]]
             node = all_node_dict[content]
             node.score_rank = rank_node["relevance_score"]
-            self.logger.info(f"query={query} content={node.memory_node.content} score_rank={node.score_rank}")
+            self.logger.info(f"query={query} content={scheme.memory_node.content} score_rank={node.score_rank}")
 
         # save context
-        all_online_nodes: List[MemoryWrapNode] = list(all_node_dict.values())
+        all_online_nodes: List[MemoryNode] = list(all_node_dict.values())
         self.set_context(ALL_ONLINE_NODES, all_online_nodes)

@@ -2,13 +2,13 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 
 
-from memory_scope.models.dash_embedding_client import DashEmbeddingClient, LLIEmbedding
+from models.dash_embedding_client import DashEmbeddingClient, LLIEmbedding
 from common.dash_embedding_client import DashEmbeddingClient
 from common.logger import Logger
 
 from constants.common_constants import ES_ENV_URL_DICT
 from enumeration.env_type import EnvType
-from memory_scope.utils.logger import Logger
+from utils.logger import Logger
 from llama_index.core import VectorStoreIndex, StorageContext, ServiceContext
 from llama_index.vector_stores.elasticsearch import ElasticsearchStore
 from llama_index.core.schema import TextNode

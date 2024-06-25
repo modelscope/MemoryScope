@@ -1,16 +1,15 @@
 from typing import List, Dict
-
-from llama_index.core.base.llms.types import ChatMessage
 from llama_index.core.base.llms.types import (
+    ChatMessage,
     ChatResponse,
     CompletionResponse,
 )
 from llama_index.llms.dashscope import DashScope
 
-from memory_scope.enumeration.model_enum import ModelEnum
-from memory_scope.models import MODEL_REGISTRY
-from memory_scope.models.base_model import BaseModel
-from memory_scope.models.response import ModelResponse, ModelResponseGen
+from enumeration.model_enum import ModelEnum
+from . import MODEL_REGISTRY
+from .base_model import BaseModel
+from .response import ModelResponse, ModelResponseGen
 
 
 class LlamaIndexGenerationModel(BaseModel):
@@ -32,7 +31,7 @@ class LlamaIndexGenerationModel(BaseModel):
         elif messages:
             input_text = messages
             input_type = 'messages'
-            llama_input = [ChatMessage(role=x['role'], content=x['content']) for x in input_text]
+            llama_input = [ChatMessage(role=x.role, content=x.content) for x in input_text]
         else:
             raise RuntimeError("prompt and messages is both empty!")
 

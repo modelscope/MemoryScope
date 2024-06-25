@@ -1,6 +1,6 @@
 import time
 
-from memory_scope.utils.logger import Logger
+from .logger import Logger
 
 
 class Timer(object):

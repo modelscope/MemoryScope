@@ -5,13 +5,13 @@ from concurrent.futures import as_completed
 from itertools import zip_longest
 from typing import Dict, Any, List
 
-from memory_scope.chat.global_context import GLOBAL_CONTEXT
-from memory_scope.constants.common_constants import MESSAGES, CHAT_NAME
-from memory_scope.enumeration.memory_method_enum import MemoryMethodEnum
-from memory_scope.scheme.message import Message
-from memory_scope.utils.logger import Logger
-from memory_scope.utils.timer import Timer
-from memory_scope.worker.base_worker import BaseWorker
+from chat.global_context import GLOBAL_CONTEXT
+from constants.common_constants import MESSAGES, CHAT_NAME
+from enumeration.memory_method_enum import MemoryMethodEnum
+from scheme.message import Message
+from utils.logger import Logger
+from utils.timer import Timer
+from worker.base_worker import BaseWorker
 
 
 class Pipeline(object):

@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from memory_scope.utils.logger import Logger
-from memory_scope.utils.timer import Timer
+from utils.logger import Logger
+from utils.timer import Timer
 
 
 class BaseWorker(object):
@@ -62,6 +62,9 @@ class BaseWorker(object):
                 self.context_dict[key] = value
         else:
             self.context_dict[key] = value
+
+    def __getattr__(self, key):
+        return self.kwargs[key]
 
     @property
     def name_simple(self) -> str:

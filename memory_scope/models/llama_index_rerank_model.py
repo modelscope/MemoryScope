@@ -4,10 +4,11 @@ from llama_index.core.data_structs import Node
 from llama_index.core.schema import NodeWithScore
 from llama_index.postprocessor.dashscope_rerank import DashScopeRerank
 
-from memory_scope.enumeration.model_enum import ModelEnum
-from memory_scope.models import MODEL_REGISTRY
-from memory_scope.models.base_model import BaseModel
-from memory_scope.models.response import ModelResponse
+from models import MODEL_REGISTRY
+from models.base_model import BaseModel
+from models.response import ModelResponse, ModelResponseGen
+from enumeration.model_enum import ModelEnum
+
 
 
 class LlamaIndexRerankModel(BaseModel):

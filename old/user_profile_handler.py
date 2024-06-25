@@ -1,8 +1,8 @@
 import json
 from typing import List, Dict
 
-from enumeration.memory_node_status import MemoryNodeStatus
-from node.memory_wrap_node import MemoryWrapNode
+from enumeration.memory_status_enum import MemoryNodeStatus
+from scheme.memory_node import MemoryNode
 from node.user_attribute import UserAttribute
 
 
@@ -25,13 +25,13 @@ class UserProfileHandler(object):
         return content
 
     """
-    提供UserAttribute 和 MemoryWrapNode 的相互转化
+    提供UserAttribute 和 MemoryNode 的相互转化
     """
 
     @classmethod
     def to_nodes(cls,
                  user_profile: List[UserAttribute] | Dict[str, UserAttribute] | None = None,
-                 split_value: bool = False) -> List[MemoryWrapNode]:
+                 split_value: bool = False) -> List[MemoryNode]:
 
         user_profile_dict: Dict[str, UserAttribute] = {}
         if user_profile:
@@ -41,14 +41,14 @@ class UserProfileHandler(object):
             elif isinstance(user_profile, dict):
                 user_profile_dict.update(user_profile)
 
-        user_profile_nodes: List[MemoryWrapNode] = []
+        user_profile_nodes: List[MemoryNode] = []
         for _, user_attr in user_profile_dict.items():
             # 获取id
             _id = user_attr.code
             if not _id:
                 _id = f"{user_attr.memory_id}_{user_attr.scene}_profile_{user_attr.memory_key}"
 
-            attr_node = MemoryWrapNode.init_from_attrs(id=_id,
+            attr_node = MemoryNode.init_from_attrs(id=_id,
                                                        code=_id,
                                                        content="",
                                                        memoryId=user_attr.memory_id,
@@ -75,28 +75,28 @@ class UserProfileHandler(object):
                     user_profile_nodes.append(attr_node_copy)
             else:
                 content = cls.format_content(user_attr.memory_key, user_attr.description, user_attr.value)
-                attr_node.memory_node.content = content
+                attr_scheme.memory_node.content = content
                 user_profile_nodes.append(attr_node)
 
         return user_profile_nodes
 
     @classmethod
-    def to_user_attr(cls, user_profile_nodes: List[MemoryWrapNode]) -> Dict[str, UserAttribute]:
+    def to_user_attr(cls, user_profile_nodes: List[MemoryNode]) -> Dict[str, UserAttribute]:
         user_profile_dict: Dict[str, UserAttribute] = {}
 
         for node in user_profile_nodes:
             user_attr = UserAttribute(
                 code=node.id,
-                memory_id=node.memory_node.memoryId,
-                scene=node.memory_node.scene,
-                memory_key=node.memory_node.metaData["memory_key"],
-                value=json.loads(node.memory_node.metaData["value"]),
-                is_unique=int(node.memory_node.metaData["is_unique"]),
-                is_mutable=int(node.memory_node.metaData["is_mutable"]),
-                memory_type=node.memory_node.memoryType,
-                description=node.memory_node.metaData["description"],
-                status=1 if node.memory_node.metaData["status"] == MemoryNodeStatus.ACTIVE.value else 0,
-                ext_info=json.loads(node.memory_node.metaData["ext_info"]),
+                memory_id=scheme.memory_node.memoryId,
+                scene=scheme.memory_node.scene,
+                memory_key=scheme.memory_node.metaData["memory_key"],
+                value=json.loads(scheme.memory_node.metaData["value"]),
+                is_unique=int(scheme.memory_node.metaData["is_unique"]),
+                is_mutable=int(scheme.memory_node.metaData["is_mutable"]),
+                memory_type=scheme.memory_node.memoryType,
+                description=scheme.memory_node.metaData["description"],
+                status=1 if scheme.memory_node.metaData["status"] == MemoryNodeStatus.ACTIVE.value else 0,
+                ext_info=json.loads(scheme.memory_node.metaData["ext_info"]),
             )
             user_profile_dict[user_attr.memory_key] = user_attr
         return user_profile_dict
