@@ -13,7 +13,7 @@ INFO_FILTER_SYSTEM_PROMPT = {
 """
 }
 
-INFO_FILTER_FEW_SHOT = {
+INFO_FILTER_FEW_SHOT_PROMPT = {
     LanguageEnum.CN: """
 示例1
 句子：
@@ -69,7 +69,7 @@ INFO_FILTER_FEW_SHOT = {
 """
 }
 
-INFO_FILTER_USER_QUERY = {
+INFO_FILTER_USER_QUERY_PROMPT = {
     LanguageEnum.CN: """
 句子：
 {user_query}
