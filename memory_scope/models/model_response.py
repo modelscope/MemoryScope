@@ -27,6 +27,7 @@ class ModelResponse(BaseModel):
 
     def __str__(self, max_size=100, **kwargs):
         result = {}
+        # noinspection PyBroadException
         try:
             all_dict = self.model_dump()
         except Exception:
