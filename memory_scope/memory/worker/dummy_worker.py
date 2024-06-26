@@ -1,6 +1,6 @@
-from memory_base_worker import MemoryBaseWorker
+from memory_scope.memory.worker.base_worker import BaseWorker
 
 
-class DummyWorker(MemoryBaseWorker):
+class DummyWorker(BaseWorker):
     def _run(self):
-        pass
+        self.logger.info("enter dummy worker!")

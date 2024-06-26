@@ -6,7 +6,6 @@ from typing import Dict, Any, List
 
 from memory_scope.chat_v2.global_context import G_CONTEXT
 from memory_scope.memory.worker.base_worker import BaseWorker
-from memory_scope.scheme.message import Message
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.timer import Timer
 from memory_scope.utils.tool_functions import init_instance_by_config
@@ -18,15 +17,11 @@ class BaseWorkflow(object):
                  name: str,
                  workflow: str,
                  thread_pool: ThreadPoolExecutor,
-                 chat_messages: List[Message],
-                 max_history_message_count: int,
                  **kwargs):
 
         self.name: str = name
         self.workflow: str = workflow
         self.thread_pool: ThreadPoolExecutor = thread_pool
-        self.chat_messages: List[Message] = chat_messages
-        self.max_history_message_count: int = max_history_message_count
         self.kwargs = kwargs
 
         self.workflow_worker_list: List[List[List[str]]] = []
@@ -115,7 +110,8 @@ class BaseWorkflow(object):
                 else:
                     t_list = []
                     for sub_workflow in workflow_part:
-                        t_list.append(G_CONTEXT.thread_pool.submit(self._run_sub_workflow, sub_workflow))
+                        t_list.append(G_CONTEXT.thread_pool.submit(
+                            self._run_sub_workflow, sub_workflow))
 
                     flag = True
                     for future in as_completed(t_list):
