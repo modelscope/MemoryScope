@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class BaseMemoryChat(metaclass=ABCMeta):
-    def __init__(self, **kwargs):
+    def __init__(self, memory_service: str, **kwargs):
         self.kwargs = kwargs
 
 

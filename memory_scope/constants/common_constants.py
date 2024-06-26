@@ -1,3 +1,7 @@
+RESULT = "result"
+
+CHAT_MESSAGES = "chat_messages"
+
 RELATED_MEMORIES = "related_memories"
 
 MESSAGES = "messages"

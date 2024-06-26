@@ -3,7 +3,7 @@ import time
 from abc import abstractmethod, ABCMeta
 
 from enumeration.model_enum import ModelEnum
-from . import MODEL_REGISTRY
+from memory_scope.models import MODEL_REGISTRY
 from .response import ModelResponse, ModelResponseGen
 from utils.logger import Logger
 from utils.timer import Timer

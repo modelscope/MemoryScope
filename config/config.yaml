@@ -3,34 +3,48 @@ global_config:
   max_workers: 5
   dash_scope_apikey:
   open_ai_apikey:
-  chat_list:
-    - memory_chat
 memory_chat:
-  memory_service: memory_chat_service
-  generation_model: dashscope_generation
-memory_chat_service:
-  class: memory.base_memory_service
-  history_msg_count: 5
-  memory_operations:
-    - name: read_memory
-      class: memory.workflow.base_workflow
-      workflow: parse_params,load_profile,extract_time,es_similar,es_keyword,semantic_rank,fuse_rerank
-      work_type: frontend
-    - name: list_memory
-      class: memory.workflow.base_workflow
-      workflow: dummy
-      work_type: frontend
-    - name: extract_memory
-      class: memory.workflow.base_workflow
-      workflow: dummy
-      work_type: backend
-      interval_time: 60
-      min_count: 5
-    - name: reflect_memory
-      class: memory.workflow.base_workflow
-      workflow: dummy
-      work_type: backend
-      interval_time: 300
+  cli_memory_chat:
+    class: chat.cli_memory_chat
+    memory_service: memory_chat_service
+    generation_model: dashscope_generation
+memory_service:
+  memory_chat_service:
+    class: memory.base_memory_service
+    history_msg_count: 5
+    memory_operations:
+      read_memory:
+        class: memory.workflow.base_workflow
+        workflow: parse_params,load_profile,extract_time,es_similar,es_keyword,semantic_rank,fuse_rerank
+        work_type: frontend
+      list_memory:
+        class: memory.workflow.base_workflow
+        workflow: dummy
+        work_type: frontend
+      extract_memory:
+        class: memory.workflow.base_workflow
+        workflow: dummy
+        work_type: backend
+        interval_time: 60
+        min_count: 5
+      reflect_memory:
+        class: memory.workflow.base_workflow
+        workflow: dummy
+        work_type: backend
+        interval_time: 300
+models:
+  dashscope_generation:
+    clazz: models.llama_index_generation_model
+    module_name: DashScope
+    model_name: qwen-max
+  dashscope_embedding:
+    clazz: models.base_embedding_model
+    module_name: DashScopeEmbedding
+    model_name: text-embedding-v2
+  dashscope_rank:
+    clazz: models.base_rank_model
+    module_name: DashScopeRerank
+    model_name: gte-rerank
 vector_store:
   clazz: storage.base_vector_store
   index_name: memory_test
@@ -39,21 +53,8 @@ monitor:
   clazz: storage.base_monitor
   index_name: memory_test
 workers:
-  - name: update_insight
+  update_insight:
     clazz: worker.summary_long.update_insight
     generation_model: dashscope_generation
     embedding_model: dashscope_embedding
     rank_model: dashscope_rank
-models:
-  - name: dashscope_generation
-    clazz: models.llama_index_generation_model
-    module_name: DashScope
-    model_name: qwen-max
-  - name: dashscope_embedding
-    clazz: models.base_embedding_model
-    module_name: DashScopeEmbedding
-    model_name: text-embedding-v2
-  - name: dashscope_rank
-    clazz: models.base_rank_model
-    module_name: DashScopeRerank
-    model_name: gte-rerank

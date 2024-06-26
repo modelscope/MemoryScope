@@ -1,4 +1,3 @@
-from utils.registry import Registry
+from memory_scope.utils.registry import Registry
 
-# __all__ = ["LlamaIndexEmbeddingModel", "LlamaIndexGenerationModel", "LlamaIndexRerankModel"]
 MODEL_REGISTRY = Registry("models")
