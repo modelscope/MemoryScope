@@ -5,7 +5,7 @@ import pydantic
 
 from memory_scope.chat_v2.base_memory_chat import BaseMemoryChat
 from memory_scope.enumeration.language_enum import LanguageEnum
-from memory_scope.memory.base_memory_service import BaseMemoryService
+from memory_scope.memory.service.base_memory_service import BaseMemoryService
 from memory_scope.models.base_model import BaseModel
 from memory_scope.storage.base_monitor import BaseMonitor
 from memory_scope.storage.base_vector_store import BaseVectorStore
