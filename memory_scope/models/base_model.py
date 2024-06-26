@@ -2,11 +2,11 @@ import inspect
 import time
 from abc import abstractmethod, ABCMeta
 
-from enumeration.model_enum import ModelEnum
+from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.models import MODEL_REGISTRY
-from .response import ModelResponse, ModelResponseGen
-from utils.logger import Logger
-from utils.timer import Timer
+from memory_scope.models.response import ModelResponse, ModelResponseGen
+from memory_scope.utils.logger import Logger
+from memory_scope.utils.timer import Timer
 
 
 class BaseModel(metaclass=ABCMeta):

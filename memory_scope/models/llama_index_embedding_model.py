@@ -2,10 +2,10 @@ from typing import List
 
 from llama_index.embeddings.dashscope import DashScopeEmbedding
 
-from models import MODEL_REGISTRY
-from models.base_model import BaseModel
-from models.response import ModelResponse, ModelResponseGen
-from enumeration.model_enum import ModelEnum
+from memory_scope.models import MODEL_REGISTRY
+from memory_scope.models.base_model import BaseModel
+from memory_scope.models.response import ModelResponse, ModelResponseGen
+from memory_scope.enumeration.model_enum import ModelEnum
 
 
 class LlamaIndexEmbeddingModel(BaseModel):

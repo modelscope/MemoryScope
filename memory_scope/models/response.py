@@ -3,7 +3,7 @@ from typing import Generator, List, Dict, Any
 
 from pydantic import BaseModel, Field
 
-from enumeration.model_enum import ModelEnum
+from memory_scope.enumeration.model_enum import ModelEnum
 
 
 class ModelResponse(BaseModel):

@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import Dict, List
 
-from models.base_model import BaseModel
+from memory_scope.models.base_model import BaseModel
+from memory_scope.scheme.memory_node import MemoryNode
 
 
 class BaseVectorStore(metaclass=ABCMeta):
