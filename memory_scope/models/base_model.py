@@ -3,10 +3,12 @@ import time
 from abc import abstractmethod, ABCMeta
 
 from memory_scope.enumeration.model_enum import ModelEnum
-from memory_scope.models import MODEL_REGISTRY
-from memory_scope.models.response import ModelResponse, ModelResponseGen
+from memory_scope.models.model_response import ModelResponse, ModelResponseGen
 from memory_scope.utils.logger import Logger
+from memory_scope.utils.registry import Registry
 from memory_scope.utils.timer import Timer
+
+MODEL_REGISTRY = Registry("models")
 
 
 class BaseModel(metaclass=ABCMeta):
@@ -70,8 +72,8 @@ class BaseModel(metaclass=ABCMeta):
         :param kwargs:
         :return:
         """
-        self.before_call(stream=stream, **kwargs)
         with Timer(self.__class__.__name__, log_time=False) as t:
+            self.before_call(stream=stream, **kwargs)
             for i in range(self.max_retries):
                 try:
                     model_response = self._call(stream=stream, **kwargs)
@@ -97,8 +99,8 @@ class BaseModel(metaclass=ABCMeta):
         :param kwargs:
         :return:
         """
-        self.before_call(**kwargs)
         with Timer(self.__class__.__name__, log_time=False) as t:
+            self.before_call(**kwargs)
             for i in range(self.max_retries):
                 try:
                     model_response = await self._async_call(**kwargs)

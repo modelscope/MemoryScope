@@ -10,7 +10,8 @@ class Registry(object):
         self.name: str = name
         self.module_dict: Dict[str, Any] = {}
 
-    def register(self, module: Any, module_name: str = None):
+    def register(self, module_name: str = None, module: Any = None):
+        assert module is not None
         if module_name is None:
             module_name = module.__name__
 

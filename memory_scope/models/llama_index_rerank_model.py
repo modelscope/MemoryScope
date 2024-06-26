@@ -4,19 +4,15 @@ from llama_index.core.data_structs import Node
 from llama_index.core.schema import NodeWithScore
 from llama_index.postprocessor.dashscope_rerank import DashScopeRerank
 
-from models import MODEL_REGISTRY
-from models.base_model import BaseModel
-from models.response import ModelResponse, ModelResponseGen
-from enumeration.model_enum import ModelEnum
-
+from memory_scope.enumeration.model_enum import ModelEnum
+from memory_scope.models.base_model import BaseModel, MODEL_REGISTRY
+from memory_scope.models.model_response import ModelResponse
 
 
 class LlamaIndexRerankModel(BaseModel):
     m_type: ModelEnum = ModelEnum.RANK_MODEL
 
-    MODEL_REGISTRY.batch_register([
-        DashScopeRerank
-    ])
+    MODEL_REGISTRY.register("dashscope_rank", DashScopeRerank)
 
     def before_call(self, **kwargs) -> None:
         assert "query" in kwargs or "documents" in kwargs

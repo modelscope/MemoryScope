@@ -1,24 +1,17 @@
 from typing import List, Dict
-from llama_index.core.base.llms.types import (
-    ChatMessage,
-    ChatResponse,
-    CompletionResponse,
-)
+
+from llama_index.core.base.llms.types import ChatMessage, ChatResponse, CompletionResponse
 from llama_index.llms.dashscope import DashScope
 
-from enumeration.model_enum import ModelEnum
-from . import MODEL_REGISTRY
-from .base_model import BaseModel
-from .response import ModelResponse, ModelResponseGen
+from memory_scope.enumeration.model_enum import ModelEnum
+from memory_scope.models.base_model import BaseModel, MODEL_REGISTRY
+from memory_scope.models.model_response import ModelResponse, ModelResponseGen
 
 
 class LlamaIndexGenerationModel(BaseModel):
     m_type: ModelEnum = ModelEnum.GENERATION_MODEL
 
-    # TODO rename module name at xianzhe
-    MODEL_REGISTRY.batch_register([
-        DashScope,
-    ])
+    MODEL_REGISTRY.register("dashscope_generation", DashScope)
 
     def before_call(self, **kwargs) -> None:
         prompt: str = kwargs.pop("prompt", "")
