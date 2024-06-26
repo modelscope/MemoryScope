@@ -59,3 +59,6 @@ class ChatMemoryService(BaseMemoryService):
             self.logger.warning(f"op_name={op_name} is not inited!")
             return
         return self.op_dict[op_name].run_operation()
+
+    def get_op_description_dict(self) -> Dict[str, str]:
+        return {k: v.description for k, v in self.op_dict.items()}

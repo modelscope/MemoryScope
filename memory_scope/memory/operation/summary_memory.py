@@ -1,6 +1,7 @@
 import time
 
 from memory_scope.chat_v2.global_context import G_CONTEXT
+from memory_scope.constants.common_constants import RESULT
 from memory_scope.memory.operation.base_operation import BaseOperation, OPERATION_TYPE
 from memory_scope.memory.operation.base_workflow import BaseWorkflow
 
@@ -8,8 +9,13 @@ from memory_scope.memory.operation.base_workflow import BaseWorkflow
 class SummaryMemory(BaseWorkflow, BaseOperation):
     operation_type: OPERATION_TYPE = "backend"
 
-    def __init__(self, interval_time: int = 300, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self,
+                 name: str,
+                 description: str,
+                 interval_time: int = 300,
+                 **kwargs):
+        super().__init__(name=name, **kwargs)
+        BaseOperation.__init__(self, name=name, description=description)
 
         self.interval_time: int = interval_time
 
@@ -25,8 +31,10 @@ class SummaryMemory(BaseWorkflow, BaseOperation):
 
         self._operation_status_run = True
         self.run_workflow()
+        result = self.context.get(RESULT)
         self.context.clear()
         self._operation_status_run = False
+        return result
 
     def _loop_operation(self):
         while self._loop_switch:

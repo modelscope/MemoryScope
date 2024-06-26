@@ -29,17 +29,7 @@ class MemoryChat(BaseMemoryChat):
             ]
         return self._generation_model
 
-    @staticmethod
-    def get_system_prompt(related_memories: List[str], time_created: int) -> Message:
-        system_prompt = SYSTEM_PROMPT[GLOBAL_CONTEXT.language]
-        if related_memories:
-            memory_prompt = MEMORY_PROMPT[GLOBAL_CONTEXT.language]
-            system_prompt = "\n".join([system_prompt, memory_prompt] + related_memories)
-        return Message(
-            role=MessageRoleEnum.SYSTEM,
-            content=system_prompt.strip(),
-            time_created=time_created,
-        )
+
 
     def chat_with_memory(self, query: str):
         query = query.strip()

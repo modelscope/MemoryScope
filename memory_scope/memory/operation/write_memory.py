@@ -2,7 +2,7 @@ import time
 from typing import List
 
 from memory_scope.chat_v2.global_context import G_CONTEXT
-from memory_scope.constants.common_constants import CHAT_MESSAGES
+from memory_scope.constants.common_constants import CHAT_MESSAGES, RESULT
 from memory_scope.memory.operation.base_operation import BaseOperation, OPERATION_TYPE
 from memory_scope.memory.operation.base_workflow import BaseWorkflow
 from memory_scope.scheme.message import Message
@@ -12,13 +12,17 @@ class WriteMemory(BaseOperation, BaseWorkflow):
     operation_type: OPERATION_TYPE = "backend"
 
     def __init__(self,
+                 name: str,
+                 description: str,
                  chat_messages: List[Message],
                  his_msg_count: int = 0,
                  message_lock=None,
                  interval_time: int = 60,
                  contextual_msg_count: int = 6,
                  **kwargs):
-        super().__init__(**kwargs)
+
+        super().__init__(name=name, **kwargs)
+        BaseOperation.__init__(self, name=name, description=description)
 
         self.chat_messages: List[Message] = chat_messages
         self.his_msg_count: int = his_msg_count
@@ -54,9 +58,11 @@ class WriteMemory(BaseOperation, BaseWorkflow):
         max_count = not_memorized_size + self.his_msg_count
         self.context[CHAT_MESSAGES] = [x.copy() for x in self.chat_messages[-max_count:]]
         self.run_workflow()
+        result = self.context.get(RESULT)
         self.context.clear()
         self.set_memorized()
         self._operation_status_run = False
+        return result
 
     def _loop_operation(self):
         while self._loop_switch:

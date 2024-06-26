@@ -9,8 +9,15 @@ from memory_scope.scheme.message import Message
 class ReadMemory(BaseWorkflow, BaseOperation):
     operation_type: OPERATION_TYPE = "frontend"
 
-    def __init__(self, chat_messages: List[Message], his_msg_count: int = 0, contextual_msg_count: int = 0, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self,
+                 name: str,
+                 description: str,
+                 chat_messages: List[Message],
+                 his_msg_count: int = 0,
+                 contextual_msg_count: int = 0,
+                 **kwargs):
+        super().__init__(name=name, **kwargs)
+        BaseOperation.__init__(self, name=name, description=description)
         self.chat_messages: List[Message] = chat_messages
         self.his_msg_count: int = his_msg_count
         self.contextual_msg_count: int = contextual_msg_count
