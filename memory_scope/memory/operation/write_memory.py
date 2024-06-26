@@ -8,7 +8,7 @@ from memory_scope.memory.operation.base_workflow import BaseWorkflow
 from memory_scope.scheme.message import Message
 
 
-class WriteOperation(BaseOperation, BaseWorkflow):
+class WriteMemory(BaseOperation, BaseWorkflow):
     operation_type: OPERATION_TYPE = "backend"
 
     def __init__(self,

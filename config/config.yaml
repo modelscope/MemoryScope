@@ -11,21 +11,25 @@ memory_chat:
 memory_service:
   memory_chat_service:
     class: memory.base_memory_service
-    history_msg_count: 10
+    history_msg_count: 32
+    contextual_msg_count: 6
     memory_operations:
+      read_user_message:
+        class: memory.operation.read_memory
+        workflow: dummy
       read_memory:
-        class: memory.operation.read_operation
+        class: memory.operation.read_memory
         workflow: dummy
       list_memory:
-        class: memory.operation.read_operation
+        class: memory.operation.read_memory
         workflow: dummy
       write_memory:
-        class: memory.operation.write_operation
+        class: memory.operation.write_memory
         workflow: dummy
         interval_time: 60
         contextual_msg_count: 6
       summary_memory:
-        class: memory.operation.summary_operation
+        class: memory.operation.summary_memory
         workflow: dummy
         interval_time: 300
 models:

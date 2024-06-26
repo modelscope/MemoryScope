@@ -9,5 +9,5 @@ class BaseMemoryService(metaclass=ABCMeta):
         self.kwargs = kwargs
 
     @abstractmethod
-    def get_short_memory(self):
+    def do_operation(self, op_name: str):
         pass

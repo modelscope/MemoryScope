@@ -19,6 +19,7 @@ class ChatMemoryService(BaseMemoryService):
         self.op_dict: Dict[str, BaseOperation] = self._init_operation(memory_operations)
         self.history_msg_count: int = history_msg_count
         self.contextual_msg_count: int = contextual_msg_count
+        assert self.history_msg_count >= self.contextual_msg_count
 
         self.chat_messages: List[Message] = []
         self.message_lock = threading.Lock
@@ -36,7 +37,10 @@ class ChatMemoryService(BaseMemoryService):
                                                          contextual_msg_count=self.contextual_msg_count)
         return op_dict
 
-    def submit_message(self, messages: List[Message]):
+    def submit_messages(self, messages: List[Message] | Message):
+        if isinstance(messages, Message):
+            messages = [messages]
+
         messages = sorted(messages, key=lambda x: x.time_created)
         self.chat_messages.extend(messages)
         if len(self.chat_messages) > self.history_msg_count:
@@ -54,6 +58,4 @@ class ChatMemoryService(BaseMemoryService):
         if op_name not in self.op_dict:
             self.logger.warning(f"op_name={op_name} is not inited!")
             return
-
-        operation = self.op_dict[op_name]
-        return operation.run_operation()
+        return self.op_dict[op_name].run_operation()
