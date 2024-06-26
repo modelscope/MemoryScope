@@ -11,26 +11,22 @@ memory_chat:
 memory_service:
   memory_chat_service:
     class: memory.base_memory_service
-    history_msg_count: 5
+    history_msg_count: 10
     memory_operations:
       read_memory:
-        class: memory.workflow.base_workflow
-        workflow: parse_params,load_profile,extract_time,es_similar,es_keyword,semantic_rank,fuse_rerank
-        work_type: frontend
+        class: memory.operation.read_operation
+        workflow: dummy
       list_memory:
-        class: memory.workflow.base_workflow
+        class: memory.operation.read_operation
         workflow: dummy
-        work_type: frontend
-      extract_memory:
-        class: memory.workflow.base_workflow
+      write_memory:
+        class: memory.operation.write_operation
         workflow: dummy
-        work_type: backend
         interval_time: 60
-        min_count: 5
-      reflect_memory:
-        class: memory.workflow.base_workflow
+        contextual_msg_count: 6
+      summary_memory:
+        class: memory.operation.summary_operation
         workflow: dummy
-        work_type: backend
         interval_time: 300
 models:
   dashscope_generation:

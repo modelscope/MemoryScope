@@ -13,18 +13,18 @@ class WriteOperation(BaseOperation, BaseWorkflow):
 
     def __init__(self,
                  chat_messages: List[Message],
-                 max_his_msg_count: int = 0,
+                 his_msg_count: int = 0,
                  message_lock=None,
                  interval_time: int = 60,
-                 min_count: int = 5,
+                 contextual_msg_count: int = 6,
                  **kwargs):
         super().__init__(**kwargs)
 
         self.chat_messages: List[Message] = chat_messages
-        self.max_his_msg_count: int = max_his_msg_count
+        self.his_msg_count: int = his_msg_count
         self.message_lock = message_lock
         self.interval_time: int = interval_time
-        self.min_count: int = min_count
+        self.contextual_msg_count: int = contextual_msg_count
 
         self._operation_status_run: bool = False
         self._loop_switch: bool = False
@@ -39,16 +39,19 @@ class WriteOperation(BaseOperation, BaseWorkflow):
                 for msg in self.chat_messages:
                     msg.memorized = True
 
+    def init_workflow(self):
+        self.init_workers()
+
     def run_operation(self):
         if self._operation_status_run:
             return
 
         self._operation_status_run = True
         not_memorized_size = self.not_memorized_size
-        if not_memorized_size < self.min_count:
+        if not_memorized_size < self.contextual_msg_count:
             return
 
-        max_count = not_memorized_size + self.max_his_msg_count
+        max_count = not_memorized_size + self.his_msg_count
         self.context[CHAT_MESSAGES] = [x.copy() for x in self.chat_messages[-max_count:]]
         self.run_workflow()
         self.context.clear()

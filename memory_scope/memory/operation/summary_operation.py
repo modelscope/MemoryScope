@@ -17,6 +17,9 @@ class SummaryOperation(BaseWorkflow, BaseOperation):
         self._operation_status_run: bool = False
         self._loop_switch: bool = False
 
+    def init_workflow(self):
+        self.init_workers()
+
     def run_operation(self):
         if self._operation_status_run:
             return
