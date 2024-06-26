@@ -33,7 +33,7 @@ class BaseModel(metaclass=ABCMeta):
         self.data = {}
         self.logger = Logger.get_logger()
 
-        obj_cls = MODEL_REGISTRY.get(self.method_type)
+        obj_cls = MODEL_REGISTRY[self.method_type]
         if not obj_cls:
             raise RuntimeError(f"method_type={self.method_type} is not supported!")
 

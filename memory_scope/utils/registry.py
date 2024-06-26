@@ -28,6 +28,6 @@ class Registry(object):
             raise NotImplementedError
         self.module_dict.update(module_name_dict)
 
-    def get(self, module_name: str):
-        assert module_name in self.module_dict, f'{module_name} not found in {self.name}'
+    def __getitem__(self, module_name: str):
+        assert module_name in self.module_dict, f"{module_name} not found in {self.name}"
         return self.module_dict[module_name]
