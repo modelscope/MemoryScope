@@ -10,7 +10,7 @@ memory_chat:
     generation_model: dashscope_generation
 memory_service:
   memory_chat_service:
-    class: memory.service.base_memory_service
+    class: memory.service.chat_memory_service
     history_msg_count: 32
     contextual_msg_count: 6
     memory_operations:

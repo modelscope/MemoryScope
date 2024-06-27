@@ -8,7 +8,6 @@ from memory_scope.utils.tool_functions import init_instance_by_config
 class ChatMemoryService(BaseMemoryService):
 
     def __init__(self,
-                 memory_operations: Dict[str, dict],
                  history_msg_count: int = 32,
                  contextual_msg_count: int = 6,
                  **kwargs):
@@ -16,8 +15,6 @@ class ChatMemoryService(BaseMemoryService):
         self.history_msg_count: int = history_msg_count
         self.contextual_msg_count: int = contextual_msg_count
         assert self.history_msg_count >= self.contextual_msg_count
-
-        self._init_operation(memory_operations)
 
     def _init_operation(self, memory_operations: Dict[str, dict]):
         for name, operation_config in memory_operations.items():
@@ -47,7 +44,7 @@ class ChatMemoryService(BaseMemoryService):
             if operation.operation_type == "backend":
                 operation.run_operation_backend()
 
-    def operate(self, op_name: str):
+    def do_operation(self, op_name: str):
         if op_name not in self._operation_dict:
             self.logger.warning(f"op_name={op_name} is not inited!")
             return
