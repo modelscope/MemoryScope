@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append(".")
+sys.path.append(".")  # noqa: E402
 
 import json
 from concurrent.futures import ThreadPoolExecutor

@@ -13,6 +13,7 @@ from memory_scope.prompts.memory_chat_prompt import MEMORY_PROMPT, SYSTEM_PROMPT
 from memory_scope.scheme.message import Message
 from memory_scope.scheme.model_response import ModelResponse, ModelResponseGen
 from memory_scope.utils.logger import Logger
+from memory_scope.utils.tool_functions import char_logo
 
 
 class CliMemoryChat(BaseMemoryChat):
@@ -28,7 +29,12 @@ class CliMemoryChat(BaseMemoryChat):
         self.stream: bool = stream
         self.kwargs: dict = kwargs
 
+        self._logo = char_logo("MemoryScope")
         self.logger = Logger.get_logger()
+
+    def print_logo(self):
+        for line in self._logo:
+            print(line)
 
     @property
     def memory_service(self) -> BaseMemoryService:
@@ -63,11 +69,12 @@ class CliMemoryChat(BaseMemoryChat):
         self.memory_service.add_messages(new_message)
         related_memories: List[str] = self.memory_service.read_memory()
         system_message: Message = self.get_system_prompt(related_memories, time_created)
+        result = self.generation_model.call(messages=[system_message, new_message], stream=self.stream)
         if self.stream:
-            for result in self.generation_model.call(messages=[system_message, new_message], stream=self.stream):
-                yield result
-
-        self.memory_service.add_messages(result.message)
+            for _ in result:
+                yield _
+        else:
+            return result
 
     def process_commands(self, query: str) -> bool:
         continue_run = True
@@ -81,8 +88,8 @@ class CliMemoryChat(BaseMemoryChat):
         elif query == "help":
             questionary.print("CLI commands", "bold")
             for cmd, desc in self.USER_COMMANDS.items():
-                questionary.print(cmd, "bold")
-                questionary.print(f" {desc}")
+                questionary.print(text=f" /{cmd}:", style="bold")
+                questionary.print(text=f"  {desc}")
 
         elif query == "stream":
             self.stream = bool(args[0])
@@ -109,20 +116,17 @@ class CliMemoryChat(BaseMemoryChat):
         return continue_run
 
     def run(self):
-        self.USER_COMMANDS.update({f"/{k}": v for k, v in self.memory_service.op_description_dict.items()})
+        self.print_logo()
+        self.USER_COMMANDS.update(self.memory_service.op_description_dict)
 
         while True:
             try:
-                query = questionary.text(
-                    message="Please enter your message or command:",
-                    multiline=False,
-                    qmark=">",
-                ).ask()
-                query: str = query.strip()
+                query = questionary.text(message="user:", multiline=False, qmark=">").ask()
 
-                if query == "":
-                    questionary.print("Empty input received. Please try again!")
+                if not query:
                     continue
+
+                query: str = query.strip()
 
                 # handle cli / commands with memory ops
                 if query.startswith("/"):
@@ -131,6 +135,9 @@ class CliMemoryChat(BaseMemoryChat):
                     else:
                         break
 
+                msg = None
+                questionary.print("> ", end="", style="fg:yellow")
+                questionary.print("assistant: ", end="", style="bold")
                 if self.stream:
                     for msg in self.chat_with_memory(query=query):
                         questionary.print(msg.delta, end="")
@@ -138,6 +145,7 @@ class CliMemoryChat(BaseMemoryChat):
                 else:
                     msg = self.chat_with_memory(query=query)
                     questionary.print(msg.message.content)
+                self.memory_service.add_messages(msg.message)
 
             except KeyboardInterrupt:
                 questionary.print("User interrupt occurred.")
@@ -147,6 +155,9 @@ class CliMemoryChat(BaseMemoryChat):
                     break
 
             except Exception as e:
-                questionary.print(f"An exception occurred when running cli memory chat. args={e.args}")
-                self.logger.exception(f"An exception occurred when running cli memory chat. args={e.args}")
+                line = f"An exception occurred when running cli memory chat. args={e.args}"
+                questionary.print(line)
+                self.logger.exception(line)
                 continue
+
+        questionary.print(f"A memory writing thread is still running, please be patient and wait!")

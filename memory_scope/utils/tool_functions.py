@@ -1,11 +1,19 @@
+import random
 import re
+import time
 from copy import deepcopy
 from datetime import datetime
 from importlib import import_module
+from typing import get_args
+
+import pyfiglet
+from termcolor import colored, COLORS
+from termcolor._types import Color
 
 from memory_scope.constants.common_constants import WEEKDAYS
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 
+ALL_COLORS = get_args(COLORS)
 
 def under_line_to_hump(underline_str):
     sub = re.sub(r"(_\w)", lambda x: x.group(1)[1].upper(), underline_str)
@@ -68,11 +76,10 @@ def get_datetime_info_dict(parse_dt: datetime):
     }
 
 
-def time_to_formatted_str(
-    time: datetime | str | int | float = None,
-    date_format: str = "%Y%m%d",  # e.g. %Y%m%d -> "20240528", add %H:%M:%S
-    string_format: str = "",
-) -> str:
+def time_to_formatted_str(time: datetime | str | int | float = None,
+                          date_format: str = "%Y%m%d",  # e.g. %Y%m%d -> "20240528", add %H:%M:%S
+                          string_format: str = "") -> str:
+
     if isinstance(time, str | int | float):
         if isinstance(time, str):
             time = float(time)
@@ -89,3 +96,22 @@ def time_to_formatted_str(
         return_str = string_format.format(**get_datetime_info_dict(current_dt))
 
     return return_str
+
+
+def char_logo(words: str, seed: int = time.time_ns(), color: Color = None):
+    font = pyfiglet.Figlet()
+    rendered_text = font.renderText(words)
+    colored_lines = []
+    all_colors = list(COLORS.keys())
+    random.seed = seed
+    for line in rendered_text.splitlines():
+        line_color = color
+        if line_color is None:
+            random.shuffle(all_colors)
+            line_color = all_colors[0]
+        colored_line = ""
+        for char in line:
+            colored_char = colored(char, line_color, attrs=['bold'])
+            colored_line += colored_char
+        colored_lines.append(colored_line)
+    return colored_lines

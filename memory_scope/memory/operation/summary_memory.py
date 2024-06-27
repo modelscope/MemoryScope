@@ -39,8 +39,13 @@ class SummaryMemory(BaseWorkflow, BaseOperation):
 
     def _loop_operation(self):
         while self._loop_switch:
-            time.sleep(self.interval_time)
-            self.run_operation()
+            for _ in range(self.interval_time):
+                if self._loop_switch:
+                    time.sleep(1)
+                else:
+                    break
+            if self._loop_switch:
+                self.run_operation()
 
     def run_operation_backend(self):
         if not self._loop_switch:
