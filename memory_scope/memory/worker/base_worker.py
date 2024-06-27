@@ -52,5 +52,5 @@ class BaseWorker(metaclass=ABCMeta):
         else:
             self.context[key] = value
 
-    def __getattr__(self, key):
+    def __getattr__(self, key: str):
         return self.kwargs[key]

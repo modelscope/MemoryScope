@@ -13,8 +13,9 @@ memory_service:
     class: memory.service.chat_memory_service
     history_msg_count: 32
     contextual_msg_count: 6
+    read_memory_key: read_memory
     memory_operations:
-      read_user_message:
+      contextual_message:
         class: memory.operation.read_memory
         workflow: dummy
         description: "read session messages of the user"
