@@ -9,7 +9,7 @@ from memory_scope.models.base_model import BaseModel, MODEL_REGISTRY
 from memory_scope.models.model_response import ModelResponse
 
 
-class LlamaIndexRerankModel(BaseModel):
+class LlamaIndexRankModel(BaseModel):
     m_type: ModelEnum = ModelEnum.RANK_MODEL
 
     MODEL_REGISTRY.register("dashscope_rank", DashScopeRerank)

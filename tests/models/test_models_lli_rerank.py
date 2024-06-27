@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from memory_scope.models.llama_index_rerank_model import LlamaIndexRerankModel
+from memory_scope.models.llama_index_rerank_model import LlamaIndexRankModel
 
 
 class TestLLIReRank(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestLLIReRank(unittest.TestCase):
             "model_name": "gte-rerank",
             "clazz": "models.llama_index_rerank_model"
         }
-        self.reranker = LlamaIndexRerankModel(**config)
+        self.reranker = LlamaIndexRankModel(**config)
 
     def test_rerank(self):
         query = "吃啥？"
