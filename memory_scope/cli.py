@@ -19,7 +19,7 @@ class CliJob(object):
 
     def __init__(self):
         self.config: Dict[str, Any] = {}
-        self.logger: Logger = Logger.get_logger("cli_job")
+        self.logger: Logger = Logger.get_logger("cli_job", to_stream=False)
 
     def load_config(self, path: str):
         with open(path) as f:
