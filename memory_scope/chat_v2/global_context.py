@@ -24,5 +24,3 @@ class GlobalContext(pydantic.BaseModel):
     thread_pool: ThreadPoolExecutor | None = pydantic.Field(None, description="global thread_pool")
     language: LanguageEnum = pydantic.Field(LanguageEnum.CN, description="language: cn / en")
 
-
-G_CONTEXT = GlobalContext()

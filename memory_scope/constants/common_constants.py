@@ -22,10 +22,6 @@ RELATED_MEMORIES = "related_memories"
 
 MODIFIED_MEMORIES = "modified_memories"
 
-RESPONSE_EXT_INFO = "response_ext_info"
-
-PROMPT_CONFIG = "prompt_config"
-
 MESSAGES = "messages"
 
 EXTRACT_TIME_DICT = "extract_time_dict"
@@ -116,3 +112,5 @@ DATATIME_KEY_MAP = {
     "周": "week",
     "星期几": "weekday",
 }
+
+CONTENT_MODIFIED = "content_modified"

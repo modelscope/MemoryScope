@@ -21,10 +21,10 @@ class EsTodayObsWorker(MemoryBaseWorker):
         today_obs_nodes = self.vector_store.retrieve(
             size=self.es_today_obs_top_k,
             filter_dict={
-                "memoryId": self.memory_id,
+                "memory_id": self.memory_id,
                 "status": MemoryNodeStatus.ACTIVE.value,
-                "memoryType": MemoryTypeEnum.OBSERVATION.value,
-                f"metaData.{DT}": time_to_formatted_str(msg_time_created),
+                "memory_type": MemoryTypeEnum.OBSERVATION.value,
+                f"meta_Data.{DT}": time_to_formatted_str(msg_time_created),
             },
         )
 

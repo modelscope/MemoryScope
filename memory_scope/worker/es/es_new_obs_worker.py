@@ -12,10 +12,10 @@ class EsNewObsWorker(MemoryBaseWorker):
         new_obs_nodes = self.vector_store.retrieve(
             size=self.kwargs.es_new_obs_top_k,
             filter_dict={
-                "memoryId": self.memory_id,
+                "memory_id": self.memory_id,
                 "status": MemoryNodeStatus.ACTIVE.value,
-                "memoryType": MemoryTypeEnum.OBSERVATION.value,
-                f"metaData.{NEW}": "1",
+                "memory_type": MemoryTypeEnum.OBSERVATION.value,
+                f"meta_data.{NEW}": "1",
             },
         )
         self.logger.info(f"es new obs, size={len(new_obs_nodes)}")

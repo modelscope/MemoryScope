@@ -19,7 +19,9 @@ class LlamaIndexRerankModel(BaseModel):
         query: str = kwargs.pop("query", "")
         documents: List[str] = kwargs.pop("documents", [])
 
-        assert query and documents, f"query or documents is empty! query={query}, documents={len(documents)}"
+        assert (
+            query and documents
+        ), f"query or documents is empty! query={query}, documents={len(documents)}"
 
         # using -1.0 as dummy scores
         nodes = [NodeWithScore(node=Node(text=doc), score=-1.0) for doc in documents]
@@ -41,7 +43,9 @@ class LlamaIndexRerankModel(BaseModel):
         return model_response
 
     def _call(self, **kwargs) -> ModelResponse:
-        return ModelResponse(m_type=self.m_type, raw=self.model.postprocess_nodes(**self.data))
+        return ModelResponse(
+            m_type=self.m_type, raw=self.model.postprocess_nodes(**self.data)
+        )
 
     async def _async_call(self, **kwargs) -> ModelResponse:
         raise NotImplementedError

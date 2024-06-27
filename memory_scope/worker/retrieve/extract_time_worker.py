@@ -1,11 +1,16 @@
 import re
 
 from utils.tool_functions import time_to_formatted_str
-from constants.common_constants import DATATIME_WORD_LIST, DATATIME_KEY_MAP, EXTRACT_TIME_DICT
+from constants.common_constants import (
+    DATATIME_WORD_LIST,
+    DATATIME_KEY_MAP,
+    EXTRACT_TIME_DICT,
+)
 from worker.memory_base_worker import MemoryBaseWorker
 
 
 class ExtractTimeWorker(MemoryBaseWorker):
+    # TODO add en version
     @staticmethod
     def get_parse_time_prompt(query: str, query_time_str: str):
         return f"""
@@ -35,27 +40,32 @@ class ExtractTimeWorker(MemoryBaseWorker):
             return
 
         # prepare prompt
+        # TODO add en version
         time_format = "{year}年{month}月{day}日，{year}年第{week}周，{weekday}，{hour}时{minute}分{second}秒。"
-        query_time_str = time_to_formatted_str(time=time_created,
-                                               date_format="",
-                                               string_format=time_format)
-        extract_time_prompt = self.get_parse_time_prompt(query=query, query_time_str=query_time_str)
+        query_time_str = time_to_formatted_str(
+            time=time_created, date_format="", string_format=time_format
+        )
+        extract_time_prompt = self.get_parse_time_prompt(
+            query=query, query_time_str=query_time_str
+        )
         self.logger.info(f"extract_time_prompt={extract_time_prompt}")
 
         # call sft model
 
-        self.generation_model.call(prompt=extract_time_prompt,
-                                              model_name=self.parse_time_model,
-                                              max_token=self.parse_time_max_token,
-                                              temperature=self.parse_time_temperature,
-                                              top_k=self.parse_time_top_k)
+        response_text = self.generation_model.call(
+            prompt=extract_time_prompt,
+            model_name=self.parse_time_model,
+            max_token=self.parse_time_max_token,
+            temperature=self.parse_time_temperature,
+            top_k=self.parse_time_top_k,
+        )
 
         # if empty, return
         if not response_text:
             return
 
         # re-match time info to dict
-        pattern = r'-\s*(\S+)：(\d+)'
+        pattern = r"-\s*(\S+)：(\d+)"
         matches = re.findall(pattern, response_text)
         for key, value in matches:
             if key in DATATIME_KEY_MAP.keys():

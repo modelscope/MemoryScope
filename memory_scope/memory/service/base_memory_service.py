@@ -23,8 +23,6 @@ class BaseMemoryService(metaclass=ABCMeta):
         self.logger = Logger.get_logger()
         self.kwargs = kwargs
 
-        self._init_operation(memory_operations)
-
     @abstractmethod
     def _init_operation(self, memory_operations: Dict[str, dict]):
         raise NotImplementedError

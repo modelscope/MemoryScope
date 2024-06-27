@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from utils.logger import Logger
-from utils.timer import Timer
+from ..utils.logger import Logger
+from ..utils.timer import Timer
 
 
 class BaseWorker(object):

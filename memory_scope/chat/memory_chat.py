@@ -43,7 +43,7 @@ class MemoryChat(BaseMemoryChat):
         related_memories: List[str] = self.memory_service.retrieve(message=new_message)
         system_message = self.get_system_prompt(related_memories, time_created)
         self.history_message_list.append(new_message)
-        self.history_message_list = self.history_message_list[-self.history_msg_count :]
+        self.history_message_list = self.history_message_list[-self.history_msg_count:]
         all_messages = [system_message] + self.history_message_list
         # TODO at xian zhe
         return self.generation_model.call(messages=all_messages, stream=True)

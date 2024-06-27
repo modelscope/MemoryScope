@@ -14,13 +14,13 @@ class EsNotReflectedWorker(MemoryBaseWorker):
         not_reflected_obs_nodes = self.vector_store.retrieve(
             size=self.kwargs.es_new_obs_top_k,
             filter_dict={
-                "memoryId": self.memory_id,
+                "memory_id": self.memory_id,
                 "status": MemoryNodeStatus.ACTIVE.value,
-                "memoryType": [
+                "memory_type": [
                     MemoryTypeEnum.OBSERVATION.value,
                     MemoryTypeEnum.OBS_CUSTOMIZED.value,
                 ],
-                f"metaData.{REFLECTED}": "0",
+                f"meta_data.{REFLECTED}": "0",
             },
         )
         self.logger.info(

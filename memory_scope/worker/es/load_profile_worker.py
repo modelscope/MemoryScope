@@ -13,9 +13,9 @@ class LoadProfileWorker(MemoryBaseWorker):
         user_profile_node = self.vector_store(
             size=10000,
             filter_dict={
-                "memoryId": self.memory_id,
+                "memory_id": self.memory_id,
                 "status": MemoryNodeStatus.ACTIVE.value,
-                "memoryType": [
+                "memory_type": [
                     MemoryTypeEnum.PROFILE.value,
                     MemoryTypeEnum.PROFILE_CUSTOMIZED.value,
                 ],

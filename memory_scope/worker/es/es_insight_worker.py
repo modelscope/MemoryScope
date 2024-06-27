@@ -13,9 +13,9 @@ class EsInsightWorker(MemoryBaseWorker):
         insight_nodes = self.vector_store.retrieve(
             size=self.kwargs.es_insight_top_k,
             filter_dict={
-                "memoryId": self.memory_id,
+                "memory_id": self.memory_id,
                 "status": MemoryNodeStatus.ACTIVE.value,
-                "memoryType": MemoryTypeEnum.INSIGHT.value,
+                "memory_type": MemoryTypeEnum.INSIGHT.value,
             },
         )
         self.logger.info(f"insight_nodes.size={len(insight_nodes)}")
