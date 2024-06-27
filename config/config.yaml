@@ -55,7 +55,7 @@ vector_store:
   embedding_model: dashscope_embedding
 monitor:
   class: storage.dummy_monitor
-workers:
+worker:
   dummy_worker:
     class: memory.worker.dummy_worker
     generation_model: dashscope_generation

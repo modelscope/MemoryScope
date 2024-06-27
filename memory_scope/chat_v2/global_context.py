@@ -12,7 +12,7 @@ from memory_scope.storage.base_vector_store import BaseVectorStore
 class GlobalContext(object):
     def __init__(self):
         self.global_config: Dict[str, Any] = {}
-        self.worker_config: Dict[str, Any] = {}
+        self.worker_config: Dict[str, Dict[str, Any]] = {}
 
         self.memory_service_dict: Dict[str, BaseMemoryService] = {}
         self.model_dict: Dict[str, BaseModel] = {}

@@ -58,7 +58,7 @@ class CliJob(object):
         G_CONTEXT.monitor = init_instance_by_config(self.config["monitor"])
 
         # set worker config
-        G_CONTEXT.worker_config = self.config["workers"]
+        G_CONTEXT.worker_config = self.config["worker"]
 
     def run(self, config: str):
         self.load_config(config)

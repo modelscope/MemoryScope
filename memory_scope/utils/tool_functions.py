@@ -1,7 +1,9 @@
 import re
+from copy import deepcopy
 from datetime import datetime
 from importlib import import_module
 
+from memory_scope.constants.common_constants import WEEKDAYS
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 
 
@@ -11,7 +13,8 @@ def under_line_to_hump(underline_str):
 
 
 def init_instance_by_config(config: dict, default_class_path: str = "memory_scope", suffix_name: str = "", **kwargs):
-    origin_class_path: str = config.pop("class")
+    config_copy = deepcopy(config)
+    origin_class_path: str = config_copy.pop("class")
     if not origin_class_path:
         raise RuntimeError("empty class path!")
 
@@ -28,7 +31,7 @@ def init_instance_by_config(config: dict, default_class_path: str = "memory_scop
     module = import_module(".".join(class_paths))
 
     cls_name = under_line_to_hump(class_name)
-    return getattr(module, cls_name)(**config, **kwargs)
+    return getattr(module, cls_name)(**config_copy, **kwargs)
 
 
 def complete_config_name(config_name: str, suffix: str = ".json"):

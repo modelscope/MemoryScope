@@ -7,7 +7,11 @@ from memory_scope.scheme.memory_node import MemoryNode
 
 class BaseVectorStore(metaclass=ABCMeta):
 
-    def __init__(self, index_name: str, embedding_model: BaseModel, content_key: str = "text", **kwargs):
+    def __init__(self,
+                 index_name: str = "",
+                 embedding_model: BaseModel | None = None,
+                 content_key: str = "text",
+                 **kwargs):
         self.index_name: str = index_name
         self.embedding_model: BaseModel = embedding_model
         self.content_key: str = content_key
