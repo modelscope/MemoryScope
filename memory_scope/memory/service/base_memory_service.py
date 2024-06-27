@@ -48,4 +48,4 @@ class BaseMemoryService(metaclass=ABCMeta):
 
     def read_memory(self):
         assert self.read_memory_key in self._operation_dict, f"op={self.read_memory_key} is not inited!"
-        return self.operate(self.read_memory_key)
+        return self.do_operation(self.read_memory_key)
