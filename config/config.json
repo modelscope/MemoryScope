@@ -67,15 +67,15 @@
     }
   },
   "vector_store": {
-    "clazz": "storage.dummy_vector_store",
+    "class": "storage.dummy_vector_store",
     "embedding_model": "dashscope_embedding"
   },
   "monitor": {
-    "clazz": "storage.dummy_monitor"
+    "class": "storage.dummy_monitor"
   },
   "workers": {
     "dummy_worker": {
-      "clazz": "memory.worker.dummy_worker",
+      "class": "memory.worker.dummy_worker",
       "generation_model": "dashscope_generation",
       "embedding_model": "dashscope_embedding",
       "rank_model": "dashscope_rank"
