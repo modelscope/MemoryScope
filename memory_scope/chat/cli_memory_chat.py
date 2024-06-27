@@ -11,7 +11,8 @@ from memory_scope.memory.service.base_memory_service import BaseMemoryService
 from memory_scope.models.base_model import BaseModel
 from memory_scope.prompts.memory_chat_prompt import MEMORY_PROMPT, SYSTEM_PROMPT
 from memory_scope.scheme.message import Message
-from ..models.model_response import ModelResponse, ModelResponseGen
+from memory_scope.scheme.model_response import ModelResponse, ModelResponseGen
+from memory_scope.utils.logger import Logger
 
 
 class CliMemoryChat(BaseMemoryChat):
@@ -26,6 +27,8 @@ class CliMemoryChat(BaseMemoryChat):
         self._generation_model: BaseModel | str = generation_model
         self.stream: bool = stream
         self.kwargs: dict = kwargs
+
+        self.logger = Logger.get_logger()
 
     @property
     def memory_service(self) -> BaseMemoryService:
@@ -66,75 +69,84 @@ class CliMemoryChat(BaseMemoryChat):
 
         self.memory_service.add_messages(result.message)
 
+    def process_commands(self, query: str) -> bool:
+        continue_run = True
+        query_split = query.lstrip("/").lower().split(" ")
+        query = query_split[0]
+        args = query_split[1:]
+        if query == "exit":
+            self.memory_service.stop_service()
+            continue_run = False
+
+        elif query == "help":
+            questionary.print("CLI commands", "bold")
+            for cmd, desc in self.USER_COMMANDS.items():
+                questionary.print(cmd, "bold")
+                questionary.print(f" {desc}")
+
+        elif query == "stream":
+            self.stream = bool(args[0])
+            questionary.print(f"stream: {self.stream}")
+
+        elif query in self.memory_service.op_description_dict:
+            if not args:
+                result = self.memory_service.do_operation(op_name=query)
+                questionary.print(result)
+
+            elif args[0].isdigit():
+                refresh_time = int(args[0])
+                while True:
+                    time.sleep(refresh_time)
+                    result = self.memory_service.do_operation(op_name=query)
+                    questionary.print(result, flush=True)
+
+            else:
+                questionary.print("unknown command received. Please try again!")
+
+        else:
+            questionary.print("unknown command received. Please try again!")
+
+        return continue_run
+
     def run(self):
         self.USER_COMMANDS.update({f"/{k}": v for k, v in self.memory_service.op_description_dict.items()})
 
         while True:
-            query = questionary.text(
-                "Please enter your message or command:",
-                multiline=False,
-                qmark=">",
-            ).ask()
+            try:
+                query = questionary.text(
+                    message="Please enter your message or command:",
+                    multiline=False,
+                    qmark=">",
+                ).ask()
+                query: str = query.strip()
 
-            query: str = query.rstrip()
+                if query == "":
+                    questionary.print("Empty input received. Please try again!")
+                    continue
 
-            if query == "":
-                print("Empty input received. Please try again!")
-                continue
-
-            # handle cli / commands with memory ops
-            if query.startswith("/"):
-                query_split = query.lstrip("/").lower().split(" ")
-                query = query_split[0]
-                args = query_split[1:]
-                if query == "exit":
-                    break
-                elif query == "help":
-                    questionary.print("CLI commands", "bold")
-                    for cmd, desc in self.USER_COMMANDS.items():
-                        questionary.print(cmd, "bold")
-                        print(f" {desc}")
-                elif query == "stream":
-                    questionary.print(f"stream: {self.stream}")
-                    self.stream = ~self.stream
-                elif query in self.memory_service.op_description_dict:
-                    if not args:
-                        result = self.memory_service.do_operation(op_name=query)
-                        print(result)
-
-                    elif args[0].isdigit():
-                        refresh_time = int(args[0])
-                        try:
-                            while True:
-                                time.sleep(refresh_time)
-                                result = self.memory_service.do_operation(op_name=query)
-                                print(result, flush=True)
-                        except KeyboardInterrupt:
-                            print("stop refresh!")
+                # handle cli / commands with memory ops
+                if query.startswith("/"):
+                    if self.process_commands(query=query):
+                        continue
                     else:
-                        print("unknown command received. Please try again!")
-                else:
-                    print("unknown command received. Please try again!")
-                continue
+                        break
 
-            while True:
-                # try:
                 if self.stream:
                     for msg in self.chat_with_memory(query=query):
-                        print(msg.delta, end="")
-                    print()
+                        questionary.print(msg.delta, end="")
+                    questionary.print("")
                 else:
                     msg = self.chat_with_memory(query=query)
-                    print(msg.message.content)
-                break
-                # except KeyboardInterrupt:
-                #     questionary.print("User interrupt occurred.")
-                #     retry = questionary.confirm("Retry chat_with_memory()?").ask()
-                #     if not retry:
-                #         break
-                # except Exception as e:
-                #     questionary.print(f"An exception occurred when running chat_with_memory(): {e}")
-                #     # retry = questionary.confirm("Retry chat_with_memory()?").ask()
-                #     # if not retry:
-                #     #     break
-                #     raise e
+                    questionary.print(msg.message.content)
+
+            except KeyboardInterrupt:
+                questionary.print("User interrupt occurred.")
+                is_exit = questionary.confirm("continue exit?").ask()
+                if is_exit:
+                    self.memory_service.stop_service()
+                    break
+
+            except Exception as e:
+                questionary.print(f"An exception occurred when running cli memory chat. args={e.args}")
+                self.logger.exception(f"An exception occurred when running cli memory chat. args={e.args}")
+                continue
