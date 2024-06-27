@@ -9,7 +9,7 @@ from typing import Dict, Any
 import fire
 import yaml
 
-from memory_scope.chat_v2.global_context import G_CONTEXT
+from memory_scope.chat.global_context import G_CONTEXT
 from memory_scope.enumeration.language_enum import LanguageEnum
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.tool_functions import init_instance_by_config

@@ -19,22 +19,10 @@ class BaseVectorStore(metaclass=ABCMeta):
 
     @abstractmethod
     def retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]):
-        """
-        :param text:
-        :param limit_size:
-        :param filter_dict:
-        :return:
-        """
         pass
 
     @abstractmethod
     async def async_retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]):
-        """
-        :param text:
-        :param limit_size:
-        :param filter_dict:
-        :return:
-        """
         pass
 
     @abstractmethod

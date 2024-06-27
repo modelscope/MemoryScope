@@ -1,10 +1,11 @@
 import datetime
 import time
-from typing import Dict, List
+from typing import List
 
 import questionary
+
 from memory_scope.chat.base_memory_chat import BaseMemoryChat
-from memory_scope.chat.global_context import GlobalContext
+from memory_scope.chat.global_context import G_CONTEXT
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.service.base_memory_service import BaseMemoryService
 from memory_scope.models.base_model import BaseModel
@@ -20,30 +21,30 @@ class CliMemoryChat(BaseMemoryChat):
         "stream": "get stream response"
     }
 
-    def __init__(self, memory_service: str, generation_model: str, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, memory_service: str, generation_model: str, stream: bool = True, **kwargs):
         self._memory_service: BaseMemoryService | str = memory_service
         self._generation_model: BaseModel | str = generation_model
-        self.stream: bool = True
+        self.stream: bool = stream
+        self.kwargs: dict = kwargs
 
     @property
     def memory_service(self) -> BaseMemoryService:
         if isinstance(self._memory_service, str):
-            self._memory_service = GlobalContext.memory_service_dict[self._memory_service]
+            self._memory_service = G_CONTEXT.memory_service_dict[self._memory_service]
             self._memory_service.prepare_service()
         return self._memory_service
 
     @property
     def generation_model(self) -> BaseModel:
         if isinstance(self._generation_model, str):
-            self._generation_model = GlobalContext.model_dict[self._generation_model]
+            self._generation_model = G_CONTEXT.model_dict[self._generation_model]
         return self._generation_model
 
     @staticmethod
     def get_system_prompt(related_memories: List[str], time_created: int) -> Message:
-        system_prompt = SYSTEM_PROMPT[GlobalContext.language]
+        system_prompt = SYSTEM_PROMPT[G_CONTEXT.language]
         if related_memories:
-            memory_prompt = MEMORY_PROMPT[GlobalContext.language]
+            memory_prompt = MEMORY_PROMPT[G_CONTEXT.language]
             all_prompt_list = [system_prompt, memory_prompt]
             all_prompt_list.extend(related_memories)
             system_prompt = "\n".join([x.strip() for x in all_prompt_list])
@@ -56,18 +57,17 @@ class CliMemoryChat(BaseMemoryChat):
 
         time_created = int(datetime.datetime.now().timestamp())
         new_message: Message = Message(role=MessageRoleEnum.USER, content=query, time_created=time_created)
-        self.submit_messages(new_message)
+        self.memory_service.add_messages(new_message)
         related_memories: List[str] = self.memory_service.read_memory()
         system_message: Message = self.get_system_prompt(related_memories, time_created)
         if self.stream:
             for result in self.generation_model.call(messages=[system_message, new_message], stream=self.stream):
                 yield result
 
-        self.submit_messages(result.text)
+        self.memory_service.add_messages(result.text)
 
     def run(self):
-        op_description_dict: Dict[str, str] = self.memory_service.get_op_description_dict()
-        self.USER_COMMANDS.update({f"/{k}": v for k, v in op_description_dict.items()})
+        self.USER_COMMANDS.update({f"/{k}": v for k, v in self.memory_service.op_description_dict.items()})
 
         while True:
             query = questionary.text(
@@ -97,7 +97,7 @@ class CliMemoryChat(BaseMemoryChat):
                 elif query == "stream":
                     questionary.print(f"stream: {self.stream}")
                     self.stream = ~self.stream
-                elif query in op_description_dict:
+                elif query in self.memory_service.op_description_dict:
                     if not args:
                         result = self.memory_service.do_operation(op_name=query)
                         print(result)

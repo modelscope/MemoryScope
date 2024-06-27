@@ -7,7 +7,7 @@
   },
   "memory_chat": {
     "cli_memory_chat": {
-      "class": "chat_v2.cli_memory_chat",
+      "class": "chat.cli_memory_chat",
       "memory_service": "memory_chat_service",
       "generation_model": "dashscope_generation"
     }
