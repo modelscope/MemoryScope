@@ -31,7 +31,7 @@ class CliMemoryChat(BaseMemoryChat):
     def memory_service(self) -> BaseMemoryService:
         if isinstance(self._memory_service, str):
             self._memory_service = G_CONTEXT.memory_service_dict[self._memory_service]
-            self._memory_service.prepare_service()
+            self._memory_service.start_service()
         return self._memory_service
 
     @property

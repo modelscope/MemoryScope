@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append(".")  # noqa: E402
+
 import asyncio
 import unittest
 
@@ -9,7 +13,7 @@ class TestLLIEmbedding(unittest.TestCase):
 
     def setUp(self):
         config = {
-            "method_type": "DashScopeEmbedding",
+            "module_name": "dashscope_embedding",
             "model_name": "text-embedding-v2",
             "clazz": "models.base_embedding_model"
         }

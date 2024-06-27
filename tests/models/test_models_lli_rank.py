@@ -1,7 +1,6 @@
-import json
 import unittest
 
-from memory_scope.models.llama_index_rerank_model import LlamaIndexRankModel
+from memory_scope.models.llama_index_rank_model import LlamaIndexRankModel
 
 
 class TestLLIReRank(unittest.TestCase):
@@ -9,7 +8,7 @@ class TestLLIReRank(unittest.TestCase):
 
     def setUp(self):
         config = {
-            "method_type": "DashScopeRerank",
+            "module_name": "dashscope_rank",
             "model_name": "gte-rerank",
             "clazz": "models.llama_index_rerank_model"
         }

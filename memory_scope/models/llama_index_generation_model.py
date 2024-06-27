@@ -1,5 +1,5 @@
 import datetime
-from typing import List, Dict
+from typing import List
 
 from llama_index.core.base.llms.types import ChatMessage, ChatResponse, CompletionResponse
 from llama_index.llms.dashscope import DashScope
@@ -7,7 +7,7 @@ from llama_index.llms.dashscope import DashScope
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.models.base_model import BaseModel, MODEL_REGISTRY
-from memory_scope.models.model_response import ModelResponse, ModelResponseGen
+from memory_scope.scheme.model_response import ModelResponse, ModelResponseGen
 from memory_scope.scheme.message import Message
 
 
@@ -16,31 +16,25 @@ class LlamaIndexGenerationModel(BaseModel):
 
     MODEL_REGISTRY.register("dashscope_generation", DashScope)
 
-    def before_call(self, **kwargs) -> None:
+    def before_call(self, **kwargs):
         prompt: str = kwargs.pop("prompt", "")
-        messages: List[Message] | List[Dict[str, str]] = kwargs.pop("messages", [])
+        messages: List[Message] = kwargs.pop("messages", [])
 
         if prompt:
-            input_text = prompt
-            input_type = "prompt"
-            llama_input = input_text
+            self.data = {"prompt": prompt}
         elif messages:
-            input_text = messages
-            input_type = "messages"
-            llama_input = [ChatMessage(role=x["role"], content=x["content"]) for x in input_text]
+            self.data = {"messages": [ChatMessage(role=msg.role, content=msg.content) for msg in messages]}
         else:
             raise RuntimeError("prompt and messages is both empty!")
-
-        self.data = {input_type: llama_input}
 
     def after_call(self,
                    model_response: ModelResponse,
                    stream: bool = False,
                    **kwargs) -> ModelResponse | ModelResponseGen:
-        now_ts = datetime.datetime.now()
+
         model_response.message = Message(role=MessageRoleEnum.ASSISTANT,
                                          content="",
-                                         time_created=int(now_ts.timestamp()))
+                                         time_created=int(datetime.datetime.now().timestamp()))
 
         call_result = model_response.raw
         if stream:
@@ -61,11 +55,10 @@ class LlamaIndexGenerationModel(BaseModel):
             return model_response
 
     def _call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
-
         assert "prompt" in self.data or "messages" in self.data
         results = ModelResponse(m_type=self.m_type)
 
-        if 'prompt' in self.data:
+        if "prompt" in self.data:
             if stream:
                 response = self.model.stream_complete(**self.data)
             else:

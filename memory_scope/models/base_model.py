@@ -3,7 +3,7 @@ import time
 from abc import abstractmethod, ABCMeta
 
 from memory_scope.enumeration.model_enum import ModelEnum
-from memory_scope.models.model_response import ModelResponse, ModelResponseGen
+from memory_scope.scheme.model_response import ModelResponse, ModelResponseGen
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.registry import Registry
 from memory_scope.utils.timer import Timer

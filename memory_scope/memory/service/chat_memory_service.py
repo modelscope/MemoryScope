@@ -37,7 +37,7 @@ class ChatMemoryService(BaseMemoryService):
             for _ in range(gap_size):
                 self.chat_messages.pop(0)
 
-    def prepare_service(self):
+    def start_service(self):
         for _, operation in self._operation_dict.items():
             operation.init_workflow()
             if operation.operation_type == "backend":
@@ -48,3 +48,8 @@ class ChatMemoryService(BaseMemoryService):
             self.logger.warning(f"op_name={op_name} is not inited!")
             return
         return self._operation_dict[op_name].run_operation()
+
+    def stop_service(self):
+        for _, operation in self._operation_dict.items():
+            if operation.operation_type == "backend":
+                operation.stop_operation_backend()

@@ -4,7 +4,7 @@ from llama_index.embeddings.dashscope import DashScopeEmbedding
 
 from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.models.base_model import BaseModel, MODEL_REGISTRY
-from memory_scope.models.model_response import ModelResponse
+from memory_scope.scheme.model_response import ModelResponse
 
 
 class LlamaIndexEmbeddingModel(BaseModel):
