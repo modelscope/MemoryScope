@@ -11,18 +11,18 @@ def under_line_to_hump(underline_str):
 
 
 def init_instance_by_config(config: dict, default_class_path: str = "memory_scope", suffix_name: str = "", **kwargs):
-    class_name = config.pop("class")
-    if not class_name:
-        raise RuntimeError("empty class_name!")
+    origin_class_path: str = config.pop("class")
+    if not origin_class_path:
+        raise RuntimeError("empty class path!")
 
-    class_name_split = class_name.split(".")
+    class_name_split = origin_class_path.split(".")
     class_name: str = class_name_split[-1]
     if suffix_name and not class_name.lower().endswith(suffix_name.lower()):
         class_name = f"{class_name}_{suffix_name}"
         class_name_split[-1] = class_name
 
     class_paths = []
-    if default_class_path:
+    if default_class_path and not origin_class_path.startswith(default_class_path):
         class_paths.append(default_class_path)
     class_paths.extend(class_name_split)
     module = import_module(".".join(class_paths))

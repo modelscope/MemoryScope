@@ -5,23 +5,23 @@ global_config:
   open_ai_apikey:
 memory_chat:
   cli_memory_chat:
-    class: memory_scope.chat_v2.cli_memory_chat
+    class: chat_v2.cli_memory_chat
     memory_service: memory_chat_service
     generation_model: dashscope_generation
 memory_service:
   memory_chat_service:
-    class: memory_scope.memory.service.chat_memory_service
+    class: memory.service.chat_memory_service
     history_msg_count: 32
     contextual_msg_count: 6
     read_memory_key: read_memory
     memory_operations:
       read_message:
-        class: memory_scope.memory.operation.read_memory
+        class: memory.operation.read_memory
         workflow: dummy_worker
         description: "read session messages of the user"
         contextual_msg_count: 0
       read_memory:
-        class: memory_scope.memory.operation.read_memory
+        class: memory.operation.read_memory
         workflow: dummy_worker
         description: "read related memories of the user"
       list_memory:
@@ -34,7 +34,7 @@ memory_service:
         description: "write observation memories of the user"
         interval_time: 60
       summary_memory:
-        class: memory_scope.memory.operation.summary_memory
+        class: memory.operation.summary_memory
         workflow: dummy_worker
         description: "summary observation memories of the user"
         interval_time: 300
@@ -48,7 +48,7 @@ models:
     module_name: dashscope_embedding
     model_name: text-embedding-v2
   dashscope_rank:
-    clazz: models.base_rank_model
+    clazz: models.llama_index_rank_model
     module_name: dashscope_rank
     model_name: gte-rerank
 vector_store:
