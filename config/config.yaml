@@ -18,6 +18,7 @@ memory_service:
         class: memory.operation.read_memory
         workflow: dummy
         description: "read session messages of the user"
+        contextual_msg_count: 0
       read_memory:
         class: memory.operation.read_memory
         workflow: dummy

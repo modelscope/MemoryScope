@@ -13,8 +13,8 @@ class ReadMemory(BaseWorkflow, BaseOperation):
                  name: str,
                  description: str,
                  chat_messages: List[Message],
-                 his_msg_count: int = 0,
-                 contextual_msg_count: int = 0,
+                 his_msg_count: int = 0,  # supplement to the current query
+                 contextual_msg_count: int = 0,  # for the current context dialogue
                  **kwargs):
         super().__init__(name=name, **kwargs)
         BaseOperation.__init__(self, name=name, description=description)

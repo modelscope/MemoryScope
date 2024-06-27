@@ -10,7 +10,7 @@ def under_line_to_hump(underline_str):
     return sub[0:1].upper() + sub[1:]
 
 
-def init_instance_by_config(config: dict, default_class_path: str = "", suffix_name: str = "", **kwargs):
+def init_instance_by_config(config: dict, default_class_path: str = "memory_scope", suffix_name: str = "", **kwargs):
     class_name = config.pop("class")
     if not class_name:
         raise RuntimeError("empty class_name!")
