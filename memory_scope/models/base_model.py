@@ -16,7 +16,7 @@ class BaseModel(metaclass=ABCMeta):
 
     def __init__(self,
                  model_name: str,
-                 method_type: str,
+                 module_name: str,
                  timeout: int = None,
                  max_retries: int = 3,
                  retry_interval: float = 1.0,
@@ -24,7 +24,7 @@ class BaseModel(metaclass=ABCMeta):
                  **kwargs):
 
         self.model_name: str = model_name
-        self.method_type: str = method_type
+        self.module_name: str = module_name
         self.timeout: int = timeout
         self.max_retries: int = max_retries
         self.retry_interval: float = retry_interval
@@ -33,9 +33,9 @@ class BaseModel(metaclass=ABCMeta):
         self.data = {}
         self.logger = Logger.get_logger()
 
-        obj_cls = MODEL_REGISTRY[self.method_type]
+        obj_cls = MODEL_REGISTRY[self.module_name]
         if not obj_cls:
-            raise RuntimeError(f"method_type={self.method_type} is not supported!")
+            raise RuntimeError(f"method_type={self.module_name} is not supported!")
 
         if kwargs_filter:
             allowed_kwargs = list(inspect.signature(obj_cls.__init__).parameters.keys())
