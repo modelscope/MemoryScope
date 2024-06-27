@@ -1,8 +1,9 @@
 import datetime
 import time
-from typing import Dict, List
+from typing import List
 
 import questionary
+
 from memory_scope.chat_v2.base_memory_chat import BaseMemoryChat
 from memory_scope.chat_v2.global_context import G_CONTEXT
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
@@ -20,11 +21,11 @@ class CliMemoryChat(BaseMemoryChat):
         "stream": "get stream response"
     }
 
-    def __init__(self, memory_service: str, generation_model: str, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, memory_service: str, generation_model: str, stream: bool = True, **kwargs):
         self._memory_service: BaseMemoryService | str = memory_service
         self._generation_model: BaseModel | str = generation_model
-        self.stream: bool = True
+        self.stream: bool = stream
+        self.kwargs: dict = kwargs
 
     @property
     def memory_service(self) -> BaseMemoryService:
@@ -56,18 +57,17 @@ class CliMemoryChat(BaseMemoryChat):
 
         time_created = int(datetime.datetime.now().timestamp())
         new_message: Message = Message(role=MessageRoleEnum.USER, content=query, time_created=time_created)
-        self.submit_messages(new_message)
+        self.memory_service.add_messages(new_message)
         related_memories: List[str] = self.memory_service.read_memory()
         system_message: Message = self.get_system_prompt(related_memories, time_created)
         if self.stream:
             for result in self.generation_model.call(messages=[system_message, new_message], stream=self.stream):
                 yield result
 
-        self.submit_messages(result.text)
+        self.memory_service.add_messages(result.text)
 
     def run(self):
-        op_description_dict: Dict[str, str] = self.memory_service.get_op_description_dict()
-        self.USER_COMMANDS.update({f"/{k}": v for k, v in op_description_dict.items()})
+        self.USER_COMMANDS.update({f"/{k}": v for k, v in self.memory_service.op_description_dict.items()})
 
         while True:
             query = questionary.text(
@@ -97,7 +97,7 @@ class CliMemoryChat(BaseMemoryChat):
                 elif query == "stream":
                     questionary.print(f"stream: {self.stream}")
                     self.stream = ~self.stream
-                elif query in op_description_dict:
+                elif query in self.memory_service.op_description_dict:
                     if not args:
                         result = self.memory_service.do_operation(op_name=query)
                         print(result)

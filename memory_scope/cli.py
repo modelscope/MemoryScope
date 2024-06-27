@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append(".")
+
 import json
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, Any
@@ -58,7 +62,7 @@ class CliJob(object):
 
     def run(self, config: str):
         self.load_config(config)
-
+        self.init_global_content_by_config()
         with G_CONTEXT.thread_pool:
             memory_chat = list(G_CONTEXT.memory_chat_dict.values())[0]
             memory_chat.run()

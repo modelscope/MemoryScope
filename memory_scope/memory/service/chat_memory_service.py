@@ -6,9 +6,7 @@ from memory_scope.utils.tool_functions import init_instance_by_config
 
 
 class ChatMemoryService(BaseMemoryService):
-    def __init__(
-        self, history_msg_count: int = 32, contextual_msg_count: int = 6, **kwargs
-    ):
+    def __init__(self, history_msg_count: int = 32, contextual_msg_count: int = 6, **kwargs):
         super().__init__(**kwargs)
         self.history_msg_count: int = history_msg_count
         self.contextual_msg_count: int = contextual_msg_count
@@ -26,8 +24,7 @@ class ChatMemoryService(BaseMemoryService):
                 name=name,
                 chat_messages=self.chat_messages,
                 message_lock=self.message_lock,
-                contextual_msg_count=self.contextual_msg_count,
-            )
+                contextual_msg_count=self.contextual_msg_count)
 
     def add_messages(self, messages: List[Message] | Message):
         if isinstance(messages, Message):

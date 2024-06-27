@@ -17,7 +17,7 @@ class BaseWorkflow(object):
     def __init__(self,
                  name: str,
                  workflow: str,
-                 thread_pool: ThreadPoolExecutor,
+                 thread_pool: ThreadPoolExecutor = G_CONTEXT.thread_pool,
                  **kwargs):
 
         self.name: str = name
