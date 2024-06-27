@@ -4,16 +4,13 @@ import time
 from copy import deepcopy
 from datetime import datetime
 from importlib import import_module
-from typing import get_args
 
 import pyfiglet
 from termcolor import colored, COLORS
-from termcolor._types import Color
 
 from memory_scope.constants.common_constants import WEEKDAYS
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 
-ALL_COLORS = get_args(COLORS)
 
 def under_line_to_hump(underline_str):
     sub = re.sub(r"(_\w)", lambda x: x.group(1)[1].upper(), underline_str)
@@ -39,7 +36,8 @@ def init_instance_by_config(config: dict, default_class_path: str = "memory_scop
     module = import_module(".".join(class_paths))
 
     cls_name = under_line_to_hump(class_name)
-    return getattr(module, cls_name)(**config_copy, **kwargs)
+    config_copy.update(kwargs)
+    return getattr(module, cls_name)(**config_copy)
 
 
 def complete_config_name(config_name: str, suffix: str = ".json"):
@@ -76,16 +74,16 @@ def get_datetime_info_dict(parse_dt: datetime):
     }
 
 
-def time_to_formatted_str(time: datetime | str | int | float = None,
+def time_to_formatted_str(dt: datetime | str | int | float = None,
                           date_format: str = "%Y%m%d",  # e.g. %Y%m%d -> "20240528", add %H:%M:%S
                           string_format: str = "") -> str:
 
-    if isinstance(time, str | int | float):
-        if isinstance(time, str):
-            time = float(time)
-        current_dt = datetime.fromtimestamp(time)
-    elif isinstance(time, datetime):
-        current_dt = time
+    if isinstance(dt, str | int | float):
+        if isinstance(dt, str):
+            dt = float(dt)
+        current_dt = datetime.fromtimestamp(dt)
+    elif isinstance(dt, datetime):
+        current_dt = dt
     else:
         current_dt = datetime.now()
 
@@ -98,7 +96,7 @@ def time_to_formatted_str(time: datetime | str | int | float = None,
     return return_str
 
 
-def char_logo(words: str, seed: int = time.time_ns(), color: Color = None):
+def char_logo(words: str, seed: int = time.time_ns(), color=None):
     font = pyfiglet.Figlet()
     rendered_text = font.renderText(words)
     colored_lines = []

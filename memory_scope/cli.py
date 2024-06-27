@@ -13,6 +13,7 @@ from memory_scope.chat.global_context import G_CONTEXT
 from memory_scope.enumeration.language_enum import LanguageEnum
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.tool_functions import init_instance_by_config
+from memory_scope.utils.timer import timer
 
 
 class CliJob(object):
@@ -35,6 +36,7 @@ class CliJob(object):
         G_CONTEXT.language = LanguageEnum(global_config["language"])
         G_CONTEXT.thread_pool = ThreadPoolExecutor(max_workers=int(global_config["max_workers"]))
 
+    @timer
     def init_global_content_by_config(self):
         # set global config
         self.set_global_config()
@@ -63,6 +65,7 @@ class CliJob(object):
     def run(self, config: str):
         self.load_config(config)
         self.init_global_content_by_config()
+
         with G_CONTEXT.thread_pool:
             memory_chat = list(G_CONTEXT.memory_chat_dict.values())[0]
             memory_chat.run()

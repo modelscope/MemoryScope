@@ -1,4 +1,5 @@
 import datetime
+import os
 import time
 from typing import List
 
@@ -105,7 +106,9 @@ class CliMemoryChat(BaseMemoryChat):
                 while True:
                     time.sleep(refresh_time)
                     result = self.memory_service.do_operation(op_name=query)
-                    questionary.print(result, flush=True)
+                    os.system('clear')
+                    self.print_logo()
+                    questionary.print(result)
 
             else:
                 questionary.print("unknown command received. Please try again!")
@@ -121,8 +124,7 @@ class CliMemoryChat(BaseMemoryChat):
 
         while True:
             try:
-                query = questionary.text(message="user:", multiline=False, qmark=">").ask()
-
+                query = questionary.text(message="user:", multiline=False, qmark=">").unsafe_ask()
                 if not query:
                     continue
 
@@ -149,7 +151,7 @@ class CliMemoryChat(BaseMemoryChat):
 
             except KeyboardInterrupt:
                 questionary.print("User interrupt occurred.")
-                is_exit = questionary.confirm("continue exit?").ask()
+                is_exit = questionary.confirm("continue exit").unsafe_ask()
                 if is_exit:
                     self.memory_service.stop_service()
                     break

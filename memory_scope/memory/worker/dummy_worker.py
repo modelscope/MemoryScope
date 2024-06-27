@@ -9,4 +9,4 @@ class DummyWorker(BaseWorker):
         workflow_name = self.get_context(WORKFLOW_NAME)
         self.logger.info(f"enter workflow={workflow_name}.dummy_worker!")
         ts = int(datetime.datetime.now().timestamp())
-        self.set_context(RESULT, f"test {workflow_name} ts={ts}")
+        self.set_context(RESULT, f"test {workflow_name} \nts={ts}")
