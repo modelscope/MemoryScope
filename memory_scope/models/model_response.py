@@ -4,10 +4,11 @@ from typing import Generator, List, Dict, Any
 from pydantic import BaseModel, Field
 
 from memory_scope.enumeration.model_enum import ModelEnum
+from memory_scope.scheme.message import Message
 
 
 class ModelResponse(BaseModel):
-    text: str = Field("", description="generation model result")
+    message: Message | None = Field(None, description="generation model result")
 
     delta: str = Field("", description="New text that just streamed in (only used when streaming)")
 
