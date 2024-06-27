@@ -61,7 +61,7 @@ class CliMemoryChat(BaseMemoryChat):
 
 
 def run(self):
-    op_description_dict: Dict[str, str] = self.memory_service.get_op_description_dict()
+    op_description_dict: Dict[str, str] = self.memory_service.op_description_dict
     self.USER_COMMANDS.update({f"/{k}": v for k, v in op_description_dict.items()})
 
     console = Console()
@@ -92,14 +92,14 @@ def run(self):
                     questionary.print(f" {desc}")
             elif query in op_description_dict:
                 if not args:
-                    result = self.memory_service.do_operation(op_name=query)
+                    result = self.memory_service.operate(op_name=query)
                     questionary.print(result)
 
                 elif args[0].isdigit():
                     refresh_time = int(args[0])
                     while True:
                         time.sleep(refresh_time)
-                        result = self.memory_service.do_operation(op_name=query)
+                        result = self.memory_service.operate(op_name=query)
                         questionary.print(result)
                 else:
                     console.print("unknown command received. Please try again!")

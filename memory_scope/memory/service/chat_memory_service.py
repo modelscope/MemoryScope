@@ -1,7 +1,5 @@
-import threading
 from typing import List, Dict
 
-from memory_scope.memory.operation.base_operation import BaseOperation
 from memory_scope.memory.service.base_memory_service import BaseMemoryService
 from memory_scope.scheme.message import Message
 from memory_scope.utils.tool_functions import init_instance_by_config
@@ -15,29 +13,24 @@ class ChatMemoryService(BaseMemoryService):
                  contextual_msg_count: int = 6,
                  **kwargs):
         super().__init__(**kwargs)
-
-        self.op_dict: Dict[str, BaseOperation] = self._init_operation(memory_operations)
         self.history_msg_count: int = history_msg_count
         self.contextual_msg_count: int = contextual_msg_count
         assert self.history_msg_count >= self.contextual_msg_count
 
-        self.chat_messages: List[Message] = []
-        self.message_lock = threading.Lock
+        self._init_operation(memory_operations)
 
     def _init_operation(self, memory_operations: Dict[str, dict]):
-        op_dict: Dict[str, BaseOperation] = {}
         for name, operation_config in memory_operations.items():
-            if name in self.op_dict:
+            if name in self._operation_dict:
                 self.logger.warning(f"memory operation={name} is repeated!")
                 continue
-            self.op_dict[name] = init_instance_by_config(config=operation_config,
-                                                         name=name,
-                                                         chat_messages=self.chat_messages,
-                                                         message_lock=self.message_lock,
-                                                         contextual_msg_count=self.contextual_msg_count)
-        return op_dict
+            self._operation_dict[name] = init_instance_by_config(config=operation_config,
+                                                                 name=name,
+                                                                 chat_messages=self.chat_messages,
+                                                                 message_lock=self.message_lock,
+                                                                 contextual_msg_count=self.contextual_msg_count)
 
-    def submit_messages(self, messages: List[Message] | Message):
+    def add_messages(self, messages: List[Message] | Message):
         if isinstance(messages, Message):
             messages = [messages]
 
@@ -49,16 +42,13 @@ class ChatMemoryService(BaseMemoryService):
                 self.chat_messages.pop(0)
 
     def prepare_service(self):
-        for _, operation in self.op_dict.items():
+        for _, operation in self._operation_dict.items():
             operation.init_workflow()
             if operation.operation_type == "backend":
                 operation.run_operation_backend()
 
-    def do_operation(self, op_name: str):
-        if op_name not in self.op_dict:
+    def operate(self, op_name: str):
+        if op_name not in self._operation_dict:
             self.logger.warning(f"op_name={op_name} is not inited!")
             return
-        return self.op_dict[op_name].run_operation()
-
-    def get_op_description_dict(self) -> Dict[str, str]:
-        return {k: v.description for k, v in self.op_dict.items()}
+        return self._operation_dict[op_name].run_operation()
