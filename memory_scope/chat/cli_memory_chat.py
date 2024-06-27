@@ -64,7 +64,7 @@ class CliMemoryChat(BaseMemoryChat):
             for result in self.generation_model.call(messages=[system_message, new_message], stream=self.stream):
                 yield result
 
-        self.memory_service.add_messages(result.text)
+        self.memory_service.add_messages(result.message)
 
     def run(self):
         self.USER_COMMANDS.update({f"/{k}": v for k, v in self.memory_service.op_description_dict.items()})
@@ -118,22 +118,23 @@ class CliMemoryChat(BaseMemoryChat):
                 continue
 
             while True:
-                try:
-                    if self.stream:
-                        for msg in self.chat_with_memory(query=query):
-                            print(msg.text, flush=True)
-                        print()
-                    else:
-                        msg = self.chat_with_memory(query=query)
-                        print(msg.text)
-                    break
-                except KeyboardInterrupt:
-                    questionary.print("User interrupt occurred.")
-                    retry = questionary.confirm("Retry chat_with_memory()?").ask()
-                    if not retry:
-                        break
-                except Exception as e:
-                    questionary.print(f"An exception occurred when running chat_with_memory(): {e}")
-                    retry = questionary.confirm("Retry chat_with_memory()?").ask()
-                    if not retry:
-                        break
+                # try:
+                if self.stream:
+                    for msg in self.chat_with_memory(query=query):
+                        print(msg.delta, end="")
+                    print()
+                else:
+                    msg = self.chat_with_memory(query=query)
+                    print(msg.message.content)
+                break
+                # except KeyboardInterrupt:
+                #     questionary.print("User interrupt occurred.")
+                #     retry = questionary.confirm("Retry chat_with_memory()?").ask()
+                #     if not retry:
+                #         break
+                # except Exception as e:
+                #     questionary.print(f"An exception occurred when running chat_with_memory(): {e}")
+                #     # retry = questionary.confirm("Retry chat_with_memory()?").ask()
+                #     # if not retry:
+                #     #     break
+                #     raise e
