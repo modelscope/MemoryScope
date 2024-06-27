@@ -20,3 +20,6 @@ class BaseOperation(metaclass=ABCMeta):
 
     def run_operation_backend(self):
         pass
+
+    def stop_operation_backend(self):
+        pass

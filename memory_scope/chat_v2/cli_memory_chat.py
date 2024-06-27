@@ -21,9 +21,9 @@ class CliMemoryChat(BaseMemoryChat):
     }
 
     def __init__(self, memory_service: str, generation_model: str, **kwargs):
+        super().__init__(**kwargs)
         self._memory_service: BaseMemoryService | str = memory_service
         self._generation_model: BaseModel | str = generation_model
-        self.kwargs: dict = kwargs
 
     @property
     def memory_service(self) -> BaseMemoryService:
@@ -43,7 +43,9 @@ class CliMemoryChat(BaseMemoryChat):
         system_prompt = SYSTEM_PROMPT[G_CONTEXT.language]
         if related_memories:
             memory_prompt = MEMORY_PROMPT[G_CONTEXT.language]
-            system_prompt = "\n".join([x.strip() for x in [system_prompt, memory_prompt] + related_memories])
+            all_prompt_list = [system_prompt, memory_prompt]
+            all_prompt_list.extend(related_memories)
+            system_prompt = "\n".join([x.strip() for x in all_prompt_list])
         return Message(role=MessageRoleEnum.SYSTEM, content=system_prompt, time_created=time_created)
 
     def chat_with_memory(self, query: str):
@@ -53,7 +55,7 @@ class CliMemoryChat(BaseMemoryChat):
 
         time_created = int(datetime.datetime.now().timestamp())
         new_message: Message = Message(role=MessageRoleEnum.USER, content=query, time_created=time_created)
-        related_memories: List[str] = self.memory_service.do_operation("read_memory")
+        related_memories: List[str] = self.memory_service.read_memory()
         system_message: Message = self.get_system_prompt(related_memories, time_created)
         return self.generation_model.call(messages=[system_message, new_message], stream=True)
 

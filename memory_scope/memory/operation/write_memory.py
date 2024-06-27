@@ -73,3 +73,6 @@ class WriteMemory(BaseOperation, BaseWorkflow):
         if not self._loop_switch:
             self._loop_switch = True
             return G_CONTEXT.thread_pool.submit(self._loop_operation)
+
+    def stop_operation_backend(self):
+        self._loop_switch = False

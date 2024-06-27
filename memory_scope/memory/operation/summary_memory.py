@@ -21,6 +21,7 @@ class SummaryMemory(BaseWorkflow, BaseOperation):
 
         self._operation_status_run: bool = False
         self._loop_switch: bool = False
+        self._run_thread = None
 
     def init_workflow(self):
         self.init_workers()
@@ -44,4 +45,7 @@ class SummaryMemory(BaseWorkflow, BaseOperation):
     def run_operation_backend(self):
         if not self._loop_switch:
             self._loop_switch = True
-            return G_CONTEXT.thread_pool.submit(self._loop_operation)
+            self._run_thread = G_CONTEXT.thread_pool.submit(self._loop_operation)
+
+    def stop_operation_backend(self):
+        self._loop_switch = False

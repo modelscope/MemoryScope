@@ -6,7 +6,8 @@ from memory_scope.utils.logger import Logger
 
 
 class BaseMemoryService(metaclass=ABCMeta):
-    def __init__(self, **kwargs):
+    def __init__(self, read_memory_key: str = "read_memory", **kwargs):
+        self.read_memory_key: str = read_memory_key
         self.logger = Logger.get_logger()
         self.kwargs = kwargs
 
@@ -23,3 +24,6 @@ class BaseMemoryService(metaclass=ABCMeta):
     @abstractmethod
     def get_op_description_dict(self) -> Dict[str, str]:
         pass
+
+    def read_memory(self):
+        return self.do_operation(self.read_memory_key)

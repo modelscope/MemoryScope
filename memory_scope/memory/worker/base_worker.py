@@ -43,15 +43,14 @@ class BaseWorker(metaclass=ABCMeta):
             self.logger.info(f"----- worker_{self.name}_end cost={t.cost_str}-----")
 
     def get_context(self, key: str, default=None):
-        return self.context_dict.get(key, default)
+        return self.context.get(key, default)
 
     def set_context(self, key: str, value: Any):
         if self.is_multi_thread:
             with self.context_lock:
                 self.context_dict[key] = value
         else:
-            self.context_dict[key] = value
+            self.context[key] = value
 
     def __getattr__(self, key):
-        # raise exception if not exists
         return self.kwargs[key]
