@@ -1,27 +1,85 @@
 {
-    "global_configs": {
-        "thread_pool_max_count": 5,
-        "dash_scope_apikey": "",
-        "open_ai_apikey": "",
-        "language": "en",
-        "chat_list": [
-            "memory_chat"
-        ]
+  "global_config": {
+    "language": "en",
+    "max_workers": 5,
+    "dash_scope_apikey": null,
+    "open_ai_apikey": null
+  },
+  "memory_chat": {
+    "cli_memory_chat": {
+      "class": "chat_v2.cli_memory_chat",
+      "memory_service": "memory_chat_service",
+      "generation_model": "dashscope_generation"
+    }
+  },
+  "memory_service": {
+    "memory_chat_service": {
+      "class": "memory.service.chat_memory_service",
+      "history_msg_count": 32,
+      "contextual_msg_count": 6,
+      "read_memory_key": "read_memory",
+      "memory_operations": {
+        "read_message": {
+          "class": "memory.operation.read_memory",
+          "workflow": "dummy_worker",
+          "description": "read session messages of the user",
+          "contextual_msg_count": 0
+        },
+        "read_memory": {
+          "class": "memory.operation.read_memory",
+          "workflow": "dummy_worker",
+          "description": "read related memories of the user"
+        },
+        "list_memory": {
+          "class": "memory.operation.read_memory",
+          "workflow": "dummy_worker",
+          "description": "read all memories of the user"
+        },
+        "write_memory": {
+          "class": "memory.operation.write_memory",
+          "workflow": "dummy_worker",
+          "description": "write observation memories of the user",
+          "interval_time": 60
+        },
+        "summary_memory": {
+          "class": "memory.operation.summary_memory",
+          "workflow": "dummy_worker",
+          "description": "summary observation memories of the user",
+          "interval_time": 300
+        }
+      }
+    }
+  },
+  "models": {
+    "dashscope_generation": {
+      "clazz": "models.llama_index_generation_model",
+      "module_name": "dashscope_generation",
+      "model_name": "qwen-max"
     },
-    "memory_chat": {
-        "clazz": "chat.memory_chat",
-        "retrieve": "parse_params,load_profile,extract_time,es_similar,es_keyword,semantic_rank,fuse_rerank",
-        "generation_model": "dashscope_generation",
-        "history_msg_count": 3
+    "dashscope_embedding": {
+      "clazz": "models.llama_index_embedding_model",
+      "module_name": "dashscope_embedding",
+      "model_name": "text-embedding-v2"
     },
-    "vector_store": {
-        "clazz": "storage.base_vector_store",
-        "index_name": "memory_test",
-        "password": ""
-    },
-    "monitor": {
-        "clazz": "storage.base_monitor",
-        "index_name": "memory_test"
-    },
-    "workers": "workers"
+    "dashscope_rank": {
+      "clazz": "models.llama_index_rank_model",
+      "module_name": "dashscope_rank",
+      "model_name": "gte-rerank"
+    }
+  },
+  "vector_store": {
+    "clazz": "storage.dummy_vector_store",
+    "embedding_model": "dashscope_embedding"
+  },
+  "monitor": {
+    "clazz": "storage.dummy_monitor"
+  },
+  "workers": {
+    "dummy_worker": {
+      "clazz": "memory.worker.dummy_worker",
+      "generation_model": "dashscope_generation",
+      "embedding_model": "dashscope_embedding",
+      "rank_model": "dashscope_rank"
+    }
+  }
 }
