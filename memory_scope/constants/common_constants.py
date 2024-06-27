@@ -1,3 +1,5 @@
+WORKFLOW_NAME = "workflow_name"
+
 RESULT = "result"
 
 CHAT_MESSAGES = "chat_messages"

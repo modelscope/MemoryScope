@@ -33,7 +33,6 @@ memory_service:
         workflow: dummy
         description: "write observation memories of the user"
         interval_time: 60
-        contextual_msg_count: 6
       summary_memory:
         class: memory.operation.summary_memory
         workflow: dummy

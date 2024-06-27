@@ -5,6 +5,7 @@ from itertools import zip_longest
 from typing import Dict, Any, List
 
 from memory_scope.chat_v2.global_context import G_CONTEXT
+from memory_scope.constants.common_constants import WORKFLOW_NAME
 from memory_scope.memory.worker.base_worker import BaseWorker
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.timer import Timer
@@ -103,6 +104,7 @@ class BaseWorkflow(object):
 
     def run_workflow(self):
         with Timer(f"run_workflow_{self.name}"):
+            self.context[WORKFLOW_NAME] = self.name
             for workflow_part in self.workflow_worker_list:
                 if len(workflow_part) == 1:
                     if not self._run_sub_workflow(workflow_part[0]):
