@@ -9,18 +9,26 @@ from memory_scope.memory.service.base_memory_service import BaseMemoryService
 from memory_scope.models.base_model import BaseModel
 from memory_scope.storage.base_monitor import BaseMonitor
 from memory_scope.storage.base_vector_store import BaseVectorStore
+from memory_scope.memory.worker.base_worker import BaseWorker
 
 
-class GlobalContext(pydantic.BaseModel):
-    global_config: Dict[str, Any] = pydantic.Field({}, description="global config")
-    worker_config: Dict[str, Any] = pydantic.Field({}, description="worker config")
+class GlobalContext(object):
+    def __init__(self):
+        self.global_configs: Dict[str, Any] = {}
 
-    memory_service_dict: Dict[str, BaseMemoryService] = pydantic.Field({}, description="memory_service dict")
-    model_dict: Dict[str, BaseModel] = pydantic.Field({}, description="model dict")
-    memory_chat_dict: Dict[str, BaseMemoryChat] = pydantic.Field({}, description="memory_chat dict")
+        self.worker_config: Dict[str, Dict[str, BaseWorker]] = {}
 
-    vector_store: BaseVectorStore | None = pydantic.Field(None, description="global vector_store")
-    monitor: BaseMonitor | None = pydantic.Field(None, description="global monitor")
-    thread_pool: ThreadPoolExecutor | None = pydantic.Field(None, description="global thread_pool")
-    language: LanguageEnum = pydantic.Field(LanguageEnum.CN, description="language: cn / en")
+        self.model_dict: Dict[str, BaseModel] = {}
 
+        self.memory_chat_dict: Dict[str, BaseMemoryChat] = {}
+
+        self.vector_store: BaseVectorStore | None = None
+
+        self.monitor: BaseMonitor | None = None
+
+        self.thread_pool: ThreadPoolExecutor | None = None
+
+        self.language: LanguageEnum = LanguageEnum.EN
+
+
+G_CONTEXT = GlobalContext()
