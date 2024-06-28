@@ -70,17 +70,19 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
 
 class LlamaIndexElasticSearchStore(BaseVectorStore):
     def __init__(self,
-                 index_name: str,
                  embedding_model: BaseModel,
+                 index_name: str,
+                 es_url: str,
+                 use_hybrid: bool = True,
                  **kwargs):
-        super().__init__(index_name=index_name, embedding_model=embedding_model, **kwargs)
-        self.es_store = _ElasticsearchStore(index_name=self.index_name,
-                                            retrieval_strategy=AsyncDenseVectorStrategy(hybrid=True),
+
+        self.embedding_model: BaseModel = embedding_model
+        self.es_store = _ElasticsearchStore(index_name=index_name,
+                                            es_url=es_url,
+                                            retrieval_strategy=AsyncDenseVectorStrategy(hybrid=use_hybrid),
                                             **kwargs)
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                         embed_model=self.embedding_model.model)
-
-        self.memory_node_keys = [x for x in MemoryNode().node_keys if x not in ["meta_data", "content"]]
 
     def retrieve(self,
                  query: str,

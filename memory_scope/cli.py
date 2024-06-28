@@ -14,6 +14,7 @@ from memory_scope.enumeration.language_enum import LanguageEnum
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.tool_functions import init_instance_by_config
 from memory_scope.utils.timer import timer
+from memory_scope.enumeration.model_enum import ModelEnum
 
 
 class CliJob(object):
@@ -54,7 +55,9 @@ class CliJob(object):
             G_CONTEXT.model_dict[name] = init_instance_by_config(conf, name=name)
 
         # init vector_store
-        G_CONTEXT.vector_store = init_instance_by_config(self.config["vector_store"])
+        vector_store_config = self.config["vector_store"]
+        embedding_model = G_CONTEXT.model_dict[vector_store_config[ModelEnum.EMBEDDING_MODEL.value]]
+        G_CONTEXT.vector_store = init_instance_by_config(vector_store_config, embedding_model=embedding_model)
 
         # init monitor
         G_CONTEXT.monitor = init_instance_by_config(self.config["monitor"])
@@ -69,6 +72,9 @@ class CliJob(object):
         with G_CONTEXT.thread_pool:
             memory_chat = list(G_CONTEXT.memory_chat_dict.values())[0]
             memory_chat.run()
+
+        G_CONTEXT.vector_store.close()
+        G_CONTEXT.monitor.close()
 
 
 if __name__ == "__main__":

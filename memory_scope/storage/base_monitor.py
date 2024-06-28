@@ -18,8 +18,8 @@ class BaseMonitor(metaclass=ABCMeta):
         :return:
         """
 
-    @abstractmethod
     def flush(self):
-        """
-        :return:
-        """
+        pass
+
+    def close(self):
+        pass

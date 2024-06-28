@@ -40,7 +40,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="1",
                 status="valid",
                 memory_id="bbb456",
-
+                meta_data={"1": "1"}
             ),
             MemoryNode(
                 content="An insomniac office worker and a devil-may-care soapmaker form an underground fight "
@@ -49,7 +49,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="2",
                 status="valid",
                 memory_id="ccc789",
-
+                meta_data={"2": "2"}
             ),
             MemoryNode(
                 content="A thief who steals corporate secrets through the use of dream-sharing technology "
@@ -58,6 +58,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="3",
                 status="valid",
                 memory_id="ddd012",
+                meta_data={"3": "3"}
+
             ),
             MemoryNode(
                 content="A computer hacker learns from mysterious rebels about the true nature of his reality "
@@ -66,6 +68,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="4",
                 status="valid",
                 memory_id="eee345",
+                meta_data={"4": "4"}
+
             ),
             MemoryNode(
                 content="Two detectives, a rookie and a veteran, hunt a serial killer who uses the seven "
@@ -73,7 +77,9 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 memory_type="profile",
                 user_id="5",
                 status="valid",
-                memory_id="fff678"
+                memory_id="fff678",
+                meta_data={"5": "5"},
+
             ),
             MemoryNode(
                 content="An organized crime dynasty's aging patriarch transfers control of his clandestine "
@@ -82,6 +88,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="6",
                 status="valid",
                 memory_id="ggg901",
+                meta_data={"5": "5"}
+
             ),
             MemoryNode(
                 content="ggggggggg",
@@ -89,6 +97,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="6",
                 status="valid",
                 memory_id="ggg234",
+                meta_data={"5": "5"}
+
             ),
         ]
 
@@ -104,7 +114,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             memory_type="profile",
             user_id="6",
             status="valid",
-            memory_id="ggg567"
+            memory_id="ggg567",
+            meta_data={"5": "5"}
         ))
         res = self.es_store.retrieve(query="hacker", filter_dict=filter_dict, top_k=10)
         print(len(res))
@@ -117,7 +128,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             status="invalid",
             memory_id="ggg567"
         ))
-        res = self.es_store.retrieve(query="hacker", filter_dict=filter, top_k=10)
+        res = self.es_store.retrieve(query="hacker", filter_dict=filter_dict, top_k=10)
         print(len(res))
         print(res)
 
@@ -128,7 +139,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             status="invalid",
             memory_id="ggg567"
         ))
-        res = self.es_store.retrieve(query="hacker", filter_dict=filter, top_k=10)
+        res = self.es_store.retrieve(query="hacker", filter_dict=filter_dict, top_k=10)
         print(len(res))
         print(res)
 

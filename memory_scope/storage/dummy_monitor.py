@@ -8,5 +8,5 @@ class DummyMonitor(BaseMonitor):
     def add_token(self):
         pass
 
-    def flush(self):
+    def close(self):
         pass
