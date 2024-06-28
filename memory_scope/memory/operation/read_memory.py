@@ -25,9 +25,11 @@ class ReadMemory(BaseWorkflow, BaseOperation):
     def init_workflow(self):
         self.init_workers()
 
-    def run_operation(self):
+    def run_operation(self, **kwargs):
         max_count = 1 + max(self.his_msg_count, self.contextual_msg_count)
         self.context[CHAT_MESSAGES] = [x.copy(deep=True) for x in self.chat_messages[-max_count:]]
+        for k, v in kwargs:
+            self.context[k] = v
         self.run_workflow()
         result = self.context.get(RESULT)
         self.context.clear()

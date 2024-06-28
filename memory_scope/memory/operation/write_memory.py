@@ -46,11 +46,13 @@ class WriteMemory(BaseWorkflow, BaseOperation):
     def init_workflow(self):
         self.init_workers()
 
-    def run_operation(self):
+    def run_operation(self, **kwargs):
         if self._operation_status_run:
             return
 
         self._operation_status_run = True
+        for k, v in kwargs:
+            self.context[k] = v
         not_memorized_size = self.not_memorized_size
         if not_memorized_size < self.contextual_msg_count:
             return
@@ -62,6 +64,7 @@ class WriteMemory(BaseWorkflow, BaseOperation):
         self.context.clear()
         self.set_memorized()
         self._operation_status_run = False
+
         return result
 
     def _loop_operation(self):

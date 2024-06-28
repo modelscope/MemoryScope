@@ -31,7 +31,6 @@ class LlamaIndexGenerationModel(BaseModel):
                    model_response: ModelResponse,
                    stream: bool = False,
                    **kwargs) -> ModelResponse | ModelResponseGen:
-
         model_response.message = Message(role=MessageRoleEnum.ASSISTANT, content="")
 
         call_result = model_response.raw

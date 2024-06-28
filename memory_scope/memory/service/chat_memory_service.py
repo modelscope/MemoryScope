@@ -43,7 +43,7 @@ class ChatMemoryService(BaseMemoryService):
             if operation.operation_type == "backend":
                 operation.run_operation_backend()
 
-    def do_operation(self, op_name: str):
+    def do_operation(self, op_name: str, *args, **kwargs):
         if op_name not in self._operation_dict:
             self.logger.warning(f"op_name={op_name} is not inited!")
             return

@@ -1,6 +1,6 @@
 from typing import Dict, List, Any
 
-from llama_index.core import VectorStoreIndex
+from llama_index.core import VectorStoreIndex, Settings
 from llama_index.core.schema import TextNode, NodeWithScore
 from llama_index.vector_stores.elasticsearch import ElasticsearchStore, AsyncDenseVectorStrategy
 

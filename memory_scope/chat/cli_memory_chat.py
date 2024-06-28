@@ -1,6 +1,5 @@
 import os
 import time
-from typing import List
 
 import questionary
 
@@ -19,6 +18,7 @@ from memory_scope.utils.tool_functions import char_logo
 class CliMemoryChat(BaseMemoryChat):
     USER_COMMANDS = {
         "exit": "exit the CLI",
+        "clear": "clear commands",
         "help": "get cli commands help",
         "stream": "get stream response"
     }
@@ -69,61 +69,65 @@ class CliMemoryChat(BaseMemoryChat):
         return Message(role=MessageRoleEnum.SYSTEM, content=system_prompt)
 
     def chat_with_memory(self, query: str) -> ModelResponse | ModelResponseGen:
-        query = query.strip()
-        if not query:
-            return
-
         new_message: Message = Message(role=MessageRoleEnum.USER.value,
                                        role_name=self.human_name,
                                        content=query)
 
         self.memory_service.add_messages(new_message)
         system_message: Message = self.get_system_prompt()
+        return self.generation_model.call(messages=[system_message, new_message], stream=self.stream)
 
-        model_response = self.generation_model.call(messages=[system_message, new_message], stream=self.stream)
-        if self.stream:
-            for _ in model_response:
-                _.message.role_name = self.assistant_name
-                yield _
-        else:
-            model_response.message.role_name = self.assistant_name
-            return model_response
+    @staticmethod
+    def parse_query_command(query: str):
+        query_split = query.lstrip("/").lower().split(" ")
+        command = query_split[0]
+        args = query_split[1:]
+        kwargs = {}
+        for arg in args:
+            if not args:
+                continue
+            arg_split = arg.split("=")
+            if len(arg_split) >= 2:
+                k = arg_split[0]
+                v = arg_split[1]
+                if k and v:
+                    kwargs[k] = v
+        return command, kwargs
 
     def process_commands(self, query: str) -> bool:
         continue_run = True
-        query_split = query.lstrip("/").lower().split(" ")
-        query = query_split[0]
-        args = query_split[1:]
-        if query == "exit":
+        command, kwargs = self.parse_query_command(query)
+
+        if command == "exit":
             self.memory_service.stop_service()
             continue_run = False
 
-        elif query == "help":
+        elif command == "clear":
+            os.system("clear")
+
+        elif command == "help":
             questionary.print("CLI commands", "bold")
             for cmd, desc in self.USER_COMMANDS.items():
                 questionary.print(text=f" /{cmd}:", style="bold")
                 questionary.print(text=f"  {desc}")
 
-        elif query == "stream":
-            self.stream = bool(args[0])
-            questionary.print(f"stream: {self.stream}")
+        elif command == "stream":
+            self.stream = ~self.stream
+            questionary.print(f"set stream: {self.stream}")
 
-        elif query in self.memory_service.op_description_dict:
-            if not args:
-                result = self.memory_service.do_operation(op_name=query)
-                questionary.print(result)
-
-            elif args[0].isdigit():
-                refresh_time = int(args[0])
+        elif command in self.memory_service.op_description_dict:
+            refresh_time = kwargs.pop("refresh_time", "")
+            if refresh_time and refresh_time.isdigit():
+                refresh_time = int(refresh_time)
                 while True:
                     time.sleep(refresh_time)
-                    result = self.memory_service.do_operation(op_name=query)
-                    os.system('clear')
+                    result = self.memory_service.do_operation(op_name=command, **kwargs)
+                    os.system("clear")
                     self.print_logo()
                     questionary.print(result)
-
             else:
-                questionary.print("unknown command received. Please try again!")
+                result = self.memory_service.do_operation(op_name=command, **kwargs)
+                questionary.print(result)
 
         else:
             questionary.print("unknown command received. Please try again!")
@@ -149,17 +153,21 @@ class CliMemoryChat(BaseMemoryChat):
                     else:
                         break
 
-                msg = None
                 questionary.print("> ", end="", style="fg:yellow")
                 questionary.print(f"{self.assistant_name}: ", end="", style="bold")
+
                 if self.stream:
-                    for msg in self.chat_with_memory(query=query):
-                        questionary.print(msg.delta, end="")
+                    model_response = None
+                    for model_response in self.chat_with_memory(query=query):
+                        questionary.print(model_response.delta, end="")
                     questionary.print("")
+
                 else:
-                    msg = self.chat_with_memory(query=query)
-                    questionary.print(msg.message.content)
-                self.memory_service.add_messages(msg.message)
+                    model_response = self.chat_with_memory(query=query)
+                    questionary.print(model_response.message.content)
+
+                model_response.message.role_name = self.assistant_name
+                self.memory_service.add_messages(model_response.message)
 
             except KeyboardInterrupt:
                 questionary.print("User interrupt occurred.")

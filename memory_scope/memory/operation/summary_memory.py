@@ -26,15 +26,18 @@ class SummaryMemory(BaseWorkflow, BaseOperation):
     def init_workflow(self):
         self.init_workers()
 
-    def run_operation(self):
+    def run_operation(self, **kwargs):
         if self._operation_status_run:
             return
 
         self._operation_status_run = True
+        for k, v in kwargs:
+            self.context[k] = v
         self.run_workflow()
         result = self.context.get(RESULT)
         self.context.clear()
         self._operation_status_run = False
+
         return result
 
     def _loop_operation(self):

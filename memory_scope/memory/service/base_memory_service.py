@@ -35,7 +35,7 @@ class BaseMemoryService(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def do_operation(self, op_name: str):
+    def do_operation(self, op_name: str, *args, **kwargs):
         raise NotImplementedError
 
     @property
