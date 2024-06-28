@@ -56,7 +56,7 @@ class WriteMemory(BaseWorkflow, BaseOperation):
             return
 
         max_count = not_memorized_size + self.his_msg_count
-        self.context[CHAT_MESSAGES] = [x.copy() for x in self.chat_messages[-max_count:]]
+        self.context[CHAT_MESSAGES] = [x.copy(deep=True) for x in self.chat_messages[-max_count:]]
         self.run_workflow()
         result = self.context.get(RESULT)
         self.context.clear()

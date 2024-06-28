@@ -1,3 +1,4 @@
+import hashlib
 import random
 import re
 import time
@@ -113,3 +114,9 @@ def char_logo(words: str, seed: int = time.time_ns(), color=None):
             colored_line += colored_char
         colored_lines.append(colored_line)
     return colored_lines
+
+
+def md5_hash(input_string: str):
+    m = hashlib.md5()
+    m.update(input_string.encode('utf-8'))
+    return m.hexdigest()

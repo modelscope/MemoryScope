@@ -2,8 +2,11 @@ from abc import ABCMeta
 from typing import List
 
 from memory_scope.chat.global_context import G_CONTEXT
+from memory_scope.constants.common_constants import CHAT_MESSAGES
+from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.worker.base_worker import BaseWorker
 from memory_scope.models.base_model import BaseModel
+from memory_scope.scheme.message import Message
 from memory_scope.storage.base_monitor import BaseMonitor
 from memory_scope.storage.base_vector_store import BaseVectorStore
 
@@ -24,17 +27,15 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         self._vector_store: BaseVectorStore | None = None
         self._monitor: BaseMonitor | None = None
 
+        self._user_id: str | None = None
+
     @property
     def messages(self) -> List[Message]:
-        return self.get_context(MESSAGES)
+        return self.get_context(CHAT_MESSAGES)
 
     @messages.setter
     def messages(self, value):
-        self.set_context(MESSAGES, value)
-
-    @property
-    def chat_name(self):
-        return self.get_context(CHAT_NAME)
+        self.set_context(CHAT_MESSAGES, value)
 
     @property
     def embedding_model(self) -> BaseModel:
@@ -67,11 +68,15 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self._monitor
 
     @property
-    def memory_id(self) -> str:
-        pass
+    def user_id(self) -> str:
+        if self._user_id is None:
+            message = [x for x in self.messages if x.role == MessageRoleEnum.USER.value][-1]
+            self._user_id = message.role_name
+        return self._user_id
 
     def __getattr__(self, key: str):
         return self.kwargs[key]
 
-    def get_prompt(self, x):
-        return x[GLOBAL_CONTEXT.global_configs["language"]]
+    @staticmethod
+    def get_prompt(prompt: dict) -> str:
+        return prompt[G_CONTEXT.global_configs["language"]]
