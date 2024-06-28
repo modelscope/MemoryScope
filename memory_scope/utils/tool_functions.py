@@ -1,8 +1,16 @@
+import hashlib
+import random
 import re
-from importlib import import_module
+import time
+from copy import deepcopy
 from datetime import datetime
+from importlib import import_module
 
-from enumeration.message_role_enum import MessageRoleEnum
+import pyfiglet
+from termcolor import colored, COLORS
+
+from memory_scope.constants.common_constants import WEEKDAYS
+from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 
 
 def under_line_to_hump(underline_str):
@@ -10,27 +18,27 @@ def under_line_to_hump(underline_str):
     return sub[0:1].upper() + sub[1:]
 
 
-def init_instance_by_config(
-    config: dict, default_clazz_path: str = "", suffix_name: str = "", **kwargs
-):
-    clazz_path = config.pop("clazz")
-    if not clazz_path:
-        raise RuntimeError("empty clazz_path!")
-    clazz_name_split = clazz_path.split(".")
-    clazz_name: str = clazz_name_split[-1]
-    if suffix_name and not clazz_name.endswith(suffix_name):
-        clazz_name = f"{clazz_name}_{suffix_name}"
+def init_instance_by_config(config: dict, default_class_path: str = "memory_scope", suffix_name: str = "", **kwargs):
+    config_copy = deepcopy(config)
+    origin_class_path: str = config_copy.pop("class")
+    if not origin_class_path:
+        raise RuntimeError("empty class path!")
 
-    # 构造path
-    clazz_paths = []
-    if default_clazz_path:
-        clazz_paths.append(default_clazz_path)
-    clazz_paths.extend(clazz_name_split[:-1])
-    clazz_paths.append(clazz_name)
-    module = import_module(".".join(clazz_paths))
+    class_name_split = origin_class_path.split(".")
+    class_name: str = class_name_split[-1]
+    if suffix_name and not class_name.lower().endswith(suffix_name.lower()):
+        class_name = f"{class_name}_{suffix_name}"
+        class_name_split[-1] = class_name
 
-    cls_name = under_line_to_hump(clazz_name)
-    return getattr(module, cls_name)(**config, **kwargs)
+    class_paths = []
+    if default_class_path and not origin_class_path.startswith(default_class_path):
+        class_paths.append(default_class_path)
+    class_paths.extend(class_name_split)
+    module = import_module(".".join(class_paths))
+
+    cls_name = under_line_to_hump(class_name)
+    config_copy.update(kwargs)
+    return getattr(module, cls_name)(**config_copy)
 
 
 def complete_config_name(config_name: str, suffix: str = ".json"):
@@ -67,17 +75,16 @@ def get_datetime_info_dict(parse_dt: datetime):
     }
 
 
-def time_to_formatted_str(
-    time: datetime | str | int | float = None,
-    date_format: str = "%Y%m%d",  # e.g. %Y%m%d -> "20240528", add %H:%M:%S
-    string_format: str = "",
-) -> str:
-    if isinstance(time, str | int | float):
-        if isinstance(time, str):
-            time = float(time)
-        current_dt = datetime.fromtimestamp(time)
-    elif isinstance(time, datetime):
-        current_dt = time
+def time_to_formatted_str(dt: datetime | str | int | float = None,
+                          date_format: str = "%Y%m%d",  # e.g. %Y%m%d -> "20240528", add %H:%M:%S
+                          string_format: str = "") -> str:
+
+    if isinstance(dt, str | int | float):
+        if isinstance(dt, str):
+            dt = float(dt)
+        current_dt = datetime.fromtimestamp(dt)
+    elif isinstance(dt, datetime):
+        current_dt = dt
     else:
         current_dt = datetime.now()
 
@@ -88,3 +95,28 @@ def time_to_formatted_str(
         return_str = string_format.format(**get_datetime_info_dict(current_dt))
 
     return return_str
+
+
+def char_logo(words: str, seed: int = time.time_ns(), color=None):
+    font = pyfiglet.Figlet()
+    rendered_text = font.renderText(words)
+    colored_lines = []
+    all_colors = list(COLORS.keys())
+    random.seed = seed
+    for line in rendered_text.splitlines():
+        line_color = color
+        if line_color is None:
+            random.shuffle(all_colors)
+            line_color = all_colors[0]
+        colored_line = ""
+        for char in line:
+            colored_char = colored(char, line_color, attrs=['bold'])
+            colored_line += colored_char
+        colored_lines.append(colored_line)
+    return colored_lines
+
+
+def md5_hash(input_string: str):
+    m = hashlib.md5()
+    m.update(input_string.encode('utf-8'))
+    return m.hexdigest()

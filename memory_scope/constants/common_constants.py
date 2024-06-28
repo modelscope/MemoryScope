@@ -1,3 +1,9 @@
+WORKFLOW_NAME = "workflow_name"
+
+RESULT = "result"
+
+CHAT_MESSAGES = "chat_messages"
+
 RELATED_MEMORIES = "related_memories"
 
 MESSAGES = "messages"
@@ -15,10 +21,6 @@ DEFAULT_SYSTEM_PROMPT = "default_system_prompt"
 RELATED_MEMORIES = "related_memories"
 
 MODIFIED_MEMORIES = "modified_memories"
-
-RESPONSE_EXT_INFO = "response_ext_info"
-
-PROMPT_CONFIG = "prompt_config"
 
 MESSAGES = "messages"
 
@@ -110,3 +112,5 @@ DATATIME_KEY_MAP = {
     "周": "week",
     "星期几": "weekday",
 }
+
+CONTENT_MODIFIED = "content_modified"

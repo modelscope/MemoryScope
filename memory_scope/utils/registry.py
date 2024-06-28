@@ -10,7 +10,8 @@ class Registry(object):
         self.name: str = name
         self.module_dict: Dict[str, Any] = {}
 
-    def register(self, module: Any, module_name: str = None):
+    def register(self, module_name: str = None, module: Any = None):
+        assert module is not None
         if module_name is None:
             module_name = module.__name__
 
@@ -27,6 +28,6 @@ class Registry(object):
             raise NotImplementedError
         self.module_dict.update(module_name_dict)
 
-    def get(self, module_name: str):
-        assert module_name in self.module_dict, f'{module_name} not found in {self.name}'
+    def __getitem__(self, module_name: str):
+        assert module_name in self.module_dict, f"{module_name} not found in {self.name}"
         return self.module_dict[module_name]
