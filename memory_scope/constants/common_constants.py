@@ -4,6 +4,8 @@ RESULT = "result"
 
 CHAT_MESSAGES = "chat_messages"
 
+CHAT_KWARGS = "chat_kwargs"
+
 RELATED_MEMORIES = "related_memories"
 
 MESSAGES = "messages"

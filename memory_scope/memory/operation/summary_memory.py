@@ -1,7 +1,7 @@
 import time
 
 from memory_scope.chat.global_context import G_CONTEXT
-from memory_scope.constants.common_constants import RESULT
+from memory_scope.constants.common_constants import RESULT, CHAT_KWARGS
 from memory_scope.memory.operation.base_operation import BaseOperation, OPERATION_TYPE
 from memory_scope.memory.operation.base_workflow import BaseWorkflow
 
@@ -31,8 +31,7 @@ class SummaryMemory(BaseWorkflow, BaseOperation):
             return
 
         self._operation_status_run = True
-        for k, v in kwargs:
-            self.context[k] = v
+        self.context[CHAT_KWARGS] = kwargs
         self.run_workflow()
         result = self.context.get(RESULT)
         self.context.clear()

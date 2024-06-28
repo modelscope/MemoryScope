@@ -2,7 +2,7 @@ import time
 from typing import List
 
 from memory_scope.chat.global_context import G_CONTEXT
-from memory_scope.constants.common_constants import CHAT_MESSAGES, RESULT
+from memory_scope.constants.common_constants import CHAT_MESSAGES, RESULT, CHAT_KWARGS
 from memory_scope.memory.operation.base_operation import BaseOperation, OPERATION_TYPE
 from memory_scope.memory.operation.base_workflow import BaseWorkflow
 from memory_scope.scheme.message import Message
@@ -51,8 +51,7 @@ class WriteMemory(BaseWorkflow, BaseOperation):
             return
 
         self._operation_status_run = True
-        for k, v in kwargs:
-            self.context[k] = v
+        self.context[CHAT_KWARGS] = kwargs
         not_memorized_size = self.not_memorized_size
         if not_memorized_size < self.contextual_msg_count:
             return

@@ -112,7 +112,7 @@ class CliMemoryChat(BaseMemoryChat):
                 questionary.print(text=f"  {desc}")
 
         elif command == "stream":
-            self.stream = ~self.stream
+            self.stream = not self.stream
             questionary.print(f"set stream: {self.stream}")
 
         elif command in self.memory_service.op_description_dict:
@@ -130,7 +130,7 @@ class CliMemoryChat(BaseMemoryChat):
                 questionary.print(result)
 
         else:
-            questionary.print("unknown command received. Please try again!")
+            questionary.print(f"Unknown command={command} received.")
 
         return continue_run
 

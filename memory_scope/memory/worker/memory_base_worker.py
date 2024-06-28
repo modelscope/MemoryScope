@@ -79,4 +79,4 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
 
     @staticmethod
     def get_prompt(prompt: dict) -> str:
-        return prompt[G_CONTEXT.global_configs["language"]]
+        return prompt[G_CONTEXT.language]

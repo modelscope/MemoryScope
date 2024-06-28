@@ -1,6 +1,6 @@
 from typing import List
 
-from memory_scope.constants.common_constants import RESULT, CHAT_MESSAGES
+from memory_scope.constants.common_constants import RESULT, CHAT_MESSAGES, CHAT_KWARGS
 from memory_scope.memory.operation.base_operation import BaseOperation, OPERATION_TYPE
 from memory_scope.memory.operation.base_workflow import BaseWorkflow
 from memory_scope.scheme.message import Message
@@ -28,8 +28,7 @@ class ReadMemory(BaseWorkflow, BaseOperation):
     def run_operation(self, **kwargs):
         max_count = 1 + max(self.his_msg_count, self.contextual_msg_count)
         self.context[CHAT_MESSAGES] = [x.copy(deep=True) for x in self.chat_messages[-max_count:]]
-        for k, v in kwargs:
-            self.context[k] = v
+        self.context[CHAT_KWARGS] = kwargs
         self.run_workflow()
         result = self.context.get(RESULT)
         self.context.clear()
