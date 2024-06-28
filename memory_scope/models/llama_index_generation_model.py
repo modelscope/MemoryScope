@@ -32,9 +32,7 @@ class LlamaIndexGenerationModel(BaseModel):
                    stream: bool = False,
                    **kwargs) -> ModelResponse | ModelResponseGen:
 
-        model_response.message = Message(role=MessageRoleEnum.ASSISTANT,
-                                         content="",
-                                         time_created=int(datetime.datetime.now().timestamp()))
+        model_response.message = Message(role=MessageRoleEnum.ASSISTANT, content="")
 
         call_result = model_response.raw
         if stream:

@@ -1,4 +1,3 @@
-import datetime
 import os
 import time
 from typing import List
@@ -31,6 +30,7 @@ class CliMemoryChat(BaseMemoryChat):
                  human_name: str = "human",
                  assistant_name: str = "assistant",
                  **kwargs):
+
         self._memory_service: BaseMemoryService | str = memory_service
         self._generation_model: BaseModel | str = generation_model
         self.stream: bool = stream
@@ -58,31 +58,35 @@ class CliMemoryChat(BaseMemoryChat):
             self._generation_model = G_CONTEXT.model_dict[self._generation_model]
         return self._generation_model
 
-    @staticmethod
-    def get_system_prompt(related_memories: List[str], time_created: int) -> Message:
-        system_prompt = SYSTEM_PROMPT[G_CONTEXT.language]
-        if related_memories:
+    def get_system_prompt(self) -> Message:
+        system_prompt = SYSTEM_PROMPT[G_CONTEXT.language].strip()
+
+        memories: str = self.memory_service.read_memory()
+        if memories:
             memory_prompt = MEMORY_PROMPT[G_CONTEXT.language]
-            all_prompt_list = [system_prompt, memory_prompt]
-            all_prompt_list.extend(related_memories)
-            system_prompt = "\n".join([x.strip() for x in all_prompt_list])
-        return Message(role=MessageRoleEnum.SYSTEM, content=system_prompt, time_created=time_created)
+            system_prompt = "\n".join([x.strip() for x in [system_prompt, memory_prompt, memories]])
+
+        return Message(role=MessageRoleEnum.SYSTEM, content=system_prompt)
 
     def chat_with_memory(self, query: str) -> ModelResponse | ModelResponseGen:
         query = query.strip()
         if not query:
             return
 
-        time_created = int(datetime.datetime.now().timestamp())
-        new_message: Message = Message(role=MessageRoleEnum.USER.value, content=query, time_created=time_created)
+        new_message: Message = Message(role=MessageRoleEnum.USER.value,
+                                       role_name=self.human_name,
+                                       content=query)
+
         self.memory_service.add_messages(new_message)
-        related_memories: List[str] = self.memory_service.read_memory()
-        system_message: Message = self.get_system_prompt(related_memories, time_created)
+        system_message: Message = self.get_system_prompt()
+
         model_response = self.generation_model.call(messages=[system_message, new_message], stream=self.stream)
         if self.stream:
             for _ in model_response:
+                _.message.role_name = self.assistant_name
                 yield _
         else:
+            model_response.message.role_name = self.assistant_name
             return model_response
 
     def process_commands(self, query: str) -> bool:
