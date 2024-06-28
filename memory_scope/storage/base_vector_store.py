@@ -10,11 +10,9 @@ class BaseVectorStore(metaclass=ABCMeta):
     def __init__(self,
                  index_name: str = "",
                  embedding_model: BaseModel | None = None,
-                 content_key: str = "text",
                  **kwargs):
         self.index_name: str = index_name
         self.embedding_model: BaseModel = embedding_model
-        self.content_key: str = content_key
         self.kwargs: dict = kwargs
 
     @abstractmethod
@@ -32,23 +30,17 @@ class BaseVectorStore(metaclass=ABCMeta):
         """
         pass
 
-    @abstractmethod
-    def insert_batch(self):
-        """
-        :return:
-        """
+    def insert_batch(self, nodes: List[MemoryNode]):
         pass
 
-    @abstractmethod
-    def delete(self):
-        """
-        :return:
-        """
+    def delete(self, node: MemoryNode):
         pass
 
-    @abstractmethod
+    def update(self, node: MemoryNode):
+        pass
+
     def flush(self):
-        """
-        :return:
-        """
+        pass
+
+    def close(self):
         pass

@@ -24,3 +24,9 @@ class MemoryNode(BaseModel):
 
     vector: List[float] = Field([], description="content embedding result, return empty")
 
+    @property
+    def node_keys(self):
+        return list(self.model_json_schema()["properties"].keys())
+
+    def __getitem__(self, key: str):
+        return self.model_dump().get(key)

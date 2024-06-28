@@ -8,6 +8,7 @@ memory_chat:
     class: chat.cli_memory_chat
     memory_service: memory_chat_service
     generation_model: dashscope_generation
+
 memory_service:
   memory_chat_service:
     class: memory.service.chat_memory_service

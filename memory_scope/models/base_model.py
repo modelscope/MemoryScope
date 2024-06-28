@@ -1,6 +1,7 @@
 import inspect
 import time
 from abc import abstractmethod, ABCMeta
+from typing import Any
 
 from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.scheme.model_response import ModelResponse, ModelResponseGen
@@ -28,20 +29,28 @@ class BaseModel(metaclass=ABCMeta):
         self.timeout: int = timeout
         self.max_retries: int = max_retries
         self.retry_interval: float = retry_interval
+        self.kwargs_filter: bool = kwargs_filter
         self.kwargs: dict = kwargs
 
         self.data = {}
+        self._model: Any = None
+
         self.logger = Logger.get_logger()
 
-        obj_cls = MODEL_REGISTRY[self.module_name]
-        if not obj_cls:
-            raise RuntimeError(f"method_type={self.module_name} is not supported!")
+    @property
+    def model(self):
+        if self._model is None:
+            if self.module_name not in MODEL_REGISTRY.module_dict:
+                raise RuntimeError(f"method_type={self.module_name} is not supported!")
+            obj_cls = MODEL_REGISTRY[self.module_name]
 
-        if kwargs_filter:
-            allowed_kwargs = list(inspect.signature(obj_cls.__init__).parameters.keys())
-            kwargs = {key: value for key, value in kwargs.items() if key in allowed_kwargs}
-
-        self.model = obj_cls(**kwargs)
+            if self.kwargs_filter:
+                allowed_kwargs = list(inspect.signature(obj_cls.__init__).parameters.keys())
+                kwargs = {key: value for key, value in self.kwargs.items() if key in allowed_kwargs}
+            else:
+                kwargs = self.kwargs
+            self._model = obj_cls(**kwargs)
+        return self._model
 
     @abstractmethod
     def before_call(self, **kwargs) -> None:
