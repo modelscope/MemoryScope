@@ -1,7 +1,75 @@
 from memory_scope.enumeration.language_enum import LanguageEnum
 
 
-CONTRA_REPEAT_SYSTEM_PROMPT = {
+OLD_CONTRA_REPEAT_SYSTEM_PROMPT = {
+    LanguageEnum.CN: """
+对下面的{num_obs}句句子，逐一判断是否与“前面序号”的任意句子存在信息的矛盾，或者句子的主要信息被“前面序号”的任意句子中的信息包含。只判断与“前面序号”的句子的关系。
+对每个句子都做一个判断，最后一共输出{num_obs}行判断。
+请一步步思考，并按如下格式输出:
+思考：思考的依据和过程，30字以内。
+判断：<句子序号> <矛盾，被包含，无>，一定加<>
+""",
+    LanguageEnum.EN: """
+"""
+}
+
+OLD_CONTRA_REPEAT_FEW_SHOT_PROMPT = {
+    LanguageEnum.CN: """
+示例1
+句子：
+1 用户经常失眠，对安眠药的效果感兴趣，暗示可能考虑使用。
+2 用户经常失眠，寻求缓解方法。
+3 陈伟业是用户的领导
+4 陈伟业是用户的领导
+5 陈伟业是用户的领导，是银行分行行长
+
+思考：第1句不会存在与前面序号句子的矛盾或者完全重复。
+判断：<1> <无>
+思考：第2句中所有信息都被前面序号中第1句的信息完全包含。
+判断：<2> <被包含>
+思考：第3句信息没有在前面序号句子中出现
+判断：<3> <无>
+思考：第4句与前面序号中第3句的信息完全重复，即被完全包含。
+判断：<4> <被包含>
+思考：第5句中陈伟业是用户的领导的信息被前面序号中第3句的信息包含，但新增了陈伟业是银行分行行长的信息，故不是被完全包含。
+判断：<5> <无>
+
+示例2
+句子：
+1 用户的孩子成绩不太好。
+2 用户的孩子在学校经常逃课。
+3 用户的父亲生日在2024年6月2日，用户打算准备礼物。
+4 用户的父亲生日在2024年5月1日。
+5 用户很喜欢和同班同学打篮球。
+6 用户喜欢打篮球。
+
+思考：第1句不会存在与前面序号句子的矛盾或者完全重复。
+判断：<1> <无>
+思考：第2句与前面序号句子既不矛盾也不重复。
+判断：<2> <无>
+思考：第3句与前面序号句子既不矛盾也不重复。
+判断：<3> <无>
+思考：第4句关于用户父亲生日的日期信息与前面序号句子第3句矛盾了。
+判断：<4> <矛盾>
+思考：第5句与前面序号句子既不矛盾也不重复。
+判断：<5> <无>
+思考：第6句中所有信息都被前面序号中第5句的信息完全包含。
+判断：<2> <被包含>
+""",
+    LanguageEnum.EN: """
+"""
+}
+
+OLD_CONTRA_REPEAT_USER_QUERY_PROMPT = {
+    LanguageEnum.CN: """
+句子：
+{user_query}
+""",
+    LanguageEnum.EN: """
+"""
+}
+
+NEW_CONTRA_REPEAT_SYSTEM_PROMPT = {
     LanguageEnum.CN: """
 对下面的{num_obs}句句子，逐一判断是否与“前面序号”的任意句子存在信息的矛盾，或者句子的主要信息被“前面序号”的任意句子中的信息包含。只判断与“前面序号”的句子的关系。
 如果句子与前面序号的句子存在矛盾，则以前面序号的句子中的信息为准，修改句子中矛盾的部分。
@@ -13,7 +81,7 @@ CONTRA_REPEAT_SYSTEM_PROMPT = {
 """
 }
 
-CONTRA_REPEAT_FEW_SHOT_PROMPT = {
+NEW_CONTRA_REPEAT_FEW_SHOT_PROMPT = {
     LanguageEnum.CN: """
 示例1
 句子：
@@ -60,7 +128,7 @@ CONTRA_REPEAT_FEW_SHOT_PROMPT = {
 """
 }
 
-CONTRA_REPEAT_USER_QUERY_PROMPT = {
+NEW_CONTRA_REPEAT_USER_QUERY_PROMPT = {
     LanguageEnum.CN: """
 句子：
 {user_query}
