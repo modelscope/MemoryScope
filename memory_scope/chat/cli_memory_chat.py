@@ -24,10 +24,18 @@ class CliMemoryChat(BaseMemoryChat):
         "stream": "get stream response"
     }
 
-    def __init__(self, memory_service: str, generation_model: str, stream: bool = True, **kwargs):
+    def __init__(self,
+                 memory_service: str,
+                 generation_model: str,
+                 stream: bool = True,
+                 human_name: str = "human",
+                 assistant_name: str = "assistant",
+                 **kwargs):
         self._memory_service: BaseMemoryService | str = memory_service
         self._generation_model: BaseModel | str = generation_model
         self.stream: bool = stream
+        self.human_name: str = human_name
+        self.assistant_name: str = assistant_name
         self.kwargs: dict = kwargs
 
         self._logo = char_logo("MemoryScope")
@@ -66,16 +74,16 @@ class CliMemoryChat(BaseMemoryChat):
             return
 
         time_created = int(datetime.datetime.now().timestamp())
-        new_message: Message = Message(role=MessageRoleEnum.USER, content=query, time_created=time_created)
+        new_message: Message = Message(role=MessageRoleEnum.USER.value, content=query, time_created=time_created)
         self.memory_service.add_messages(new_message)
         related_memories: List[str] = self.memory_service.read_memory()
         system_message: Message = self.get_system_prompt(related_memories, time_created)
-        result = self.generation_model.call(messages=[system_message, new_message], stream=self.stream)
+        model_response = self.generation_model.call(messages=[system_message, new_message], stream=self.stream)
         if self.stream:
-            for _ in result:
+            for _ in model_response:
                 yield _
         else:
-            return result
+            return model_response
 
     def process_commands(self, query: str) -> bool:
         continue_run = True
@@ -124,7 +132,7 @@ class CliMemoryChat(BaseMemoryChat):
 
         while True:
             try:
-                query = questionary.text(message="user:", multiline=False, qmark=">").unsafe_ask()
+                query = questionary.text(message=f"{self.human_name}:", multiline=False, qmark=">").unsafe_ask()
                 if not query:
                     continue
 
@@ -139,7 +147,7 @@ class CliMemoryChat(BaseMemoryChat):
 
                 msg = None
                 questionary.print("> ", end="", style="fg:yellow")
-                questionary.print("assistant: ", end="", style="bold")
+                questionary.print(f"{self.assistant_name}: ", end="", style="bold")
                 if self.stream:
                     for msg in self.chat_with_memory(query=query):
                         questionary.print(msg.delta, end="")
