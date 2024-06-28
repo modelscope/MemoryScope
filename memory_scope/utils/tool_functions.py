@@ -13,9 +13,16 @@ from memory_scope.constants.common_constants import WEEKDAYS
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 
 
-def under_line_to_hump(underline_str):
-    sub = re.sub(r"(_\w)", lambda x: x.group(1)[1].upper(), underline_str)
-    return sub[0:1].upper() + sub[1:]
+def underscore_to_camelcase(name: str, is_first_title: bool = True):
+    name_split = name.split("_")
+    if is_first_title:
+        return "".join(x.title() for x in name_split[1:])
+    else:
+        return name_split[0] + ''.join(x.title() for x in name_split[1:])
+
+
+def camelcase_to_underscore(name: str):
+    return re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
 
 
 def init_instance_by_config(config: dict, default_class_path: str = "memory_scope", suffix_name: str = "", **kwargs):
@@ -36,7 +43,7 @@ def init_instance_by_config(config: dict, default_class_path: str = "memory_scop
     class_paths.extend(class_name_split)
     module = import_module(".".join(class_paths))
 
-    cls_name = under_line_to_hump(class_name)
+    cls_name = underscore_to_camelcase(class_name)
     config_copy.update(kwargs)
     return getattr(module, cls_name)(**config_copy)
 

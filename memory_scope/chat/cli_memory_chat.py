@@ -4,14 +4,14 @@ import time
 import questionary
 
 from memory_scope.chat.base_memory_chat import BaseMemoryChat
-from memory_scope.chat.global_context import G_CONTEXT
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.service.base_memory_service import BaseMemoryService
 from memory_scope.models.base_model import BaseModel
-from memory_scope.prompts.memory_chat_prompt import MEMORY_PROMPT, SYSTEM_PROMPT
 from memory_scope.scheme.message import Message
 from memory_scope.scheme.model_response import ModelResponse, ModelResponseGen
+from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.logger import Logger
+from memory_scope.utils.prompt_handler import PromptHandler
 from memory_scope.utils.tool_functions import char_logo
 
 
@@ -39,7 +39,16 @@ class CliMemoryChat(BaseMemoryChat):
         self.kwargs: dict = kwargs
 
         self._logo = char_logo("MemoryScope")
+        self._prompt_handler: PromptHandler | None = None
+
         self.logger = Logger.get_logger()
+
+    @property
+    def prompt_handler(self) -> PromptHandler:
+        if self._prompt_handler is None:
+            self._prompt_handler = PromptHandler()
+            self._prompt_handler.add_file_prompts(self.__class__.__name__)
+        return self._prompt_handler
 
     def print_logo(self):
         for line in self._logo:
@@ -59,11 +68,11 @@ class CliMemoryChat(BaseMemoryChat):
         return self._generation_model
 
     def get_system_prompt(self) -> Message:
-        system_prompt = SYSTEM_PROMPT[G_CONTEXT.language].strip()
+        system_prompt = self.prompt_handler.system_prompt
 
         memories: str = self.memory_service.read_memory()
         if memories:
-            memory_prompt = MEMORY_PROMPT[G_CONTEXT.language]
+            memory_prompt = self.prompt_handler.memory_prompt
             system_prompt = "\n".join([x.strip() for x in [system_prompt, memory_prompt, memories]])
 
         return Message(role=MessageRoleEnum.SYSTEM, content=system_prompt)

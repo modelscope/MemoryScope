@@ -1,9 +1,9 @@
 import time
 
-from memory_scope.chat.global_context import G_CONTEXT
 from memory_scope.constants.common_constants import RESULT, CHAT_KWARGS
 from memory_scope.memory.operation.base_operation import BaseOperation, OPERATION_TYPE
 from memory_scope.memory.operation.base_workflow import BaseWorkflow
+from memory_scope.utils.global_context import G_CONTEXT
 
 
 class SummaryMemory(BaseWorkflow, BaseOperation):

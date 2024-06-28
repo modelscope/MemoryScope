@@ -9,12 +9,12 @@ from typing import Dict, Any
 import fire
 import yaml
 
-from memory_scope.chat.global_context import G_CONTEXT
 from memory_scope.enumeration.language_enum import LanguageEnum
-from memory_scope.utils.logger import Logger
-from memory_scope.utils.tool_functions import init_instance_by_config
-from memory_scope.utils.timer import timer
 from memory_scope.enumeration.model_enum import ModelEnum
+from memory_scope.utils.global_context import G_CONTEXT
+from memory_scope.utils.logger import Logger
+from memory_scope.utils.timer import timer
+from memory_scope.utils.tool_functions import init_instance_by_config
 
 
 class CliJob(object):

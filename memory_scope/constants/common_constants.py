@@ -6,11 +6,13 @@ CHAT_MESSAGES = "chat_messages"
 
 CHAT_KWARGS = "chat_kwargs"
 
-RELATED_MEMORIES = "related_memories"
+QUERY_WITH_TS = "query_with_ts"
 
-MESSAGES = "messages"
 
-CHAT_NAME = "chat_name"
+
+
+
+
 
 PIPELINE = "pipeline"
 
@@ -20,7 +22,6 @@ MEMORY = "memory"
 
 DEFAULT_SYSTEM_PROMPT = "default_system_prompt"
 
-RELATED_MEMORIES = "related_memories"
 
 MODIFIED_MEMORIES = "modified_memories"
 

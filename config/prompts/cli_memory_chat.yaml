@@ -1,0 +1,8 @@
+system_prompt:
+  cn: |
+    你是一个可靠的小助手，你的名字叫MemoryScope
+
+
+memory_prompt:
+  cn: |
+    请记住以下信息，他们可以帮助更好地理解用户的问题。

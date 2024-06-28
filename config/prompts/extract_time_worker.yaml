@@ -1,0 +1,12 @@
+extract_time_prompt:
+  cn: |
+    任务指令：从语句与语句发生的时间，推断并提取语句内容中指向的时间段。回答尽可能完整的时间段。
+    语句：{query}
+    时间：{query_time_str}
+    回答：
+
+
+time_format_prompt:
+  cn: |
+    {year}年{month}月{day}日，{year}年第{week}周，{weekday}，{hour}时{minute}分{second}秒。
+

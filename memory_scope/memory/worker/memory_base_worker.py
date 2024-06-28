@@ -1,14 +1,15 @@
 from abc import ABCMeta
-from typing import List
+from typing import List, Dict
 
-from memory_scope.chat.global_context import G_CONTEXT
-from memory_scope.constants.common_constants import CHAT_MESSAGES
+from memory_scope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.worker.base_worker import BaseWorker
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.message import Message
 from memory_scope.storage.base_monitor import BaseMonitor
 from memory_scope.storage.base_vector_store import BaseVectorStore
+from memory_scope.utils.global_context import G_CONTEXT
+from memory_scope.utils.prompt_handler import PromptHandler
 
 
 class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
@@ -28,14 +29,19 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         self._monitor: BaseMonitor | None = None
 
         self._user_id: str | None = None
+        self._prompt_handler: PromptHandler | None = None
 
     @property
-    def messages(self) -> List[Message]:
+    def chat_messages(self) -> List[Message]:
         return self.get_context(CHAT_MESSAGES)
 
-    @messages.setter
-    def messages(self, value):
+    @chat_messages.setter
+    def chat_messages(self, value):
         self.set_context(CHAT_MESSAGES, value)
+
+    @property
+    def chat_kwargs(self) -> Dict[str, str]:
+        return self.get_context(CHAT_KWARGS)
 
     @property
     def embedding_model(self) -> BaseModel:
@@ -62,7 +68,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self._vector_store
 
     @property
-    def monitor(self):
+    def monitor(self) -> BaseMonitor:
         if self._monitor is None:
             self._monitor = G_CONTEXT.monitor
         return self._monitor
@@ -74,9 +80,16 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             self._user_id = message.role_name
         return self._user_id
 
+    @property
+    def prompt_handler(self) -> PromptHandler:
+        if self._prompt_handler is None:
+            self._prompt_handler = PromptHandler()
+            self._prompt_handler.add_file_prompts(self.__class__.__name__)
+        return self._prompt_handler
+
     def __getattr__(self, key: str):
         return self.kwargs[key]
 
     @staticmethod
-    def get_prompt(prompt: dict) -> str:
+    def get_language_prompt(prompt: dict) -> str:
         return prompt[G_CONTEXT.language]
