@@ -1,8 +1,10 @@
 from typing import Dict, List
 
 from memory_scope.constants.common_constants import EXTRACT_TIME_DICT, RANKED_MEMORY_NODES, RESULT
+from memory_scope.constants.language_constants import COLON_WORD
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
+from memory_scope.utils.datetime_handler import DatetimeHandler
 
 
 class FuseRerankWorker(MemoryBaseWorker):
@@ -107,10 +109,10 @@ class FuseRerankWorker(MemoryBaseWorker):
 
             content = node.content
             if f_event or f_msg:
-                time_infer = self.format_time_infer(time_infer="",
-                                                    extract_time_dict=extract_time_dict,
-                                                    meta_data=node.memory_node.metaData)
-                content = f"{time_infer}: {content}"
+                time_infer = DatetimeHandler.format_time_by_extract_time(extract_time_dict=extract_time_dict,
+                                                                         meta_data=node.memory_node.metaData)
+                if time_infer:
+                    content = f"{time_infer}{self.get_language_value(COLON_WORD)}{content}"
             memories.append(content)
 
         self.set_context(RESULT, "\n".join(memories))

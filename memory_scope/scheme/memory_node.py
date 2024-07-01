@@ -7,11 +7,13 @@ from memory_scope.utils.tool_functions import md5_hash
 
 
 class MemoryNode(BaseModel):
-    memory_id: str = Field("", description="unique id for memory item")
+    memory_id: str = Field("", description="unique id for memory")
 
-    user_id: str = Field("", description="unique memory id for user")
+    user_name: str = Field("", description="the user who owns the memory")
 
-    meta_data: Dict[str, str] = Field({}, description="other data infos")
+    target_name: str = Field("", description="target name described by the memory")
+
+    meta_data: Dict[str, str] = Field({}, description="meta data infos")
 
     content: str = Field("", description="memory content")
 
@@ -35,8 +37,7 @@ class MemoryNode(BaseModel):
 
     obs_profile_updated: bool = Field(False, description="if the observation has updated user profile")
 
-    keyword: str = Field("", description="keywords of the content")
-
+    obs_keyword: str = Field("", description="keywords of the content")
 
     @property
     def node_keys(self):
@@ -46,4 +47,4 @@ class MemoryNode(BaseModel):
         return self.model_dump().get(key)
 
     def gen_memory_id(self):
-        self.memory_id = f"{self.user_id}_{self.timestamp}_{md5_hash(self.content)[:8]}"
+        self.memory_id = f"{self.user_name}_{self.target_name}_{self.timestamp}_{md5_hash(self.content)[:8]}"

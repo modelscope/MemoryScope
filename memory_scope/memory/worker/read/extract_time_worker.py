@@ -30,11 +30,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
         self.logger.info(f"extract_time_prompt={extract_time_prompt}")
 
         # call sft model
-        response = self.generation_model.call(prompt=extract_time_prompt,
-                                              model_name=self.extra_time_model,
-                                              max_token=self.extra_time_max_token,
-                                              temperature=self.extra_time_temperature,
-                                              top_k=self.extra_time_top_k)
+        response = self.generation_model.call(prompt=extract_time_prompt, top_k=self.extra_time_top_k)
 
         # if empty, return
         if not response.status or not response.message.content:
@@ -47,6 +43,5 @@ class ExtractTimeWorker(MemoryBaseWorker):
         for key, value in matches:
             if key in DATATIME_KEY_MAP.keys():
                 extract_time_dict[DATATIME_KEY_MAP[key]] = value
-        self.set_context(EXTRACT_TIME_DICT, extract_time_dict)
-
         self.logger.info(f"response_text={response_text} filters={extract_time_dict}")
+        self.set_context(EXTRACT_TIME_DICT, extract_time_dict)

@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from memory_scope.constants.common_constants import NEW_OBS_NODES, TIME_INFER
@@ -15,21 +14,21 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 class GetObservationWorker(MemoryBaseWorker):
     def add_observation(self, message: Message, time_infer: str, obs_content: str, keywords: str):
-        created_dt: datetime = datetime.fromtimestamp(float(message.time_created))
-        dt_handler = DatetimeHandler(dt=created_dt)
+        dt_handler = DatetimeHandler(dt=message.time_created)
 
-        # 组合meta_data
+        # buidl meta data
         meta_data = {
             MemoryTypeEnum.CONVERSATION.value: message.content,
             TIME_INFER: time_infer,
-            **{f"msg_{k}": str(v) for k, v in dt_handler.dt_info_dict.items()},
+            **dt_handler.dt_info_dict.items(),
         }
 
         if time_infer:
-            dt_infer_handler = DatetimeHandler(dt=time_infer)
-            meta_data.update({f"event_{k}": str(v) for k, v in dt_infer_handler.dt_info_dict.items()})
+            dt_info_dict = DatetimeHandler.extract_date_parts(input_string=time_infer)
+            meta_data.update({f"event_{k}": str(v) for k, v in dt_info_dict.items()})
 
-        node = MemoryNode(user_id=self.user_id,
+        node = MemoryNode(user_name=self.user_name,
+                          target_name=self.target_name,
                           meta_data=meta_data,
                           content=obs_content,
                           memoryType=MemoryTypeEnum.OBSERVATION.value,
@@ -38,7 +37,7 @@ class GetObservationWorker(MemoryBaseWorker):
                           obs_dt=dt_handler.datetime_format(),
                           obs_reflected=False,
                           obs_profile_updated=False,
-                          keywords=keywords)
+                          obs_keyword=keywords)
         node.gen_memory_id()
         return node
 

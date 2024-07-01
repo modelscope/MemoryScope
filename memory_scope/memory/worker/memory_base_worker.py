@@ -28,7 +28,8 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         self._vector_store: BaseVectorStore | None = None
         self._monitor: BaseMonitor | None = None
 
-        self._user_id: str | None = None
+        self._user_name: str | None = None
+        self._target_name: str | None = None
         self._prompt_handler: PromptHandler | None = None
 
     @property
@@ -74,11 +75,20 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self._monitor
 
     @property
-    def user_id(self) -> str:
-        if self._user_id is None:
+    def user_name(self) -> str:
+        # FIXME: complex situations require adjustment
+        if self._user_name is None:
+            message = [x for x in self.messages if x.role == MessageRoleEnum.ASSISTANT.value][-1]
+            self._user_name = message.role_name
+        return self._user_name
+
+    @property
+    def target_name(self) -> str:
+        # FIXME: complex situations require adjustment
+        if self._target_name is None:
             message = [x for x in self.messages if x.role == MessageRoleEnum.USER.value][-1]
-            self._user_id = message.role_name
-        return self._user_id
+            self._target_name = message.role_name
+        return self._target_name
 
     @property
     def prompt_handler(self) -> PromptHandler:

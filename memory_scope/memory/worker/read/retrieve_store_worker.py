@@ -11,7 +11,8 @@ class RetrieveStoreWorker(MemoryBaseWorker):
 
     async def retrieve_from_observation(self, query: str) -> List[MemoryNode]:
         filter_dict = {
-            "user_id": self.user_id,
+            "user_name": self.user_name,
+            "target_name": self.target_name,
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
@@ -21,7 +22,8 @@ class RetrieveStoreWorker(MemoryBaseWorker):
 
     async def retrieve_from_insight_and_profile(self, query: str) -> List[MemoryNode]:
         filter_dict = {
-            "user_id": self.user_id,
+            "user_name": self.user_name,
+            "target_name": self.target_name,
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": [MemoryTypeEnum.INSIGHT.value, MemoryTypeEnum.PROFILE.value],
         }

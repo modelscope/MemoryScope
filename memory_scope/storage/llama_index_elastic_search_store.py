@@ -92,9 +92,7 @@ class LlamaIndexElasticSearchStore(BaseVectorStore):
             filter_dict = {}
 
         es_filter = _to_elasticsearch_filter(filter_dict)
-        retriever = self.index.as_retriever(
-            vector_store_kwargs={"es_filter": es_filter},
-            similarity_top_k=top_k)
+        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter}, similarity_top_k=top_k)
         text_nodes = retriever.retrieve(query)
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
