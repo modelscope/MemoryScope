@@ -1,6 +1,6 @@
 from typing import List
 
-from memory_scope.constants.common_constants import NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES
+from memory_scope.constants.common_constants import NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES, MERGE_OBS_NODES
 from memory_scope.constants.language_constants import NONE_WORD, CONTRADICTORY_WORD, INCLUDED_WORD
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
@@ -116,4 +116,4 @@ class ContraRepeatWorker(MemoryBaseWorker):
             self.logger.info(f"contra_repeat stage: {node.content} {node.status}")
 
         # save context
-        self.vector_store.update_batch(merge_obs_nodes)
+        self.set_context(MERGE_OBS_NODES, merge_obs_nodes)

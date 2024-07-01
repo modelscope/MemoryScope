@@ -60,5 +60,8 @@ class BaseWorker(metaclass=ABCMeta):
         else:
             self.context[key] = value
 
+    def has_content(self, key: str):
+        return key in self.context
+
     def __getattr__(self, key: str):
         return self.kwargs[key]

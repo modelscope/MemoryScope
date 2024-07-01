@@ -31,7 +31,7 @@ class GetObservationWorker(MemoryBaseWorker):
                           target_name=self.target_name,
                           meta_data=meta_data,
                           content=obs_content,
-                          memoryType=MemoryTypeEnum.OBSERVATION.value,
+                          memory_type=MemoryTypeEnum.OBSERVATION.value,
                           status=MemoryNodeStatus.ACTIVE.value,
                           timestamp=message.time_created,
                           obs_dt=dt_handler.datetime_format(),

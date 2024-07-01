@@ -101,3 +101,7 @@ class DatetimeHandler(object):
 
     def string_format(self, string_format: str):
         return string_format.format(**self.dt_info_dict)
+
+    @property
+    def timestamp(self) -> int:
+        return int(self._dt.timestamp())
