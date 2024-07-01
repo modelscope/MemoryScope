@@ -20,7 +20,7 @@ class GetObservationWorker(MemoryBaseWorker):
         meta_data = {
             MemoryTypeEnum.CONVERSATION.value: message.content,
             TIME_INFER: time_infer,
-            **dt_handler.dt_info_dict.items(),
+            **dt_handler.dt_info_dict,
         }
 
         if time_infer:
@@ -52,7 +52,7 @@ class GetObservationWorker(MemoryBaseWorker):
                     match = True
                     break
             if not match:
-                user_query_list.append(f"{i} {self.user_id}{self.get_language_value(COLON_WORD)}{msg.content}")
+                user_query_list.append(f"{i} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
                 i += 1
 
         if not user_query_list:
@@ -60,10 +60,10 @@ class GetObservationWorker(MemoryBaseWorker):
             return []
 
         system_prompt = self.prompt_handler.get_observation_system.format(num_obs=len(user_query_list),
-                                                                          user_name=self.user_id)
-        few_shot = self.prompt_config.get_observation_few_shot.format(self.user_id)
+                                                                          user_name=self.target_name)
+        few_shot = self.prompt_config.get_observation_few_shot.format(user_name=self.target_name)
         user_query = self.prompt_config.get_observation_user_query.format(user_query="\n".join(user_query_list),
-                                                                          user_name=self.user_id)
+                                                                          user_name=self.target_name)
 
         obtain_obs_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")

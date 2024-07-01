@@ -22,15 +22,14 @@ class ContraRepeatWorker(MemoryBaseWorker):
 
         message: Message = self.chat_messages[-1]
         dt_handler = DatetimeHandler(message.time_created)
-        return self.vector_store.retrieve(query=message.content,
-                                          top_k=self.today_obs_top_k,
-                                          filter_dict={
-                                              "user_id": self.user_id,
-                                              "status": MemoryNodeStatus.ACTIVE.value,
-                                              "memory_type": [MemoryTypeEnum.OBSERVATION.value,
-                                                              MemoryTypeEnum.OBS_CUSTOMIZED.value],
-                                              "obs_dt": dt_handler.datetime_format(),
-                                          })
+        filter_dict = {
+            "user_name": self.user_name,
+            "target_name": self.target_name,
+            "status": MemoryNodeStatus.ACTIVE.value,
+            "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
+            "obs_dt": dt_handler.datetime_format(),
+        }
+        return self.vector_store.retrieve(query=message.content, top_k=self.today_obs_top_k, filter_dict=filter_dict)
 
     def _run(self):
         all_obs_nodes: List[MemoryNode] = []

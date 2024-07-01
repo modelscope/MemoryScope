@@ -24,7 +24,7 @@ class GetObservationWithTimeWorker(GetObservationWorker):
             if match:
                 dt_handler = DatetimeHandler(dt=msg.time_created)
                 dt = dt_handler.string_format(self.prompt_handler.time_string_format)
-                user_query_list.append(f"{i} {dt} {self.user_id}{self.get_language_value(COLON_WORD)}{msg.content}")
+                user_query_list.append(f"{i} {dt} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
                 i += 1
 
         if not user_query_list:
@@ -32,11 +32,11 @@ class GetObservationWithTimeWorker(GetObservationWorker):
             return []
 
         system_prompt = self.prompt_handler.get_observation_with_time_system.format(num_obs=len(user_query_list),
-                                                                                    user_name=self.user_id)
-        few_shot = self.prompt_config.get_observation_with_time_few_shot.format(self.user_id)
+                                                                                    user_name=self.target_name)
+        few_shot = self.prompt_config.get_observation_with_time_few_shot.format(user_name=self.target_name)
         user_query = self.prompt_config.get_observation_with_time_user_query.format(
             user_query="\n".join(user_query_list),
-            user_name=self.user_id)
+            user_name=self.target_name)
 
         obtain_obs_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")

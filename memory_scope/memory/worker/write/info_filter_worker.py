@@ -18,9 +18,8 @@ class InfoFilterWorker(MemoryBaseWorker):
             if msg.role != MessageRoleEnum.USER.value:
                 continue
             if len(msg.content) >= self.info_filter_msg_max_size:
-                begin_size = int(self.info_filter_msg_max_size * 0.75 + 0.5)
-                end_size = int(self.info_filter_msg_max_size * 0.25 + 0.5)
-                msg.content = msg.content[: begin_size] + msg.content[-end_size:]
+                half_size = int(self.info_filter_msg_max_size * 0.5 + 0.5)
+                msg.content = msg.content[: half_size] + msg.content[-half_size:]
             info_messages.append(msg)
 
         if not info_messages:
@@ -31,11 +30,12 @@ class InfoFilterWorker(MemoryBaseWorker):
         # generate prompt
         user_query_list = []
         for i, msg in enumerate(info_messages):
-            user_query_list.append(f"{i + 1} {self.user_id}{self.get_language_value(COLON_WORD)}{msg.content}")
+            user_query_list.append(f"{i + 1} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
         system_prompt = self.prompt_handler.info_filter_system.format(batch_size=len(info_messages),
-                                                                      user_name=self.user_id)
-        few_shot = self.prompt_handler.info_filter_few_shot.format(user_name=self.user_id)
-        user_query = self.prompt_handler.info_filter_user_query.format(user_query="\n".join(user_query_list))
+                                                                      user_name=self.target_name)
+        few_shot = self.prompt_handler.info_filter_few_shot.format(user_name=self.target_name)
+        user_query = self.prompt_handler.info_filter_user_query.format(user_query="\n".join(user_query_list),
+                                                                       user_name=self.target_name)
         info_filter_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"info_filter_message={info_filter_message}")
 
