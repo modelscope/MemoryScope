@@ -16,7 +16,7 @@ from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 def underscore_to_camelcase(name: str, is_first_title: bool = True):
     name_split = name.split("_")
     if is_first_title:
-        return "".join(x.title() for x in name_split[1:])
+        return "".join(x.title() for x in name_split)
     else:
         return name_split[0] + ''.join(x.title() for x in name_split[1:])
 
