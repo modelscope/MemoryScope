@@ -27,6 +27,9 @@ class BaseVectorStore(metaclass=ABCMeta):
     def update(self, node: MemoryNode):
         pass
 
+    def update_batch(self, nodes: List[MemoryNode]):
+        pass
+
     def flush(self):
         pass
 

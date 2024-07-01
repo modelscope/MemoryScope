@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List
 
 from memory_scope.constants.common_constants import NEW_OBS_NODES, TIME_INFER
-from memory_scope.constants.language_constants import DATATIME_WORD_LIST, REPEATED_WORD, NONE_WORD
+from memory_scope.constants.language_constants import DATATIME_WORD_LIST, REPEATED_WORD, NONE_WORD, COLON_WORD
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
@@ -42,7 +42,7 @@ class GetObservationWorker(MemoryBaseWorker):
         node.gen_memory_id()
         return node
 
-    def build_prompt(self):
+    def build_prompt(self) -> List[Message]:
         # build prompt
         user_query_list = []
         i = 1
@@ -53,12 +53,12 @@ class GetObservationWorker(MemoryBaseWorker):
                     match = True
                     break
             if not match:
-                user_query_list.append(f"{i} {self.user_id}：{msg.content}")
+                user_query_list.append(f"{i} {self.user_id}{self.get_language_value(COLON_WORD)}{msg.content}")
                 i += 1
 
         if not user_query_list:
             self.logger.warning(f"get obs user_query_list={user_query_list} is empty")
-            return
+            return []
 
         system_prompt = self.prompt_handler.get_observation_system.format(num_obs=len(user_query_list),
                                                                           user_name=self.user_id)
@@ -70,8 +70,14 @@ class GetObservationWorker(MemoryBaseWorker):
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")
         return obtain_obs_message
 
+    def save(self, new_obs_nodes: List[MemoryNode]):
+        self.set_context(NEW_OBS_NODES, new_obs_nodes)
+
     def _run(self):
         obtain_obs_message = self.build_prompt()
+        if not obtain_obs_message:
+            self.logger.warning("get obs message is empty!")
+            return
 
         # call LLM
         response = self.generation_model.call(messages=obtain_obs_message, top_k=self.generation_model_top_k)
@@ -107,6 +113,9 @@ class GetObservationWorker(MemoryBaseWorker):
                 self.logger.warning(f"idx={idx} is invalid!")
                 continue
 
+            if time_infer == self.get_language_value(NONE_WORD):
+                time_infer = ""
+
             # index number needs to be corrected to -1
             idx = int(idx) - 1
             if idx >= len(self.messages):
@@ -118,5 +127,4 @@ class GetObservationWorker(MemoryBaseWorker):
                                                       obs_content=obs_content,
                                                       keywords=keywords))
 
-        # save context
-        self.set_context(NEW_OBS_NODES, new_obs_nodes)
+        self.save(new_obs_nodes)

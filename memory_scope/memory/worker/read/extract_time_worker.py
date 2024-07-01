@@ -24,9 +24,9 @@ class ExtractTimeWorker(MemoryBaseWorker):
             return
 
         # prepare prompt
-        query_time_str = DatetimeHandler(dt=query_timestamp).string_format(self.prompt_handler.time_format_prompt)
-        extract_time_prompt: str = self.prompt_handler.extract_time_prompt
-        extract_time_prompt: str = extract_time_prompt.format(query=query, query_time_str=query_time_str)
+        query_time_str = DatetimeHandler(dt=query_timestamp).string_format(self.prompt_handler.time_string_format)
+        extract_time_prompt: str = self.prompt_handler.extract_time_prompt.format(query=query,
+                                                                                  query_time_str=query_time_str)
         self.logger.info(f"extract_time_prompt={extract_time_prompt}")
 
         # call sft model

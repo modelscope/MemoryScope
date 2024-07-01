@@ -43,11 +43,11 @@ class DatetimeHandler(object):
     def extract_date_parts_cn(input_string: str):
         # Extending our pattern to handle every/每 as a possible value.
         patterns = {
-            'year': r'(\d+|每)年',
-            'month': r'(\d+|每)月',
-            'day': r'(\d+|每)日',
-            'weekday': r'周([一二三四五六日])',
-            'hour': r'(\d+)点'
+            "year": r"(\d+|每)年",
+            "month": r"(\d+|每)月",
+            "day": r"(\d+|每)日",
+            "weekday": r"周([一二三四五六日])",
+            "hour": r"(\d+)点"
         }
         weekday_dict = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "日": 7}
         extracted_data = {}

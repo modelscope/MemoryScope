@@ -64,3 +64,8 @@ INCLUDED_WORD = {
     LanguageEnum.CN: "被包含",
     LanguageEnum.EN: "included"
 }
+
+COLON_WORD = {
+    LanguageEnum.CN: "：",
+    LanguageEnum.EN: ":"
+}

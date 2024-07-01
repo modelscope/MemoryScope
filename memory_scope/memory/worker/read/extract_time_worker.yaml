@@ -6,7 +6,7 @@ extract_time_prompt:
     回答：
 
 
-time_format_prompt:
+time_string_format:
   cn: |
     {year}年{month}月{day}日，{year}年第{week}周，{weekday}，{hour}时{minute}分{second}秒。
 

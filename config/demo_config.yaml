@@ -83,6 +83,15 @@ worker:
     generation_model_top_k: 1
   get_observation_worker:
     class: memory.worker.write.get_observation_worker
+    generation_model: dashscope_generation
     generation_model_top_k: 1
-
-
+  get_observation_with_time_worker:
+    class: memory.worker.write.get_observation_with_time_worker
+    generation_model: dashscope_generation
+    generation_model_top_k: 1
+  contra_repeat_worker:
+    class: memory.worker.write.contra_repeat_worker
+    generation_model: dashscope_generation
+    generation_model_top_k: 1
+    today_obs_top_k: 30
+    contra_repeat_max_count: 50

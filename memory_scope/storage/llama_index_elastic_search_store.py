@@ -1,6 +1,6 @@
 from typing import Dict, List, Any
 
-from llama_index.core import VectorStoreIndex, Settings
+from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import TextNode, NodeWithScore
 from llama_index.vector_stores.elasticsearch import ElasticsearchStore, AsyncDenseVectorStrategy
 
@@ -122,6 +122,10 @@ class LlamaIndexElasticSearchStore(BaseVectorStore):
     def update(self, node: MemoryNode):
         self.delete(node)
         self.insert(node)
+
+    def update_batch(self, nodes: List[MemoryNode]):
+        for node in nodes:
+            self.update(node)
 
     def close(self):
         self.es_store.close()
