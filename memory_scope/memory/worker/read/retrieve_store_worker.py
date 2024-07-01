@@ -36,9 +36,9 @@ class RetrieveStoreWorker(MemoryBaseWorker):
         for result in self._async_run(fn_list=fn_list, query=query):
             if result:
                 memory_node_list.extend(result)
-        memory_node_list = sorted(memory_node_list, key=lambda x: x.score_similar, reverse=True)
-
         self.logger.info(f"memory_node_list.size={len(memory_node_list)}")
-        for i, node in enumerate(memory_node_list):
-            self.logger.info(f"{i}: node={node.content} score={node.score_similar} type={node.memory_type}")
+
+        memory_node_list = sorted(memory_node_list, key=lambda x: x.score_similar, reverse=True)
+        for node in memory_node_list:
+            self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} type={node.memory_type}")
         self.set_context(RETRIEVE_MEMORY_NODES, memory_node_list)

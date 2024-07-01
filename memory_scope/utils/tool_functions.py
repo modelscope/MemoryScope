@@ -127,3 +127,9 @@ def md5_hash(input_string: str):
     m = hashlib.md5()
     m.update(input_string.encode('utf-8'))
     return m.hexdigest()
+
+
+def contains_keyword(text, keywords):
+    escaped_keywords = map(re.escape, keywords)
+    pattern = re.compile('|'.join(escaped_keywords), re.IGNORECASE)
+    return pattern.search(text) is not None

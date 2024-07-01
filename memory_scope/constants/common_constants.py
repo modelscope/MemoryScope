@@ -8,7 +8,9 @@ CHAT_KWARGS = "chat_kwargs"
 
 QUERY_WITH_TS = "query_with_ts"
 
-RETRIEVE_MEMORY_NODES = "RETRIEVE_MEMORY_NODES"
+RETRIEVE_MEMORY_NODES = "retrieve_memory_nodes"
+
+RANKED_MEMORY_NODES = "ranked_memory_nodes"
 
 
 

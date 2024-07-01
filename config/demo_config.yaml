@@ -69,4 +69,11 @@ worker:
     class: memory.worker.read.retrieve_store_worker
     retrieve_obs_top_k: 100
     retrieve_ins_pf_top_k: 100
+  fuse_rerank_worker:
+    class: memory.worker.read.fuse_rerank_worker
+    fuse_score_threshold: 0.1
+    fuse_ratio_dict:
+      observation: 1
+    fuse_time_ratio: 2.0
+    fuse_rerank_top_k: 10
 

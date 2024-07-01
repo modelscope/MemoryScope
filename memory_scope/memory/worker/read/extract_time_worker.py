@@ -1,4 +1,5 @@
 import re
+from typing import Dict
 
 from memory_scope.constants.common_constants import DATATIME_KEY_MAP, QUERY_WITH_TS, EXTRACT_TIME_DICT
 from memory_scope.constants.language_constants import DATATIME_WORD_LIST
@@ -43,7 +44,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
         response_text = response.message.content
 
         # re-match time info to dict
-        extract_time_dict = {}
+        extract_time_dict: Dict[str, str] = {}
         matches = re.findall(self.EXTRACT_TIME_PATTERN, response_text)
         for key, value in matches:
             if key in DATATIME_KEY_MAP.keys():
