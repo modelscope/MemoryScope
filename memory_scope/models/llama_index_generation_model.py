@@ -69,4 +69,14 @@ class LlamaIndexGenerationModel(BaseModel):
         return results
 
     async def _async_call(self, **kwargs) -> ModelResponse:
+        assert "prompt" in self.data or "messages" in self.data
+        results = ModelResponse(m_type=self.m_type)
+
+        if "prompt" in self.data:
+            response = await self.model.acomplete(**self.data)
+        else:
+            response = await self.model.achat(**self.data)
+        results.raw = response
+        return results
+
         raise NotImplementedError

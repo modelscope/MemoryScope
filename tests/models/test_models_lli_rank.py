@@ -1,5 +1,5 @@
 import unittest
-
+import asyncio
 from memory_scope.models.llama_index_rank_model import LlamaIndexRankModel
 
 
@@ -19,7 +19,15 @@ class TestLLIReRank(unittest.TestCase):
         documents = ["您吃了吗？",
                      "吃了吗您？"]
         result = self.reranker.call(
-            stream=False,
             documents=documents,
             query=query)
+        print(result)
+
+    def test_async_rerank(self):
+        query = "吃啥？"
+        documents = ["您吃了吗？",
+                     "吃了吗您？"]
+        result = asyncio.run(self.reranker.async_call(
+            documents=documents,
+            query=query))
         print(result)

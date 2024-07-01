@@ -42,7 +42,7 @@ class LlamaIndexRankModel(BaseModel):
         return ModelResponse(m_type=self.m_type, raw=self.model.postprocess_nodes(**self.data))
 
     async def _async_call(self, **kwargs) -> ModelResponse:
-        raise NotImplementedError
+        return self._call(**kwargs)
 
     def _get_documents_mapping(self, documents):
         self.documents_map = {}

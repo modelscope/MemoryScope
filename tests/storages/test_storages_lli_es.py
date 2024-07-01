@@ -139,7 +139,9 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             status="invalid",
             memory_id="ggg567"
         ))
-        res = self.es_store.retrieve(query="hacker", filter_dict=filter_dict, top_k=10)
+        import asyncio
+        res = asyncio.run(self.es_store.async_retrieve(query="hacker", filter_dict=filter_dict, top_k=10))
+        #res = self.es_store.async_retrieve(query="hacker", filter_dict=filter_dict, top_k=10)
         print(len(res))
         print(res)
 
