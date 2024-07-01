@@ -7,11 +7,11 @@ from memory_scope.scheme.memory_node import MemoryNode
 class BaseVectorStore(metaclass=ABCMeta):
 
     @abstractmethod
-    def retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]):
+    def retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
         pass
 
     @abstractmethod
-    async def async_retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]):
+    async def async_retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
         pass
 
     @abstractmethod

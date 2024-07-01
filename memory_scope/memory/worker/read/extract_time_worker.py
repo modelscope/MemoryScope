@@ -7,7 +7,7 @@ from memory_scope.utils.tool_functions import time_to_formatted_str
 
 
 class ExtractTimeWorker(MemoryBaseWorker):
-    Extract_Time_PATTERN = r'-\s*(\S+)：(\d+)'
+    EXTRACT_TIME_PATTERN = r'-\s*(\S+)：(\d+)'
 
     def _run(self):
         query, query_timestamp = self.get_context(QUERY_WITH_TS)
@@ -44,7 +44,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
 
         # re-match time info to dict
         extract_time_dict = {}
-        matches = re.findall(self.Extract_Time_PATTERN, response_text)
+        matches = re.findall(self.EXTRACT_TIME_PATTERN, response_text)
         for key, value in matches:
             if key in DATATIME_KEY_MAP.keys():
                 extract_time_dict[DATATIME_KEY_MAP[key]] = value

@@ -65,4 +65,8 @@ worker:
     generation_model: dashscope_generation
     embedding_model: dashscope_embedding
     rank_model: dashscope_rank
+  retrieve_store_worker:
+    class: memory.worker.read.retrieve_store_worker
+    retrieve_obs_top_k: 100
+    retrieve_ins_pf_top_k: 100
 

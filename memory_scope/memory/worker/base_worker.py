@@ -1,3 +1,4 @@
+import asyncio
 from abc import ABCMeta, abstractmethod
 from typing import Any, Dict
 
@@ -24,6 +25,13 @@ class BaseWorker(metaclass=ABCMeta):
 
         self.continue_run: bool = True
         self.logger: Logger = Logger.get_logger()
+
+    @staticmethod
+    def _async_run(fn_list, *args, **kwargs):
+        async def async_gather():
+            return await asyncio.gather(*[fn(*args, **kwargs) for fn in fn_list])
+
+        return asyncio.run(async_gather())
 
     @abstractmethod
     def _run(self):
