@@ -5,30 +5,37 @@ from typing import Dict
 import yaml
 
 from memory_scope.utils.global_context import G_CONTEXT
-from memory_scope.utils.tool_functions import camelcase_to_underscore
 
 
 class PromptHandler(object):
 
-    def __init__(self, default_prompt_dir: str = "config/prompts"):
-        self._default_prompt_dir: str = default_prompt_dir
+    def __init__(self, class_path: str, prompt_file: str = "", prompt_dict: dict = None, **kwargs):
+        self._class_path: str = class_path
         self._prompt_dict: Dict[str, str] = {}
 
-    def add_file_prompts(self, name: str, to_underscore: bool = True):
-        if to_underscore:
-            name: str = camelcase_to_underscore(name)
+        file_path = self._class_path.strip(".py")
+        self.add_prompt_file(file_path)
 
-        class_path = os.path.join(self._default_prompt_dir, name)
-        if os.path.exists(f"{class_path}.yaml"):
-            with open(f"{class_path}.yaml") as f:
-                prompt_language_dict = yaml.load(f, yaml.FullLoader)
-        elif os.path.exists(f"{class_path}.json"):
-            with open(f"{class_path}.json") as f:
-                prompt_language_dict = json.load(f)
+        if prompt_file:
+            self.add_prompt_file(prompt_file)
+
+        if prompt_dict:
+            self.add_prompt_dict(prompt_dict)
+
+    def add_prompt_file(self, file_path: str):
+        if os.path.exists(f"{file_path}.yaml"):
+            with open(f"{file_path}.yaml") as f:
+                prompt_dict = yaml.load(f, yaml.FullLoader)
+        elif os.path.exists(f"{file_path}.json"):
+            with open(f"{file_path}.json") as f:
+                prompt_dict = json.load(f)
         else:
-            raise RuntimeError(f"{class_path}.yaml/json is not exists!")
+            raise RuntimeError(f"{file_path}.yaml/json is not exists!")
 
-        for key, language_dict in prompt_language_dict.items():
+        self.add_prompt_dict(prompt_dict)
+
+    def add_prompt_dict(self, prompt_dict: dict):
+        for key, language_dict in prompt_dict.items():
             prompts = language_dict.get(G_CONTEXT.language)
             if not prompts:
                 raise RuntimeError(f"{key}.prompt.{G_CONTEXT.language} is empty!")

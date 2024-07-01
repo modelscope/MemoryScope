@@ -9,6 +9,7 @@ class DummyVectorStore(BaseVectorStore):
 
     def __init__(self, embedding_model: BaseModel, **kwargs):
         self.embedding_model: BaseModel = embedding_model
+        self.kwargs = kwargs
 
     def retrieve(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
         pass

@@ -83,13 +83,14 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
     @property
     def prompt_handler(self) -> PromptHandler:
         if self._prompt_handler is None:
-            self._prompt_handler = PromptHandler()
-            self._prompt_handler.add_file_prompts(self.__class__.__name__)
+            self._prompt_handler = PromptHandler(__file__, **self.kwargs)
         return self._prompt_handler
 
     def __getattr__(self, key: str):
         return self.kwargs[key]
 
     @staticmethod
-    def get_language_prompt(prompt: dict) -> str:
-        return prompt[G_CONTEXT.language]
+    def get_language_value(languages: dict | list) -> str | list[str]:
+        if isinstance(languages, list):
+            return [x[G_CONTEXT.language] for x in languages]
+        return languages[G_CONTEXT.language]

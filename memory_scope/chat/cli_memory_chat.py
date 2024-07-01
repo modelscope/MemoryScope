@@ -46,8 +46,7 @@ class CliMemoryChat(BaseMemoryChat):
     @property
     def prompt_handler(self) -> PromptHandler:
         if self._prompt_handler is None:
-            self._prompt_handler = PromptHandler()
-            self._prompt_handler.add_file_prompts(self.__class__.__name__)
+            self._prompt_handler = PromptHandler(__file__, **self.kwargs)
         return self._prompt_handler
 
     def print_logo(self):

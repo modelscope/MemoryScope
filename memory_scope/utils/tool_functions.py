@@ -9,8 +9,9 @@ from importlib import import_module
 import pyfiglet
 from termcolor import colored, COLORS
 
-from memory_scope.constants.common_constants import WEEKDAYS
+from memory_scope.constants.language_constants import WEEKDAYS
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
+from memory_scope.utils.global_context import G_CONTEXT
 
 
 def underscore_to_camelcase(name: str, is_first_title: bool = True):
@@ -25,11 +26,15 @@ def camelcase_to_underscore(name: str):
     return re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
 
 
-def init_instance_by_config(config: dict, default_class_path: str = "memory_scope", suffix_name: str = "", **kwargs):
+def init_instance_by_config(config: dict,
+                            default_class_path: str = "memory_scope",
+                            suffix_name: str = "",
+                            **kwargs):
     config_copy = deepcopy(config)
     origin_class_path: str = config_copy.pop("class")
     if not origin_class_path:
         raise RuntimeError("empty class path!")
+    user_defined: bool = config_copy.pop("user_defined", False)
 
     class_name_split = origin_class_path.split(".")
     class_name: str = class_name_split[-1]
@@ -38,7 +43,7 @@ def init_instance_by_config(config: dict, default_class_path: str = "memory_scop
         class_name_split[-1] = class_name
 
     class_paths = []
-    if default_class_path and not origin_class_path.startswith(default_class_path):
+    if not user_defined and default_class_path and not origin_class_path.startswith(default_class_path):
         class_paths.append(default_class_path)
     class_paths.extend(class_name_split)
     module = import_module(".".join(class_paths))
@@ -46,12 +51,6 @@ def init_instance_by_config(config: dict, default_class_path: str = "memory_scop
     cls_name = underscore_to_camelcase(class_name)
     config_copy.update(kwargs)
     return getattr(module, cls_name)(**config_copy)
-
-
-def complete_config_name(config_name: str, suffix: str = ".json"):
-    if not config_name.endswith(suffix):
-        config_name += suffix
-    return config_name
 
 
 def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str):
@@ -67,41 +66,6 @@ def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str):
             ),
         },
     ]
-
-
-def get_datetime_info_dict(parse_dt: datetime):
-    return {
-        "year": parse_dt.year,
-        "month": parse_dt.month,
-        "day": parse_dt.day,
-        "hour": parse_dt.hour,
-        "minute": parse_dt.minute,
-        "second": parse_dt.second,
-        "week": parse_dt.isocalendar().week,
-        "weekday": WEEKDAYS[parse_dt.isocalendar().weekday - 1],
-    }
-
-
-def time_to_formatted_str(dt: datetime | str | int | float = None,
-                          date_format: str = "%Y%m%d",  # e.g. %Y%m%d -> "20240528", add %H:%M:%S
-                          string_format: str = "") -> str:
-
-    if isinstance(dt, str | int | float):
-        if isinstance(dt, str):
-            dt = float(dt)
-        current_dt = datetime.fromtimestamp(dt)
-    elif isinstance(dt, datetime):
-        current_dt = dt
-    else:
-        current_dt = datetime.now()
-
-    return_str = ""
-    if date_format:
-        return_str = current_dt.strftime(date_format)
-    elif string_format:
-        return_str = string_format.format(**get_datetime_info_dict(current_dt))
-
-    return return_str
 
 
 def char_logo(words: str, seed: int = time.time_ns(), color=None):

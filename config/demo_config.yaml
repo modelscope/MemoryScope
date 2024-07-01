@@ -76,4 +76,13 @@ worker:
       observation: 1
     fuse_time_ratio: 2.0
     fuse_rerank_top_k: 10
+  info_filter_worker:
+    class: memory.worker.write.info_filter_worker
+    generation_model: dashscope_generation
+    info_filter_msg_max_size: 200
+    generation_model_top_k: 1
+  get_observation_worker:
+    class: memory.worker.write.get_observation_worker
+    generation_model_top_k: 1
+
 

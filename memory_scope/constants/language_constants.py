@@ -29,3 +29,38 @@ DATATIME_WORD_LIST = {
 
     ]
 }
+
+WEEKDAYS = {
+    LanguageEnum.CN: [
+        "周一",
+        "周二",
+        "周三",
+        "周四",
+        "周五",
+        "周六",
+        "周日"
+    ],
+    LanguageEnum.EN: [
+
+    ]
+}
+
+NONE_WORD = {
+    LanguageEnum.CN: "无",
+    LanguageEnum.EN: "none"
+}
+
+REPEATED_WORD = {
+    LanguageEnum.CN: "重复",
+    LanguageEnum.EN: "repeated"
+}
+
+CONTRADICTORY_WORD = {
+    LanguageEnum.CN: "矛盾",
+    LanguageEnum.EN: "contradictory"
+}
+
+INCLUDED_WORD = {
+    LanguageEnum.CN: "被包含",
+    LanguageEnum.EN: "included"
+}

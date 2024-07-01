@@ -11,6 +11,8 @@ class MemoryNode(BaseModel):
 
     user_id: str = Field("", description="unique memory id for user")
 
+    meta_data: Dict[str, str] = Field({}, description="other data infos")
+
     content: str = Field("", description="memory content")
 
     score_similar: float = Field(0, description="es similar score")
@@ -21,13 +23,20 @@ class MemoryNode(BaseModel):
 
     memory_type: str = Field("", description="conversation/observation/insight...")
 
-    meta_data: Dict[str, str] = Field({}, description="other data infos")
-
     status: str = Field("active", description="active or expired")
 
     vector: List[float] = Field([], description="content embedding result, return empty")
 
     timestamp: int = Field(int(datetime.datetime.now().timestamp()), description="timestamp of the memory node")
+
+    obs_dt: str = Field("", description="dt of the observation")
+
+    obs_reflected: bool = Field(False, description="if the observation is reflected")
+
+    obs_profile_updated: bool = Field(False, description="if the observation has updated user profile")
+
+    keyword: str = Field("", description="keywords of the content")
+
 
     @property
     def node_keys(self):

@@ -4,7 +4,7 @@ from typing import Dict
 from memory_scope.constants.common_constants import DATATIME_KEY_MAP, QUERY_WITH_TS, EXTRACT_TIME_DICT
 from memory_scope.constants.language_constants import DATATIME_WORD_LIST
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
-from memory_scope.utils.tool_functions import time_to_formatted_str
+from memory_scope.utils.datetime_handler import DatetimeHandler
 
 
 class ExtractTimeWorker(MemoryBaseWorker):
@@ -15,7 +15,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
 
         # find datetime keyword
         contain_datetime = False
-        for datetime_word in self.get_language_prompt(DATATIME_WORD_LIST):
+        for datetime_word in self.get_language_value(DATATIME_WORD_LIST):
             if datetime_word in query:
                 contain_datetime = True
                 break
@@ -24,9 +24,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
             return
 
         # prepare prompt
-        query_time_str = time_to_formatted_str(dt=query_timestamp,
-                                               date_format="",
-                                               string_format=self.prompt_handler.time_format_prompt)
+        query_time_str = DatetimeHandler(dt=query_timestamp).string_format(self.prompt_handler.time_format_prompt)
         extract_time_prompt: str = self.prompt_handler.extract_time_prompt
         extract_time_prompt: str = extract_time_prompt.format(query=query, query_time_str=query_time_str)
         self.logger.info(f"extract_time_prompt={extract_time_prompt}")

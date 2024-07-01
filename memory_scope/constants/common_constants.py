@@ -83,31 +83,7 @@ TIME_MATCHED = "time_matched"
 QUERY_KEYWORDS = "query_keywords"
 
 
-WEEKDAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
 
-DATATIME_WORD_LIST = [
-    "天",
-    "周",
-    "月",
-    "年",
-    "星期",
-    "点",
-    "分钟",
-    "小时",
-    "秒",
-    "上午",
-    "下午",
-    "早上",
-    "早晨",
-    "晚上",
-    "中午",
-    "日",
-    "夜",
-    "清晨",
-    "傍晚",
-    "凌晨",
-    "岁",
-]
 
 TIME_FORMAT_V1 = "{year}年{month}月{day}日{weekday}{hour}点"
 
