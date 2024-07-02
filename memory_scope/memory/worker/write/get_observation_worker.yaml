@@ -2,9 +2,18 @@ get_observation_system:
   cn: |
     任务：从下面的{num_obs}句{user_name}句子中依次提取出关于{user_name}的重要信息，与相应的关键词。最多提取{num_obs}条信息。对每一句句子，只提取非常明确的信息和进行非常确定的推断，不要进行任何猜测。
     不要提取重复的信息，如果句子中的所有信息与已经提取出的信息重复了则回答“重复“，如果没有重要信息则回答“无”。注意区分，对于句子中包含{user_name}假设的信息或者{user_name}虚构的内容比如{user_name}创作的小说或剧本，不要提取信息。
-    对每个句子都做一次信息提取，最后一共输出{num_obs}行信息。
+    对每个句子都做一次信息提取，最后一共输出{num_obs}条信息。
     请一定要按如下格式依次输出，最后的结果一定要加<>:
+    思考：思考的依据和过程，50字以内。
     信息：<句子序号> <> <明确的重要信息或“重复”或”无“> <关键词>
+
+  en: |
+    Task: Extract important information and corresponding keywords from the following {num_obs} sentences about {user_name}. Extract up to {num_obs} pieces of information. For each sentence, only extract very clear information and make very certain inferences without any speculation.
+    Do not extract repeated information. If all information in the sentence repeats what has already been extracted, respond with "repeat." If there is no important information, respond with "none." Be sure to distinguish information; for example, do not extract hypothetical or fictional content from {user_name} such as {user_name}'s novels or scripts.
+    Perform information extraction for each sentence, resulting in a total of {num_obs} pieces of information.
+    Please output the results in the following format, with the final output enclosed in <>:
+    Thought: The basis and process of the thought, within 50 words.
+    Information: <> <Clear important information or “Repeat” or “None”> <keywords>
 
 
 get_observation_few_shot:
@@ -63,8 +72,68 @@ get_observation_few_shot:
     思考：第6句是{user_name}创作的剧本内容，无法提取{user_name}个人信息。
     信息：<6> <> <无> <>
 
+  en: |
+    Example 1:
+    {user_name} sentences:
+    1 {user_name}: I'm in a terrible situation right now, I don't have a job, and I'm in debt by tens of thousands. What should I do?
+    2 {user_name}: Someone said that passion is the best teacher and suggested linking passion with a career, but I found that many people like playing basketball, but few make it a profession and even fewer make money from it. Also, how do you distinguish passion from liking?
+    3 {user_name}: I'm in a terrible situation right now, I don't have a job, and I'm in debt by tens of thousands. What should I do?
+    4 {user_name}: I'm a recent graduate who doesn't understand society or the industry. Can you introduce me to the social system and industry structure?
+    Thought: From the first sentence, it can be inferred that {user_name} currently has no job and is in debt by tens of thousands. This is important information about {user_name}'s employment and financial status.
+    Information: <1> <> <{user_name} currently has no job and is in debt by tens of thousands> <no job, in debt by tens of thousands>
+    Thought: The second sentence is a discussion and query about others' opinions by {user_name}, with no clear mention of {user_name}'s personal information.
+    Information: <2> <> <None> <>
+    Thought: The information in the third sentence is a repeat of the first sentence.
+    Information: <3> <> <Repeat> <>
+    Thought: From the fourth sentence, it can be inferred that {user_name} is a recent graduate, which is important information about {user_name}'s background. The remaining information is of insufficient importance.
+    Information: <4> <> <{user_name} is a recent graduate> <recent graduate, student>
+    
+    Example 2:
+    {user_name} sentences:
+    1 {user_name}: Please help me write a birthday greeting for my colleague Jason's daughter who is turning three.
+    2 {user_name}: Can you compile a list of tips on how to use large models for me, and try to keep the content concise?
+    3 {user_name}: Two pieces of bad news: I broke my badminton racket while playing... Then I went to my friend's house to pet the cat and ended up having an allergic reaction to the cat fur, sneezing like crazy today...
+    4 {user_name}: Chronology of major events in Chinese history from 1400 to 1550 AD.
+    5 {user_name}: Thanks. I'm having lunch near the company at noon; can you recommend a restaurant near Alibaba Xuhui Riverside Campus for me?
+    Thought: From the first sentence, it can be inferred that Zhang San is {user_name}'s colleague, which is important information about {user_name}'s interpersonal relationships. The remaining information is of insufficient importance.
+    Information: <1> <> <Jason is {user_name}'s colleague> <Jason, colleague>
+    Thought: The second sentence is a request made by {user_name}, with no clear mention of {user_name}'s personal information.
+    Information: <2> <> <None> <>
+    Thought: From the third sentence, it can be inferred that {user_name} broke their badminton racket the other day, but this is not important information. It can also be inferred that {user_name} is allergic to cat fur, which is important information about {user_name}'s health.
+    Information: <3> <> <{user_name} is allergic to cat fur> <cat fur, allergy>
+    Thought: The fourth sentence is a request made by {user_name}, with no clear mention of {user_name}'s personal information.
+    Information: <4> <> <None> <>
+    Thought: From the fifth sentence, it can be inferred that {user_name} works at Alibaba Xuhui Riverside Campus, which is important information about {user_name}'s workplace.
+    Information: <5> <> <{user_name} works at Alibaba Xuhui Riverside Campus> <Alibaba, Xuhui Riverside Campus, work>
+    
+    Example 3:
+    {user_name} sentences:
+    1 {user_name}: I want to buy a new energy vehicle. Any recommendations?
+    2 {user_name}: I'm in San Jose and want to buy a new energy vehicle. Any recommendations?
+    3 {user_name}: During the objection review period by a third party, the court must not dispose of the execution object. Doesn't this mean suspension of execution?
+    4 {user_name}: Please write two acrostic poems, starting with "Victory" and "Success".
+    5 {user_name}: I spent $5000 to buy 100 shares of General Motors.
+    6 {user_name}: Zack: This is a constellation frog setting, but I am a Virgo. My mom feels I'm abnormal and doesn't let me watch it. \n The female monkey patted Zack's head, "Is that so?" \n The female monkey opened Bilibili and took a look. \n Female monkey: "Why don't you switch the setting? I heard from your future self that there is someone called 'Unforgettable Chocolate 232' who created a Windows setting." \n This is script 1; script 2 is to be continued.
+    Thought: From the first sentence, it can be inferred that {user_name} is seeking advice or recommendations for purchasing a new energy vehicle. This is important information about {user_name}'s major consumption.
+    Information: <1> <> <{user_name} is seeking advice or recommendations for purchasing a new energy vehicle> <purchase, new energy vehicle>
+    Thought: From the second sentence, it can be inferred that {user_name} is currently in San Jose, which is important information about {user_name}'s living location. The remaining information is a repeat of the first sentence.
+    Information: <2> <> <{user_name} is currently in San Jose> <San Jose>
+    Thought: The third sentence is a discussion and query about a specific legal opinion by {user_name}, with no clear mention of {user_name}'s personal information.
+    Information: <3> <> <None> <>
+    Thought: The fourth sentence is a request made by {user_name}, with no clear mention of {user_name}'s personal information.
+    Information: <4> <> <None> <>
+    Thought: From the fifth sentence, it can be inferred that {user_name} bought 100 shares of General Motors stock for $5000. This is important information about {user_name}'s investment decision.
+    Information: <5> <> <{user_name} bought 100 shares of General Motors stock for $5000> <General Motors, stock>
+    Thought: The sixth sentence is content from a script written by {user_name}, with no extractable personal information about {user_name}.
+    Information: <6> <> <None> <>
+
 
 get_observation_user_query:
   cn: |
     {user_name}句子：
     {user_query}
+
+  en: |
+    {user_name} sentences：
+    {user_query}
+    
