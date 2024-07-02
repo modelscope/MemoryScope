@@ -30,7 +30,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
         self.logger.info(f"extract_time_prompt={extract_time_prompt}")
 
         # call sft model
-        response = self.generation_model.call(prompt=extract_time_prompt, top_k=self.extra_time_top_k)
+        response = self.generation_model.call(prompt=extract_time_prompt, top_k=self.generation_model_top_k)
 
         # if empty, return
         if not response.status or not response.message.content:

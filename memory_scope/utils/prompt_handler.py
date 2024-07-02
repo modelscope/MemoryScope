@@ -12,6 +12,7 @@ class PromptHandler(object):
     def __init__(self, class_path: str, prompt_file: str = "", prompt_dict: dict = None, **kwargs):
         self._class_path: str = class_path
         self._prompt_dict: Dict[str, str] = {}
+        self.kwargs = kwargs
 
         file_path = self._class_path.strip(".py")
         self.add_prompt_file(file_path)
@@ -22,15 +23,31 @@ class PromptHandler(object):
         if prompt_dict:
             self.add_prompt_dict(prompt_dict)
 
-    def add_prompt_file(self, file_path: str):
+    @staticmethod
+    def file_path_completion(file_path: str) -> str:
+        if file_path.endswith(".yaml") or file_path.endswith(".json"):
+            return file_path
+
         if os.path.exists(f"{file_path}.yaml"):
-            with open(f"{file_path}.yaml") as f:
+            return f"{file_path}.yaml"
+
+        if os.path.exists(f"{file_path}.json"):
+            return f"{file_path}.json"
+
+        raise RuntimeError(f"{file_path}/yaml/json is not exists!")
+
+    def add_prompt_file(self, file_path: str):
+        file_path = self.file_path_completion(file_path)
+
+        prompt_dict = {}
+
+        if file_path.endswith(".yaml"):
+            with open(file_path) as f:
                 prompt_dict = yaml.load(f, yaml.FullLoader)
-        elif os.path.exists(f"{file_path}.json"):
+
+        elif file_path.endswith(".json"):
             with open(f"{file_path}.json") as f:
                 prompt_dict = json.load(f)
-        else:
-            raise RuntimeError(f"{file_path}.yaml/json is not exists!")
 
         self.add_prompt_dict(prompt_dict)
 
