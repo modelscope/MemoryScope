@@ -10,40 +10,6 @@ from memory_scope.utils.datetime_handler import DatetimeHandler
 class FuseRerankWorker(MemoryBaseWorker):
 
     @staticmethod
-    def format_time_infer(time_infer: str, extract_time_dict: Dict[str, str], meta_data: Dict[str, str]):
-        if time_infer:
-            return time_infer
-
-        time_infer = ""
-        if "year" in extract_time_dict:
-            value = meta_data.get("msg_year")
-            if value:
-                time_infer += f"{value}年"
-            elif value == "-1":
-                time_infer += f"每年"
-
-        if "month" in extract_time_dict:
-            value = meta_data.get("msg_month")
-            if value:
-                time_infer += f"{value}月"
-            elif value == "-1":
-                time_infer += f"每月"
-
-        if "day" in extract_time_dict:
-            value = meta_data.get("msg_day")
-            if value:
-                time_infer += f"{value}日"
-            elif value == "-1":
-                time_infer += f"每日"
-
-        if "weekday" in extract_time_dict:
-            value = meta_data.get("msg_weekday")
-            if value:
-                time_infer += value
-
-        return time_infer
-
-    @staticmethod
     def match_node_time(extract_time_dict: Dict[str, str], node: MemoryNode):
         if extract_time_dict:
             match_event_flag = True

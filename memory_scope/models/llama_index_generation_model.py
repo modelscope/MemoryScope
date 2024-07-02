@@ -1,4 +1,3 @@
-import datetime
 from typing import List
 
 from llama_index.core.base.llms.types import ChatMessage, ChatResponse, CompletionResponse
@@ -7,8 +6,8 @@ from llama_index.llms.dashscope import DashScope
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.models.base_model import BaseModel, MODEL_REGISTRY
-from memory_scope.scheme.model_response import ModelResponse, ModelResponseGen
 from memory_scope.scheme.message import Message
+from memory_scope.scheme.model_response import ModelResponse, ModelResponseGen
 
 
 class LlamaIndexGenerationModel(BaseModel):
