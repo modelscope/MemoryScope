@@ -78,5 +78,3 @@ class LlamaIndexGenerationModel(BaseModel):
             response = await self.model.achat(**self.data)
         results.raw = response
         return results
-
-        raise NotImplementedError
