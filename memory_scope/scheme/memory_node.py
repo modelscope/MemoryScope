@@ -39,6 +39,10 @@ class MemoryNode(BaseModel):
 
     obs_keyword: str = Field("", description="keywords of the content")
 
+    insight_key: str = Field("", description="insight_key")
+
+    insight_value: str = Field("", description="insight_value")
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.gen_memory_id()

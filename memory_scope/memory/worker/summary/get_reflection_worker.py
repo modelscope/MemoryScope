@@ -5,7 +5,6 @@ from memory_scope.constants.common_constants import (
     NEW_OBS_NODES,
     NOT_REFLECTED_OBS_NODES,
     INSIGHT_NODES,
-    INSIGHT_KEY,
     NEW_INSIGHT_KEYS,
     NOT_REFLECTED_MERGE_NODES,
 )
@@ -54,7 +53,7 @@ class GetReflectionWorker(MemoryBaseWorker):
         insight_nodes: List[MemoryNode] = self.get_context(INSIGHT_NODES)
         if insight_nodes:
             insight_keys = [
-                n.meta_data.get(INSIGHT_KEY) for n in insight_nodes
+                n.insight_key for n in insight_nodes
             ]
             insight_keys = [x.strip() for x in insight_keys if x]
             exist_keys.extend(insight_keys)

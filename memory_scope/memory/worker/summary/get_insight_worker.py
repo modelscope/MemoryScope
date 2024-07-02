@@ -6,9 +6,7 @@ from memory_scope.constants.common_constants import (
     NEW_INSIGHT_NODES,
     DT,
     NOT_REFLECTED_MERGE_NODES,
-    NEW_INSIGHT_KEYS,
-    INSIGHT_KEY,
-    INSIGHT_VALUE,
+    NEW_INSIGHT_KEYS
 )
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
@@ -21,16 +19,7 @@ class GetInsightWorker(MemoryBaseWorker):
     def new_insight_node(self, insight_key: str, insight_value: str) -> MemoryNode:
         created_dt = datetime.now()
         obs_dt = time_to_formatted_str(time=created_dt)
-
-        # 组合meta_data
-        meta_data = {
-            INSIGHT_KEY: insight_key,
-            INSIGHT_VALUE: insight_value,
-        }
-        meta_data.update(
-            {k: str(v) for k, v in get_datetime_info_dict(created_dt).items()}
-        )
-
+        meta_data = {k: str(v) for k, v in get_datetime_info_dict(created_dt).items()}
         content = self.prompt_handler.content_format.format(insight_key=insight_key, insight_value=insight_value)
         return MemoryNode(
             content=content,
@@ -41,6 +30,8 @@ class GetInsightWorker(MemoryBaseWorker):
             status=MemoryNodeStatus.ACTIVE.value,
             obs_dt=obs_dt,
             obs_updated=True,
+            insight_key=insight_key,
+            insight_value=insight_value,
         )
 
     def reflect_new_insight_key(
@@ -147,8 +138,8 @@ class GetInsightWorker(MemoryBaseWorker):
             if result:
                 new_insight_nodes.append(result)
                 assert isinstance(result, MemoryNode)
-                insight_key = result.meta_data.get(INSIGHT_KEY, "")
-                insight_value = result.meta_data.get(INSIGHT_VALUE, "")
+                insight_key = result.insight_key
+                insight_value = result.insight_value
                 self.logger.info(
                     f"after_get_insight insight_key={insight_key} insight_value={insight_value}"
                 )

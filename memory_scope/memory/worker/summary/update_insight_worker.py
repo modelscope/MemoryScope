@@ -3,9 +3,7 @@ from typing import List
 from memory_scope.utils.response_text_parser import ResponseTextParser
 from memory_scope.constants.common_constants import (
     INSIGHT_NODES,
-    NEW_OBS_NODES,
-    INSIGHT_KEY,
-    INSIGHT_VALUE,
+    NEW_OBS_NODES
 )
 from memory_scope.utils.tool_functions import prompt_to_msg
 from memory_scope.scheme.memory_node import MemoryNode
@@ -21,8 +19,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
         max_score: float = 0
         filtered_nodes: List[MemoryNode] = []
 
-        insight_key = insight_node.meta_data.get(INSIGHT_KEY, "")
-        insight_value = insight_node.meta_data.get(INSIGHT_VALUE, "")
+        insight_key = insight_node.insight_key
+        insight_value = insight_node.insight_value
         if not insight_key or not insight_value:
             self.logger.warning(
                 f"insight_key={insight_key} insight_value={insight_value} is empty!"
@@ -60,8 +58,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
         self, insight_node: MemoryNode, filtered_nodes: List[MemoryNode]
     ) -> MemoryNode:
 
-        insight_key = insight_node.meta_data.get(INSIGHT_KEY, "")
-        insight_value = insight_node.meta_data.get(INSIGHT_VALUE, "")
+        insight_key = insight_node.insight_key
+        insight_value = insight_node.insight_value
         self.logger.info(
             f"update_insight insight_key={insight_key} insight_value={insight_value} "
             f"doc.size={len(filtered_nodes)}"
@@ -118,7 +116,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.info(f"insight_value={insight_value}, skip.")
             return insight_node
 
-        insight_node.meta_data[INSIGHT_VALUE] = insight_value
+        insight_node.insight_value = insight_value
         insight_node.obs_updated = True
         return insight_node
 
@@ -166,8 +164,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
         for result in self.join_threads():
             if result:
                 insight_node: MemoryNode = result
-                insight_key = insight_node.meta_data.get(INSIGHT_KEY, "")
-                insight_value = insight_node.meta_data.get(INSIGHT_VALUE, "")
+                insight_key = insight_node.insight_key
+                insight_value = insight_node.insight_value
                 self.logger.info(
                     f"after_update_insight insight_key={insight_key} insight_value={insight_value}"
                 )

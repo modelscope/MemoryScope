@@ -173,7 +173,7 @@ class UpdateProfileWorker(MemoryBaseWorker):
                 },
                 memory_type=MemoryTypeEnum.PROFILE,
                 status=1,
-                obs_profile_updated=true,
+                obs_profile_updated=True,
             )
             self.user_profile_dict[user_attr_key] = new_attr
 
