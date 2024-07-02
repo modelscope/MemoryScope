@@ -76,7 +76,6 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
 
     @property
     def user_name(self) -> str:
-        # FIXME: complex situations require adjustment
         if self._user_name is None:
             message = [x for x in self.messages if x.role == MessageRoleEnum.ASSISTANT.value][-1]
             self._user_name = message.role_name
@@ -84,7 +83,6 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
 
     @property
     def target_name(self) -> str:
-        # FIXME: complex situations require adjustment
         if self._target_name is None:
             message = [x for x in self.messages if x.role == MessageRoleEnum.USER.value][-1]
             self._target_name = message.role_name
@@ -100,7 +98,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self.kwargs[key]
 
     @staticmethod
-    def get_language_value(languages: dict | list) -> str | list[str]:
+    def get_language_value(languages: dict | list[dict]) -> str | list[str]:
         if isinstance(languages, list):
             return [x[G_CONTEXT.language] for x in languages]
         return languages[G_CONTEXT.language]
