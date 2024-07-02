@@ -118,6 +118,3 @@ update_unique_profile_user_query_prompt:
 user_query:
     cn: "句子：{content}"
     en:
-
-update_profile_key:
-    cn: ["无", "重复"]

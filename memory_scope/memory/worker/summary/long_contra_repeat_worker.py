@@ -113,13 +113,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
                 self.logger.warning(f"idx={idx} is invalid!")
                 continue
 
-            long_contra_repeat_keep_flag = [
-                self.get_language_value(CONTRADICTORY_WORD),
-                self.get_language_value(INCLUDED_WORD),
-                self.get_language_value(NONE_WORD),
-            ]
-            
-            if keep_flag not in long_contra_repeat_keep_flag.values():
+            if keep_flag not in self.get_language_value([CONTRADICTORY_WORD, INCLUDED_WORD, NONE_WORD]):
                 self.logger.warning(f"keep_flag={keep_flag} is invalid!")
                 continue
 

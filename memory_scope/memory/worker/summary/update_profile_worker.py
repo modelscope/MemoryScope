@@ -7,7 +7,7 @@ from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.utils.global_context import GlobalContext
 from memory_scope.utils.tool_functions import prompt_to_msg
-from memory_scope.constants.language_constants import COMMA_WORD, COLON_WORD
+from memory_scope.constants.language_constants import COMMA_WORD, COLON_WORD, NONE_WORD, REPEATED_WORD
 
 
 class UpdateProfileWorker(MemoryBaseWorker):
@@ -118,7 +118,7 @@ class UpdateProfileWorker(MemoryBaseWorker):
             return user_attr
         profile = profile_list[0]
 
-        if not profile or profile in self.prompt_handler.update_profile_key:
+        if not profile or profile in self.get_language_value([NONE_WORD, REPEATED_WORD]):
             self.logger.info(f"profile={profile}, skip.")
             return user_attr
 

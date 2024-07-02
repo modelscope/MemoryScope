@@ -61,7 +61,4 @@ user_query_prompt:
 
 user_query:
     cn: "句子：{content}"
-
-insight_value: 
-    cn: ["无", "重复"]
-    en: 
+    

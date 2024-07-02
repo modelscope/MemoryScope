@@ -8,7 +8,7 @@ from memory_scope.constants.common_constants import (
 from memory_scope.utils.tool_functions import prompt_to_msg
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
-from memory_scope.constants.language_constants import COMMA_WORD, COLON_WORD
+from memory_scope.constants.language_constants import COMMA_WORD, COLON_WORD, NONE_WORD, REPEATED_WORD
 
 
 class UpdateInsightWorker(MemoryBaseWorker):
@@ -112,7 +112,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
             return insight_node
         insight_value = profile_list[0]
 
-        if not insight_value or insight_value in self.prompt_handler.insight_value:
+        if not insight_value or insight_value in self.get_language_value([NONE_WORD, REPEATED_WORD]):
             self.logger.info(f"insight_value={insight_value}, skip.")
             return insight_node
 
