@@ -1,0 +1,11 @@
+system_prompt:
+  cn:
+
+few_shot_prompt:
+  cn:
+
+user_query_prompt:
+  cn:
+  
+content_format:
+  cn: "用户的{insight_key}：{insight_value}"

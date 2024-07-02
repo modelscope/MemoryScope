@@ -35,9 +35,13 @@ class MemoryNode(BaseModel):
 
     obs_reflected: bool = Field(False, description="if the observation is reflected")
 
-    obs_profile_updated: bool = Field(False, description="if the observation has updated user profile")
+    obs_updated: bool = Field(False, description="if the observation has updated user profile or insight")
 
     obs_keyword: str = Field("", description="keywords of the content")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.gen_memory_id()
 
     @property
     def node_keys(self):

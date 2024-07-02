@@ -1,0 +1,9 @@
+system_prompt:
+  cn:
+
+few_shot_prompt:
+  cn:
+
+user_query_prompt:
+  cn:
+  

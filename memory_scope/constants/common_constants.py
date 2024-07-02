@@ -12,11 +12,6 @@ RETRIEVE_MEMORY_NODES = "retrieve_memory_nodes"
 
 RANKED_MEMORY_NODES = "ranked_memory_nodes"
 
-
-
-
-
-
 PIPELINE = "pipeline"
 
 WORKER = "worker"
@@ -58,8 +53,6 @@ INSIGHT_KEY = "insight_key"
 
 INSIGHT_VALUE = "insight_value"
 
-DT = "dt"
-
 MSG_TIME = "msg_time"
 
 NEW = "new"
@@ -67,8 +60,6 @@ NEW = "new"
 TIME_INFER = "time_infer"
 
 KEY_WORD = "key_word"
-
-REFLECTED = "reflected"
 
 NEW_USER_PROFILE = "new_user_profile"
 
@@ -82,9 +73,6 @@ TIME_MATCHED = "time_matched"
 
 QUERY_KEYWORDS = "query_keywords"
 
-
-
-
 TIME_FORMAT_V1 = "{year}年{month}月{day}日{weekday}{hour}点"
 
 DATATIME_KEY_MAP = {
@@ -94,5 +82,3 @@ DATATIME_KEY_MAP = {
     "周": "week",
     "星期几": "weekday",
 }
-
-CONTENT_MODIFIED = "content_modified"

@@ -36,7 +36,7 @@ class GetObservationWorker(MemoryBaseWorker):
                           timestamp=message.time_created,
                           obs_dt=dt_handler.datetime_format(),
                           obs_reflected=False,
-                          obs_profile_updated=False,
+                          obs_updated=False,
                           obs_keyword=keywords)
         node.gen_memory_id()
         return node

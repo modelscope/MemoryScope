@@ -32,5 +32,5 @@ class StoreMemoryWorker(MemoryBaseWorker):
                 timestamp=dt_handler.timestamp,
                 obs_dt=dt_handler.datetime_format(),
                 obs_reflected=False,
-                obs_profile_updated=False)
+                obs_updated=False)
             self.vector_store.update(node)
