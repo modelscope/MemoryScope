@@ -1,5 +1,6 @@
 import inspect
 import time
+import dashscope
 from abc import abstractmethod, ABCMeta
 from typing import Any
 
@@ -86,6 +87,8 @@ class BaseModel(metaclass=ABCMeta):
             for i in range(self.max_retries):
                 try:
                     model_response = self._call(stream=stream, **kwargs)
+                except dashscope.common.error.AuthenticationError as e:
+                    raise e
                 except Exception as e:
                     model_response = ModelResponse(m_type=self.m_type, status=False, details=e.args)
 

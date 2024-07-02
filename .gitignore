@@ -133,6 +133,9 @@ dmypy.json
 # macOS
 .DS_Store
 
+# vscode
+.vscode
+
 # docs
 docs/sphinx_doc/build/
 

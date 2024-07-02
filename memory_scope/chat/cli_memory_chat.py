@@ -185,7 +185,9 @@ class CliMemoryChat(BaseMemoryChat):
                     break
 
             except Exception as e:
-                line = f"An exception occurred when running cli memory chat. args={e.args}"
+                import traceback
+                traceback.print_exc()
+                line = f"An exception occurred when running cli memory chat. args={e.args}."
                 questionary.print(line)
                 self.logger.exception(line)
                 continue
