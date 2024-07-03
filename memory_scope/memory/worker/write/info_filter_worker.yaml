@@ -6,6 +6,15 @@ info_filter_system:
     结果：
     <分数:0或1或2或3>
 
+  en: |
+    Instruction: Evaluate the given {batch_size} sentences for information about {user_name}, with a score of 0, 1, 2, or 3.
+    Note: A score of 0 indicates no information about {user_name}, 1 indicates hypothetical or fictional content about or from {user_name}, 2 indicates general, timely, or speculative information about {user_name}, and 3 indicates significant and verifiable information about {user_name} or information that {user_name} requested to be recorded.
+    Output the scores in the following format, with each score enclosed in <>. Provide {batch_size} scores in total:
+
+    Results:
+    <Score: 0 or 1 or 2 or 3>
+    
+
 info_filter_few_shot:
   cn: |
     示例1
@@ -56,8 +65,62 @@ info_filter_few_shot:
     <0>
     <1>
 
+  en: |
+    Example 1
+    Sentences:
+    1 {user_name}: Please help me write a birthday greeting for my colleague Jason's daughter who is turning three.
+    2 {user_name}: Chronology of major events in Mediterranean history from 1400 to 1550 AD.
+    3 {user_name}: Have you had lunch?
+    4 {user_name}: I'm feeling down today. Can you comfort me a bit?
+    5 {user_name}: Can you compile a list of tips on how to use large models for me, and try to keep the content concise?
+    6 {user_name}: Note this down: remind me tomorrow at 3 PM to pick up the documents.
+    Results:
+    <3>
+    <0>
+    <0>
+    <2>
+    <2>
+    <3>
+    
+    Example 2
+    Sentences:
+    1 {user_name}: I've just joined Google.
+    2 {user_name}: There are too many mosquitoes when sleeping outdoors. What should I do?
+    3 {user_name}: Is creativity related to extraversion?
+    4 {user_name}: Should the review, modification, and standardization of all personnel files in a district or county be handled by the cadre archive center or by the county human resources and social security bureau?
+    5 {user_name}: If I am planning to have a child with a woman, as a man, how can I protect the woman and the baby and how can I prepare to ensure high sperm quality for the benefit of the offspring?
+    6 {user_name}: If we go out to play together, would you feel happy?
+    7 {user_name}: Rose, a young girl full of curiosity about the future, accidentally discovered this post office that can send letters to the future. Out of nostalgia for her late grandfather, she decided to write a letter to herself five years in the future, hoping to receive the unfinished stories of her grandfather. As the five-year deadline approached, when she had almost forgotten about this event, a yellowed reply quietly arrived, bringing not only her grandfather's unfinished adventure story but also a profound revelation about courage, love, and self-discovery. Continue writing this into a 3000-word novel.
+    Results:
+    <3>
+    <2>
+    <0>
+    <0>
+    <3>
+    <1>
+    <1>
+    
+    Example 3
+    Sentences:
+    1 {user_name}: Your mother is suffering from anxiety. How can you comfort and guide her?
+    2 {user_name}: Severe kidney deficiency
+    3 {user_name}: I really enjoy playing basketball, so I am in good health.
+    4 {user_name}: Who are some famous basketball stars?
+    5 {user_name}: Zack: This is a constellation frog setting, but I am a Virgo. My mom feels I'm abnormal and doesn't let me watch it. \n The female monkey patted Zack's head. "Is that so?" \n The female monkey opened Bilibili and took a look. \n Female monkey: "Why don't you switch the setting? I heard from your future self that there is someone called 'Unforgettable Chocolate 232' who created a Windows setting." \n This is script 1; script 2 is to be continued.
+    Results:
+    <1>
+    <1>
+    <3>
+    <0>
+    <1>
+
 info_filter_user_query:
   cn: |
     句子：
     {user_query}
     结果：
+
+  en: |
+    Sentences:
+    {user_query}
+    Results:
