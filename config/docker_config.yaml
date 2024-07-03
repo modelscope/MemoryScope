@@ -1,0 +1,83 @@
+global_config:
+  language: cn
+  max_workers: 5
+  dash_scope_apikey:
+  open_ai_apikey:
+
+memory_chat:
+  cli_memory_chat:
+    class: chat.cli_memory_chat # select class
+    memory_service: memory_chat_service
+    generation_model: dashscope_generation
+    human_name: human
+    assistant_name: assistant
+
+memory_service:
+  memory_chat_service:
+    class: memory.service.chat_memory_service  # select class
+    history_msg_count: 32
+    contextual_msg_count: 6
+    read_memory_key: read_memory
+    memory_operations:
+      read_message: # define operation
+        class: memory.operation.read_memory
+        workflow: dummy_workflow  # select workflow
+        description: "read session messages of the user"
+      read_memory:
+        class: memory.operation.read_memory
+        workflow: dummy_workflow
+        description: "read related memories of the user"
+      list_memory:
+        class: memory.operation.read_memory
+        workflow: dummy_workflow
+        description: "read all memories of the user"
+      write_memory:
+        class: memory.operation.write_memory
+        workflow: dummy_workflow
+        description: "write observation memories of the user"
+        interval_time: 60
+      summary_memory:
+        class: memory.operation.summary_memory
+        workflow: dummy_workflow
+        description: "summary observation memories of the user"
+        interval_time: 300
+
+models:
+  dashscope_generation:
+    class: models.llama_index_generation_model  # select class
+    module_name: dashscope_generation
+    model_name: qwen-max
+  dashscope_embedding:
+    class: models.llama_index_embedding_model  # select class
+    module_name: dashscope_embedding
+    model_name: text-embedding-v2
+  dashscope_rank:
+    class: models.llama_index_rank_model  # select class
+    module_name: dashscope_rank
+    model_name: gte-rerank
+
+vector_store:
+  class: storage.dummy_vector_store  # select class
+  embedding_model: dashscope_embedding
+
+monitor:
+  class: storage.dummy_monitor  # select class
+
+worker:
+  dummy_workflow:
+    class: memory.worker.dummy_worker
+    generation_model: dashscope_generation
+    embedding_model: dashscope_embedding
+    rank_model: dashscope_rank
+  retrieve_store_worker:
+    class: memory.worker.read.retrieve_store_worker
+    retrieve_obs_top_k: 100
+    retrieve_ins_pf_top_k: 100
+  fuse_rerank_worker:
+    class: memory.worker.read.fuse_rerank_worker
+    fuse_score_threshold: 0.1
+    fuse_ratio_dict:
+      observation: 1
+    fuse_time_ratio: 2.0
+    fuse_rerank_top_k: 10
+
