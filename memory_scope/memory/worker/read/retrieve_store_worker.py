@@ -25,7 +25,7 @@ class RetrieveStoreWorker(MemoryBaseWorker):
             "user_name": self.user_name,
             "target_name": self.target_name,
             "status": MemoryNodeStatus.ACTIVE.value,
-            "memory_type": [MemoryTypeEnum.INSIGHT.value, MemoryTypeEnum.PROFILE.value],
+            "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
         return await self.vector_store.async_retrieve(query=query,
                                                       top_k=self.retrieve_ins_pf_top_k,

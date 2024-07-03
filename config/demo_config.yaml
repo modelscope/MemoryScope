@@ -105,5 +105,6 @@ vector_store:
   embedding_model: dashscope_embedding
   index_name: memory_index
   es_url: http://localhost:9200
+  use_hybrid: false
 monitor:
   class: storage.dummy_monitor
