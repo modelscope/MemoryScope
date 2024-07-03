@@ -33,9 +33,11 @@ class RetrieveStoreWorker(MemoryBaseWorker):
 
     def _run(self):
         query, _ = self.get_context(QUERY_WITH_TS)
+        self.submit_async_task(self.retrieve_from_observation, query=query)
+        self.submit_async_task(self.retrieve_from_insight_and_profile, query=query)
+
         memory_node_list: List[MemoryNode] = []
-        fn_list = [self.retrieve_from_observation, self.retrieve_from_insight_and_profile]
-        for result in self.async_run(fn_list=fn_list, query=query):
+        for result in self.gather_async_result():
             if result:
                 memory_node_list.extend(result)
         self.logger.info(f"memory_node_list.size={len(memory_node_list)}")

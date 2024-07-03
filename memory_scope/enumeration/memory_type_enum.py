@@ -8,8 +8,4 @@ class MemoryTypeEnum(str, Enum):
 
     INSIGHT = "insight"
 
-    PROFILE = "profile"
-
     OBS_CUSTOMIZED = "obs_customized"
-
-    PROFILE_CUSTOMIZED = "profile_customized"

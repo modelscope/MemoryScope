@@ -2,7 +2,8 @@ import datetime
 import re
 from typing import Dict
 
-from memory_scope.constants.language_constants import WEEKDAYS
+from memory_scope.constants.language_constants import WEEKDAYS, DATATIME_WORD_LIST
+from memory_scope.enumeration.language_enum import LanguageEnum
 from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.logger import Logger
 
@@ -95,6 +96,28 @@ class DatetimeHandler(object):
             cls.logger.warning(f"language={G_CONTEXT.language} needs to complete format_time_by_extract_time func!")
             return ""
         return getattr(cls, func_name)(extract_time_dict, meta_data)
+
+    @classmethod
+    def has_time_word_cn(cls, query: str) -> bool:
+        # find datetime keyword
+        contain_datetime = False
+        for datetime_word in DATATIME_WORD_LIST[LanguageEnum.CN]:
+            if datetime_word in query:
+                contain_datetime = True
+                break
+        return contain_datetime
+
+    @classmethod
+    def has_time_word_en(cls, query: str) -> bool:
+        pass
+
+    @classmethod
+    def has_time_word(cls, query: str) -> bool:
+        func_name = f"has_time_word_{G_CONTEXT.language}"
+        if not hasattr(cls, func_name):
+            cls.logger.warning(f"language={G_CONTEXT.language} needs to complete has_time_word func!")
+            return False
+        return getattr(cls, func_name)(query=query)
 
     def datetime_format(self, dt_format: str = "%Y%m%d"):
         return self._dt.strftime(dt_format)

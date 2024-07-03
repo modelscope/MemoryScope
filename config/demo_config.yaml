@@ -50,8 +50,8 @@ worker:
     generation_model_top_k: 1
   retrieve_store_worker:
     class: memory.worker.read.retrieve_store_worker
-    retrieve_obs_top_k: 5
-    retrieve_ins_pf_top_k: 5
+    retrieve_obs_top_k: 100
+    retrieve_ins_pf_top_k: 100
   semantic_rank_worker:
     class: memory.worker.read.semantic_rank_worker
   fuse_rerank_worker:
@@ -60,10 +60,8 @@ worker:
     fuse_ratio_dict:
       conversation: 0.5
       observation: 1
-      obs_customized: 1
+      obs_customized: 1.2
       insight: 2.0
-      profile: 2.0
-      profile_customized: 2.0
     fuse_time_ratio: 2.0
     fuse_rerank_top_k: 10
   info_filter_worker:
