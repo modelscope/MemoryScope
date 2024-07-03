@@ -60,6 +60,8 @@ class CliMemoryChat(BaseMemoryChat):
     @property
     def memory_service(self) -> BaseMemoryService:
         if isinstance(self._memory_service, str):
+            if self._memory_service not in G_CONTEXT.memory_service_dict:
+                raise ValueError("Missing declaration of memory_service in yaml configuration: " + self._memory_service)
             self._memory_service = G_CONTEXT.memory_service_dict[self._memory_service]
             self._memory_service.start_service()
         return self._memory_service
@@ -67,6 +69,8 @@ class CliMemoryChat(BaseMemoryChat):
     @property
     def generation_model(self) -> BaseModel:
         if isinstance(self._generation_model, str):
+            if self._generation_model not in G_CONTEXT.model_dict:
+                raise ValueError("Missing declaration of generation model in yaml configuration: " + self._generation_model)
             self._generation_model = G_CONTEXT.model_dict[self._generation_model]
         return self._generation_model
 

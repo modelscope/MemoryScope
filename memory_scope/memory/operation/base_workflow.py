@@ -33,7 +33,7 @@ class BaseWorkflow(object):
         self.logger: Logger = Logger.get_logger()
 
         if self.workflow:
-            self._parse_workflow()
+            self.workflow_worker_list = self._parse_workflow()
             self._print_workflow()
 
     def _parse_workflow(self):
@@ -63,6 +63,7 @@ class BaseWorkflow(object):
                 for sub_item in sub_split:
                     self.worker_dict[sub_item] = is_multi_thread
             self.workflow_worker_list.append(line_split_split)
+        return self.workflow_worker_list
 
     def _print_workflow(self):
         self.logger.info(f"----- print_workflow_{self.name}_begin -----")

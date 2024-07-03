@@ -30,6 +30,29 @@ def init_instance_by_config(config: dict,
                             default_class_path: str = "memory_scope",
                             suffix_name: str = "",
                             **kwargs):
+    """
+    Initialize an instance of a class specified in the configuration dictionary.
+
+    This function dynamically imports a class from a module path, allowing for 
+    user-defined classes or default paths. It supports adding a suffix to the 
+    class name, merging additional keyword arguments with the config, and handling 
+    nested module paths.
+
+    Args:
+        config (dict): A dictionary containing the configuration, including 
+                       the 'class' key that specifies the class's module path.
+        default_class_path (str, optional): The default module path prefix 
+                                            to use if not explicitly defined in 
+                                            'config'. Defaults to "memory_scope".
+        suffix_name (str, optional): A string to append to the class name, 
+                                     ensuring the final class name ends with it.
+                                     Defaults to "".
+        **kwargs: Additional keyword arguments to pass to the class constructor.
+
+    Returns:
+        object: An instance of the class initialized with the provided config and kwargs.
+    """
+
     config_copy = deepcopy(config)
     origin_class_path: str = config_copy.pop("class")
     if not origin_class_path:

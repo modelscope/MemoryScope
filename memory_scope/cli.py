@@ -31,6 +31,7 @@ class CliJob(object):
                 self.config = json.load(f)
             else:
                 raise RuntimeError("not supported config file type!")
+        self.init_global_content_by_config()
 
     def set_global_config(self):
         G_CONTEXT.global_config = global_config = self.config["global_config"]
@@ -67,7 +68,6 @@ class CliJob(object):
 
     def run(self, config: str):
         self.load_config(config)
-        self.init_global_content_by_config()
 
         with G_CONTEXT.thread_pool:
             memory_chat = list(G_CONTEXT.memory_chat_dict.values())[0]
