@@ -20,6 +20,8 @@ MEMORY = "memory"
 
 DEFAULT_SYSTEM_PROMPT = "default_system_prompt"
 
+NOT_REFLECTED_NODES = "not_reflected_nodes"
+
 
 MODIFIED_MEMORIES = "modified_memories"
 

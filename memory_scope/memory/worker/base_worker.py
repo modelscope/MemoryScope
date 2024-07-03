@@ -27,7 +27,7 @@ class BaseWorker(metaclass=ABCMeta):
         self.logger: Logger = Logger.get_logger()
 
     @staticmethod
-    def _async_run(fn_list, *args, **kwargs):
+    def async_run(fn_list, *args, **kwargs):
         async def async_gather():
             return await asyncio.gather(*[fn(*args, **kwargs) for fn in fn_list])
 

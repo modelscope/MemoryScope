@@ -1,47 +1,39 @@
 from typing import List
 
-from memory_scope.utils.response_text_parser import ResponseTextParser
-from memory_scope.constants.common_constants import (
-    NEW_OBS_NODES,
-    NOT_REFLECTED_OBS_NODES,
-    INSIGHT_NODES,
-    NEW_INSIGHT_KEYS,
-    NOT_REFLECTED_MERGE_NODES,
-)
-from memory_scope.constants.language_constants import COLON_WORD, COMMA_WORD
-from memory_scope.scheme.memory_node import MemoryNode
+from memory_scope.constants.common_constants import NOT_REFLECTED_NODES
+from memory_scope.constants.language_constants import COMMA_WORD
+from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
+from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
+from memory_scope.scheme.memory_node import MemoryNode
+from memory_scope.utils.response_text_parser import ResponseTextParser
+from memory_scope.utils.timer import timer
 from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class GetReflectionWorker(MemoryBaseWorker):
+    @timer
+    def retrieve_not_reflected_memory(self) -> List[MemoryNode]:
+        filter_dict = {
+            "user_name": self.user_name,
+            "target_name": self.target_name,
+            "status": MemoryNodeStatus.ACTIVE.value,
+            "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
+            "obs_reflected": False,
+        }
+        return self.vector_store.retrieve(query=" ", top_k=self.retrieve_top_k, filter_dict=filter_dict)
+
     def _run(self):
-        # 过滤得到 not_reflected_merge_nodes
-        new_obs_nodes: List[MemoryNode] = self.get_context(NEW_OBS_NODES)
-        not_reflected_nodes: List[MemoryNode] = self.get_context(
-            NOT_REFLECTED_OBS_NODES
-        )
-        not_reflected_merge_nodes: List[MemoryNode] = []
-        if new_obs_nodes:
-            not_reflected_merge_nodes.extend(new_obs_nodes)
-        if not_reflected_nodes:
-            not_reflected_merge_nodes.extend(not_reflected_nodes)
-        not_reflected_merge_nodes = [
-            node
-            for node in not_reflected_merge_nodes
-            if not node.obs_reflected
-        ]
+        not_reflected_nodes: List[MemoryNode] = self.retrieve_not_reflected_memory()
 
         # count
-        not_reflected_count = len(not_reflected_merge_nodes)
+        not_reflected_count = len(not_reflected_nodes)
         if not_reflected_count <= self.reflect_obs_cnt_threshold:
-            self.logger.info(
-                f"not_reflected_count={not_reflected_count} is not enough, stop reflect."
-            )
+            self.logger.info(f"not_reflected_count={not_reflected_count} is not enough, stop.")
             return
 
         # save context
-        self.set_context(NOT_REFLECTED_MERGE_NODES, not_reflected_merge_nodes)
+        self.set_context(NOT_REFLECTED_NODES, not_reflected_nodes)
 
         # get profile_keys
         exist_keys: List[str] = []

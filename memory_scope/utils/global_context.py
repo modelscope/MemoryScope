@@ -23,5 +23,7 @@ class GlobalContext(object):
         self.thread_pool: ThreadPoolExecutor | None = None
         self.language: LanguageEnum = LanguageEnum.EN
 
+        self.meta_data: Dict[str, Any] = {}
+
 
 G_CONTEXT = GlobalContext()

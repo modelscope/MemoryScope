@@ -6,9 +6,12 @@ from copy import deepcopy
 from importlib import import_module
 
 import pyfiglet
-from termcolor import colored, COLORS
+from termcolor import colored
 
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
+
+ALL_COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan", "light_grey", "light_red", "light_green",
+              "light_yellow", "light_blue", "light_magenta", "light_cyan", "white"]
 
 
 def underscore_to_camelcase(name: str, is_first_title: bool = True):
@@ -69,7 +72,7 @@ def char_logo(words: str, seed: int = time.time_ns(), color=None):
     font = pyfiglet.Figlet()
     rendered_text = font.renderText(words)
     colored_lines = []
-    all_colors = list(COLORS.keys())
+    all_colors = ALL_COLORS.copy()
     random.seed = seed
     for line in rendered_text.splitlines():
         line_color = color

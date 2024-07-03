@@ -31,21 +31,16 @@ class MemoryNode(BaseModel):
 
     timestamp: int = Field(int(datetime.datetime.now().timestamp()), description="timestamp of the memory node")
 
-    obs_dt: str = Field("", description="dt of the observation")
+    dt: str = Field("", description="dt of the memory node")
 
     obs_reflected: bool = Field(False, description="if the observation is reflected")
 
     obs_updated: bool = Field(False, description="if the observation has updated user profile or insight")
 
-    obs_keyword: str = Field("", description="keywords of the content")
-
-    insight_key: str = Field("", description="insight_key")
-
-    insight_value: str = Field("", description="insight_value")
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.gen_memory_id()
+        self.memory_id = f"{self.user_name}_{self.target_name}_{self.timestamp}_{md5_hash(self.content)[:8]}"
+        self.dt = datetime.datetime.fromtimestamp(self.timestamp).strftime("%Y%m%d")
 
     @property
     def node_keys(self):
@@ -54,5 +49,3 @@ class MemoryNode(BaseModel):
     def __getitem__(self, key: str):
         return self.model_dump().get(key)
 
-    def gen_memory_id(self):
-        self.memory_id = f"{self.user_name}_{self.target_name}_{self.timestamp}_{md5_hash(self.content)[:8]}"

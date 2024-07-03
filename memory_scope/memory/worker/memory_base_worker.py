@@ -2,7 +2,6 @@ from abc import ABCMeta
 from typing import List, Dict
 
 from memory_scope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS
-from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.worker.base_worker import BaseWorker
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.message import Message
@@ -77,15 +76,13 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
     @property
     def user_name(self) -> str:
         if self._user_name is None:
-            message = [x for x in self.messages if x.role == MessageRoleEnum.ASSISTANT.value][-1]
-            self._user_name = message.role_name
+            self._user_name = G_CONTEXT.meta_data["human_name"]
         return self._user_name
 
     @property
     def target_name(self) -> str:
         if self._target_name is None:
-            message = [x for x in self.messages if x.role == MessageRoleEnum.USER.value][-1]
-            self._target_name = message.role_name
+            self._target_name = G_CONTEXT.meta_data["assistant_name"]
         return self._target_name
 
     @property

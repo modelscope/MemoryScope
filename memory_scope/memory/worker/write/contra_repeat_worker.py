@@ -27,7 +27,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
             "target_name": self.target_name,
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
-            "obs_dt": dt_handler.datetime_format(),
+            "dt": dt_handler.datetime_format(),
         }
         return self.vector_store.retrieve(query=message.content, top_k=self.today_obs_top_k, filter_dict=filter_dict)
 
@@ -55,11 +55,11 @@ class ContraRepeatWorker(MemoryBaseWorker):
         for i, n in enumerate(all_obs_nodes):
             user_query_list.append(f"{i + 1} {n.content}")
 
-        system_prompt = self.prompt_config.contra_repeat_system.format(num_obs=len(user_query_list),
-                                                                       user_name=self.user_id)
-        few_shot = self.prompt_config.contra_repeat_few_shot.format(user_name=self.user_id)
-        user_query = self.prompt_config.contra_repeat_user_query.format(user_query="\n".join(user_query_list),
+        system_prompt = self.prompt_handler.contra_repeat_system.format(num_obs=len(user_query_list),
                                                                         user_name=self.user_id)
+        few_shot = self.prompt_handler.contra_repeat_few_shot.format(user_name=self.user_id)
+        user_query = self.prompt_handler.contra_repeat_user_query.format(user_query="\n".join(user_query_list),
+                                                                         user_name=self.user_id)
         contra_repeat_message = self.prompt_to_msg(system_prompt=system_prompt,
                                                    few_shot=few_shot,
                                                    user_query=user_query)

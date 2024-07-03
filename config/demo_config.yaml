@@ -7,6 +7,10 @@ memory_chat:
     memory_service: memory_chat_service
     generation_model: dashscope_generation
     human_name: 用户
+    human_profile_setting:
+      - name
+      - gender
+      - residential location
     assistant_name: AI
 memory_service:
   memory_chat_service:
@@ -50,8 +54,8 @@ worker:
     generation_model_top_k: 1
   retrieve_store_worker:
     class: memory.worker.read.retrieve_store_worker
-    retrieve_obs_top_k: 100
-    retrieve_ins_pf_top_k: 100
+    retrieve_obs_top_k: 5
+    retrieve_ins_pf_top_k: 5
   semantic_rank_worker:
     class: memory.worker.read.semantic_rank_worker
   fuse_rerank_worker:
@@ -83,8 +87,12 @@ worker:
     class: memory.worker.write.contra_repeat_worker
     generation_model: dashscope_generation
     generation_model_top_k: 1
-    today_obs_top_k: 30
+    retrieve_top_k: 30
     contra_repeat_max_count: 50
+  get_reflection_worker:
+    class: memory.worker.summary.get_reflection_worker
+    retrieve_top_k: 100
+    reflect_obs_cnt_threshold: 32
 models:
   dashscope_generation:
     class: models.llama_index_generation_model

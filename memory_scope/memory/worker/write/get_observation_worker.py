@@ -20,6 +20,7 @@ class GetObservationWorker(MemoryBaseWorker):
         meta_data = {
             MemoryTypeEnum.CONVERSATION.value: message.content,
             TIME_INFER: time_infer,
+            "keywords": keywords,
             **dt_handler.dt_info_dict,
         }
 
@@ -34,11 +35,8 @@ class GetObservationWorker(MemoryBaseWorker):
                           memory_type=MemoryTypeEnum.OBSERVATION.value,
                           status=MemoryNodeStatus.ACTIVE.value,
                           timestamp=message.time_created,
-                          obs_dt=dt_handler.datetime_format(),
                           obs_reflected=False,
-                          obs_updated=False,
-                          obs_keyword=keywords)
-        node.gen_memory_id()
+                          obs_updated=False)
         return node
 
     def build_prompt(self) -> List[Message]:
@@ -61,9 +59,9 @@ class GetObservationWorker(MemoryBaseWorker):
 
         system_prompt = self.prompt_handler.get_observation_system.format(num_obs=len(user_query_list),
                                                                           user_name=self.target_name)
-        few_shot = self.prompt_config.get_observation_few_shot.format(user_name=self.target_name)
-        user_query = self.prompt_config.get_observation_user_query.format(user_query="\n".join(user_query_list),
-                                                                          user_name=self.target_name)
+        few_shot = self.prompt_handler.get_observation_few_shot.format(user_name=self.target_name)
+        user_query = self.prompt_handler.get_observation_user_query.format(user_query="\n".join(user_query_list),
+                                                                           user_name=self.target_name)
 
         obtain_obs_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")

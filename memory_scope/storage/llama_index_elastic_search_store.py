@@ -7,6 +7,7 @@ from llama_index.vector_stores.elasticsearch import ElasticsearchStore, AsyncDen
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.storage.base_vector_store import BaseVectorStore
+from memory_scope.utils.logger import Logger
 
 
 class _ElasticsearchStore(ElasticsearchStore):
@@ -83,6 +84,7 @@ class LlamaIndexElasticSearchStore(BaseVectorStore):
                                             **kwargs)
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                         embed_model=self.embedding_model.model)
+        self.logger = Logger.get_logger()
 
     def retrieve(self,
                  query: str,
@@ -100,6 +102,8 @@ class LlamaIndexElasticSearchStore(BaseVectorStore):
                              query: str,
                              top_k: int,
                              filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
+        self.logger.info(f"query={query} top_k={top_k} filter_dict={filter_dict}")
+
         if filter_dict is None:
             filter_dict = {}
 

@@ -33,8 +33,8 @@ class GetObservationWithTimeWorker(GetObservationWorker):
 
         system_prompt = self.prompt_handler.get_observation_with_time_system.format(num_obs=len(user_query_list),
                                                                                     user_name=self.target_name)
-        few_shot = self.prompt_config.get_observation_with_time_few_shot.format(user_name=self.target_name)
-        user_query = self.prompt_config.get_observation_with_time_user_query.format(
+        few_shot = self.prompt_handler.get_observation_with_time_few_shot.format(user_name=self.target_name)
+        user_query = self.prompt_handler.get_observation_with_time_user_query.format(
             user_query="\n".join(user_query_list),
             user_name=self.target_name)
 

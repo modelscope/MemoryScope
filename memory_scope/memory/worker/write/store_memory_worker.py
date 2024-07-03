@@ -23,14 +23,12 @@ class StoreMemoryWorker(MemoryBaseWorker):
                 return
 
             dt_handler = DatetimeHandler()
-            node = MemoryNode(
-                user_name=self.user_name,
-                target_name=self.target_name,
-                content=query,
-                memory_type=MemoryTypeEnum.OBSERVATION.value,
-                status=MemoryNodeStatus.ACTIVE.value,
-                timestamp=dt_handler.timestamp,
-                obs_dt=dt_handler.datetime_format(),
-                obs_reflected=False,
-                obs_updated=False)
+            node = MemoryNode(user_name=self.user_name,
+                              target_name=self.target_name,
+                              content=query,
+                              memory_type=MemoryTypeEnum.OBS_CUSTOMIZED.value,
+                              status=MemoryNodeStatus.ACTIVE.value,
+                              timestamp=dt_handler.timestamp,
+                              obs_reflected=False,
+                              obs_updated=False)
             self.vector_store.update(node)
