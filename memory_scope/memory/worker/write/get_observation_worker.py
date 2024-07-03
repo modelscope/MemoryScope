@@ -28,7 +28,7 @@ class GetObservationWorker(MemoryBaseWorker):
             dt_info_dict = DatetimeHandler.extract_date_parts(input_string=time_infer)
             meta_data.update({f"event_{k}": str(v) for k, v in dt_info_dict.items()})
 
-        node = MemoryNode(user_name=self.user_name,
+        return MemoryNode(user_name=self.user_name,
                           target_name=self.target_name,
                           meta_data=meta_data,
                           content=obs_content,
@@ -37,7 +37,6 @@ class GetObservationWorker(MemoryBaseWorker):
                           timestamp=message.time_created,
                           obs_reflected=False,
                           obs_updated=False)
-        return node
 
     def build_prompt(self) -> List[Message]:
         # build prompt

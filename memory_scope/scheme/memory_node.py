@@ -17,6 +17,10 @@ class MemoryNode(BaseModel):
 
     content: str = Field("", description="memory content")
 
+    key: str = Field("", description="memory key")
+
+    value: str = Field("", description="memory value")
+
     score_similar: float = Field(0, description="es similar score")
 
     score_rank: float = Field(0, description="rank model score")

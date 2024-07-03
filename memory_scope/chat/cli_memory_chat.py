@@ -1,6 +1,5 @@
 import os
 import time
-from typing import List
 
 import questionary
 
@@ -29,7 +28,6 @@ class CliMemoryChat(BaseMemoryChat):
                  generation_model: str,
                  stream: bool = True,
                  human_name: str = "",
-                 human_profile_setting: List[str] = None,
                  assistant_name: str = "",
                  **kwargs):
 
@@ -37,7 +35,6 @@ class CliMemoryChat(BaseMemoryChat):
         self._generation_model: BaseModel | str = generation_model
         self.stream: bool = stream
         self.human_name: str = human_name
-        self.human_profile_setting: List[str] = human_profile_setting
         self.assistant_name: str = assistant_name
         self.kwargs: dict = kwargs
 
@@ -46,7 +43,6 @@ class CliMemoryChat(BaseMemoryChat):
         G_CONTEXT.meta_data.update({
             "human_name": human_name,
             "assistant_name": assistant_name,
-            "human_profile_setting": human_profile_setting,
         })
 
         self.logger = Logger.get_logger()

@@ -1,9 +1,93 @@
-system_prompt:
-  cn:
+get_reflect_system:
+  cn: |
+    任务：从下面的信息中提取出最重要的最多{num_questions}条{user_name}属性，要求不与已有的{user_name}属性语义重复。
+    要求1：{user_name}属性可以是一般的{user_name}偏好，也可以是运动偏好，旅游偏好，饮食偏好等等，也可以是重要事件性质，比如最近重要的事情，也可以是一些高度概括的人生理想，价值观，人生观，性格， 也可以是和朋友的人际关系等等。
+    要求2：根据{user_name}属性，我们可以生成“{user_name}的<{user_name}属性>是什么？”的问题，以此可以从下面的信息中提取{user_name}属性对应的值。
+    输出格式：每一行输出一个{user_name}属性，每个{user_name}属性推荐4个字，如果没有信息请回答无，最多输出{num_questions}条。
 
-few_shot_prompt:
-  cn:
 
-user_query_prompt:
-  cn:
-  
+get_reflect_few_shot:
+  cn: |
+    示例1
+    信息：
+    {user_name}想知道明天上海的天气情况。
+    {user_name}可能在上海工作，并关心是否需要带伞上班。
+    {user_name}在阿里巴巴徐汇滨江园区附近工作。
+    {user_name}计划中午在公司附近用餐。
+    {user_name}对咖啡因过敏。
+    {user_name}喝了咖啡后晚上会出现失眠的情况。
+    {user_name}偏好口味较为清淡、不辣的中餐馆。
+    {user_name}刚开始了他们的第一份工作。
+    {user_name}的工作岗位是阿里巴巴的算法工程师。
+    {user_name}希望得到与该岗位相关的职场建议。
+    {user_name}面临的问题是在项目进展初期如何有效与上司沟通。
+    {user_name}的目标是及时同步项目状态给上司。
+    {user_name}希望了解image generation（图像生成）技术的发展概览和最新进展。
+    {user_name}对variational auto-encoder、GAN、Diffusion Model等技术及其相互关系感兴趣。
+    已有{user_name}属性：性别，工作地点，工作单位，睡眠状况，美食偏好
+    新增{user_name}属性：
+    过敏源
+    技术方向
+    工作岗位
+    
+    
+    示例2
+    信息：
+    {user_name}想要了解如何使用torchvision库来可视化深度学习任务的进度信息。
+    {user_name}希望了解如何将基于numpy和pytorch的并行计算方案迁移到CUDA支持的GPU上运行。
+    {user_name}询问是否需要依赖特定的包来完成这一任务。
+    {user_name}希望了解如何在Python中自定义进程和线程以实现并行计算。
+    {user_name}在编程中遇到了与并行计算相关的问题。
+    {user_name}希望学习如何使用Python（numpy，pytorch）在GPU上实现简单的并行计算。
+    {user_name}希望了解并行计算的基本概念，包括threads。
+    {user_name}询问有关世界各地著名菜系的信息。
+    {user_name}对全球各地的美食非常感兴趣。
+    {user_name}关心其体重与运动消耗的额外热量及心率之间的关系。
+    {user_name}在询问为了实现这一目标，每天需要额外消耗多少大卡热量。
+    {user_name}希望每月减重1kg。
+    {user_name}希望得到类似战略类手机游戏的推荐。
+    {user_name}喜欢玩三国志系列、文明系列、全面战争、骑马与砍杀等战略类游戏。
+    {user_name}希望根据他们的喜好获得新的游戏推荐。
+    {user_name}列举了他们喜欢的具体游戏类型，包括：三国志系列、文明系列、全面战争、骑马与砍杀等。
+    {user_name}喜欢玩战略类游戏。
+    已有{user_name}属性：工作地点，性别，美食偏好
+    新增{user_name}属性：
+    游戏偏好
+    运动计划
+    技术方向
+    
+    示例3
+    信息：
+    {user_name}寻求推荐一个相关课程或网址以进行学习。
+    {user_name}计划去青岛旅游。
+    {user_name}正为张三的女儿选购生日礼物。
+    {user_name}请求为一位名叫张三的人的女儿撰写一段温馨的祝福语。
+    {user_name}的同事名叫张三。
+    {user_name}与张三约定讨论阿里云百炼项目。
+    {user_name}与同事张三讨论了该项目的PRD（产品需求文档）。
+    同事张三计划下周对PRD进行最终确定。
+    张三还安排了在再下一周进行POC（Proof of Concept，概念验证）的讨论。
+    {user_name}希望获知该项目工程开发工作的负责团队信息，以了解项目执行的组织架构与分工情况。
+    已有{user_name}属性：
+    新增{user_name}属性：
+    朋友关系
+    
+    示例4
+    信息：
+    {user_name}在寻求有关推拿按摩手法的教程或相关网站推荐。
+    {user_name}希望系统地学习正规的推拿按摩手法。
+    {user_name}对按摩感兴趣，并且经常去推拿按摩店。
+    {user_name}想了解自己在静息状态下一小时大概会消耗多少大卡热量。
+    {user_name}年龄为28岁。
+    {user_name}体重为70kg。
+    {user_name}是男性。
+    已有{user_name}属性：性别，年龄，体重，当前学习进展
+    新增{user_name}属性：
+    无
+
+get_reflect_user_query:
+  cn: |
+    信息：
+    {user_query}
+    已有{user_name}属性：{exist_keys}
+    新增{user_name}属性：

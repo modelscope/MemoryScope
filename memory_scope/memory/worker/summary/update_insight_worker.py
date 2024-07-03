@@ -1,14 +1,10 @@
 from typing import List
 
-from memory_scope.utils.response_text_parser import ResponseTextParser
-from memory_scope.constants.common_constants import (
-    INSIGHT_NODES,
-    NEW_OBS_NODES
-)
-from memory_scope.utils.tool_functions import prompt_to_msg
-from memory_scope.scheme.memory_node import MemoryNode
+from memory_scope.constants.language_constants import COLON_WORD, NONE_WORD, REPEATED_WORD
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
-from memory_scope.constants.language_constants import COMMA_WORD, COLON_WORD, NONE_WORD, REPEATED_WORD
+from memory_scope.scheme.memory_node import MemoryNode
+from memory_scope.utils.response_text_parser import ResponseTextParser
+from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class UpdateInsightWorker(MemoryBaseWorker):

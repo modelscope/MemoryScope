@@ -1,8 +1,0 @@
-from ..enumeration.language_enum import LanguageEnum
-
-
-LONG_CONTRA_REPEAT_SYSTEM_PROMPT = {}
-
-LONG_CONTRA_REPEAT_FEW_SHOT_PROMPT = {}
-
-LONG_CONTRA_REPEAT_USER_QUERY_PROMPT = {}
