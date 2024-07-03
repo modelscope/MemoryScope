@@ -1,5 +1,5 @@
-# sudo docker build --network=host -t memoryscope .
-# sudo docker run -it --net=host memoryscope
+# 构建 sudo docker build --network=host -t memoryscope .
+# 运行 sudo docker run -it --rm --net=host memoryscope
 FROM python:3.11
 
 # 非必要步骤，更换pip源 （以下三行，可以删除）
