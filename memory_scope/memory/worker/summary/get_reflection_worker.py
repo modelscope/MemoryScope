@@ -8,31 +8,10 @@ from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.utils.datetime_handler import DatetimeHandler
 from memory_scope.utils.response_text_parser import ResponseTextParser
-from memory_scope.utils.timer import timer
 from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class GetReflectionWorker(MemoryBaseWorker):
-    @timer
-    def retrieve_not_reflected_memory(self, query: str) -> List[MemoryNode]:
-        filter_dict = {
-            "user_name": self.user_name,
-            "target_name": self.target_name,
-            "status": MemoryNodeStatus.ACTIVE.value,
-            "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
-            "obs_reflected": False,
-        }
-        return self.vector_store.retrieve(query=query, top_k=self.retrieve_not_reflected_top_k, filter_dict=filter_dict)
-
-    @timer
-    def retrieve_insight_memory(self, query: str) -> List[MemoryNode]:
-        filter_dict = {
-            "user_name": self.user_name,
-            "target_name": self.target_name,
-            "status": MemoryNodeStatus.ACTIVE.value,
-            "memory_type": MemoryTypeEnum.INSIGHT.value,
-        }
-        return self.vector_store.retrieve(query=query, top_k=self.retrieve_insight_top_k, filter_dict=filter_dict)
 
     def new_insight_node(self, insight_key: str) -> MemoryNode:
         dt_handler = DatetimeHandler()
@@ -46,29 +25,14 @@ class GetReflectionWorker(MemoryBaseWorker):
                           status=MemoryNodeStatus.ACTIVE.value)
 
     def _run(self):
-        not_reflected_nodes: List[MemoryNode] = []
-        insight_nodes: List[MemoryNode] = []
-
-        fn_list = [self.retrieve_not_reflected_memory, self.retrieve_insight_memory]
-        for nodes in self.async_run(fn_list=fn_list, query="_"):
-            if not nodes:
-                continue
-            for node in nodes:
-                if node.memory_type == MemoryTypeEnum.INSIGHT.value:
-                    insight_nodes.append(node)
-                else:
-                    not_reflected_nodes.append(node)
-
-        self.set_context(INSIGHT_NODES, insight_nodes)
+        not_reflected_nodes: List[MemoryNode] = self.get_context(NOT_REFLECTED_NODES)
+        insight_nodes: List[MemoryNode] = self.get_context(INSIGHT_NODES)
 
         # count
         not_reflected_count = len(not_reflected_nodes)
         if not_reflected_count <= self.reflect_obs_cnt_threshold:
             self.logger.info(f"not_reflected_count={not_reflected_count} is not enough, stop.")
             return
-
-        # save context
-        self.set_context(NOT_REFLECTED_NODES, not_reflected_nodes)
 
         # get profile_keys
         exist_keys: List[str] = [n.key for n in insight_nodes]
@@ -99,3 +63,6 @@ class GetReflectionWorker(MemoryBaseWorker):
         if new_insight_keys:
             for insight_key in new_insight_keys:
                 insight_nodes.append(self.new_insight_node(insight_key))
+
+        for node in not_reflected_nodes:
+            node.obs_reflected = True
