@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 from memory_scope.constants.common_constants import (
-    MODIFIED_MEMORIES, NOT_UPDATED_NODES,
+    NOT_UPDATED_NODES, MERGE_OBS_NODES,
 )
 from memory_scope.constants.language_constants import NONE_WORD, INCLUDED_WORD, CONTRADICTORY_WORD
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
@@ -55,54 +55,58 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         few_shot = self.prompt_handler.long_contra_repeat_few_shot.format(user_name=self.target_name)
         user_query = self.prompt_handler.long_contra_repeat_user_query.format(user_query="\n".join(user_query_list))
 
-        long_contra_repeat_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        long_contra_repeat_message = prompt_to_msg(system_prompt=system_prompt,
+                                                   few_shot=few_shot,
+                                                   user_query=user_query)
         self.logger.info(f"long_contra_repeat_message={long_contra_repeat_message}")
 
-        # call LLM
+        # call llm
         response = self.generation_model.call(messages=long_contra_repeat_message, top_k=self.generation_model_top_k)
 
         # return if empty
-        if not response:
+        if not response or not response.message.content:
             return
 
         # parse text
-        idx_merge_obs_list = ResponseTextParser(response.message.content).parse_v1("contra_repeat")
-        if len(idx_merge_obs_list) <= 0:
-            self.add_run_info("idx_merge_obs_list is empty!")
+        idx_obs_info_list = ResponseTextParser(response.message.content).parse_v1(self.__class__.__name__)
+        if len(idx_obs_info_list) <= 0:
+            self.logger.warning("idx_obs_info_list is empty!")
             return
 
         # add merged obs
         merge_obs_nodes: List[MemoryNode] = []
-        for obs_content_list in idx_merge_obs_list:
-            if not obs_content_list:
+        for idx_obs_info in idx_obs_info_list:
+            if not idx_obs_info:
                 continue
 
-            # [6, 逃课]
-            if len(obs_content_list) != 2:
-                self.logger.warning(f"obs_content_list={obs_content_list} is invalid!")
+            if len(idx_obs_info) != 3:
+                self.logger.warning(f"idx_obs_info={idx_obs_info} is invalid!")
                 continue
-
-            idx, keep_flag = obs_content_list
+            idx, status, content = idx_obs_info
 
             if not idx.isdigit():
                 self.logger.warning(f"idx={idx} is invalid!")
                 continue
 
-            # 序号需要修正-1
             idx = int(idx) - 1
             if idx >= len(all_obs_nodes):
                 self.logger.warning(f"idx={idx} is invalid!")
                 continue
 
-            if keep_flag not in self.get_language_value([CONTRADICTORY_WORD, INCLUDED_WORD, NONE_WORD]):
-                self.logger.warning(f"keep_flag={keep_flag} is invalid!")
+            if status not in self.get_language_value([CONTRADICTORY_WORD, INCLUDED_WORD, NONE_WORD]):
+                self.logger.warning(f"status={status} is invalid!")
                 continue
 
             node: MemoryNode = all_obs_nodes[idx]
-            if keep_flag != self.get_language_value(NONE_WORD):
+            if status == self.get_language_value(CONTRADICTORY_WORD):
+                if not content:
+                    node.status = MemoryNodeStatus.EXPIRED.value
+                else:
+                    node.content = content
+            elif status == self.get_language_value(INCLUDED_WORD):
                 node.status = MemoryNodeStatus.EXPIRED.value
             merge_obs_nodes.append(node)
-            self.logger.info(f"after contra repeat: {node.content} {node.status}")
+            self.logger.info(f"after_long_contra_repeat: {node.content} {node.status}")
 
         # save context
-        self.set_context(MODIFIED_MEMORIES, merge_obs_nodes)
+        self.set_context(MERGE_OBS_NODES, merge_obs_nodes)
