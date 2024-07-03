@@ -24,14 +24,19 @@ class BaseWorker(metaclass=ABCMeta):
         self.kwargs: dict = kwargs
 
         self.continue_run: bool = True
+        self.task_list: list = []
         self.logger: Logger = Logger.get_logger()
 
-    @staticmethod
-    def async_run(fn_list, *args, **kwargs):
-        async def async_gather():
-            return await asyncio.gather(*[fn(*args, **kwargs) for fn in fn_list])
+    def submit_async_task(self, fn, *args, **kwargs):
+        self.task_list.append((fn, args, kwargs))
 
-        return asyncio.run(async_gather())
+    def gather_async_result(self):
+        async def async_gather():
+            return await asyncio.gather(*[fn(*args, **kwargs) for fn, args, kwargs in self.task_list])
+
+        results = asyncio.run(async_gather())
+        self.task_list.clear()
+        return results
 
     @abstractmethod
     def _run(self):

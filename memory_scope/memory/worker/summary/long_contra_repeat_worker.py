@@ -1,87 +1,68 @@
-from typing import List
+from typing import List, Dict
 
-from memory_scope.utils.response_text_parser import ResponseTextParser
 from memory_scope.constants.common_constants import (
-    NEW_OBS_NODES,
-    MSG_TIME,
-    MODIFIED_MEMORIES,
+    MODIFIED_MEMORIES, NOT_UPDATED_NODES,
 )
+from memory_scope.constants.language_constants import NONE_WORD, INCLUDED_WORD, CONTRADICTORY_WORD
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
-from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
+from memory_scope.scheme.memory_node import MemoryNode
+from memory_scope.utils.response_text_parser import ResponseTextParser
 from memory_scope.utils.tool_functions import prompt_to_msg
-from memory_scope.constants.language_constants import NONE_WORD, INCLUDED_WORD, CONTRADICTORY_WORD
 
 
 class LongContraRepeatWorker(MemoryBaseWorker):
 
-    def _run(self):
-        # 合并当前的obs和今日的obs
-        new_obs_nodes: List[MemoryNode] = self.get_context(NEW_OBS_NODES)
-        all_obs_nodes: List[MemoryNode] = []
-        for new_obs_node in new_obs_nodes:
-            text = new_obs_node.content
-            related_nodes = self.vector_store.similar_search(
-                text=text,
-                size=self.es_contra_repeat_similar_top_k,
-                exact_filters={
-                    "user_name": self.user_name,
-                    "target_name": self.target_name,
-                    "status": MemoryNodeStatus.ACTIVE.value,
-                    "memory_type": [
-                        MemoryTypeEnum.OBSERVATION.value,
-                        MemoryTypeEnum.OBS_CUSTOMIZED.value,
-                    ],
-                },
-            )
+    async def retrieve_similar_content(self, node: MemoryNode) -> (MemoryNode, List[MemoryNode]):
+        filter_dict = {
+            "user_name": self.user_name,
+            "target_name": self.target_name,
+            "status": MemoryNodeStatus.ACTIVE.value,
+            "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value]
+        }
+        retrieve_nodes = await self.vector_store.async_retrieve(query=node.content,
+                                                                top_k=self.long_contra_repeat_top_k,
+                                                                filter_dict=filter_dict)
+        return node, [n for n in retrieve_nodes if n.score_similar >= self.long_contra_repeat_threshold]
 
-            has_match = False
-            for related_node in related_nodes:
-                if related_node.score_similar < self.long_contra_repeat_threshold:
+    def _run(self):
+        not_updated_nodes: List[MemoryNode] = self.get_context(NOT_UPDATED_NODES)
+        for node in not_updated_nodes:
+            self.submit_async_task(fn=self.retrieve_similar_content, node=node)
+
+        obs_node_dict: Dict[str, MemoryNode] = {}
+        for origin_node, retrieve_nodes in self.gather_async_result():
+            if not retrieve_nodes:
+                continue
+            obs_node_dict[origin_node.memory_id] = origin_node
+            for node in retrieve_nodes:
+                if node.memory_id in obs_node_dict:
                     continue
-                else:
-                    has_match = True
-                    all_obs_nodes.append(related_node)
-            if has_match:
-                all_obs_nodes.append(new_obs_node)
+                obs_node_dict[node.memory_id] = node
+        all_obs_nodes: List[MemoryNode] = sorted(obs_node_dict.values(), key=lambda x: x.timestamp, reverse=True)
 
         if not all_obs_nodes:
-            self.add_run_info("all_obs_nodes is empty!")
+            self.logger.warning("all_obs_nodes is empty, stop.")
             return
 
         # gene prompt
         user_query_list = []
-        all_obs_nodes = sorted(
-            all_obs_nodes,
-            key=lambda x: x.meta_data.get(MSG_TIME, ""),
-            reverse=True,
-        )
         for i, n in enumerate(all_obs_nodes):
             user_query_list.append(f"{i + 1} {n.content}")
-        merge_obs_message = prompt_to_msg(
-            system_prompt=self.prompt_handler.system_prompt.format(
-                num_obs=len(user_query_list)
-            ),
-            few_shot=self.prompt_handler.few_shot_prompt,
-            user_query=self.prompt_handler.user_query_prompt.format(
-                user_query="\n".join(user_query_list)
-            ),
-        )
-        self.logger.info(f"merge_obs_message={merge_obs_message}")
+        system_prompt = self.prompt_handler.long_contra_repeat_system.format(num_obs=len(user_query_list),
+                                                                             user_name=self.target_name)
+        few_shot = self.prompt_handler.long_contra_repeat_few_shot.format(user_name=self.target_name)
+        user_query = self.prompt_handler.long_contra_repeat_user_query.format(user_query="\n".join(user_query_list))
+
+        long_contra_repeat_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        self.logger.info(f"long_contra_repeat_message={long_contra_repeat_message}")
 
         # call LLM
-        response = self.generation_model.call(
-            messages=merge_obs_message,
-            model_name=self.merge_obs_model,
-            max_token=self.merge_obs_max_token,
-            temperature=self.merge_obs_temperature,
-            top_k=self.merge_obs_top_k,
-        )
+        response = self.generation_model.call(messages=long_contra_repeat_message, top_k=self.generation_model_top_k)
 
         # return if empty
         if not response:
-            self.add_run_info("contra repeat call llm failed!")
             return
 
         # parse text

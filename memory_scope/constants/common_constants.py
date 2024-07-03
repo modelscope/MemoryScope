@@ -22,6 +22,8 @@ DEFAULT_SYSTEM_PROMPT = "default_system_prompt"
 
 NOT_REFLECTED_NODES = "not_reflected_nodes"
 
+NOT_UPDATED_NODES = "not_updated_nodes"
+
 
 MODIFIED_MEMORIES = "modified_memories"
 
