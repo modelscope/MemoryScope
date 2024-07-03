@@ -47,7 +47,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
                                                        top_k=self.retrieve_profiles_top_k,
                                                        filter_dict=filter_dict)
         nodes: List[MemoryNode] = []
-        human_profile_setting = G_CONTEXT.meta_data.get("human_profile_setting", [])
+        human_profile_setting = G_CONTEXT.meta_data.get("human_profile_setting", {})
         for attr_key in human_profile_setting:
 
 
