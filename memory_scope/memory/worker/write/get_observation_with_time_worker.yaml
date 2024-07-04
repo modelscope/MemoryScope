@@ -4,7 +4,7 @@ time_string_format:
 
 get_observation_with_time_system:
   cn: |
-    任务：从下面的{num_obs}句{user_name}句子中依次提取出关于{user_name}的重要信息，相应的关键词与时间信息。
+    任务指令：从下面的{num_obs}句{user_name}句子中依次提取出关于{user_name}的重要信息，相应的关键词与时间信息。
     每一句{user_name}句子的格式是：<序号> <对话时间> {user_name}：<句子>
     对每一句句子，只提取非常明确的信息和进行非常确定的推断，不要进行任何猜测。不要提取重复的信息，如果句子中的所有信息与已经提取出的信息重复了则回答“重复“，如果没有重要信息则回答“无”。
     如果{user_name}信息涉及时间，则结合对话时间推断{user_name}信息的时间信息，没有则不输出。注意区分，对于句子中包含{user_name}假设的信息或者{user_name}虚构的内容比如{user_name}创作的小说或剧本，不要提取信息。
@@ -12,6 +12,16 @@ get_observation_with_time_system:
     请一步步思考，并一定要按如下格式依次输出，最后的结果一定要加<>:
     思考：思考的依据和过程，50字以内。
     信息：<句子序号> <时间信息或“无”> <明确的重要信息或“重复”或”无“> <关键词>
+
+  en: |
+    Instruction: Extract important information about {user_name}, corresponding keywords, and time information from the following {num_obs} sentences by {user_name}, one by one.
+    Each sentence from {user_name} is formatted as: <sentence number> <conversation time> {user_name}: <sentence>
+    For each sentence, only extract very clear information and make very certain inferences without any speculation. Do not extract repeated information. If all information in the sentence repeats what has already been extracted, respond with "repeat." If there is no important information, respond with "none."
+    If the information about {user_name} involves time, combine it with the conversation time to infer the time information of {user_name}'s information; if not, do not output time information. Be sure to distinguish information; for example, do not extract hypothetical or fictional content from {user_name} such as {user_name}'s novels or scripts.
+    Perform information extraction for each sentence, resulting in a total of {num_obs} pieces of information.
+    Please think step by step, and be sure to output in the following format, with the final output enclosed in <>:
+    Thought: The basis and process of the thought, within 50 words.
+    Information: <sentence number> <Time information or "none"> <Clear important information or "repeat" or "none"> <keywords>
 
 
 get_observation_with_time_few_shot:
@@ -62,7 +72,6 @@ get_observation_with_time_few_shot:
     4 2023年5月21日周六14点 {user_name}：有人说兴趣是最好的老师，也建议兴趣和职业联系起来，但我发现喜欢打篮球的人很多，但靠打篮球成职业的稀少，赚钱的更少，此外，怎么分辨兴趣和喜欢
     5 2018年3月6日周四19点 {user_name}：李增杰:这个是星座蛙设，但是我是处女座的，我妈感觉因为我的不正常，我妈不让我看了\n雌猴摸了摸李增杰的头，这样啊\n雌猴打开了哔哩哔哩看了看\n雌猴:要不换个设吧，我听你未来的你说，有一个叫难忘的朱古力232这个人，他弄的设是Windows设\n这是剧本1，剧本2未完待续
     
-    
     思考：从第1句可以得知{user_name}和家人上个月去杭州旅游了，这是关于{user_name}的经历的重要信息。其余信息重要性不足。{user_name}信息涉及时间，结合对话时间为2023年6月推断{user_name}和家人2023年5月去杭州旅游了。
     信息：<1> <2023年5月> <{user_name}和家人2023年5月去杭州旅游了。> <家人, 杭州, 旅游>
     思考：从第2句可以得知{user_name}的生日是昨天，这是关于{user_name}重要纪念日的信息。其余信息重要性不足。{user_name}信息涉及时间，结合对话时间为2023年7月2日，
@@ -75,9 +84,70 @@ get_observation_with_time_few_shot:
     思考：第5句是{user_name}创作的剧本内容，无法提取{user_name}个人信息。
     信息：<5> <> <无> <>
 
+  en: |
+    Example 1:
+    {user_name} sentences:
+    1 May 1, 2022, Tuesday, 3 PM {user_name}: Please help me write a birthday greeting for my colleague Jason's daughter who is turning three.
+    2 May 2, 2022, Tuesday, 5 PM {user_name}: Chronology of major events in Chinese history from 1400 to 1550 AD.
+    3 May 3, 2022, Tuesday, 6 PM {user_name}: Can you compile a list of tips on how to use large models for me, and try to keep the content concise?
+    4 July 3, 2022, Thursday, 12 PM {user_name}: I got a swimming pass two months ago.
+    
+    Thought: From the first sentence, it can be inferred that Jason is {user_name}'s colleague, which is important information about {user_name}'s interpersonal relationships. The remaining information is of insufficient importance. {user_name}'s information does not involve time.
+    Information: <1> <> <Zhang San is {user_name}'s colleague> <Zhang San, colleague>
+    Thought: The second sentence is a request made by {user_name}, with no clear mention of {user_name}'s personal information.
+    Information: <2> <> <none> <>
+    Thought: The third sentence is a request made by {user_name}, with no clear mention of {user_name}'s personal information.
+    Information: <3> <> <none> <>
+    Thought: From the fourth sentence, it can be inferred that {user_name} got a swimming pass two months ago. {user_name}'s information involves time. Combining it with the conversation time of July 2022, it can be inferred that {user_name} got the swimming pass in May 2022.
+    Information: <4> <May 2022> <{user_name} got a swimming pass in May 2022> <swimming pass>
+    
+    
+    Example 2:
+    {user_name} sentences:
+    1 January 4, 2020, Sunday, 10 AM {user_name}: I spent $5000 to buy 100 shares of General Motors.
+    2 April 27, 2023, Friday, 8 AM {user_name}: Tomorrow is my wedding anniversary with my wife. Could you recommend a restaurant?
+    3 January 4, 2020, Sunday, 10 AM {user_name}: I spent $5000 to buy 100 shares of General Motors.
+    4 June 2, 2021, Thursday, 11 PM {user_name}: Thanks. I'm having lunch near the company at noon; can you recommend a restaurant near Alibaba Xuhui Riverside Campus for me?
+    5 July 9, 2021, Saturday, 11 AM {user_name}: Two pieces of bad news: I broke my badminton racket while playing... Then I went to my friend's house to pet the cat and ended up having an allergic reaction to the cat fur, sneezing like crazy today...
+    
+    Thought: From the first sentence, it can be inferred that {user_name} bought 100 shares of General Motors stock for $5000. This is important information about {user_name}'s investment decision. {user_name}'s information does not involve time.
+    Information: <1> <> <{user_name} bought 100 shares of General Motors stock for $5000> <General Motors, stock>
+    Thought: From the second sentence, it can be inferred that {user_name}'s wedding anniversary with his wife is tomorrow, which is important information about {user_name}'s significant dates. The remaining information is of insufficient importance. {user_name}'s information involves time. Combining it with the conversation date of April 27, 2023, and knowing that the anniversary is a recurring date, it can be inferred that {user_name}'s wedding anniversary is on April 28th each year.
+    Information: <2> <April 28 each year> <{user_name}'s wedding anniversary with his wife is on April 28 each year> <wife, wedding anniversary>
+    Thought: The information in the third sentence is a repeat of the first sentence.
+    Information: <3> <> <repeat> <>
+    Thought: From the fourth sentence, it can be inferred that {user_name} works at Alibaba Xuhui Riverside Campus, which is important information about {user_name}'s job. The remaining information is of insufficient importance. {user_name}'s information does not involve time.
+    Information: <4> <> <{user_name} works at Alibaba Xuhui Riverside Campus> <Alibaba, Xuhui Riverside Campus, job>
+    Thought: From the fifth sentence, it can be inferred that {user_name} broke their badminton racket the other day while playing, but this is not important information. It can also be inferred that {user_name} is allergic to cat fur, which is important information about {user_name}'s health. {user_name}'s information does not involve time.
+    Information: <5> <> <{user_name} is allergic to cat fur> <cat fur, allergy>
+    
+    
+    Example 3:
+    {user_name} sentences:
+    1 June 30, 2023, Friday, 3 PM {user_name}: Last month, my family and I went to San Jose for a trip. The scenery was very nice.
+    2 July 2, 2023, Tuesday, 10 AM {user_name}: Yesterday was my birthday. I spent it alone.
+    3 July 3, 2020, Thursday, 11 AM {user_name}: Remind me to go for a medical check-up next Monday.
+    4 May 21, 2023, Saturday, 2 PM {user_name}: Someone said that passion is the best teacher and suggested linking passion with a career, but I found that many people like playing basketball, but few make a career out of it, and even fewer make money from it. Also, how do you distinguish passion from liking?
+    5 March 6, 2018, Thursday, 7 PM {user_name}: Zack: This is a constellation frog setting, but I am a Virgo. My mom feels I am abnormal and doesn't let me watch it. \n The female monkey patted Zack's head, "Is that so?" \n The female monkey opened Bilibili and took a look. \n Female monkey: "Why don't you switch the setting? I heard from your future self that there's someone called 'Unforgettable Chocolate 232' who created a Windows setting." \n This is script 1; script 2 is to be continued.
+
+    Thought: From the first sentence, it can be inferred that {user_name} and their family went to San Jose for a trip last month. This is important information about {user_name}'s experience. The remaining information is of insufficient importance. {user_name}'s information involves time. Combining it with the conversation time of June 2023, it can be inferred that {user_name} and their family went to San Jose for a trip in May 2023.
+    Information: <1> <May 2023> <{user_name} and their family went to San Jose for a trip in May 2023> <family, San Jose, trip>
+    Thought: From the second sentence, it can be inferred that {user_name}'s birthday was yesterday. This is important information about {user_name}'s significant dates. The remaining information is of insufficient importance. {user_name}'s information involves time. Combining it with the conversation time of July 2, 2023, and knowing that the birthday is a recurring date, it can be inferred that {user_name}'s birthday is on July 2 each year.
+    Information: <2> <July 2 each year> <{user_name}'s birthday is on July 2 each year> <birthday>
+    Thought: From the third sentence, it can be inferred that {user_name} will go for a medical check-up next Monday, which is an important reminder for {user_name}. {user_name}'s information involves time. Combining it with the conversation time of July 3, 2020, Thursday, it can be inferred that {user_name} will go for a check-up on July 6, 2020, Monday.
+    Information: <3> <July 6, 2020, Monday> <{user_name} will go for a medical check-up on July 6, 2020, Monday> <medical check-up>
+    Thought: The fourth sentence is a discussion and query about other people's opinions by {user_name}, with no clear mention of {user_name}'s personal information.
+    Information: <4> <> <none> <>
+    Thought: The fifth sentence is content from a script written by {user_name}, with no extractable personal information about {user_name}.
+    Information: <5> <> <none> <>
+
 
 get_observation_with_time_user_query:
   cn: |
     {user_name}句子：
+    {user_query}
+
+  en: |
+    {user_name} sentences：
     {user_query}
 

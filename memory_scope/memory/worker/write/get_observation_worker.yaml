@@ -13,7 +13,7 @@ get_observation_system:
     Perform information extraction for each sentence, resulting in a total of {num_obs} pieces of information.
     Please output the results in the following format, with the final output enclosed in <>:
     Thought: The basis and process of the thought, within 50 words.
-    Information: <> <Clear important information or “Repeat” or “None”> <keywords>
+    Information: <sentence number> <> <Clear important information or “Repeat” or “None”> <keywords>
 
 
 get_observation_few_shot:

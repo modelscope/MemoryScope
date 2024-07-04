@@ -67,6 +67,90 @@ class DatetimeHandler(object):
         return extracted_data
 
     @classmethod
+    def extract_date_parts_en(cls, input_string: str) -> dict:
+        date_info = {
+            "year": -1,
+            "month": -1,
+            "day": -1,
+            "hour": -1,
+            "minute": -1,
+            "second": -1,
+            "weekday": -1
+        }
+
+        # Patterns to extract the parts of the date/time
+        # Patterns to extract the parts of the date/time
+        patterns = {
+            "year": r"\b(\d{4})\b",
+            "month": r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\b",
+            "day_month_year": r"\b(?P<month>January|February|March|April|May|June|July|August|September|October|November|December) (?P<day>\d{1,2}),? (?P<year>\d{4})\b",
+            "day_month": r"\b(?P<month>January|February|March|April|May|June|July|August|September|October|November|December) (?P<day>\d{1,2})\b",
+            "hour_12": r"\b(\d{1,2})\s*(AM|PM|am|pm)\b",
+            "hour_24": r"\b(\d{1,2}):(\d{2}):(\d{2})\b"
+        }
+
+        month_mapping = {
+            "January": 1, "February": 2, "March": 3, "April": 4,
+            "May": 5, "June": 6, "July": 7, "August": 8,
+            "September": 9, "October": 10, "November": 11, "December": 12
+        }
+
+        weekday_mapping = {
+            "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4,
+            "Friday": 5, "Saturday": 6, "Sunday": 7
+        }
+
+        day_month_year_match = re.search(patterns["day_month_year"], input_string)
+        if day_month_year_match:
+            date_info["year"] = int(day_month_year_match.group("year"))
+            date_info["month"] = month_mapping[day_month_year_match.group("month")]
+            date_info["day"] = int(day_month_year_match.group("day"))
+
+        # Extract month and day without year
+        elif date_info["year"] == -1:
+            day_month_match = re.search(patterns["day_month"], input_string)
+            if day_month_match:
+                date_info["month"] = month_mapping[day_month_match.group("month")]
+                date_info["day"] = int(day_month_match.group("day"))
+
+        # Extract year
+        if date_info["year"] == -1:
+            year_match = re.search(patterns["year"], input_string)
+            if year_match:
+                date_info["year"] = int(year_match.group(0))
+
+        # Extract month
+        if date_info["month"] == -1:
+            month_match = re.search(patterns["month"], input_string)
+            if month_match:
+                date_info["month"] = month_mapping[month_match.group(0)]
+
+        # Extract 12-hour format time
+        hour_12_match = re.search(patterns["hour_12"], input_string)
+        if hour_12_match:
+            hour, period = int(hour_12_match.group(1)), hour_12_match.group(2).lower()
+            if period == 'pm' and hour != 12:
+                hour += 12
+            elif period == 'am' and hour == 12:
+                hour = 0
+            date_info["hour"] = hour
+
+        # # Extract 24-hour format time
+        # hour_24_match = re.search(patterns["hour_24"], input_string)
+        # if hour_24_match:
+        #     date_info["hour"] = int(hour_24_match.group(1))
+        #     date_info["minute"] = int(hour_24_match.group(2))
+        #     date_info["second"] = int(hour_24_match.group(3))
+
+        # Extract weekday
+        for week_day, value in weekday_mapping.items():
+            if week_day in input_string:
+                date_info["weekday"] = value
+                break
+
+        return date_info
+
+    @classmethod
     def extract_date_parts(cls, input_string: str) -> dict:
         func_name = f"extract_date_parts_{G_CONTEXT.language}"
         if not hasattr(cls, func_name):
