@@ -11,7 +11,7 @@ from memory_scope.utils.response_text_parser import ResponseTextParser
 from memory_scope.utils.tool_functions import prompt_to_msg
 
 
-class GetReflectionWorker(MemoryBaseWorker):
+class GetReflectionSubjectWorker(MemoryBaseWorker):
 
     def new_insight_node(self, insight_key: str) -> MemoryNode:
         dt_handler = DatetimeHandler()
@@ -40,10 +40,11 @@ class GetReflectionWorker(MemoryBaseWorker):
 
         # gen reflect prompt
         user_query_list = [n.content for n in not_reflected_nodes]
-        system_prompt = self.prompt_handler.get_reflection_system.format(user_name=self.target_name,
-                                                                      num_questions=self.reflect_num_questions)
-        few_shot = self.prompt_handler.get_reflection_few_shot.format(user_name=self.target_name)
-        user_query = self.prompt_handler.get_reflection_user_query.format(
+        system_prompt = self.prompt_handler.get_reflection_subject_system.format(
+            user_name=self.target_name,
+            num_questions=self.reflect_num_questions)
+        few_shot = self.prompt_handler.get_reflection_subject_few_shot.format(user_name=self.target_name)
+        user_query = self.prompt_handler.get_reflection_subject_user_query.format(
             user_name=self.target_name,
             exist_keys=self.get_language_value(COMMA_WORD).join(exist_keys),
             user_query="\n".join(user_query_list))
