@@ -84,6 +84,7 @@ class LlamaIndexElasticSearchStore(BaseVectorStore):
                                             **kwargs)
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                         embed_model=self.embedding_model.model)
+        self.index.build_index_from_nodes([TextNode()])
         self.logger = Logger.get_logger()
 
     def retrieve(self,
@@ -106,7 +107,6 @@ class LlamaIndexElasticSearchStore(BaseVectorStore):
 
         if filter_dict is None:
             filter_dict = {}
-
         es_filter = _to_elasticsearch_filter(filter_dict)
         retriever = self.index.as_retriever(
             vector_store_kwargs={"es_filter": es_filter},

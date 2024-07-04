@@ -40,10 +40,10 @@ class GetReflectionWorker(MemoryBaseWorker):
 
         # gen reflect prompt
         user_query_list = [n.content for n in not_reflected_nodes]
-        system_prompt = self.prompt_handler.get_reflect_system.format(user_name=self.target_name,
+        system_prompt = self.prompt_handler.get_reflection_system.format(user_name=self.target_name,
                                                                       num_questions=self.reflect_num_questions)
-        few_shot = self.prompt_handler.get_reflect_few_shot.format(user_name=self.target_name)
-        user_query = self.prompt_handler.get_reflect_user_query.format(
+        few_shot = self.prompt_handler.get_reflection_few_shot.format(user_name=self.target_name)
+        user_query = self.prompt_handler.get_reflection_user_query.format(
             user_name=self.target_name,
             exist_keys=self.get_language_value(COMMA_WORD).join(exist_keys),
             user_query="\n".join(user_query_list))

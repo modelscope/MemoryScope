@@ -1,4 +1,4 @@
-get_reflect_system:
+get_reflection_system:
   cn: |
     任务：从下面的信息中提取出最重要的最多{num_questions}条{user_name}属性，要求不与已有的{user_name}属性语义重复。
     要求1：{user_name}属性可以是一般的{user_name}偏好，也可以是运动偏好，旅游偏好，饮食偏好等等，也可以是重要事件性质，比如最近重要的事情，也可以是一些高度概括的人生理想，价值观，人生观，性格， 也可以是和朋友的人际关系等等。
@@ -6,7 +6,7 @@ get_reflect_system:
     输出格式：每一行输出一个{user_name}属性，每个{user_name}属性推荐4个字，如果没有信息请回答无，最多输出{num_questions}条。
 
 
-get_reflect_few_shot:
+get_reflection_few_shot:
   cn: |
     示例1
     信息：
@@ -85,7 +85,7 @@ get_reflect_few_shot:
     新增{user_name}属性：
     无
 
-get_reflect_user_query:
+get_reflection_user_query:
   cn: |
     信息：
     {user_query}
