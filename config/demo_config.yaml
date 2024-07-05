@@ -16,8 +16,7 @@ memory_service:
     read_memory_key: read_memory
     memory_operations:
       read_message:
-        class: memory.operation.read_memory
-        workflow: dummy_worker
+        class: memory.operation.read_message
         description: "read session messages of the user"
       read_memory:
         class: memory.operation.read_memory
@@ -25,7 +24,7 @@ memory_service:
         description: "read related memories of the user"
       list_memory:
         class: memory.operation.read_memory
-        workflow: set_query_worker,retrieve_store_worker,
+        workflow: set_query_worker,retrieve_store_worker,print_memory_worker
         description: "read all memories of the user"
       write_memory:
         class: memory.operation.write_memory

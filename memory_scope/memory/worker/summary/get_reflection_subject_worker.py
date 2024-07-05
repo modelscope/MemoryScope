@@ -60,7 +60,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
             return
 
         # parse text & save
-        new_insight_keys = ResponseTextParser(response.message.content).parse_v2("get_reflection")
+        new_insight_keys = ResponseTextParser(response.message.content).parse_v2(self.__class__.__name__)
         if new_insight_keys:
             for insight_key in new_insight_keys:
                 insight_nodes.append(self.new_insight_node(insight_key))

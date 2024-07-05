@@ -50,7 +50,7 @@ def init_instance_by_config(config: dict,
         **kwargs: Additional keyword arguments to pass to the class constructor.
 
     Returns:
-        object: An instance of the class initialized with the provided config and kwargs.
+        instance: An instance of the class initialized with the provided config and kwargs.
     """
 
     config_copy = deepcopy(config)
