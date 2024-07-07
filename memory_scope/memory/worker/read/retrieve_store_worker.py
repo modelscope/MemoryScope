@@ -45,4 +45,4 @@ class RetrieveStoreWorker(MemoryBaseWorker):
         memory_node_list = sorted(memory_node_list, key=lambda x: x.score_similar, reverse=True)
         for node in memory_node_list:
             self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} type={node.memory_type}")
-        self.set_context(RETRIEVE_MEMORY_NODES, memory_node_list)
+        self.set_memories(RETRIEVE_MEMORY_NODES, memory_node_list)

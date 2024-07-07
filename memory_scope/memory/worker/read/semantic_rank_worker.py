@@ -10,7 +10,7 @@ class SemanticRankWorker(MemoryBaseWorker):
     def _run(self):
         # query
         query, _ = self.get_context(QUERY_WITH_TS)
-        memory_node_list: List[MemoryNode] = self.get_context(RETRIEVE_MEMORY_NODES)
+        memory_node_list: List[MemoryNode] = self.get_memories(RETRIEVE_MEMORY_NODES)
         if not memory_node_list:
             self.logger.warning(f"retrieve memory nodes is empty!")
             return
@@ -33,4 +33,4 @@ class SemanticRankWorker(MemoryBaseWorker):
         memory_node_list = sorted(memory_node_list, key=lambda n: n.score_rank, reverse=True)
         for node in memory_node_list:
             self.logger.info(f"rank_stage: content={node.content} score={node.score_rank}")
-        self.get_context(RANKED_MEMORY_NODES, memory_node_list)
+        self.set_memories(RANKED_MEMORY_NODES, memory_node_list)

@@ -10,7 +10,7 @@ from memory_scope.utils.datetime_handler import DatetimeHandler
 class PrintMemoryWorker(MemoryBaseWorker):
 
     def _run(self):
-        memory_node_list: List[MemoryNode] = self.get_context(RETRIEVE_MEMORY_NODES)
+        memory_node_list: List[MemoryNode] = self.get_memories(RETRIEVE_MEMORY_NODES)
         memory_node_list = sorted(memory_node_list, key=lambda x: x.timestamp, reverse=True)
 
         obs_content_list: List[str] = []
@@ -29,13 +29,20 @@ class PrintMemoryWorker(MemoryBaseWorker):
 
         obs_content = "\n".join(obs_content_list)
         insight_content = "\n".join(insight_content_list)
+        expired_content = "\n".join()
         result: str = f"""
 The memories of {self.user_name} about {self.target_name}.
 
-observation:
+----- observation -----
 {obs_content}
+----- observation -----
 
-insight:
+----- insight -----
 {insight_content}
+----- insight -----
+
+----- expired -----
+{expired_content}
+----- expired -----
         """.strip()
         self.set_context(RESULT, result)
