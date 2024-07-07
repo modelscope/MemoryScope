@@ -15,7 +15,7 @@ class EsSimilarWorker(MemoryBaseWorker):
 
     def _run(self):
         query = self.messages[-1].content
-        similar_obs_nodes = self.vector_store.retrieve(
+        similar_obs_nodes = self.vector_store.retrieve_memories(
             text=query,
             size=self.es_similar_top_k,
             filter_dict={

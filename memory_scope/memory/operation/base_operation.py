@@ -10,6 +10,7 @@ class BaseOperation(metaclass=ABCMeta):
     def __init__(self, name: str, description: str = "", **kwargs):
         self.name: str = name
         self.description: str = description
+        self.kwargs: dict = kwargs
 
     def init_workflow(self):
         pass

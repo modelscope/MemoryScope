@@ -18,7 +18,7 @@ class EsTodayObsWorker(MemoryBaseWorker):
             self.logger.warning("messages is empty!")
             return
         msg_time_created = self.messages[-1].time_created
-        today_obs_nodes = self.vector_store.retrieve(
+        today_obs_nodes = self.vector_store.retrieve_memories(
             size=self.es_today_obs_top_k,
             filter_dict={
                 "memory_id": self.memory_id,

@@ -21,9 +21,9 @@ class LongContraRepeatWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value]
         }
-        retrieve_nodes = await self.vector_store.async_retrieve(query=node.content,
-                                                                top_k=self.long_contra_repeat_top_k,
-                                                                filter_dict=filter_dict)
+        retrieve_nodes = await self.memory_store.a_retrieve_memories(query=node.content,
+                                                                     top_k=self.long_contra_repeat_top_k,
+                                                                     filter_dict=filter_dict)
         return node, [n for n in retrieve_nodes if n.score_similar >= self.long_contra_repeat_threshold]
 
     def _run(self):

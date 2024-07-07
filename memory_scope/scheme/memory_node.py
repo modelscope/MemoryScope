@@ -1,13 +1,12 @@
 import datetime
 from typing import Dict, List
+from uuid import uuid4
 
 from pydantic import Field, BaseModel
 
-from memory_scope.utils.tool_functions import md5_hash
-
 
 class MemoryNode(BaseModel):
-    memory_id: str = Field("", description="unique id for memory")
+    memory_id: str = Field(uuid4(), description="unique id for memory")
 
     user_name: str = Field("", description="the user who owns the memory")
 
@@ -43,7 +42,6 @@ class MemoryNode(BaseModel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.memory_id = f"{self.user_name}_{self.target_name}_{self.timestamp}_{md5_hash(self.content)[:8]}"
         self.dt = datetime.datetime.fromtimestamp(self.timestamp).strftime("%Y%m%d")
 
     @property
@@ -52,4 +50,3 @@ class MemoryNode(BaseModel):
 
     def __getitem__(self, key: str):
         return self.model_dump().get(key)
-

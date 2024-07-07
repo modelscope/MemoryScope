@@ -4,9 +4,10 @@ from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import TextNode, NodeWithScore
 from llama_index.vector_stores.elasticsearch import ElasticsearchStore, AsyncDenseVectorStrategy
 
+from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.memory_node import MemoryNode
-from memory_scope.storage.base_vector_store import BaseVectorStore
+from memory_scope.storage.base_memory_store import BaseMemoryStore
 from memory_scope.utils.logger import Logger
 
 
@@ -69,7 +70,7 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
     return result
 
 
-class LlamaIndexElasticSearchStore(BaseVectorStore):
+class LlamaIndexEsMemoryStore(BaseMemoryStore):
     def __init__(self,
                  embedding_model: BaseModel,
                  index_name: str,
@@ -87,10 +88,10 @@ class LlamaIndexElasticSearchStore(BaseVectorStore):
         self.index.build_index_from_nodes([TextNode(text="text")])
         self.logger = Logger.get_logger()
 
-    def retrieve(self,
-                 query: str,
-                 top_k: int,
-                 filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
+    def retrieve_memories(self,
+                          query: str,
+                          top_k: int,
+                          filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
         if filter_dict is None:
             filter_dict = {}
 
@@ -99,10 +100,10 @@ class LlamaIndexElasticSearchStore(BaseVectorStore):
         text_nodes = retriever.retrieve(query)
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
-    async def async_retrieve(self,
-                             query: str,
-                             top_k: int,
-                             filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
+    async def a_retrieve_memories(self,
+                                  query: str,
+                                  top_k: int,
+                                  filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
         self.logger.info(f"query={query} top_k={top_k} filter_dict={filter_dict}")
 
         if filter_dict is None:
@@ -131,6 +132,44 @@ class LlamaIndexElasticSearchStore(BaseVectorStore):
 
     def close(self):
         self.es_store.close()
+
+    def update_memories(self, nodes: MemoryNode | List[MemoryNode]):
+        if isinstance(nodes, MemoryNode):
+            nodes = [nodes]
+
+        # emb & insert new memories
+        # TODO batch insert
+        new_memories = [n for n in nodes if n.status == MemoryNodeStatus.NEW]
+        if new_memories:
+            for n in new_memories:
+                n.status = MemoryNodeStatus.ACTIVE.value
+                self.insert(n)
+
+        # emb & update new memories
+        # TODO insert overwrite
+        c_modified_memories = [n for n in nodes if n.status == MemoryNodeStatus.CONTENT_MODIFIED]
+        if c_modified_memories:
+            for n in c_modified_memories:
+                n.status = MemoryNodeStatus.ACTIVE.value
+                self.delete(n)
+                self.insert(n)
+
+        # update new memories
+        # TODO no emb
+        modified_memories = [n for n in nodes if n.status == MemoryNodeStatus.MODIFIED]
+        if modified_memories:
+            for n in modified_memories:
+                n.status = MemoryNodeStatus.ACTIVE.value
+                self.delete(n)
+                self.insert(n)
+
+        # set memories expired
+        expired_memories = [n for n in nodes if n.status == MemoryNodeStatus.EXPIRED]
+        if expired_memories:
+            for n in expired_memories:
+                n.status = MemoryNodeStatus.ACTIVE.value
+                self.delete(n)
+                self.insert(n)
 
     @staticmethod
     def _memory_node_2_text_node(memory_node: MemoryNode) -> TextNode:

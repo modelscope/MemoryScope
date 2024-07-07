@@ -19,9 +19,9 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "obs_reflected": False,
         }
-        nodes: List[MemoryNode] = await self.vector_store.async_retrieve(query=query,
-                                                                         top_k=self.retrieve_not_reflected_top_k,
-                                                                         filter_dict=filter_dict)
+        nodes: List[MemoryNode] = await self.memory_store.a_retrieve_memories(query=query,
+                                                                              top_k=self.retrieve_not_reflected_top_k,
+                                                                              filter_dict=filter_dict)
         self.set_context(NOT_REFLECTED_NODES, nodes)
 
     @timer
@@ -33,9 +33,9 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "obs_updated": False,
         }
-        nodes: List[MemoryNode] = await self.vector_store.async_retrieve(query=query,
-                                                                         top_k=self.retrieve_not_updated_top_k,
-                                                                         filter_dict=filter_dict)
+        nodes: List[MemoryNode] = await self.memory_store.a_retrieve_memories(query=query,
+                                                                              top_k=self.retrieve_not_updated_top_k,
+                                                                              filter_dict=filter_dict)
         self.set_context(NOT_UPDATED_NODES, nodes)
 
     @timer
@@ -46,9 +46,9 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
-        nodes: List[MemoryNode] = await self.vector_store.async_retrieve(query=query,
-                                                                         top_k=self.retrieve_insight_top_k,
-                                                                         filter_dict=filter_dict)
+        nodes: List[MemoryNode] = await self.memory_store.a_retrieve_memories(query=query,
+                                                                              top_k=self.retrieve_insight_top_k,
+                                                                              filter_dict=filter_dict)
         self.set_context(INSIGHT_NODES, nodes)
 
     async def _run(self):

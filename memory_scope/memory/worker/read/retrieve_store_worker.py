@@ -16,9 +16,9 @@ class RetrieveStoreWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
-        return await self.vector_store.async_retrieve(query=query,
-                                                      top_k=self.retrieve_obs_top_k,
-                                                      filter_dict=filter_dict)
+        return await self.memory_store.a_retrieve_memories(query=query,
+                                                           top_k=self.retrieve_obs_top_k,
+                                                           filter_dict=filter_dict)
 
     async def retrieve_from_insight_and_profile(self, query: str) -> List[MemoryNode]:
         filter_dict = {
@@ -27,9 +27,9 @@ class RetrieveStoreWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
-        return await self.vector_store.async_retrieve(query=query,
-                                                      top_k=self.retrieve_ins_pf_top_k,
-                                                      filter_dict=filter_dict)
+        return await self.memory_store.a_retrieve_memories(query=query,
+                                                           top_k=self.retrieve_ins_pf_top_k,
+                                                           filter_dict=filter_dict)
 
     def _run(self):
         query, _ = self.get_context(QUERY_WITH_TS)

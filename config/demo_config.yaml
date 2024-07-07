@@ -28,12 +28,12 @@ memory_service:
         description: "read all memories of the user"
       write_memory:
         class: memory.operation.write_memory
-        workflow: dummy_worker
+        workflow: info_filter_worker,[get_observation_worker|get_observation_with_time_worker],contra_repeat_worker,store_memory_worker
         description: "write observation memories of the user"
         interval_time: 60
       summary_memory:
         class: memory.operation.summary_memory
-        workflow: dummy_worker
+        workflow: load_memory_worker,get_reflection_subject_worker,update_insight_worker,long_contra_repeat_worker,summary_collect_worker
         description: "summary observation memories of the user"
         interval_time: 300
 worker:
@@ -44,13 +44,13 @@ worker:
     rank_model: dashscope_rank
   set_query_worker:
     class: memory.worker.read.set_query_worker
-  extract_time_worker:
-    class: memory.worker.read.extract_time_worker
-    generation_model_top_k: 1
   retrieve_store_worker:
     class: memory.worker.read.retrieve_store_worker
     retrieve_obs_top_k: 100
     retrieve_ins_pf_top_k: 100
+  extract_time_worker:
+    class: memory.worker.read.extract_time_worker
+    generation_model_top_k: 1
   semantic_rank_worker:
     class: memory.worker.read.semantic_rank_worker
   fuse_rerank_worker:
@@ -63,6 +63,8 @@ worker:
       insight: 2.0
     fuse_time_ratio: 2.0
     fuse_rerank_top_k: 10
+  print_memory_worker:
+    class: memory.worker.read.print_memory_worker
   info_filter_worker:
     class: memory.worker.write.info_filter_worker
     generation_model: dashscope_generation
@@ -82,10 +84,20 @@ worker:
     generation_model_top_k: 1
     retrieve_top_k: 30
     contra_repeat_max_count: 50
-  get_reflection_worker:
-    class: memory.worker.summary.get_reflection_worker
+  store_memory_worker:
+    class: memory.worker.write.store_memory_worker
+  load_memory_worker:
+    class: memory.worker.summary.load_memory_worker
+  get_reflection_subject_worker:
+    class: memory.worker.summary.get_reflection_subject_worker
     retrieve_top_k: 100
     reflect_obs_cnt_threshold: 32
+  update_insight_worker:
+    class: memory.worker.summary.update_insight_worker
+  long_contra_repeat_worker:
+    class: memory.worker.summary.long_contra_repeat_worker
+  summary_collect_worker:
+    class: memory.worker.summary.summary_collect_worker
 models:
   dashscope_generation:
     class: models.llama_index_generation_model
@@ -99,8 +111,8 @@ models:
     class: models.llama_index_rank_model
     module_name: dashscope_rank
     model_name: gte-rerank
-vector_store:
-  class: storage.llama_index_elastic_search_store
+memory_store:
+  class: storage.llama_index_es_memory_store
   embedding_model: dashscope_embedding
   index_name: memory_index
   es_url: http://localhost:9200

@@ -1,7 +1,7 @@
 from typing import List
 
 from memory_scope.constants.common_constants import NEW_OBS_NODES, TIME_INFER
-from memory_scope.constants.language_constants import DATATIME_WORD_LIST, REPEATED_WORD, NONE_WORD, COLON_WORD
+from memory_scope.constants.language_constants import REPEATED_WORD, NONE_WORD, COLON_WORD
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
@@ -33,7 +33,7 @@ class GetObservationWorker(MemoryBaseWorker):
                           meta_data=meta_data,
                           content=obs_content,
                           memory_type=MemoryTypeEnum.OBSERVATION.value,
-                          status=MemoryNodeStatus.ACTIVE.value,
+                          status=MemoryNodeStatus.NEW.value,
                           timestamp=message.time_created,
                           obs_reflected=False,
                           obs_updated=False)
@@ -43,12 +43,7 @@ class GetObservationWorker(MemoryBaseWorker):
         user_query_list = []
         i = 1
         for msg in self.chat_messages:
-            match = False
-            for time_keyword in self.get_language_value(DATATIME_WORD_LIST):
-                if time_keyword in msg.content:
-                    match = True
-                    break
-            if not match:
+            if not DatetimeHandler.has_time_word(query=msg.content):
                 user_query_list.append(f"{i} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
                 i += 1
 

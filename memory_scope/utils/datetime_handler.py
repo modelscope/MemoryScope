@@ -3,7 +3,6 @@ import re
 from typing import Dict
 
 from memory_scope.constants.language_constants import WEEKDAYS, DATATIME_WORD_LIST
-from memory_scope.enumeration.language_enum import LanguageEnum
 from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.logger import Logger
 
@@ -79,25 +78,24 @@ class DatetimeHandler(object):
         }
 
         # Patterns to extract the parts of the date/time
-        # Patterns to extract the parts of the date/time
         patterns = {
             "year": r"\b(\d{4})\b",
             "month": r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\b",
-            "day_month_year": r"\b(?P<month>January|February|March|April|May|June|July|August|September|October|November|December) (?P<day>\d{1,2}),? (?P<year>\d{4})\b",
-            "day_month": r"\b(?P<month>January|February|March|April|May|June|July|August|September|October|November|December) (?P<day>\d{1,2})\b",
+            "day_month_year": r"\b(?P<month>January|February|March|April|May|June|July|August|September|October"
+                              r"|November|December) (?P<day>\d{1,2}),? (?P<year>\d{4})\b",
+            "day_month": r"\b(?P<month>January|February|March|April|May|June|July|August|September|October|November"
+                         r"|December) (?P<day>\d{1,2})\b",
             "hour_12": r"\b(\d{1,2})\s*(AM|PM|am|pm)\b",
             "hour_24": r"\b(\d{1,2}):(\d{2}):(\d{2})\b"
         }
 
         month_mapping = {
-            "January": 1, "February": 2, "March": 3, "April": 4,
-            "May": 5, "June": 6, "July": 7, "August": 8,
+            "January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6, "July": 7, "August": 8,
             "September": 9, "October": 10, "November": 11, "December": 12
         }
 
         weekday_mapping = {
-            "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4,
-            "Friday": 5, "Saturday": 6, "Sunday": 7
+            "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6, "Sunday": 7
         }
 
         day_month_year_match = re.search(patterns["day_month_year"], input_string)
@@ -134,13 +132,6 @@ class DatetimeHandler(object):
             elif period == 'am' and hour == 12:
                 hour = 0
             date_info["hour"] = hour
-
-        # # Extract 24-hour format time
-        # hour_24_match = re.search(patterns["hour_24"], input_string)
-        # if hour_24_match:
-        #     date_info["hour"] = int(hour_24_match.group(1))
-        #     date_info["minute"] = int(hour_24_match.group(2))
-        #     date_info["second"] = int(hour_24_match.group(3))
 
         # Extract weekday
         for week_day, value in weekday_mapping.items():
@@ -182,26 +173,14 @@ class DatetimeHandler(object):
         return getattr(cls, func_name)(extract_time_dict, meta_data)
 
     @classmethod
-    def has_time_word_cn(cls, query: str) -> bool:
-        # find datetime keyword
+    def has_time_word(cls, query: str) -> bool:
         contain_datetime = False
-        for datetime_word in DATATIME_WORD_LIST[LanguageEnum.CN]:
+        # TODO use re
+        for datetime_word in DATATIME_WORD_LIST[G_CONTEXT.language]:
             if datetime_word in query:
                 contain_datetime = True
                 break
         return contain_datetime
-
-    @classmethod
-    def has_time_word_en(cls, query: str) -> bool:
-        pass
-
-    @classmethod
-    def has_time_word(cls, query: str) -> bool:
-        func_name = f"has_time_word_{G_CONTEXT.language}"
-        if not hasattr(cls, func_name):
-            cls.logger.warning(f"language={G_CONTEXT.language} needs to complete has_time_word func!")
-            return False
-        return getattr(cls, func_name)(query=query)
 
     def datetime_format(self, dt_format: str = "%Y%m%d"):
         return self._dt.strftime(dt_format)

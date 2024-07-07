@@ -11,7 +11,7 @@ class EsNotReflectedWorker(MemoryBaseWorker):
 
     def _run(self):
 
-        not_reflected_obs_nodes = self.vector_store.retrieve(
+        not_reflected_obs_nodes = self.vector_store.retrieve_memories(
             size=self.kwargs.es_new_obs_top_k,
             filter_dict={
                 "memory_id": self.memory_id,

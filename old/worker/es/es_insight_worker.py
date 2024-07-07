@@ -10,7 +10,7 @@ from cli import GLOBAL_CONTEXT
 
 class EsInsightWorker(MemoryBaseWorker):
     def _run(self):
-        insight_nodes = self.vector_store.retrieve(
+        insight_nodes = self.vector_store.retrieve_memories(
             size=self.kwargs.es_insight_top_k,
             filter_dict={
                 "memory_id": self.memory_id,

@@ -1,7 +1,7 @@
 from typing import List
 
 from memory_scope.constants.common_constants import NEW_OBS_WITH_TIME_NODES
-from memory_scope.constants.language_constants import DATATIME_WORD_LIST, COLON_WORD
+from memory_scope.constants.language_constants import COLON_WORD
 from memory_scope.memory.worker.write.get_observation_worker import GetObservationWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.scheme.message import Message
@@ -16,12 +16,7 @@ class GetObservationWithTimeWorker(GetObservationWorker):
         user_query_list = []
         i = 1
         for msg in self.chat_messages:
-            match = False
-            for time_keyword in self.get_language_value(DATATIME_WORD_LIST):
-                if time_keyword in msg.content:
-                    match = True
-                    break
-            if match:
+            if DatetimeHandler.has_time_word(query=msg.content):
                 dt_handler = DatetimeHandler(dt=msg.time_created)
                 dt = dt_handler.string_format(self.prompt_handler.time_string_format)
                 user_query_list.append(f"{i} {dt} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
