@@ -5,8 +5,8 @@ from memory_scope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS
 from memory_scope.memory.worker.base_worker import BaseWorker
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.message import Message
-from memory_scope.storage.base_monitor import BaseMonitor
 from memory_scope.storage.base_memory_store import BaseMemoryStore
+from memory_scope.storage.base_monitor import BaseMonitor
 from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.prompt_handler import PromptHandler
 

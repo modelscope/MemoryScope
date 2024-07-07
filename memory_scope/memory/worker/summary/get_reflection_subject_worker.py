@@ -22,7 +22,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
                           meta_data=meta_data,
                           key=insight_key,
                           memory_type=MemoryTypeEnum.INSIGHT.value,
-                          status=MemoryNodeStatus.ACTIVE.value)
+                          status=MemoryNodeStatus.NEW.value)
 
     def _run(self):
         not_reflected_nodes: List[MemoryNode] = self.get_context(NOT_REFLECTED_NODES)

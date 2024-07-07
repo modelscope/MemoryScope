@@ -134,6 +134,10 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         self.es_store.close()
 
     def update_memories(self, nodes: MemoryNode | List[MemoryNode]):
+        if not nodes:
+            self.logger.warning("empty nodes!")
+            return
+
         if isinstance(nodes, MemoryNode):
             nodes = [nodes]
 

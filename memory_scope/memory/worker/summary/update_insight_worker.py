@@ -2,6 +2,7 @@ from typing import List
 
 from memory_scope.constants.common_constants import INSIGHT_NODES, NOT_UPDATED_NODES, NOT_REFLECTED_NODES
 from memory_scope.constants.language_constants import COLON_WORD, NONE_WORD, REPEATED_WORD
+from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.utils.datetime_handler import DatetimeHandler
@@ -48,6 +49,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
         insight_node.meta_data.update({k: str(v) for k, v in dt_handler.dt_info_dict.items()})
         insight_node.timestamp = dt_handler.timestamp
         insight_node.dt = dt_handler.datetime_format()
+        if insight_node.status == MemoryNodeStatus.ACTIVE.value:
+            insight_node.status = MemoryNodeStatus.CONTENT_MODIFIED.value
         self.logger.info(f"after_update_{insight_node.key} value={insight_value}")
         return insight_node
 
@@ -89,6 +92,10 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.info(f"update_{insight_node.key} insight_value={insight_value} is invalid.")
             return insight_node
 
+        if insight_node.value == insight_value:
+            self.logger.info(f"value={insight_value} is same!")
+            return insight_node
+
         self.update_insight_node(insight_node=insight_node, insight_value=insight_value)
         return insight_node
 
@@ -102,7 +109,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
             return
 
         for node in insight_nodes:
-            if node.content:
+            if node.status == MemoryNodeStatus.ACTIVE.value:
                 self.submit_async_task(fn=self.filter_obs_nodes,
                                        insight_node=node,
                                        not_updated_nodes=not_updated_nodes)
@@ -126,3 +133,6 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         # get result
         self.gather_async_result()
+
+        for node in not_updated_nodes:
+            node.obs_updated = True
