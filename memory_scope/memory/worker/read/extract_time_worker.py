@@ -1,7 +1,8 @@
 import re
 from typing import Dict
 
-from memory_scope.constants.common_constants import DATATIME_KEY_MAP, QUERY_WITH_TS, EXTRACT_TIME_DICT
+from memory_scope.constants.common_constants import QUERY_WITH_TS, EXTRACT_TIME_DICT
+from memory_scope.constants.language_constants import DATATIME_KEY_MAP
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.utils.datetime_handler import DatetimeHandler
 from memory_scope.utils.tool_functions import prompt_to_msg
@@ -38,8 +39,9 @@ class ExtractTimeWorker(MemoryBaseWorker):
         # re-match time info to dict
         extract_time_dict: Dict[str, str] = {}
         matches = re.findall(self.EXTRACT_TIME_PATTERN, response_text)
+        key_map: dict = self.get_language_value(DATATIME_KEY_MAP)
         for key, value in matches:
-            if key in DATATIME_KEY_MAP.keys():
-                extract_time_dict[DATATIME_KEY_MAP[key]] = value
+            if key in key_map.keys():
+                extract_time_dict[key_map[key]] = value
         self.logger.info(f"response_text={response_text} filters={extract_time_dict}")
         self.set_context(EXTRACT_TIME_DICT, extract_time_dict)

@@ -79,3 +79,20 @@ DEFAULT_HUMAN_NAME = {
     LanguageEnum.CN: "用户",
     LanguageEnum.EN: "user"
 }
+
+DATATIME_KEY_MAP = {
+    LanguageEnum.CN: {
+        "年": "year",
+        "月": "month",
+        "日": "day",
+        "周": "week",
+        "星期几": "weekday",
+    },
+    LanguageEnum.EN: {
+        "Year": "year",
+        "Month": "month",
+        "Day": "day",
+        "Week": "week",
+        "Weekday": "weekday",
+    }
+}

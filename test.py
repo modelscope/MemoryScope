@@ -1,11 +1,9 @@
 from memory_scope.cli import CliJob
-import fire
 
 
 def main(config_path: str):
-    job = CliJob(config_path=config_path)
-    job.init_global_content_by_config()
-    job.run()
+    job = CliJob()
+    job.run(config=config_path)
 
 
 if __name__ == "__main__":

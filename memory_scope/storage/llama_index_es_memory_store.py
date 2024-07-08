@@ -10,9 +10,10 @@ from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.storage.base_memory_store import BaseMemoryStore
 from memory_scope.utils.logger import Logger
 
+
 class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
     def _hybrid(
-        self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int,
+            self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int,
     ) -> Dict[str, Any]:
         # Add a query to the knn query.
         # RRF is used to even the score from the knn query and text query
@@ -41,17 +42,17 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
         elif isinstance(self.rrf, bool) and self.rrf is True:
             query_body["rank"] = {"rrf": {"window_size": top_k}}
         return query_body
-    
+
     def es_query(
-        self,
-        *,
-        query: Optional[str],
-        query_vector: Optional[List[float]],
-        text_field: str,
-        vector_field: str,
-        k: int,
-        num_candidates: int,
-        filter: List[Dict[str, Any]] = [],
+            self,
+            *,
+            query: Optional[str],
+            query_vector: Optional[List[float]],
+            text_field: str,
+            vector_field: str,
+            k: int,
+            num_candidates: int,
+            filter: List[Dict[str, Any]] = [],
     ) -> Dict[str, Any]:
         knn = {
             "filter": filter,
@@ -64,7 +65,7 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
             knn["query_vector"] = query_vector
         else:
             # Inference in Elasticsearch. When initializing we make sure to always have
-            # a model_id if don't have an embedding_service.
+            # a model_id if we don't have an embedding_service.
             knn["query_vector_builder"] = {
                 "text_embedding": {
                     "model_id": self.model_id,
@@ -76,6 +77,7 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
             return self._hybrid(query=cast(str, query), knn=knn, filter=filter, top_k=k)
 
         return {"knn": knn}
+
 
 class _ElasticsearchStore(ElasticsearchStore):
     async def adelete(self, ref_doc_id: str, **delete_kwargs: Any) -> None:
@@ -162,7 +164,8 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
             filter_dict = {}
 
         es_filter = _to_elasticsearch_filter(filter_dict)
-        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter}, similarity_top_k=top_k, sparse_top_k=top_k)
+        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter}, similarity_top_k=top_k,
+                                            sparse_top_k=top_k)
         text_nodes = retriever.retrieve(query)
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 

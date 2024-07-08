@@ -1,5 +1,5 @@
 from abc import ABCMeta
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Any
 
 from memory_scope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS
 from memory_scope.memory.worker.base_worker import BaseWorker
@@ -138,7 +138,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self.kwargs[key]
 
     @staticmethod
-    def get_language_value(languages: dict | list[dict]) -> str | list[str]:
+    def get_language_value(languages: dict | list[dict]) -> Any | list[Any]:
         if isinstance(languages, list):
             return [x[G_CONTEXT.language] for x in languages]
         return languages[G_CONTEXT.language]

@@ -61,6 +61,6 @@ class TestLLILLM(unittest.TestCase):
 
         messages = [Message(role="system", content="you are a helpful assistant."),
                     Message(role="user", content="你如何看待黄金上涨？")]
-        
+
         ans = asyncio.run(self.llm.async_call(messages=messages))
         self.logger.info(ans.message.content)

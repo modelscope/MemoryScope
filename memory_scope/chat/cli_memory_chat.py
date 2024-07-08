@@ -71,7 +71,7 @@ class CliMemoryChat(BaseMemoryChat):
     def generation_model(self) -> BaseModel:
         if isinstance(self._generation_model, str):
             if self._generation_model not in G_CONTEXT.model_dict:
-                raise ValueError("Missing declaration of generation model in yaml configuration: " + self._generation_model)
+                raise ValueError(f"Missing declaration of generation model in yaml config: {self._generation_model}")
             self._generation_model = G_CONTEXT.model_dict[self._generation_model]
         return self._generation_model
 
