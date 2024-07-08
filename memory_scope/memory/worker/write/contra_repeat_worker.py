@@ -29,7 +29,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "dt": dt_handler.datetime_format(),
         }
-        return self.vector_store.retrieve(query=message.content, top_k=self.today_obs_top_k, filter_dict=filter_dict)
+        return self.memory_store.retrieve_memories(query=message.content, top_k=self.today_obs_top_k, filter_dict=filter_dict)
 
     def _run(self):
         all_obs_nodes: List[MemoryNode] = []

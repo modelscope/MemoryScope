@@ -14,7 +14,7 @@ class StoreMemoryWorker(MemoryBaseWorker):
 
         if self.has_content(store_key):
             memory_nodes: List[MemoryNode] = self.get_context(store_key)
-            self.vector_store.update_batch(memory_nodes)
+            self.memory_store.update_memories(memory_nodes)
 
         elif store_key in self.chat_kwargs:
             query = self.chat_kwargs[store_key]
@@ -27,8 +27,8 @@ class StoreMemoryWorker(MemoryBaseWorker):
                               target_name=self.target_name,
                               content=query,
                               memory_type=MemoryTypeEnum.OBS_CUSTOMIZED.value,
-                              status=MemoryNodeStatus.ACTIVE.value,
+                              status=MemoryNodeStatus.NEW.value,
                               timestamp=dt_handler.timestamp,
                               obs_reflected=False,
                               obs_updated=False)
-            self.vector_store.update(node)
+            self.memory_store.update_memories(node)

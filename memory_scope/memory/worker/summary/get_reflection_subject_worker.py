@@ -11,7 +11,7 @@ from memory_scope.utils.response_text_parser import ResponseTextParser
 from memory_scope.utils.tool_functions import prompt_to_msg
 
 
-class GetReflectionWorker(MemoryBaseWorker):
+class GetReflectionSubjectWorker(MemoryBaseWorker):
 
     def new_insight_node(self, insight_key: str) -> MemoryNode:
         dt_handler = DatetimeHandler()
@@ -22,7 +22,7 @@ class GetReflectionWorker(MemoryBaseWorker):
                           meta_data=meta_data,
                           key=insight_key,
                           memory_type=MemoryTypeEnum.INSIGHT.value,
-                          status=MemoryNodeStatus.ACTIVE.value)
+                          status=MemoryNodeStatus.NEW.value)
 
     def _run(self):
         not_reflected_nodes: List[MemoryNode] = self.get_context(NOT_REFLECTED_NODES)
@@ -40,10 +40,11 @@ class GetReflectionWorker(MemoryBaseWorker):
 
         # gen reflect prompt
         user_query_list = [n.content for n in not_reflected_nodes]
-        system_prompt = self.prompt_handler.get_reflect_system.format(user_name=self.target_name,
-                                                                      num_questions=self.reflect_num_questions)
-        few_shot = self.prompt_handler.get_reflect_few_shot.format(user_name=self.target_name)
-        user_query = self.prompt_handler.get_reflect_user_query.format(
+        system_prompt = self.prompt_handler.get_reflection_subject_system.format(
+            user_name=self.target_name,
+            num_questions=self.reflect_num_questions)
+        few_shot = self.prompt_handler.get_reflection_subject_few_shot.format(user_name=self.target_name)
+        user_query = self.prompt_handler.get_reflection_subject_user_query.format(
             user_name=self.target_name,
             exist_keys=self.get_language_value(COMMA_WORD).join(exist_keys),
             user_query="\n".join(user_query_list))
@@ -59,7 +60,7 @@ class GetReflectionWorker(MemoryBaseWorker):
             return
 
         # parse text & save
-        new_insight_keys = ResponseTextParser(response.message.content).parse_v2("get_reflection")
+        new_insight_keys = ResponseTextParser(response.message.content).parse_v2(self.__class__.__name__)
         if new_insight_keys:
             for insight_key in new_insight_keys:
                 insight_nodes.append(self.new_insight_node(insight_key))

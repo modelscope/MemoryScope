@@ -2,7 +2,7 @@
 exclude =
   scripts/*
   src/agentscope/rpc/*
-max-line-length = 79
+max-line-length = 120
 inline-quotes = "
 avoid-escape = no
 ignore =

@@ -6,7 +6,7 @@ from memory_scope.enumeration.language_enum import LanguageEnum
 from memory_scope.memory.service.base_memory_service import BaseMemoryService
 from memory_scope.models.base_model import BaseModel
 from memory_scope.storage.base_monitor import BaseMonitor
-from memory_scope.storage.base_vector_store import BaseVectorStore
+from memory_scope.storage.base_memory_store import BaseMemoryStore
 
 
 class GlobalContext(object):
@@ -18,7 +18,7 @@ class GlobalContext(object):
         self.model_dict: Dict[str, BaseModel] = {}
         self.memory_chat_dict: Dict[str, BaseMemoryChat] = {}
 
-        self.vector_store: BaseVectorStore | None = None
+        self.memory_store: BaseMemoryStore | None = None
         self.monitor: BaseMonitor | None = None
         self.thread_pool: ThreadPoolExecutor | None = None
         self.language: LanguageEnum = LanguageEnum.EN

@@ -27,8 +27,8 @@ class CliMemoryChat(BaseMemoryChat):
                  memory_service: str,
                  generation_model: str,
                  stream: bool = True,
-                 human_name: str = "",
-                 assistant_name: str = "",
+                 human_name: str = "用户",
+                 assistant_name: str = "AI",
                  **kwargs):
 
         self._memory_service: BaseMemoryService | str = memory_service

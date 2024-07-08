@@ -28,9 +28,14 @@ class BaseWorker(metaclass=ABCMeta):
         self.logger: Logger = Logger.get_logger()
 
     def submit_async_task(self, fn, *args, **kwargs):
+        if self.is_multi_thread:
+            raise RuntimeError(f"async_task is not allowed in multi_thread condition")
         self.task_list.append((fn, args, kwargs))
 
     def gather_async_result(self):
+        if self.is_multi_thread:
+            raise RuntimeError(f"async_task is not allowed in multi_thread condition")
+
         async def async_gather():
             return await asyncio.gather(*[fn(*args, **kwargs) for fn, args, kwargs in self.task_list])
 
@@ -61,12 +66,9 @@ class BaseWorker(metaclass=ABCMeta):
     def set_context(self, key: str, value: Any):
         if self.is_multi_thread:
             with self.context_lock:
-                self.context_dict[key] = value
+                self.context[key] = value
         else:
             self.context[key] = value
 
     def has_content(self, key: str):
         return key in self.context
-
-    def __getattr__(self, key: str):
-        return self.kwargs[key]

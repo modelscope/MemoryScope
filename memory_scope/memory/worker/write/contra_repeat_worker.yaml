@@ -11,7 +11,7 @@ contra_repeat_system:
     Make an evaluation for each sentence, resulting in a total of {num_obs} evaluations.
     Please think step by step and output in the following format:
     Thought: The basis and process of the thought, within 30 words.
-    Evaluation: <Contradiction, Contained, None>, enclosed in <>.
+    Evaluation: <sentence number> <Contradiction, Contained or None>, enclosed in <>.
 
 
 contra_repeat_few_shot:

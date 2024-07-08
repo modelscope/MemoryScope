@@ -4,9 +4,10 @@ from typing import List, Dict
 from memory_scope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS
 from memory_scope.memory.worker.base_worker import BaseWorker
 from memory_scope.models.base_model import BaseModel
+from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.scheme.message import Message
+from memory_scope.storage.base_memory_store import BaseMemoryStore
 from memory_scope.storage.base_monitor import BaseMonitor
-from memory_scope.storage.base_vector_store import BaseVectorStore
 from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.prompt_handler import PromptHandler
 
@@ -24,12 +25,14 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         self._generation_model: BaseModel | str = generation_model
         self._rank_model: BaseModel | str = rank_model
 
-        self._vector_store: BaseVectorStore | None = None
+        self._memory_store: BaseMemoryStore | None = None
         self._monitor: BaseMonitor | None = None
 
         self._user_name: str | None = None
         self._target_name: str | None = None
         self._prompt_handler: PromptHandler | None = None
+
+        self._contex_memory_dict: Dict[str, MemoryNode] = {}
 
     @property
     def chat_messages(self) -> List[Message]:
@@ -62,10 +65,30 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self._rank_model
 
     @property
-    def vector_store(self) -> BaseVectorStore:
-        if self._vector_store is None:
-            self._vector_store = G_CONTEXT.vector_store
-        return self._vector_store
+    def memory_store(self) -> BaseMemoryStore:
+        if self._memory_store is None:
+            self._memory_store = G_CONTEXT.memory_store
+        return self._memory_store
+
+    def get_memories(self, key: str) -> List[MemoryNode]:
+        memories: List[MemoryNode] = []
+        memory_ids: List[str] = self.get_context(key)
+        if memory_ids:
+            memories.extend([self._contex_memory_dict[x] for x in memory_ids])
+        return memories
+
+    def set_memories(self, key: str, nodes: List[MemoryNode] | MemoryNode):
+        if not nodes:
+            return
+
+        if isinstance(nodes, MemoryNode):
+            nodes = [nodes]
+
+        for node in nodes:
+            if node.memory_id in self._contex_memory_dict:
+                continue
+            self._contex_memory_dict[node.memory_id] = node
+        self.set_context(key, [n.memory_id for n in nodes])
 
     @property
     def monitor(self) -> BaseMonitor:
