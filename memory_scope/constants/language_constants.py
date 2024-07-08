@@ -40,7 +40,64 @@ WEEKDAYS = {
         "周日"
     ],
     LanguageEnum.EN: [
+        # Units of Time
+        "year", "yr",
+        "month", "mo",
+        "week", "wk",
+        "day", "d",
+        "hour", "hr",
+        "minute", "min",
+        "second", "sec",
 
+        # Days of the Week
+        "Monday", "Mon",
+        "Tuesday", "Tue", "Tues",
+        "Wednesday", "Wed",
+        "Thursday", "Thu", "Thur", "Thurs",
+        "Friday", "Fri",
+        "Saturday", "Sat",
+        "Sunday", "Sun",
+
+        # Months of the Year
+        "January", "Jan",
+        "February", "Feb",
+        "March", "Mar",
+        "April", "Apr",
+        "May", "May",
+        "June", "Jun",
+        "July", "Jul",
+        "August", "Aug",
+        "September", "Sep", "Sept",
+        "October", "Oct",
+        "November", "Nov",
+        "December", "Dec",
+
+        # Relative Time References
+        "Today",
+        "Tomorrow", "Tmrw",
+        "Yesterday", "Yday",
+        "Now",
+        "Morning", "AM", "a.m.",
+        "Afternoon", "PM", "p.m.",
+        "Evening",
+        "Night",
+        "Midnight",
+        "Noon",
+
+        # Seasonal References
+        "Spring",
+        "Summer",
+        "Autumn", "Fall",
+        "Winter",
+
+        # General Time References
+        "Century", "cent.",
+        "Decade",
+        "Millennium",
+        "Quarter", "Q1", "Q2", "Q3", "Q4",
+        "Semester",
+        "Fortnight",
+        "Weekend"
     ]
 }
 
