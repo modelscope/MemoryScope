@@ -1,4 +1,4 @@
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional, cast
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import TextNode, NodeWithScore
@@ -10,6 +10,72 @@ from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.storage.base_memory_store import BaseMemoryStore
 from memory_scope.utils.logger import Logger
 
+class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
+    def _hybrid(
+        self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int,
+    ) -> Dict[str, Any]:
+        # Add a query to the knn query.
+        # RRF is used to even the score from the knn query and text query
+        # RRF has two optional parameters: {'rank_constant':int, 'window_size':int}
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html
+        query_body = {
+            "knn": knn,
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                self.text_field: {
+                                    "query": query,
+                                }
+                            }
+                        }
+                    ],
+                    "filter": filter,
+                }
+            },
+        }
+
+        if isinstance(self.rrf, Dict):
+            query_body["rank"] = {"rrf": self.rrf}
+        elif isinstance(self.rrf, bool) and self.rrf is True:
+            query_body["rank"] = {"rrf": {"window_size": top_k}}
+        return query_body
+    
+    def es_query(
+        self,
+        *,
+        query: Optional[str],
+        query_vector: Optional[List[float]],
+        text_field: str,
+        vector_field: str,
+        k: int,
+        num_candidates: int,
+        filter: List[Dict[str, Any]] = [],
+    ) -> Dict[str, Any]:
+        knn = {
+            "filter": filter,
+            "field": vector_field,
+            "k": k,
+            "num_candidates": num_candidates,
+        }
+
+        if query_vector is not None:
+            knn["query_vector"] = query_vector
+        else:
+            # Inference in Elasticsearch. When initializing we make sure to always have
+            # a model_id if don't have an embedding_service.
+            knn["query_vector_builder"] = {
+                "text_embedding": {
+                    "model_id": self.model_id,
+                    "model_text": query,
+                }
+            }
+
+        if self.hybrid:
+            return self._hybrid(query=cast(str, query), knn=knn, filter=filter, top_k=k)
+
+        return {"knn": knn}
 
 class _ElasticsearchStore(ElasticsearchStore):
     async def adelete(self, ref_doc_id: str, **delete_kwargs: Any) -> None:
@@ -81,11 +147,11 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         self.embedding_model: BaseModel = embedding_model
         self.es_store = _ElasticsearchStore(index_name=index_name,
                                             es_url=es_url,
-                                            retrieval_strategy=AsyncDenseVectorStrategy(hybrid=use_hybrid),
+                                            retrieval_strategy=_AsyncDenseVectorStrategy(hybrid=use_hybrid),
                                             **kwargs)
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                         embed_model=self.embedding_model.model)
-        self.index.build_index_from_nodes([TextNode(text="text")])
+       # self.index.build_index_from_nodes([TextNode(text="text")])
         self.logger = Logger.get_logger()
 
     def retrieve_memories(self,
@@ -96,7 +162,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
             filter_dict = {}
 
         es_filter = _to_elasticsearch_filter(filter_dict)
-        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter}, similarity_top_k=top_k)
+        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter}, similarity_top_k=top_k, sparse_top_k=top_k)
         text_nodes = retriever.retrieve(query)
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 

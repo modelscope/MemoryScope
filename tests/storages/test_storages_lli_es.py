@@ -2,7 +2,7 @@ import unittest
 
 from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
 from memory_scope.scheme.memory_node import MemoryNode
-from memory_scope.storage.llama_index_elastic_search_store import LlamaIndexElasticSearchStore
+from memory_scope.storage.llama_index_es_memory_store import LlamaIndexEsMemoryStore
 
 
 class TestLlamaIndexElasticSearchStore(unittest.TestCase):
@@ -12,16 +12,18 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
         config = {
             "module_name": "dashscope_embedding",
             "model_name": "text-embedding-v2",
-            "clazz": "models.llama_index_embedding_model"
+            "clazz": "models.llama_index_embedding_model",
         }
         emb = LlamaIndexEmbeddingModel(**config)
 
         config = {
-            "index_name": "0626_1",
+            "index_name": "0708_2",
             "es_url": "http://localhost:9200",
             "embedding_model": emb,
+            "use_hybrid": True
+
         }
-        self.es_store = LlamaIndexElasticSearchStore(**config)
+        self.es_store = LlamaIndexEsMemoryStore(**config)
         self.data = [
             MemoryNode(
                 content="The lives of two mob hitmen, a boxer, a gangster and his wife, "
@@ -100,15 +102,53 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 meta_data={"5": "5"}
 
             ),
+            MemoryNode(
+                content="ggggggggg",
+                memory_type="profile",
+                user_id="6",
+                status="valid",
+                memory_id="hhh234",
+                meta_data={"5": "5"}
+
+            ),
+            MemoryNode(
+                content="ggggggggg",
+                memory_type="profile",
+                user_id="6",
+                status="valid",
+                memory_id="iii234",
+                meta_data={"5": "5"}
+
+            ),
+            MemoryNode(
+                content="ggggggggg",
+                memory_type="profile",
+                user_id="6",
+                status="valid",
+                memory_id="jjj234",
+                meta_data={"5": "5"}
+
+            ),
+            MemoryNode(
+                content="ggggggggg",
+                memory_type="profile",
+                user_id="6",
+                status="valid",
+                memory_id="kkk234",
+                meta_data={"5": "5"}
+
+            ),
         ]
 
     def test_retrieve(self):
-        filter_dict = {
-            "user_id": "6",
-        }
+        # filter_dict = {
+        #     "user_id": "6",
+        # }
+        filter_dict = {}
 
         for node in self.data:
             self.es_store.insert(node)
+
         self.es_store.insert(MemoryNode(
             content="xxxxxx",
             memory_type="profile",
@@ -117,9 +157,10 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             memory_id="ggg567",
             meta_data={"5": "5"}
         ))
-        res = self.es_store.retrieve(query="hacker", filter_dict=filter_dict, top_k=10)
+        res = self.es_store.retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15)
         print(len(res))
         print(res)
+        
 
         self.es_store.update(MemoryNode(
             content="test update",
@@ -128,7 +169,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             status="invalid",
             memory_id="ggg567"
         ))
-        res = self.es_store.retrieve(query="hacker", filter_dict=filter_dict, top_k=10)
+        res = self.es_store.retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15)
         print(len(res))
         print(res)
 
@@ -140,7 +181,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             memory_id="ggg567"
         ))
         import asyncio
-        res = asyncio.run(self.es_store.async_retrieve(query="hacker", filter_dict=filter_dict, top_k=10))
+        res = asyncio.run(self.es_store.a_retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15))
+        #res = self.es_store.async_retrieve(query="hacker", filter_dict=filter_dict, top_k=10)
         print(len(res))
         print(res)
 
