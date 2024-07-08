@@ -10,6 +10,7 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class GetObservationWithTimeWorker(GetObservationWorker):
+    FILE_PATH: str = __file__
 
     def build_prompt(self) -> List[Message]:
         # build prompt

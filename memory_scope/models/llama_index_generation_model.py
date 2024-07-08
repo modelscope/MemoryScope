@@ -17,12 +17,15 @@ class LlamaIndexGenerationModel(BaseModel):
 
     def before_call(self, **kwargs):
         prompt: str = kwargs.pop("prompt", "")
-        messages: List[Message] = kwargs.pop("messages", [])
+        messages: List[Message] | List[dict] = kwargs.pop("messages", [])
 
         if prompt:
             self.data = {"prompt": prompt}
         elif messages:
-            self.data = {"messages": [ChatMessage(role=msg.role, content=msg.content) for msg in messages]}
+            if isinstance(messages[0], dict):
+                self.data = {"messages": [ChatMessage(role=msg["role"], content=msg["content"]) for msg in messages]}
+            else:
+                self.data = {"messages": [ChatMessage(role=msg.role, content=msg.content) for msg in messages]}
         else:
             raise RuntimeError("prompt and messages is both empty!")
 

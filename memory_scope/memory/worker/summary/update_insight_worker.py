@@ -11,6 +11,7 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class UpdateInsightWorker(MemoryBaseWorker):
+    FILE_PATH: str = __file__
 
     def filter_obs_nodes(self,
                          insight_node: MemoryNode,

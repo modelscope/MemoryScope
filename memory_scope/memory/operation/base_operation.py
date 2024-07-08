@@ -18,9 +18,3 @@ class BaseOperation(metaclass=ABCMeta):
     @abstractmethod
     def run_operation(self, **kwargs):
         raise NotImplementedError
-
-    def run_operation_backend(self):
-        pass
-
-    def stop_operation_backend(self):
-        pass

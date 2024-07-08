@@ -15,6 +15,7 @@ class PromptHandler(object):
         self.kwargs = kwargs
 
         file_path = self._class_path.strip(".py")
+
         self.add_prompt_file(file_path)
 
         if prompt_file:
@@ -25,6 +26,7 @@ class PromptHandler(object):
 
     @staticmethod
     def file_path_completion(file_path: str) -> str:
+
         if file_path.endswith(".yaml") or file_path.endswith(".json"):
             return file_path
 
@@ -56,7 +58,7 @@ class PromptHandler(object):
             prompts = language_dict.get(G_CONTEXT.language)
             if not prompts:
                 raise RuntimeError(f"{key}.prompt.{G_CONTEXT.language} is empty!")
-            self._prompt_dict[key] = prompts
+            self._prompt_dict[key] = prompts.strip()
 
     @property
     def prompt_dict(self):

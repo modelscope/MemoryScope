@@ -10,6 +10,7 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 class ExtractTimeWorker(MemoryBaseWorker):
     EXTRACT_TIME_PATTERN = r'-\s*(\S+)：(\d+)'
+    FILE_PATH: str = __file__
 
     def _run(self):
         query, query_timestamp = self.get_context(QUERY_WITH_TS)

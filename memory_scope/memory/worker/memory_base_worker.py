@@ -13,6 +13,7 @@ from memory_scope.utils.prompt_handler import PromptHandler
 
 
 class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
+    FILE_PATH: str = __file__
 
     def __init__(self,
                  embedding_model: str = "",
@@ -119,19 +120,19 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
     @property
     def user_name(self) -> str:
         if self._user_name is None:
-            self._user_name = G_CONTEXT.meta_data["human_name"]
+            self._user_name = G_CONTEXT.meta_data["assistant_name"]
         return self._user_name
 
     @property
     def target_name(self) -> str:
         if self._target_name is None:
-            self._target_name = G_CONTEXT.meta_data["assistant_name"]
+            self._target_name = G_CONTEXT.meta_data["human_name"]
         return self._target_name
 
     @property
     def prompt_handler(self) -> PromptHandler:
         if self._prompt_handler is None:
-            self._prompt_handler = PromptHandler(__file__, **self.kwargs)
+            self._prompt_handler = PromptHandler(self.FILE_PATH, **self.kwargs)
         return self._prompt_handler
 
     def __getattr__(self, key: str):

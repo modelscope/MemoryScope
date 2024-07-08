@@ -11,6 +11,7 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class LongContraRepeatWorker(MemoryBaseWorker):
+    FILE_PATH: str = __file__
 
     async def retrieve_similar_content(self, node: MemoryNode) -> (MemoryNode, List[MemoryNode]):
         filter_dict = {

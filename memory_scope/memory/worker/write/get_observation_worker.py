@@ -13,6 +13,8 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class GetObservationWorker(MemoryBaseWorker):
+    FILE_PATH: str = __file__
+
     def add_observation(self, message: Message, time_infer: str, obs_content: str, keywords: str):
         dt_handler = DatetimeHandler(dt=message.time_created)
 

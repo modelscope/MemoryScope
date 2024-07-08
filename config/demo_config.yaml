@@ -13,7 +13,6 @@ memory_service:
     class: memory.service.chat_memory_service
     history_msg_count: 32
     contextual_msg_count: 6
-    read_memory_key: read_memory
     memory_operations:
       read_message:
         class: memory.operation.read_message
@@ -30,12 +29,12 @@ memory_service:
         class: memory.operation.write_memory
         workflow: info_filter,load_memory1,[get_observation|get_observation_with_time],contra_repeat,store_memory
         description: "write observation memories of the user"
-        interval_time: 60
+        interval_time: 5
       summary_memory:
         class: memory.operation.summary_memory
         workflow: load_memory2,get_reflection_subject,update_insight,long_contra_repeat,store_memory
         description: "summary observation memories of the user"
-        interval_time: 300
+        interval_time: 60
 
 worker:
   dummy:

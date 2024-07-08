@@ -14,9 +14,9 @@ class PrintMemoryWorker(MemoryBaseWorker):
         memory_node_list: List[MemoryNode] = self.get_memories(RETRIEVE_MEMORY_NODES)
         memory_node_list = sorted(memory_node_list, key=lambda x: x.timestamp, reverse=True)
 
-        expired_content_list: List[str] = []
-        obs_content_list: List[str] = []
-        insight_content_list: List[str] = []
+        expired_content_list: List[str] = ["----- expired -----"]
+        obs_content_list: List[str] = ["----- observation -----"]
+        insight_content_list: List[str] = ["----- insight -----"]
         i = 0
         j = 0
         k = 0
@@ -44,16 +44,12 @@ class PrintMemoryWorker(MemoryBaseWorker):
         result: str = f"""
 The memories of {self.user_name} about {self.target_name}.
 
------ observation -----
 {obs_content}
------ observation -----
 
------ insight -----
+
 {insight_content}
------ insight -----
 
------ expired -----
+
 {expired_content}
------ expired -----
         """.strip()
         self.set_context(RESULT, result)

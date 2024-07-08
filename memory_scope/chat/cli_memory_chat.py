@@ -1,5 +1,6 @@
 import os
 import time
+from typing import List
 
 import questionary
 
@@ -75,21 +76,29 @@ class CliMemoryChat(BaseMemoryChat):
             self._generation_model = G_CONTEXT.model_dict[self._generation_model]
         return self._generation_model
 
-    @property
-    def system_prompt_with_memory(self) -> Message:
-        system_prompt = self.prompt_handler.system_prompt
+    def chat_with_memory(self, query: str) -> ModelResponse | ModelResponseGen:
+        new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name=self.human_name, content=query)
+        self.memory_service.add_messages(new_message)
 
+        messages: List[Message] = []
+
+        # add memory to system prompt
+        system_prompt = self.prompt_handler.system_prompt
         memories: str = self.memory_service.read_memory()
         if memories:
             memory_prompt = self.prompt_handler.memory_prompt
             system_prompt = "\n".join([x.strip() for x in [system_prompt, memory_prompt, memories]])
+        messages.append(Message(role=MessageRoleEnum.SYSTEM, content=system_prompt))
 
-        return Message(role=MessageRoleEnum.SYSTEM, content=system_prompt)
+        # add history messages
+        history_messages = self.memory_service.read_message()
+        if history_messages:
+            messages.extend(history_messages)
 
-    def chat_with_memory(self, query: str) -> ModelResponse | ModelResponseGen:
-        new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name=self.human_name, content=query)
-        self.memory_service.add_messages(new_message)
-        return self.generation_model.call(messages=[self.system_prompt_with_memory, new_message], stream=self.stream)
+        # add new_message
+        messages.append(new_message)
+        self.logger.info(f"messages={messages}")
+        return self.generation_model.call(messages=messages, stream=self.stream)
 
     @staticmethod
     def parse_query_command(query: str):

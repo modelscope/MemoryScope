@@ -11,14 +11,16 @@ class BaseMemoryService(metaclass=ABCMeta):
     def __init__(self,
                  memory_operations: Dict[str, dict],
                  read_memory_key: str = "read_memory",
+                 read_message_key: str = "read_message",
                  **kwargs):
         self.memory_operations: Dict[str, dict] = memory_operations
         self.read_memory_key: str = read_memory_key
+        self.read_message_key: str = read_message_key
 
         self._operation_dict: Dict[str, BaseOperation] = {}
         self._op_description_dict: Dict[str, str] = {}
         self.chat_messages: List[Message] = []
-        self.message_lock = threading.Lock
+        self.message_lock = threading.Lock()
 
         self.logger = Logger.get_logger()
         self.kwargs = kwargs
@@ -47,6 +49,10 @@ class BaseMemoryService(metaclass=ABCMeta):
     def read_memory(self):
         assert self.read_memory_key in self._operation_dict, f"op={self.read_memory_key} is not inited!"
         return self.do_operation(self.read_memory_key)
+
+    def read_message(self):
+        assert self.read_message_key in self._operation_dict, f"op={self.read_message_key} is not inited!"
+        return self.do_operation(self.read_message_key)
 
     def stop_service(self):
         pass

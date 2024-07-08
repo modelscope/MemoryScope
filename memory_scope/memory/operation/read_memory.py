@@ -17,6 +17,7 @@ class ReadMemory(BaseWorkflow, BaseOperation):
                  **kwargs):
         super().__init__(name=name, **kwargs)
         BaseOperation.__init__(self, name=name, description=description)
+
         self.chat_messages: List[Message] = chat_messages
         self.his_msg_count: int = his_msg_count
 

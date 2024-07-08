@@ -86,7 +86,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
 
         self.set_memories(TODAY_NODES, nodes)
 
-    async def _run(self):
+    def _run(self):
         mock_query = "-"
         self.submit_async_task(self.retrieve_not_reflected_memory, query=mock_query)
         self.submit_async_task(self.retrieve_not_updated_memory, query=mock_query)

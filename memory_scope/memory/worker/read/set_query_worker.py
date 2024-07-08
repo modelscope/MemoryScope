@@ -7,12 +7,14 @@ from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 class SetQueryWorker(MemoryBaseWorker):
 
     def _run(self):
+        query = "_"
+        query_timestamp = int(datetime.datetime.now().timestamp())
+
         if "query" in self.chat_kwargs:
-            """ cli test query
-            """
+            # cli test query
             query = self.chat_kwargs["query"]
-            query_timestamp = int(datetime.datetime.now().timestamp())
-        else:
+
+        elif self.chat_messages:
             query = self.chat_messages[-1].content
             query_timestamp = self.chat_messages[-1].time_created
 

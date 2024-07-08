@@ -28,7 +28,8 @@ class MemoryNode(BaseModel):
 
     memory_type: str = Field("", description="conversation/observation/insight...")
 
-    status: str = Field("active", description="active or expired")
+    status: str = Field("active", description="db status: active / expired; modification_status: "
+                                              "new / content_modified / modified / active / expired")
 
     vector: List[float] = Field([], description="content embedding result, return empty")
 

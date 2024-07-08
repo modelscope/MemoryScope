@@ -12,6 +12,7 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class GetReflectionSubjectWorker(MemoryBaseWorker):
+    FILE_PATH: str = __file__
 
     def new_insight_node(self, insight_key: str) -> MemoryNode:
         dt_handler = DatetimeHandler()

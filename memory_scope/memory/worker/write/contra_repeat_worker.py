@@ -9,6 +9,8 @@ from memory_scope.utils.response_text_parser import ResponseTextParser
 
 
 class ContraRepeatWorker(MemoryBaseWorker):
+    FILE_PATH: str = __file__
+
     def _run(self):
         all_obs_nodes: List[MemoryNode] = self.get_memories([NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES])
         if not all_obs_nodes:
