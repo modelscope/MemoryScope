@@ -12,9 +12,7 @@ from memory_scope.utils.logger import Logger
 
 
 class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
-    def _hybrid(
-            self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int,
-    ) -> Dict[str, Any]:
+    def _hybrid(self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int) -> Dict[str, Any]:
         # Add a query to the knn query.
         # RRF is used to even the score from the knn query and text query
         # RRF has two optional parameters: {'rank_constant':int, 'window_size':int}
@@ -52,8 +50,11 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
             vector_field: str,
             k: int,
             num_candidates: int,
-            filter: List[Dict[str, Any]] = [],
+            filter: List[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
+        if filter is None:
+            filter = []
+
         knn = {
             "filter": filter,
             "field": vector_field,

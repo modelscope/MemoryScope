@@ -8,6 +8,8 @@ class SetQueryWorker(MemoryBaseWorker):
 
     def _run(self):
         if "query" in self.chat_kwargs:
+            """ cli test query
+            """
             query = self.chat_kwargs["query"]
             query_timestamp = int(datetime.datetime.now().timestamp())
         else:
