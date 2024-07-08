@@ -38,4 +38,4 @@ class GetObservationWithTimeWorker(GetObservationWorker):
         return obtain_obs_message
 
     def save(self, new_obs_nodes: List[MemoryNode]):
-        self.set_context(NEW_OBS_WITH_TIME_NODES, new_obs_nodes)
+        self.set_memories(NEW_OBS_WITH_TIME_NODES, new_obs_nodes)

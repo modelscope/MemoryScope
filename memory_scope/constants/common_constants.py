@@ -37,6 +37,8 @@ NEW_OBS_WITH_TIME_NODES = "new_obs_with_time_nodes"
 
 INSIGHT_NODES = "insight_nodes"
 
+TODAY_NODES = "today_nodes"
+
 MERGE_OBS_NODES = "merge_obs_nodes"
 
 NEW_INSIGHT_NODES = "new_insight_nodes"

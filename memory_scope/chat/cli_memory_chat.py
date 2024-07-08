@@ -4,6 +4,7 @@ import time
 import questionary
 
 from memory_scope.chat.base_memory_chat import BaseMemoryChat
+from memory_scope.constants.language_constants import DEFAULT_HUMAN_NAME
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.service.base_memory_service import BaseMemoryService
 from memory_scope.models.base_model import BaseModel
@@ -27,7 +28,7 @@ class CliMemoryChat(BaseMemoryChat):
                  memory_service: str,
                  generation_model: str,
                  stream: bool = True,
-                 human_name: str = "用户",
+                 human_name: str = DEFAULT_HUMAN_NAME[G_CONTEXT.language],
                  assistant_name: str = "AI",
                  **kwargs):
 
@@ -192,9 +193,7 @@ class CliMemoryChat(BaseMemoryChat):
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-                line = f"An exception occurred when running cli memory chat. args={e.args}."
-                questionary.print(line)
-                self.logger.exception(line)
+                self.logger.exception(f"An exception occurred when running cli memory chat. args={e.args}.")
                 continue
 
         questionary.print(f"A memory writing thread is still running, please be patient and wait!")

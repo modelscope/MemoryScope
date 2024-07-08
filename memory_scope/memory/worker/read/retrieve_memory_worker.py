@@ -5,11 +5,16 @@ from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
+from memory_scope.utils.timer import timer
 
 
-class RetrieveStoreWorker(MemoryBaseWorker):
+class RetrieveMemoryWorker(MemoryBaseWorker):
 
+    @timer
     async def retrieve_from_observation(self, query: str) -> List[MemoryNode]:
+        if not self.retrieve_obs_top_k:
+            return []
+
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
@@ -20,7 +25,11 @@ class RetrieveStoreWorker(MemoryBaseWorker):
                                                            top_k=self.retrieve_obs_top_k,
                                                            filter_dict=filter_dict)
 
+    @timer
     async def retrieve_from_insight_and_profile(self, query: str) -> List[MemoryNode]:
+        if not self.retrieve_ins_pf_top_k:
+            return []
+
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
@@ -31,10 +40,26 @@ class RetrieveStoreWorker(MemoryBaseWorker):
                                                            top_k=self.retrieve_ins_pf_top_k,
                                                            filter_dict=filter_dict)
 
+    @timer
+    async def retrieve_expired_memory(self, query: str) -> List[MemoryNode]:
+        if not self.retrieve_expired_top_k:
+            return []
+
+        filter_dict = {
+            "user_name": self.user_name,
+            "target_name": self.target_name,
+            "status": MemoryNodeStatus.EXPIRED.value,
+            "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
+        }
+        return await self.memory_store.a_retrieve_memories(query=query,
+                                                           top_k=self.retrieve_expired_top_k,
+                                                           filter_dict=filter_dict)
+
     def _run(self):
         query, _ = self.get_context(QUERY_WITH_TS)
         self.submit_async_task(self.retrieve_from_observation, query=query)
         self.submit_async_task(self.retrieve_from_insight_and_profile, query=query)
+        self.submit_async_task(self.retrieve_expired_memory, query=query)
 
         memory_node_list: List[MemoryNode] = []
         for result in self.gather_async_result():
@@ -44,5 +69,6 @@ class RetrieveStoreWorker(MemoryBaseWorker):
 
         memory_node_list = sorted(memory_node_list, key=lambda x: x.score_similar, reverse=True)
         for node in memory_node_list:
-            self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} type={node.memory_type}")
+            self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} type={node.memory_type}"
+                             f"status={node.status}")
         self.set_memories(RETRIEVE_MEMORY_NODES, memory_node_list)

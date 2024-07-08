@@ -1,8 +1,6 @@
 from typing import List, Dict
 
-from memory_scope.constants.common_constants import (
-    NOT_UPDATED_NODES, MERGE_OBS_NODES,
-)
+from memory_scope.constants.common_constants import NOT_UPDATED_NODES, MERGE_OBS_NODES
 from memory_scope.constants.language_constants import NONE_WORD, INCLUDED_WORD, CONTRADICTORY_WORD
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
@@ -27,7 +25,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         return node, [n for n in retrieve_nodes if n.score_similar >= self.long_contra_repeat_threshold]
 
     def _run(self):
-        not_updated_nodes: List[MemoryNode] = self.get_context(NOT_UPDATED_NODES)
+        not_updated_nodes: List[MemoryNode] = self.get_memories(NOT_UPDATED_NODES)
         for node in not_updated_nodes:
             self.submit_async_task(fn=self.retrieve_similar_content, node=node)
 
@@ -103,10 +101,13 @@ class LongContraRepeatWorker(MemoryBaseWorker):
                     node.status = MemoryNodeStatus.EXPIRED.value
                 else:
                     node.content = content
+                    node.status = MemoryNodeStatus.CONTENT_MODIFIED.value
+
             elif status == self.get_language_value(INCLUDED_WORD):
                 node.status = MemoryNodeStatus.EXPIRED.value
+
             merge_obs_nodes.append(node)
             self.logger.info(f"after_long_contra_repeat: {node.content} {node.status}")
 
         # save context
-        self.set_context(MERGE_OBS_NODES, merge_obs_nodes)
+        self.set_memories(MERGE_OBS_NODES, merge_obs_nodes)

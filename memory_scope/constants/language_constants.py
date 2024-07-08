@@ -74,3 +74,8 @@ COMMA_WORD = {
     LanguageEnum.CN: "，",
     LanguageEnum.EN: ","
 }
+
+DEFAULT_HUMAN_NAME = {
+    LanguageEnum.CN: "用户",
+    LanguageEnum.EN: "user"
+}

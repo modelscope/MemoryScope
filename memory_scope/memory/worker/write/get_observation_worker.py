@@ -62,7 +62,7 @@ class GetObservationWorker(MemoryBaseWorker):
         return obtain_obs_message
 
     def save(self, new_obs_nodes: List[MemoryNode]):
-        self.set_context(NEW_OBS_NODES, new_obs_nodes)
+        self.set_memories(NEW_OBS_NODES, new_obs_nodes)
 
     def _run(self):
         obtain_obs_message = self.build_prompt()

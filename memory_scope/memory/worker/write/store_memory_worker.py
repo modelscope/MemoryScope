@@ -1,5 +1,3 @@
-from typing import List
-
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
@@ -12,9 +10,11 @@ class StoreMemoryWorker(MemoryBaseWorker):
     def _run(self):
         store_key: str = self.store_key
 
-        if self.has_content(store_key):
-            memory_nodes: List[MemoryNode] = self.get_context(store_key)
-            self.memory_store.update_memories(memory_nodes)
+        if store_key == "all":
+            self.save_memories()
+
+        elif self.has_content(store_key):
+            self.save_memories(store_key)
 
         elif store_key in self.chat_kwargs:
             query = self.chat_kwargs[store_key]

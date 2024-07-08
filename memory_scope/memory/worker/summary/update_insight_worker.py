@@ -100,9 +100,9 @@ class UpdateInsightWorker(MemoryBaseWorker):
         return insight_node
 
     def _run(self):
-        insight_nodes: List[MemoryNode] = self.get_context(INSIGHT_NODES)
-        not_updated_nodes: List[MemoryNode] = self.get_context(NOT_UPDATED_NODES)
-        not_reflected_nodes: List[MemoryNode] = self.get_context(NOT_REFLECTED_NODES)
+        insight_nodes: List[MemoryNode] = self.get_memories(INSIGHT_NODES)
+        not_updated_nodes: List[MemoryNode] = self.get_memories(NOT_UPDATED_NODES)
+        not_reflected_nodes: List[MemoryNode] = self.get_memories(NOT_REFLECTED_NODES)
 
         if not insight_nodes:
             self.logger.warning("insight_nodes is empty, stop.")
@@ -135,4 +135,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
         self.gather_async_result()
 
         for node in not_updated_nodes:
+            node.obs_updated = True
+
+        for node in not_reflected_nodes:
             node.obs_updated = True

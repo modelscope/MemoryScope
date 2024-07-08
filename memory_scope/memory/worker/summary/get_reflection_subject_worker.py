@@ -25,8 +25,8 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
                           status=MemoryNodeStatus.NEW.value)
 
     def _run(self):
-        not_reflected_nodes: List[MemoryNode] = self.get_context(NOT_REFLECTED_NODES)
-        insight_nodes: List[MemoryNode] = self.get_context(INSIGHT_NODES)
+        not_reflected_nodes: List[MemoryNode] = self.get_memories(NOT_REFLECTED_NODES)
+        insight_nodes: List[MemoryNode] = self.get_memories(INSIGHT_NODES)
 
         # count
         not_reflected_count = len(not_reflected_nodes)

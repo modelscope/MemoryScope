@@ -1,5 +1,5 @@
 from abc import ABCMeta
-from typing import List, Dict
+from typing import List, Dict, Set
 
 from memory_scope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS
 from memory_scope.memory.worker.base_worker import BaseWorker
@@ -70,18 +70,21 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             self._memory_store = G_CONTEXT.memory_store
         return self._memory_store
 
-    def get_memories(self, key: str) -> List[MemoryNode]:
+    def get_memories(self, keys: str | List[str]) -> List[MemoryNode]:
         memories: List[MemoryNode] = []
-        memory_ids: List[str] = self.get_context(key)
-        if memory_ids:
-            memories.extend([self._contex_memory_dict[x] for x in memory_ids])
+        if isinstance(keys, str):
+            keys = [keys]
+
+        for key in keys:
+            memory_ids: List[str] = self.get_context(key)
+            if memory_ids:
+                memories.extend([self._contex_memory_dict[x] for x in memory_ids])
         return memories
 
-    def set_memories(self, key: str, nodes: List[MemoryNode] | MemoryNode):
-        if not nodes:
-            return
-
-        if isinstance(nodes, MemoryNode):
+    def set_memories(self, key: str, nodes: MemoryNode | List[MemoryNode]):
+        if nodes is None:
+            nodes = []
+        elif isinstance(nodes, MemoryNode):
             nodes = [nodes]
 
         for node in nodes:
@@ -89,6 +92,23 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
                 continue
             self._contex_memory_dict[node.memory_id] = node
         self.set_context(key, [n.memory_id for n in nodes])
+
+    def save_memories(self, keys: str | List[str] = None):
+        if keys is None:
+            self.memory_store.update_memories(list(self._contex_memory_dict.values()))
+            self._contex_memory_dict.clear()
+            return
+
+        if isinstance(keys, str):
+            keys = [keys]
+
+        ids: Set[str] = Set[str]()
+        for key in keys:
+            t_ids: List[str] = self.get_context(key)
+            if t_ids:
+                ids.update(t_ids)
+        nodes = [self._contex_memory_dict.pop(_) for _ in ids]
+        self.memory_store.update_memories(nodes)
 
     @property
     def monitor(self) -> BaseMonitor:
