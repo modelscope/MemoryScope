@@ -151,7 +151,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                                             **kwargs)
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                         embed_model=self.embedding_model.model)
-       # self.index.build_index_from_nodes([TextNode(text="text")])
+        self.index.build_index_from_nodes([TextNode(text="text")])
         self.logger = Logger.get_logger()
 
     def retrieve_memories(self,
