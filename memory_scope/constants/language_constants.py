@@ -25,21 +25,6 @@ DATATIME_WORD_LIST = {
         "岁",
     ],
     LanguageEnum.EN: [
-
-    ]
-}
-
-WEEKDAYS = {
-    LanguageEnum.CN: [
-        "周一",
-        "周二",
-        "周三",
-        "周四",
-        "周五",
-        "周六",
-        "周日"
-    ],
-    LanguageEnum.EN: [
         # Units of Time
         "year", "yr",
         "month", "mo",
@@ -98,6 +83,27 @@ WEEKDAYS = {
         "Semester",
         "Fortnight",
         "Weekend"
+    ]
+}
+
+WEEKDAYS = {
+    LanguageEnum.CN: [
+        "周一",
+        "周二",
+        "周三",
+        "周四",
+        "周五",
+        "周六",
+        "周日"
+    ],
+    LanguageEnum.EN: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
     ]
 }
 
