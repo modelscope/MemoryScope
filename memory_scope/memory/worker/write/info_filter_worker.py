@@ -9,6 +9,9 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class InfoFilterWorker(MemoryBaseWorker):
+    """
+    This worker will filter and modify `self.chat_messages`, preserving only the messages that contain important information.
+    """
     FILE_PATH: str = __file__
 
     def _run(self):

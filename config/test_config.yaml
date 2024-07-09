@@ -81,3 +81,9 @@ worker:
     fuse_time_ratio: 2.0
     fuse_rerank_top_k: 10
 
+memory_store:
+  class: storage.llama_index_es_memory_store
+  embedding_model: dashscope_embedding
+  index_name: memory_index
+  es_url: http://11.160.132.46:9200
+  use_hybrid: false

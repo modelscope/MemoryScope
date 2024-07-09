@@ -76,7 +76,7 @@ class CliMemoryChat(BaseMemoryChat):
             self._generation_model = G_CONTEXT.model_dict[self._generation_model]
         return self._generation_model
 
-    def chat_with_memory(self, query: str) -> ModelResponse | ModelResponseGen:
+    def chat_with_memory(self, query: str, remember_response:bool=False) -> ModelResponse | ModelResponseGen:
         new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name=self.human_name, content=query)
         self.memory_service.add_messages(new_message)
 
@@ -98,7 +98,18 @@ class CliMemoryChat(BaseMemoryChat):
         # add new_message
         messages.append(new_message)
         self.logger.info(f"messages={messages}")
-        return self.generation_model.call(messages=messages, stream=self.stream)
+
+        # call LLM. in stream mode, return generator. in non-stream mode, return response.
+        generated = self.generation_model.call(messages=messages, stream=self.stream)
+
+        # in non-stream mode, remember the response if user demand to do so.
+        if remember_response:
+            assert not self.stream
+            generated.message.role_name = self.assistant_name
+            self.memory_service.add_messages(generated.message)
+        
+        # return response or generator
+        return generated
 
     @staticmethod
     def parse_query_command(query: str):
@@ -189,6 +200,7 @@ class CliMemoryChat(BaseMemoryChat):
                     model_response = self.chat_with_memory(query=query)
                     questionary.print(model_response.message.content)
 
+                # add response to memory
                 model_response.message.role_name = self.assistant_name
                 self.memory_service.add_messages(model_response.message)
 
