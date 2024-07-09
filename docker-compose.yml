@@ -8,6 +8,8 @@ services:
       DASHSCOPE_API_KEY: "sk-0000000000"
     volumes:
       - ./config:/memory_scope_project/memoryscope/config
+    requires:
+      - elasticsearch
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.2
