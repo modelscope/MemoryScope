@@ -40,6 +40,8 @@ class BaseWorker(metaclass=ABCMeta):
         return await asyncio.gather(*[fn(*args, **kwargs) for fn, args, kwargs in self.async_task_list])
 
     def gather_async_result(self):
+        if self.is_multi_thread:
+            raise RuntimeError(f"async_task is not allowed in multi_thread condition")
         results = asyncio.run(self._async_gather())
         self.async_task_list.clear()
         return results
@@ -56,7 +58,7 @@ class BaseWorker(metaclass=ABCMeta):
         raise NotImplementedError
 
     def run(self):
-        self.logger.info(f"----- worker_{self.name}_begin -----")
+        self.logger.info(f"----- worker.{self.name}.begin -----")
         with Timer(self.name, log_time=False) as t:
             if self.raise_exception:
                 self._run()
@@ -66,7 +68,7 @@ class BaseWorker(metaclass=ABCMeta):
                 except Exception as e:
                     self.logger.exception(f"run {self.name} failed! args={e.args}")
 
-            self.logger.info(f"----- worker_{self.name}_end cost={t.cost_str}-----")
+            self.logger.info(f"----- worker.{self.name}.end cost={t.cost_str}-----")
 
     def get_context(self, key: str, default=None):
         return self.context.get(key, default)

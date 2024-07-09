@@ -6,7 +6,7 @@ from pydantic import Field, BaseModel
 
 
 class MemoryNode(BaseModel):
-    memory_id: str = Field(uuid4(), description="unique id for memory")
+    memory_id: str = Field(str(uuid4()), description="unique id for memory")
 
     user_name: str = Field("", description="the user who owns the memory")
 

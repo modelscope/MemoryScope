@@ -6,6 +6,7 @@ from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.utils.response_text_parser import ResponseTextParser
+from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class ContraRepeatWorker(MemoryBaseWorker):
@@ -29,13 +30,11 @@ class ContraRepeatWorker(MemoryBaseWorker):
             user_query_list.append(f"{i + 1} {n.content}")
 
         system_prompt = self.prompt_handler.contra_repeat_system.format(num_obs=len(user_query_list),
-                                                                        user_name=self.user_id)
-        few_shot = self.prompt_handler.contra_repeat_few_shot.format(user_name=self.user_id)
+                                                                        user_name=self.target_name)
+        few_shot = self.prompt_handler.contra_repeat_few_shot.format(user_name=self.target_name)
         user_query = self.prompt_handler.contra_repeat_user_query.format(user_query="\n".join(user_query_list),
-                                                                         user_name=self.user_id)
-        contra_repeat_message = self.prompt_to_msg(system_prompt=system_prompt,
-                                                   few_shot=few_shot,
-                                                   user_query=user_query)
+                                                                         user_name=self.target_name)
+        contra_repeat_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"contra_repeat_message={contra_repeat_message}")
 
         # call LLM

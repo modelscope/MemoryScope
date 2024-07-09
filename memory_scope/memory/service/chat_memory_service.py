@@ -19,12 +19,14 @@ class ChatMemoryService(BaseMemoryService):
             if name in self._operation_dict:
                 self.logger.warning(f"memory operation={name} is repeated!")
                 continue
+
             self._operation_dict[name] = init_instance_by_config(
                 config=operation_config,
                 name=name,
                 chat_messages=self.chat_messages,
                 message_lock=self.message_lock,
                 contextual_msg_count=self.contextual_msg_count)
+            self.logger.info(f"service={self.__class__.__name__} init operation={name}")
 
     def add_messages(self, messages: List[Message] | Message):
         if isinstance(messages, Message):

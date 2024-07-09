@@ -1,7 +1,7 @@
 from abc import ABCMeta
 from typing import List, Dict, Set, Any
 
-from memory_scope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS
+from memory_scope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS, CONTEXT_MEMORY_DICT
 from memory_scope.memory.worker.base_worker import BaseWorker
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.memory_node import MemoryNode
@@ -32,8 +32,6 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         self._user_name: str | None = None
         self._target_name: str | None = None
         self._prompt_handler: PromptHandler | None = None
-
-        self._contex_memory_dict: Dict[str, MemoryNode] = {}
 
     @property
     def chat_messages(self) -> List[Message]:
@@ -71,6 +69,12 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             self._memory_store = G_CONTEXT.memory_store
         return self._memory_store
 
+    @property
+    def contex_memory_dict(self) -> Dict[str, MemoryNode]:
+        if not self.has_content(CONTEXT_MEMORY_DICT):
+            self.set_context(CONTEXT_MEMORY_DICT, {})
+        return self.get_context(CONTEXT_MEMORY_DICT)
+
     def get_memories(self, keys: str | List[str]) -> List[MemoryNode]:
         memories: List[MemoryNode] = []
         if isinstance(keys, str):
@@ -79,7 +83,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         for key in keys:
             memory_ids: List[str] = self.get_context(key)
             if memory_ids:
-                memories.extend([self._contex_memory_dict[x] for x in memory_ids])
+                memories.extend([self.contex_memory_dict[x] for x in memory_ids])
         return memories
 
     def set_memories(self, key: str, nodes: MemoryNode | List[MemoryNode]):
@@ -87,17 +91,16 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             nodes = []
         elif isinstance(nodes, MemoryNode):
             nodes = [nodes]
-
         for node in nodes:
-            if node.memory_id in self._contex_memory_dict:
+            if node.memory_id in self.contex_memory_dict:
                 continue
-            self._contex_memory_dict[node.memory_id] = node
+            self.contex_memory_dict[node.memory_id] = node
         self.set_context(key, [n.memory_id for n in nodes])
 
     def save_memories(self, keys: str | List[str] = None):
         if keys is None:
-            self.memory_store.update_memories(list(self._contex_memory_dict.values()))
-            self._contex_memory_dict.clear()
+            self.memory_store.update_memories(list(self.contex_memory_dict.values()))
+            self.contex_memory_dict.clear()
             return
 
         if isinstance(keys, str):
@@ -108,7 +111,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             t_ids: List[str] = self.get_context(key)
             if t_ids:
                 ids.update(t_ids)
-        nodes = [self._contex_memory_dict.pop(_) for _ in ids]
+        nodes = [self.contex_memory_dict.pop(_) for _ in ids]
         self.memory_store.update_memories(nodes)
 
     @property

@@ -4,6 +4,8 @@ RESULT = "result"
 
 CHAT_MESSAGES = "chat_messages"
 
+CONTEXT_MEMORY_DICT = "context_memory_dict"
+
 CHAT_KWARGS = "chat_kwargs"
 
 QUERY_WITH_TS = "query_with_ts"

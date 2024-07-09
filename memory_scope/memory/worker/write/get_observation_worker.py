@@ -24,7 +24,7 @@ class GetObservationWorker(MemoryBaseWorker):
             MemoryTypeEnum.CONVERSATION.value: message.content,
             TIME_INFER: time_infer,
             "keywords": keywords,
-            **dt_handler.dt_info_dict,
+            **{k: str(v) for k, v in dt_handler.dt_info_dict.items()},
         }
 
         if time_infer:

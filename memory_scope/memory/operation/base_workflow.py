@@ -66,7 +66,7 @@ class BaseWorkflow(object):
         return self.workflow_worker_list
 
     def _print_workflow(self):
-        self.logger.info(f"----- print_workflow_{self.name}_begin -----")
+        self.logger.info(f"----- workflow.{self.name}.print.begin -----")
         i: int = 0
         for workflow_part in self.workflow_worker_list:
             if len(workflow_part) == 1:
@@ -80,7 +80,7 @@ class BaseWorkflow(object):
                     for w in w_zip:
                         if w == "-":
                             continue
-        self.logger.info(f"----- print_workflow_{self.name}_end -----")
+        self.logger.info(f"----- workflow.{self.name}.print.end -----")
 
     def init_workers(self, is_backend: bool = False, **kwargs):
         for name in list(self.worker_dict.keys()):
@@ -106,7 +106,8 @@ class BaseWorkflow(object):
         return True
 
     def run_workflow(self):
-        with Timer(f"run_workflow_{self.name}"):
+        self.logger.info(f"----- workflow.{self.name}.begin -----")
+        with Timer(self.name, log_time=False) as t:
             self.context[WORKFLOW_NAME] = self.name
             for workflow_part in self.workflow_worker_list:
                 if len(workflow_part) == 1:
@@ -124,3 +125,4 @@ class BaseWorkflow(object):
                             break
                     if not flag:
                         break
+            self.logger.info(f"----- workflow.{self.name}.end cost={t.cost_str}-----")
