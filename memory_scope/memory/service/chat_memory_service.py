@@ -37,9 +37,9 @@ class ChatMemoryService(BaseMemoryService):
             for _ in range(gap_size):
                 self.chat_messages.pop(0)
 
-    def start_service(self):
+    def start_service(self, **kwargs):
         for _, operation in self._operation_dict.items():
-            operation.init_workflow()
+            operation.init_workflow(**kwargs)
             if operation.operation_type == "backend":
                 operation.run_operation_backend()
 

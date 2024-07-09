@@ -33,7 +33,7 @@ class BaseMemoryService(metaclass=ABCMeta):
     def add_messages(self, messages: List[Message] | Message):
         raise NotImplementedError
 
-    def start_service(self):
+    def start_service(self, **kwargs):
         pass
 
     @abstractmethod

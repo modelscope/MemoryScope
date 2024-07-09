@@ -82,7 +82,7 @@ class BaseWorkflow(object):
                             continue
         self.logger.info(f"----- print_workflow_{self.name}_end -----")
 
-    def init_workers(self):
+    def init_workers(self, is_backend: bool = False, **kwargs):
         for name in list(self.worker_dict.keys()):
             if name not in G_CONTEXT.worker_config:
                 raise RuntimeError(f"worker={name} is not exists in worker_config!")
@@ -91,9 +91,10 @@ class BaseWorkflow(object):
                 config=G_CONTEXT.worker_config[name],
                 suffix_name="worker",
                 name=name,
-                is_multi_thread=self.worker_dict[name],
+                is_multi_thread=is_backend or self.worker_dict[name],
                 context=self.context,
-                context_lock=self.context_lock)
+                context_lock=self.context_lock,
+                **kwargs)
 
     def _run_sub_workflow(self, worker_list: List[str]) -> bool:
         for name in worker_list:
@@ -113,8 +114,7 @@ class BaseWorkflow(object):
                 else:
                     t_list = []
                     for sub_workflow in workflow_part:
-                        t_list.append(G_CONTEXT.thread_pool.submit(
-                            self._run_sub_workflow, sub_workflow))
+                        t_list.append(G_CONTEXT.thread_pool.submit(self._run_sub_workflow, sub_workflow))
 
                     flag = True
                     for future in as_completed(t_list):

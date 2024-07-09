@@ -21,8 +21,8 @@ class ReadMemory(BaseWorkflow, BaseOperation):
         self.chat_messages: List[Message] = chat_messages
         self.his_msg_count: int = his_msg_count
 
-    def init_workflow(self):
-        self.init_workers()
+    def init_workflow(self, **kwargs):
+        self.init_workers(**kwargs)
 
     def run_operation(self, **kwargs):
         max_count = 1 + self.his_msg_count

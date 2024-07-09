@@ -35,8 +35,8 @@ class WriteMemory(BaseWorkflow, BaseBackendOperation):
                 for msg in self.chat_messages:
                     msg.memorized = True
 
-    def init_workflow(self):
-        self.init_workers()
+    def init_workflow(self, **kwargs):
+        self.init_workers(is_backend=True, **kwargs)
 
     def _run_operation(self, **kwargs):
         self.context[CHAT_KWARGS] = kwargs

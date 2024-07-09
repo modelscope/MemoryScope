@@ -69,12 +69,13 @@ class CliJob(object):
     def run(self, config: str):
         self.load_config(config)
 
-        with G_CONTEXT.thread_pool:
-            memory_chat = list(G_CONTEXT.memory_chat_dict.values())[0]
-            memory_chat.run()
+        # with G_CONTEXT.thread_pool:
+        memory_chat = list(G_CONTEXT.memory_chat_dict.values())[0]
+        memory_chat.run()
 
         G_CONTEXT.memory_store.close()
         G_CONTEXT.monitor.close()
+        G_CONTEXT.thread_pool.shutdown()
 
 
 if __name__ == "__main__":

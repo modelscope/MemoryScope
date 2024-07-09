@@ -12,9 +12,15 @@ class BaseOperation(metaclass=ABCMeta):
         self.description: str = description
         self.kwargs: dict = kwargs
 
-    def init_workflow(self):
+    def init_workflow(self, **kwargs):
         pass
 
     @abstractmethod
     def run_operation(self, **kwargs):
         raise NotImplementedError
+
+    def run_operation_backend(self):
+        pass
+
+    def stop_operation_backend(self):
+        pass

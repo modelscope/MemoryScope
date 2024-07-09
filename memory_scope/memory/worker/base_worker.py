@@ -32,14 +32,11 @@ class BaseWorker(metaclass=ABCMeta):
             raise RuntimeError(f"async_task is not allowed in multi_thread condition")
         self.task_list.append((fn, args, kwargs))
 
+    async def _async_gather(self):
+        return await asyncio.gather(*[fn(*args, **kwargs) for fn, args, kwargs in self.task_list])
+
     def gather_async_result(self):
-        if self.is_multi_thread:
-            raise RuntimeError(f"async_task is not allowed in multi_thread condition")
-
-        async def async_gather():
-            return await asyncio.gather(*[fn(*args, **kwargs) for fn, args, kwargs in self.task_list])
-
-        results = asyncio.run(async_gather())
+        results = asyncio.run(self._async_gather())
         self.task_list.clear()
         return results
 
