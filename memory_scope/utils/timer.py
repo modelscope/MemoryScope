@@ -5,7 +5,7 @@ from memory_scope.utils.logger import Logger
 
 class Timer(object):
 
-    def __init__(self, name: str, log_time: bool = True, use_ms: bool = False, **kwargs):
+    def __init__(self, name: str, log_time: bool = True, use_ms: bool = True, **kwargs):
         self.name: str = name
         self.log_time: bool = log_time
         self.use_ms: bool = use_ms

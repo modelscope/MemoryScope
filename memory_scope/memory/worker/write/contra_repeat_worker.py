@@ -20,6 +20,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
             return
 
         today_obs_nodes: List[MemoryNode] = self.get_memories(TODAY_NODES)
+
         if today_obs_nodes:
             all_obs_nodes.extend(today_obs_nodes)
         all_obs_nodes = sorted(all_obs_nodes, key=lambda x: x.timestamp, reverse=True)[:self.contra_repeat_max_count]

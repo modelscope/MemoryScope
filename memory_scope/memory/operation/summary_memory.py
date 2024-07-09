@@ -15,8 +15,8 @@ class SummaryMemory(BaseWorkflow, BaseBackendOperation):
         self.init_workers(is_backend=True, **kwargs)
 
     def _run_operation(self, **kwargs):
+        self.context.clear()
         self.context[CHAT_KWARGS] = kwargs
         self.run_workflow()
         result = self.context.get(RESULT)
-        self.context.clear()
         return result

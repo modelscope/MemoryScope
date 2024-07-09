@@ -13,7 +13,7 @@ from memory_scope.utils.timer import timer
 class LoadMemoryWorker(MemoryBaseWorker):
 
     @timer
-    def retrieve_not_reflected_memory(self, query: str):
+    async def retrieve_not_reflected_memory(self, query: str):
         if not self.retrieve_not_reflected_top_k:
             return
 
@@ -24,13 +24,13 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "obs_reflected": False,
         }
-        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
+        nodes: List[MemoryNode] = await self.memory_store.a_retrieve_memories(query=query,
                                                                       top_k=self.retrieve_not_reflected_top_k,
                                                                       filter_dict=filter_dict)
         self.set_memories(NOT_REFLECTED_NODES, nodes)
 
     @timer
-    def retrieve_not_updated_memory(self, query: str):
+    async def retrieve_not_updated_memory(self, query: str):
         if not self.retrieve_not_updated_top_k:
             return
 
@@ -41,13 +41,13 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "obs_updated": False,
         }
-        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
+        nodes: List[MemoryNode] = await self.memory_store.a_retrieve_memories(query=query,
                                                                       top_k=self.retrieve_not_updated_top_k,
                                                                       filter_dict=filter_dict)
         self.set_memories(NOT_UPDATED_NODES, nodes)
 
     @timer
-    def retrieve_insight_memory(self, query: str):
+    async def retrieve_insight_memory(self, query: str):
         if not self.retrieve_insight_top_k:
             return
 
@@ -57,13 +57,13 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
-        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
+        nodes: List[MemoryNode] = await self.memory_store.a_retrieve_memories(query=query,
                                                                       top_k=self.retrieve_insight_top_k,
                                                                       filter_dict=filter_dict)
         self.set_memories(INSIGHT_NODES, nodes)
 
     @timer
-    def retrieve_today_memory(self):
+    async def retrieve_today_memory(self):
         if not self.today_obs_top_k:
             return
 
@@ -80,7 +80,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "dt": dt_handler.datetime_format(),
         }
-        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=message.content,
+        nodes: List[MemoryNode] = await self.memory_store.a_retrieve_memories(query=message.content,
                                                                       top_k=self.today_obs_top_k,
                                                                       filter_dict=filter_dict)
 
@@ -88,8 +88,14 @@ class LoadMemoryWorker(MemoryBaseWorker):
 
     def _run(self):
         mock_query = "-"
-        self.submit_thread_task(self.retrieve_not_reflected_memory, query=mock_query)
-        self.submit_thread_task(self.retrieve_not_updated_memory, query=mock_query)
-        self.submit_thread_task(self.retrieve_insight_memory, query=mock_query)
-        self.submit_thread_task(self.retrieve_today_memory)
-        self.gather_thread_result()
+        # self.submit_thread_task(self.retrieve_not_reflected_memory, query=mock_query)
+        # self.submit_thread_task(self.retrieve_not_updated_memory, query=mock_query)
+        # self.submit_thread_task(self.retrieve_insight_memory, query=mock_query)
+        # self.submit_thread_task(self.retrieve_today_memory)
+        # self.gather_thread_result()
+
+        self.submit_async_task(self.retrieve_not_reflected_memory, query=mock_query)
+        self.submit_async_task(self.retrieve_not_updated_memory, query=mock_query)
+        self.submit_async_task(self.retrieve_insight_memory, query=mock_query)
+        self.submit_async_task(self.retrieve_today_memory)
+        self.gather_async_result()

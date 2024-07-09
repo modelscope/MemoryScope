@@ -39,6 +39,7 @@ class WriteMemory(BaseWorkflow, BaseBackendOperation):
         self.init_workers(is_backend=True, **kwargs)
 
     def _run_operation(self, **kwargs):
+        self.context.clear()
         self.context[CHAT_KWARGS] = kwargs
         not_memorized_size = self.not_memorized_size
         if not_memorized_size < self.contextual_msg_count:
@@ -51,6 +52,5 @@ class WriteMemory(BaseWorkflow, BaseBackendOperation):
         self.context[CHAT_MESSAGES] = [x.copy(deep=True) for x in self.chat_messages[-max_count:]]
         self.run_workflow()
         result = self.context.get(RESULT)
-        self.context.clear()
         self.set_memorized()
         return result
