@@ -111,17 +111,17 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         for node in insight_nodes:
             if node.status == MemoryNodeStatus.ACTIVE.value:
-                self.submit_async_task(fn=self.filter_obs_nodes,
-                                       insight_node=node,
-                                       not_updated_nodes=not_updated_nodes)
+                self.submit_thread_task(fn=self.filter_obs_nodes,
+                                        insight_node=node,
+                                        not_updated_nodes=not_updated_nodes)
             else:
-                self.submit_async_task(fn=self.filter_obs_nodes,
-                                       insight_node=node,
-                                       not_updated_nodes=not_reflected_nodes)
+                self.submit_thread_task(fn=self.filter_obs_nodes,
+                                        insight_node=node,
+                                        not_updated_nodes=not_reflected_nodes)
 
         # select top n
         result_list = []
-        for result in self.gather_async_result():
+        for result in self.gather_thread_result():
             insight_node, filtered_nodes, max_score = result
             if not filtered_nodes:
                 continue
@@ -130,10 +130,10 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         # submit llm update task
         for insight_node, filtered_nodes, _ in result_sorted:
-            self.submit_async_task(fn=self.update_insight, insight_node=insight_node, filtered_nodes=filtered_nodes)
+            self.submit_thread_task(fn=self.update_insight, insight_node=insight_node, filtered_nodes=filtered_nodes)
 
         # get result
-        self.gather_async_result()
+        self.gather_thread_result()
 
         for node in not_updated_nodes:
             node.obs_updated = True

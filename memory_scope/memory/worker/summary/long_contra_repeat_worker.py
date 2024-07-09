@@ -13,25 +13,25 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 class LongContraRepeatWorker(MemoryBaseWorker):
     FILE_PATH: str = __file__
 
-    async def retrieve_similar_content(self, node: MemoryNode) -> (MemoryNode, List[MemoryNode]):
+    def retrieve_similar_content(self, node: MemoryNode) -> (MemoryNode, List[MemoryNode]):
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value]
         }
-        retrieve_nodes = await self.memory_store.a_retrieve_memories(query=node.content,
-                                                                     top_k=self.long_contra_repeat_top_k,
-                                                                     filter_dict=filter_dict)
+        retrieve_nodes = self.memory_store.retrieve_memories(query=node.content,
+                                                             top_k=self.long_contra_repeat_top_k,
+                                                             filter_dict=filter_dict)
         return node, [n for n in retrieve_nodes if n.score_similar >= self.long_contra_repeat_threshold]
 
     def _run(self):
         not_updated_nodes: List[MemoryNode] = self.get_memories(NOT_UPDATED_NODES)
         for node in not_updated_nodes:
-            self.submit_async_task(fn=self.retrieve_similar_content, node=node)
+            self.submit_thread_task(fn=self.retrieve_similar_content, node=node)
 
         obs_node_dict: Dict[str, MemoryNode] = {}
-        for origin_node, retrieve_nodes in self.gather_async_result():
+        for origin_node, retrieve_nodes in self.gather_thread_result():
             if not retrieve_nodes:
                 continue
             obs_node_dict[origin_node.memory_id] = origin_node

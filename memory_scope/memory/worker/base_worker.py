@@ -1,5 +1,6 @@
 import asyncio
 from abc import ABCMeta, abstractmethod
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict
 
 from memory_scope.utils.logger import Logger
@@ -14,6 +15,7 @@ class BaseWorker(metaclass=ABCMeta):
                  context_lock=None,
                  raise_exception: bool = True,
                  is_multi_thread: bool = False,
+                 thread_pool: ThreadPoolExecutor = None,
                  **kwargs):
 
         self.name: str = name
@@ -21,24 +23,33 @@ class BaseWorker(metaclass=ABCMeta):
         self.context_lock = context_lock
         self.raise_exception: bool = raise_exception
         self.is_multi_thread: bool = is_multi_thread
+        self.thread_pool: ThreadPoolExecutor = thread_pool
         self.kwargs: dict = kwargs
 
         self.continue_run: bool = True
-        self.task_list: list = []
+        self.async_task_list: list = []
+        self.thread_task_list: list = []
         self.logger: Logger = Logger.get_logger()
 
     def submit_async_task(self, fn, *args, **kwargs):
         if self.is_multi_thread:
             raise RuntimeError(f"async_task is not allowed in multi_thread condition")
-        self.task_list.append((fn, args, kwargs))
+        self.async_task_list.append((fn, args, kwargs))
 
     async def _async_gather(self):
-        return await asyncio.gather(*[fn(*args, **kwargs) for fn, args, kwargs in self.task_list])
+        return await asyncio.gather(*[fn(*args, **kwargs) for fn, args, kwargs in self.async_task_list])
 
     def gather_async_result(self):
         results = asyncio.run(self._async_gather())
-        self.task_list.clear()
+        self.async_task_list.clear()
         return results
+
+    def submit_thread_task(self, fn, *args, **kwargs):
+        self.thread_task_list.append(self.thread_pool.submit(fn, *args, **kwargs))
+
+    def gather_thread_result(self):
+        for future in as_completed(self.thread_task_list):
+            yield future.result()
 
     @abstractmethod
     def _run(self):

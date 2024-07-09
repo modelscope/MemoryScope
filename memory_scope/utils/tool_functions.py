@@ -4,11 +4,13 @@ import re
 import time
 from copy import deepcopy
 from importlib import import_module
+from typing import List
 
 import pyfiglet
 from termcolor import colored
 
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
+from memory_scope.scheme.message import Message
 
 ALL_COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan", "light_grey", "light_red", "light_green",
               "light_yellow", "light_blue", "light_magenta", "light_cyan", "white"]
@@ -76,18 +78,11 @@ def init_instance_by_config(config: dict,
     return getattr(module, cls_name)(**config_copy)
 
 
-def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str):
+def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str) -> List[Message]:
     return [
-        {
-            "role": MessageRoleEnum.SYSTEM.value,
-            "content": system_prompt.strip(),
-        },
-        {
-            "role": MessageRoleEnum.USER.value,
-            "content": "\n".join(
-                [x.strip() for x in [few_shot, system_prompt, user_query]]
-            ),
-        },
+        Message(role=MessageRoleEnum.SYSTEM.value, content=system_prompt.strip()),
+        Message(role=MessageRoleEnum.USER.value,
+                content="\n".join([x.strip() for x in [few_shot, system_prompt, user_query]]))
     ]
 
 

@@ -14,6 +14,7 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 class GetObservationWorker(MemoryBaseWorker):
     FILE_PATH: str = __file__
+    OBS_STORE_KEY: str = NEW_OBS_NODES
 
     def add_observation(self, message: Message, time_infer: str, obs_content: str, keywords: str):
         dt_handler = DatetimeHandler(dt=message.time_created)
@@ -40,18 +41,17 @@ class GetObservationWorker(MemoryBaseWorker):
                           obs_reflected=False,
                           obs_updated=False)
 
-    def build_prompt(self) -> List[Message]:
-        # build prompt
-        user_query_list = []
-        i = 1
+    def filter_messages(self) -> List[Message]:
+        filter_messages = []
         for msg in self.chat_messages:
             if not DatetimeHandler.has_time_word(query=msg.content):
-                user_query_list.append(f"{i} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
-                i += 1
+                filter_messages.append(msg)
+        return filter_messages
 
-        if not user_query_list:
-            self.logger.warning(f"get obs user_query_list={user_query_list} is empty")
-            return []
+    def build_message(self, filter_messages: List[Message]) -> List[Message]:
+        user_query_list = []
+        for i, msg in enumerate(filter_messages):
+            user_query_list.append(f"{i} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
 
         system_prompt = self.prompt_handler.get_observation_system.format(num_obs=len(user_query_list),
                                                                           user_name=self.target_name)
@@ -63,14 +63,13 @@ class GetObservationWorker(MemoryBaseWorker):
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")
         return obtain_obs_message
 
-    def save(self, new_obs_nodes: List[MemoryNode]):
-        self.set_memories(NEW_OBS_NODES, new_obs_nodes)
-
     def _run(self):
-        obtain_obs_message = self.build_prompt()
-        if not obtain_obs_message:
-            self.logger.warning("get obs message is empty!")
+        filter_messages = self.filter_messages()
+        if not filter_messages:
+            self.logger.warning("get obs filter_messages is empty!")
             return
+
+        obtain_obs_message = self.build_message(filter_messages)
 
         # call LLM
         response = self.generation_model.call(messages=obtain_obs_message, top_k=self.generation_model_top_k)
@@ -111,13 +110,13 @@ class GetObservationWorker(MemoryBaseWorker):
 
             # index number needs to be corrected to -1
             idx = int(idx) - 1
-            if idx >= len(self.messages):
-                self.logger.warning(f"idx={idx} is invalid! messages.size={len(self.messages)}")
+            if idx >= len(filter_messages):
+                self.logger.warning(f"idx={idx} is invalid! filter_messages.size={len(filter_messages)}")
                 continue
 
-            new_obs_nodes.append(self.add_observation(message=self.messages[idx],
+            new_obs_nodes.append(self.add_observation(message=filter_messages[idx],
                                                       time_infer=time_infer,
                                                       obs_content=obs_content,
                                                       keywords=keywords))
 
-        self.save(new_obs_nodes)
+        self.set_memories(self.OBS_STORE_KEY, new_obs_nodes)

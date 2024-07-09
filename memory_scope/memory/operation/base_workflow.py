@@ -94,6 +94,7 @@ class BaseWorkflow(object):
                 is_multi_thread=is_backend or self.worker_dict[name],
                 context=self.context,
                 context_lock=self.context_lock,
+                thread_pool=G_CONTEXT.thread_pool,
                 **kwargs)
 
     def _run_sub_workflow(self, worker_list: List[str]) -> bool:
