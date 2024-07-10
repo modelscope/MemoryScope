@@ -141,12 +141,14 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
 
 class LlamaIndexEsMemoryStore(BaseMemoryStore):
     def __init__(self,
-                 embedding_model: BaseModel,
+                 embedding_model_conf: dict,
                  index_name: str,
                  es_url: str,
                  use_hybrid: bool = True,
                  **kwargs):
 
+        from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
+        embedding_model = LlamaIndexEmbeddingModel(**embedding_model_conf)
         self.embedding_model: BaseModel = embedding_model
         self.es_store = _ElasticsearchStore(index_name=index_name,
                                             es_url=es_url,
