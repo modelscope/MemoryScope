@@ -6,7 +6,9 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
 from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
+
 from memory_scope.storage.llama_index_es_memory_store import LlamaIndexEsMemoryStore
+from memory_scope.storage.llama_index_es_memory_store_sync import LlamaIndexEsMemoryStore as SyncLlamaIndexEsMemoryStore
 from memory_scope.utils.logger import Logger
 logger = Logger.get_logger("default")
 
@@ -16,24 +18,26 @@ logger = Logger.get_logger("default")
 class ThreadTest(object):
     def __init__(self):
         self.task_list = []
-        embedding_model_conf = {
+        config = {
             "module_name": "dashscope_embedding",
             "model_name": "text-embedding-v2",
             "clazz": "models.llama_index_embedding_model",
         }
+        emb = LlamaIndexEmbeddingModel(**config)
 
         config = {
             "index_name": "0708_2",
             "es_url": "http://localhost:9200",
-            "embedding_model_conf": embedding_model_conf,
+            "embedding_model": emb,
             "use_hybrid": True
 
         }
-        self.es_store = LlamaIndexEsMemoryStore(**config)   # 不能在async中初始化
+        self.es_store = SyncLlamaIndexEsMemoryStore(**config)   # 不能在async中初始化
         self.logger = logger
 
     def major_func(self, i: int):
-        result = self.es_store.retrieve_memories("_", top_k=10, filter_dict={"memory_id": "ggg567"})
+        result = self.es_store.retrieve_memories("_", top_k=10, filter_dict={})
+        print(result)
         return result
 
     def run(self):
