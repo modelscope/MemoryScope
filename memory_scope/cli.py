@@ -17,6 +17,7 @@ from memory_scope.utils.logger import Logger
 from memory_scope.utils.timer import timer
 from memory_scope.utils.tool_functions import init_instance_by_config
 
+
 class MemoryScope(object):
 
     def __init__(self):
@@ -82,10 +83,12 @@ class MemoryScope(object):
     def get_default_chat_handle(self):
         return list(G_CONTEXT.memory_chat_dict.values())[0]
 
+
 class CliJob(MemoryScope):
 
     def run(self, config: str):
         self.load_config(config)
+        self.init_global_content_by_config()
 
         # with G_CONTEXT.thread_pool:
         memory_chat = list(G_CONTEXT.memory_chat_dict.values())[0]

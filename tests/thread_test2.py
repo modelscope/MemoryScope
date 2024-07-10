@@ -9,8 +9,6 @@ from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingM
 from memory_scope.storage.llama_index_es_memory_store import LlamaIndexEsMemoryStore
 from memory_scope.utils.logger import Logger
 
-import questionary
-
 logger = Logger.get_logger("default")
 
 
@@ -38,16 +36,7 @@ class ThreadTest(object):
         try:
             self.logger.info(f"i: {i}")
             await asyncio.sleep(i)
-            # self.es_store.insert(MemoryNode(
-            #     content="xxxxxx",
-            #     memory_type="profile",
-            #     user_id="6",
-            #     status="valid",
-            #     memory_id="ggg567",
-            #     meta_data={"5": "5"}
-            # ))
-
-            result = self.es_store.retrieve_memories("_", top_k=10, filter_dict={"memory_id": "ggg567"})
+            # result = self.es_store.retrieve_memories("_", top_k=10, filter_dict={"memory_id": "ggg567"})
         except Exception as e:
             self.logger.exception(f"encounter error. e={e.args}")
 
@@ -74,6 +63,3 @@ class ThreadTest(object):
 executor = ThreadPoolExecutor(max_workers=5)
 t1 = executor.submit(ThreadTest().run)
 executor.shutdown()
-# while True:
-#     query = questionary.text(message="user:", multiline=False, qmark=">").unsafe_ask()
-#     print(query)
