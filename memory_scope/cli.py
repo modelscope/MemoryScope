@@ -68,8 +68,9 @@ class MemoryScope(object):
         if "memory_store" not in self.config:
             raise RuntimeError("memory_store config is required!")
         memory_store_config = self.config["memory_store"]
-        embedding_model = G_CONTEXT.model_dict[memory_store_config[ModelEnum.EMBEDDING_MODEL.value]]
-        G_CONTEXT.memory_store = init_instance_by_config(memory_store_config, embedding_model=embedding_model)
+        # embedding_model = G_CONTEXT.model_dict[memory_store_config[ModelEnum.EMBEDDING_MODEL.value]]
+        embedding_model_conf = self.config["models"][memory_store_config[ModelEnum.EMBEDDING_MODEL.value]]
+        G_CONTEXT.memory_store = init_instance_by_config(memory_store_config, embedding_model_conf=embedding_model_conf)
 
         # init monitor
         G_CONTEXT.monitor = init_instance_by_config(self.config["monitor"])

@@ -138,8 +138,10 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
                 result['bool'].update({"must": operand})
     return result
 
-
-class LlamaIndexEsMemoryStore(BaseMemoryStore):
+import ray
+ray.init(ignore_reinit_error=True)
+@ray.remote
+class _LlamaIndexEsMemoryStore(BaseMemoryStore):
     def __init__(self,
                  embedding_model_conf: dict,
                  index_name: str,
@@ -170,21 +172,6 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter}, similarity_top_k=top_k,
                                             sparse_top_k=top_k)
         text_nodes = retriever.retrieve(query)
-        return [self._text_node_2_memory_node(n) for n in text_nodes]
-
-    async def a_retrieve_memories(self,
-                                  query: str,
-                                  top_k: int,
-                                  filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
-        self.logger.info(f"query={query} top_k={top_k} filter_dict={filter_dict}")
-
-        if filter_dict is None:
-            filter_dict = {}
-        es_filter = _to_elasticsearch_filter(filter_dict)
-        retriever = self.index.as_retriever(
-            vector_store_kwargs={"es_filter": es_filter},
-            similarity_top_k=top_k)
-        text_nodes: List[NodeWithScore] = await retriever.aretrieve(query)
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
     def insert(self, node: MemoryNode):
@@ -246,6 +233,52 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                 n.status = MemoryNodeStatus.ACTIVE.value
                 self.delete(n)
                 self.insert(n)
+
+    @staticmethod
+    def _memory_node_2_text_node(memory_node: MemoryNode) -> TextNode:
+        return TextNode(id_=memory_node.memory_id,
+                        text=memory_node.content,
+                        metadata=memory_node.model_dump(exclude={"content"}))
+
+    @staticmethod
+    def _text_node_2_memory_node(text_node: NodeWithScore) -> MemoryNode:
+        return MemoryNode(content=text_node.text, **text_node.metadata)
+
+
+
+class LlamaIndexEsMemoryStore():
+    def __init__(self,
+                 embedding_model_conf: BaseModel,
+                 index_name: str,
+                 es_url: str,
+                 use_hybrid: bool = True,
+                 **kwargs):
+        if 'embedding_model' in kwargs: kwargs.pop('embedding_model')
+        self.proxy_obj = _LlamaIndexEsMemoryStore.remote(embedding_model_conf, index_name, es_url, use_hybrid, **kwargs)
+
+    def retrieve_memories(self,
+                          query: str,
+                          top_k: int,
+                          filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
+        return ray.get(self.proxy_obj.retrieve_memories.remote(query, top_k, filter_dict))
+
+    def insert(self, node: MemoryNode):
+        return ray.get(self.proxy_obj.insert.remote(node))
+
+    def delete(self, node: MemoryNode):
+        return ray.get(self.proxy_obj.delete.remote(node))
+
+    def update(self, node: MemoryNode):
+        return ray.get(self.proxy_obj.update.remote(node))
+
+    def update_batch(self, nodes: List[MemoryNode]):
+        return ray.get(self.proxy_obj.update_batch.remote(nodes))
+
+    def close(self):
+        return ray.get(self.proxy_obj.close.remote())
+
+    def update_memories(self, nodes: MemoryNode | List[MemoryNode]):
+        return ray.get(self.proxy_obj.update_memories.remote(nodes))
 
     @staticmethod
     def _memory_node_2_text_node(memory_node: MemoryNode) -> TextNode:

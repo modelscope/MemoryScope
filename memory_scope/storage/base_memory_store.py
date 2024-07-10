@@ -11,10 +11,6 @@ class BaseMemoryStore(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    async def a_retrieve_memories(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
-        pass
-
-    @abstractmethod
     def update_memories(self, nodes: MemoryNode | List[MemoryNode]):
         """
         status:
