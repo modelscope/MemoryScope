@@ -21,7 +21,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
-        return await self.memory_store.a_retrieve_memories(query=query,
+        return self.memory_store.retrieve_memories(query=query,
                                                            top_k=self.retrieve_obs_top_k,
                                                            filter_dict=filter_dict)
 
@@ -36,7 +36,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
-        return await self.memory_store.a_retrieve_memories(query=query,
+        return self.memory_store.retrieve_memories(query=query,
                                                            top_k=self.retrieve_ins_pf_top_k,
                                                            filter_dict=filter_dict)
 
@@ -51,7 +51,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.EXPIRED.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
-        return await self.memory_store.a_retrieve_memories(query=query,
+        return self.memory_store.retrieve_memories(query=query,
                                                            top_k=self.retrieve_expired_top_k,
                                                            filter_dict=filter_dict)
 
