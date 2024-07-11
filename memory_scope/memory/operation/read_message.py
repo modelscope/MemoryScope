@@ -11,7 +11,7 @@ class ReadMessage(BaseOperation):
                  name: str,
                  description: str,
                  chat_messages: List[Message],
-                 contextual_msg_count: int = 6,  # for the current context dialogue
+                 contextual_msg_count: int,  # for the current context dialogue
                  **kwargs):
         super().__init__(name=name, description=description, **kwargs)
         self.chat_messages: List[Message] = chat_messages

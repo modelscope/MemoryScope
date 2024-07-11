@@ -6,7 +6,7 @@ memory_chat:
   cli_memory_chat:
     class: chat.cli_memory_chat
     memory_service: memory_chat_service
-    generation_model: dummy_generation
+    generation_model: dashscope_generation
 
 memory_service:
   memory_chat_service:
@@ -19,8 +19,7 @@ memory_service:
         description: "read session messages of the user"
       read_memory:
         class: memory.operation.read_memory
-        #        workflow: set_query,retrieve_memory1,[extract_time|semantic_rank],fuse_rerank
-        workflow: dummy
+        workflow: set_query,[extract_time|retrieve_memory1,semantic_rank],fuse_rerank
         description: "read related memories of the user"
       list_memory:
         class: memory.operation.read_memory
@@ -56,6 +55,7 @@ worker:
     generation_model_top_k: 1
   semantic_rank:
     class: memory.worker.read.semantic_rank_worker
+    rank_model: dashscope_rank
   fuse_rerank:
     class: memory.worker.read.fuse_rerank_worker
     fuse_score_threshold: 0.1
@@ -142,7 +142,7 @@ models:
     model_name: dummy_generation_model
 
 memory_store:
-  class: storage.llama_index_es_memory_store
+  class: storage.llama_index_es_memory_store_sync
   embedding_model: dashscope_embedding
   index_name: memory_index
   es_url: http://localhost:9200

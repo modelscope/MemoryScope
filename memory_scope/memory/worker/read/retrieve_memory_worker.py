@@ -11,7 +11,7 @@ from memory_scope.utils.timer import timer
 class RetrieveMemoryWorker(MemoryBaseWorker):
 
     @timer
-    async def retrieve_from_observation(self, query: str) -> List[MemoryNode]:
+    def retrieve_from_observation(self, query: str) -> List[MemoryNode]:
         if not self.retrieve_obs_top_k:
             return []
 
@@ -22,11 +22,11 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
         return self.memory_store.retrieve_memories(query=query,
-                                                           top_k=self.retrieve_obs_top_k,
-                                                           filter_dict=filter_dict)
+                                                   top_k=self.retrieve_obs_top_k,
+                                                   filter_dict=filter_dict)
 
     @timer
-    async def retrieve_from_insight_and_profile(self, query: str) -> List[MemoryNode]:
+    def retrieve_from_insight_and_profile(self, query: str) -> List[MemoryNode]:
         if not self.retrieve_ins_pf_top_k:
             return []
 
@@ -37,11 +37,11 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
         return self.memory_store.retrieve_memories(query=query,
-                                                           top_k=self.retrieve_ins_pf_top_k,
-                                                           filter_dict=filter_dict)
+                                                   top_k=self.retrieve_ins_pf_top_k,
+                                                   filter_dict=filter_dict)
 
     @timer
-    async def retrieve_expired_memory(self, query: str) -> List[MemoryNode]:
+    def retrieve_expired_memory(self, query: str) -> List[MemoryNode]:
         if not self.retrieve_expired_top_k:
             return []
 
@@ -52,23 +52,23 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
         return self.memory_store.retrieve_memories(query=query,
-                                                           top_k=self.retrieve_expired_top_k,
-                                                           filter_dict=filter_dict)
+                                                   top_k=self.retrieve_expired_top_k,
+                                                   filter_dict=filter_dict)
 
     def _run(self):
         query, _ = self.get_context(QUERY_WITH_TS)
-        self.submit_async_task(self.retrieve_from_observation, query=query)
-        self.submit_async_task(self.retrieve_from_insight_and_profile, query=query)
-        self.submit_async_task(self.retrieve_expired_memory, query=query)
+        self.submit_thread_task(self.retrieve_from_observation, query=query)
+        self.submit_thread_task(self.retrieve_from_insight_and_profile, query=query)
+        self.submit_thread_task(self.retrieve_expired_memory, query=query)
 
         memory_node_list: List[MemoryNode] = []
-        for result in self.gather_async_result():
+        for result in self.gather_thread_result():
             if result:
                 memory_node_list.extend(result)
         self.logger.info(f"memory_node_list.size={len(memory_node_list)}")
 
         memory_node_list = sorted(memory_node_list, key=lambda x: x.score_similar, reverse=True)
         for node in memory_node_list:
-            self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} type={node.memory_type}"
-                             f"status={node.status}")
+            self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} "
+                             f"type={node.memory_type} status={node.status}")
         self.set_memories(RETRIEVE_MEMORY_NODES, memory_node_list)

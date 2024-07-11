@@ -2,15 +2,15 @@ from typing import Dict, List, Any, Optional, cast
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import TextNode, NodeWithScore
-from llama_index.vector_stores.elasticsearch import ElasticsearchStore, AsyncDenseVectorStrategy
+from llama_index.vector_stores.elasticsearch import AsyncDenseVectorStrategy
 
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.storage.base_memory_store import BaseMemoryStore
+from memory_scope.storage.llama_index_sync_elasticsearch import SyncElasticsearchStore
 from memory_scope.utils.logger import Logger
 
-from memory_scope.storage.llama_index_sync_elasticsearch import SyncElasticsearchStore
 
 class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
     def _hybrid(self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int) -> Dict[str, Any]:
@@ -124,7 +124,7 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
     return result
 
 
-class LlamaIndexEsMemoryStore(BaseMemoryStore):
+class LlamaIndexEsMemoryStoreSync(BaseMemoryStore):
     def __init__(self,
                  embedding_model: BaseModel,
                  index_name: str,
@@ -134,11 +134,13 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
         self.embedding_model: BaseModel = embedding_model
         self.es_store = SyncElasticsearchStore(index_name=index_name,
-                                            es_url=es_url,
-                                            retrieval_strategy=_AsyncDenseVectorStrategy(hybrid=use_hybrid),
-                                            **kwargs)
-        self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
-                                                        embed_model=self.embedding_model.model)
+                                               es_url=es_url,
+                                               retrieval_strategy=_AsyncDenseVectorStrategy(hybrid=use_hybrid),
+                                               **kwargs)
+        # use /dev/null
+        with open(os.devnull, 'w') as devnull:
+            self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
+                                                            embed_model=self.embedding_model.model)
         self.index.build_index_from_nodes([TextNode(text="text")])
         self.logger = Logger.get_logger()
 
@@ -192,13 +194,14 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         if not nodes:
             self.logger.warning("empty nodes!")
             return
+        self.logger.info(f"update_memories nodes={nodes}")
 
         if isinstance(nodes, MemoryNode):
             nodes = [nodes]
 
         # emb & insert new memories
         # TODO batch insert
-        new_memories = [n for n in nodes if n.status == MemoryNodeStatus.NEW]
+        new_memories = [n for n in nodes if n.status == MemoryNodeStatus.NEW.value]
         if new_memories:
             for n in new_memories:
                 n.status = MemoryNodeStatus.ACTIVE.value
@@ -206,7 +209,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
         # emb & update new memories
         # TODO insert overwrite
-        c_modified_memories = [n for n in nodes if n.status == MemoryNodeStatus.CONTENT_MODIFIED]
+        c_modified_memories = [n for n in nodes if n.status == MemoryNodeStatus.CONTENT_MODIFIED.value]
         if c_modified_memories:
             for n in c_modified_memories:
                 n.status = MemoryNodeStatus.ACTIVE.value
@@ -215,7 +218,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
         # update new memories
         # TODO no emb
-        modified_memories = [n for n in nodes if n.status == MemoryNodeStatus.MODIFIED]
+        modified_memories = [n for n in nodes if n.status == MemoryNodeStatus.MODIFIED.value]
         if modified_memories:
             for n in modified_memories:
                 n.status = MemoryNodeStatus.ACTIVE.value
@@ -223,10 +226,9 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                 self.insert(n)
 
         # set memories expired
-        expired_memories = [n for n in nodes if n.status == MemoryNodeStatus.EXPIRED]
+        expired_memories = [n for n in nodes if n.status == MemoryNodeStatus.EXPIRED.value]
         if expired_memories:
             for n in expired_memories:
-                n.status = MemoryNodeStatus.ACTIVE.value
                 self.delete(n)
                 self.insert(n)
 

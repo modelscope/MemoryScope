@@ -1,3 +1,4 @@
+import datetime
 import sys
 
 sys.path.append(".")  # noqa: E402
@@ -22,7 +23,8 @@ class MemoryScope(object):
 
     def __init__(self):
         self.config: Dict[str, Any] = {}
-        self.logger: Logger = Logger.get_logger("cli_job", to_stream=False)
+        datetime_suffix = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        self.logger: Logger = Logger.get_logger(f"cli_job_{datetime_suffix}", to_stream=False)
 
     def load_config(self, path: str):
         with open(path) as f:
@@ -36,7 +38,8 @@ class MemoryScope(object):
         atexit.register(self.shutdown)  # register clean up function
         return self
 
-    def shutdown(self):
+    @staticmethod
+    def shutdown():
         print('Gracefully executing the shutdown function...')
         G_CONTEXT.memory_store.close()
         G_CONTEXT.monitor.close()
@@ -68,9 +71,8 @@ class MemoryScope(object):
         if "memory_store" not in self.config:
             raise RuntimeError("memory_store config is required!")
         memory_store_config = self.config["memory_store"]
-        # embedding_model = G_CONTEXT.model_dict[memory_store_config[ModelEnum.EMBEDDING_MODEL.value]]
-        embedding_model_conf = self.config["models"][memory_store_config[ModelEnum.EMBEDDING_MODEL.value]]
-        G_CONTEXT.memory_store = init_instance_by_config(memory_store_config, embedding_model_conf=embedding_model_conf)
+        embedding_model = G_CONTEXT.model_dict[memory_store_config[ModelEnum.EMBEDDING_MODEL.value]]
+        G_CONTEXT.memory_store = init_instance_by_config(memory_store_config, embedding_model=embedding_model)
 
         # init monitor
         G_CONTEXT.monitor = init_instance_by_config(self.config["monitor"])
@@ -78,10 +80,12 @@ class MemoryScope(object):
         # set worker config
         G_CONTEXT.worker_config = self.config["worker"]
 
-    def get_default_service(self):
+    @property
+    def default_service(self):
         return list(G_CONTEXT.memory_service_dict.values())[0]
 
-    def get_default_chat_handle(self):
+    @property
+    def default_chat_handle(self):
         return list(G_CONTEXT.memory_chat_dict.values())[0]
 
 

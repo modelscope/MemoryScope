@@ -95,6 +95,8 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             if node.memory_id in self.contex_memory_dict:
                 continue
             self.contex_memory_dict[node.memory_id] = node
+            self.logger.info(f"add to memory context memory id={node.memory_id} content={node.content} "
+                             f"status={node.status}")
         self.set_context(key, [n.memory_id for n in nodes])
 
     def save_memories(self, keys: str | List[str] = None):

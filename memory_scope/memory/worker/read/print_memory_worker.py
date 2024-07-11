@@ -26,7 +26,7 @@ class PrintMemoryWorker(MemoryBaseWorker):
                 line = f"  {i} {node.content}"
                 expired_content_list.append(line)
 
-            if MemoryTypeEnum(node.memory_type) in [MemoryTypeEnum.OBSERVATION, MemoryTypeEnum.OBS_CUSTOMIZED]:
+            elif MemoryTypeEnum(node.memory_type) in [MemoryTypeEnum.OBSERVATION, MemoryTypeEnum.OBS_CUSTOMIZED]:
                 j += 1
                 dt_handler = DatetimeHandler(node.timestamp)
                 dt = dt_handler.datetime_format("%Y%m%d %H:%M:%S")

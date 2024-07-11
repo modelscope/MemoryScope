@@ -32,14 +32,18 @@ class BaseWorker(metaclass=ABCMeta):
         self.logger: Logger = Logger.get_logger()
 
     def submit_async_task(self, fn, *args, **kwargs):
-        # if self.is_multi_thread:
-        #     raise RuntimeError(f"async_task is not allowed in multi_thread condition")
+        if self.is_multi_thread:
+            raise RuntimeError(f"async_task is not allowed in multi_thread condition")
+
         self.async_task_list.append((fn, args, kwargs))
 
     async def _async_gather(self):
         return await asyncio.gather(*[fn(*args, **kwargs) for fn, args, kwargs in self.async_task_list])
 
     def gather_async_result(self):
+        if self.is_multi_thread:
+            raise RuntimeError(f"async_task is not allowed in multi_thread condition")
+
         results = asyncio.run(self._async_gather())
         self.async_task_list.clear()
         return results
@@ -50,6 +54,7 @@ class BaseWorker(metaclass=ABCMeta):
     def gather_thread_result(self):
         for future in as_completed(self.thread_task_list):
             yield future.result()
+        self.thread_task_list.clear()
 
     @abstractmethod
     def _run(self):

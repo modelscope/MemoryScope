@@ -2,13 +2,12 @@ import sys
 
 sys.path.append(".")
 
-import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
 from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
 
-from memory_scope.storage.llama_index_es_memory_store import LlamaIndexEsMemoryStore
-from memory_scope.storage.llama_index_es_memory_store_sync import LlamaIndexEsMemoryStore as SyncLlamaIndexEsMemoryStore
+from memory_scope.storage.llama_index_es_memory_store_sync import \
+    LlamaIndexEsMemoryStoreSync as SyncLlamaIndexEsMemoryStore
 from memory_scope.utils.logger import Logger
 logger = Logger.get_logger("default")
 

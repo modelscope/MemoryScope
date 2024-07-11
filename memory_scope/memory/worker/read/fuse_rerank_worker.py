@@ -40,7 +40,7 @@ class FuseRerankWorker(MemoryBaseWorker):
     def _run(self):
         # parse input
         extract_time_dict: Dict[str, str] = self.get_context(EXTRACT_TIME_DICT)
-        memory_node_list: List[MemoryNode] = self.get_context(RANKED_MEMORY_NODES)
+        memory_node_list: List[MemoryNode] = self.get_memories(RANKED_MEMORY_NODES)
         if not memory_node_list:
             self.logger.warning(f"ranked memory nodes is empty!")
             return

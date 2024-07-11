@@ -1,11 +1,9 @@
-import init_test
 from memory_scope.cli import MemoryScope
-from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.scheme.message import Message
 
 ms = MemoryScope().load_config("config/demo_config_no_stream.yaml")
-memory_service = ms.get_default_service()
-memory_chat = ms.get_default_chat_handle()
+memory_service = ms.default_service
+memory_chat = ms.default_chat_handle
 
 # new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name="我", content="我的爱好是弹琴并且喜欢看电影。")
 # memory_service.add_messages(new_message)

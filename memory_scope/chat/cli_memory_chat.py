@@ -154,11 +154,12 @@ class CliMemoryChat(BaseMemoryChat):
             if refresh_time and refresh_time.isdigit():
                 refresh_time = int(refresh_time)
                 while True:
-                    time.sleep(refresh_time)
                     result = self.memory_service.do_operation(op_name=command, **kwargs)
                     os.system("clear")
                     self.print_logo()
                     questionary.print(result)
+                    time.sleep(refresh_time)
+
             else:
                 result = self.memory_service.do_operation(op_name=command, **kwargs)
                 questionary.print(result)

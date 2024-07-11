@@ -2,7 +2,8 @@ import unittest
 
 from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
 from memory_scope.scheme.memory_node import MemoryNode
-from memory_scope.storage.llama_index_es_memory_store_sync import LlamaIndexEsMemoryStore
+from memory_scope.storage.llama_index_es_memory_store_sync import LlamaIndexEsMemoryStoreSync
+
 
 class TestLlamaIndexElasticSearchStore(unittest.TestCase):
     """Tests for LLIEmbedding"""
@@ -22,7 +23,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             "use_hybrid": True
 
         }
-        self.es_store = LlamaIndexEsMemoryStore(**config)
+        self.es_store = LlamaIndexEsMemoryStoreSync(**config)
         self.data = [
             MemoryNode(
                 content="The lives of two mob hitmen, a boxer, a gangster and his wife, "
