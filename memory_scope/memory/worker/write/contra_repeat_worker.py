@@ -83,10 +83,8 @@ class ContraRepeatWorker(MemoryBaseWorker):
             node: MemoryNode = all_obs_nodes[idx]
             if keep_flag != self.get_language_value(NONE_WORD):
                 node.status = MemoryNodeStatus.EXPIRED.value
+            self.logger.info(f"contra_repeat stage: {node.content} {node.status}")
             merge_obs_nodes.append(node)
 
-            # forbid keyword
-            self.logger.info(f"contra_repeat stage: {node.content} {node.status}")
-
         # save context
-        self.set_memories(MERGE_OBS_NODES, merge_obs_nodes)
+        self.set_memories(MERGE_OBS_NODES, merge_obs_nodes, log_repeat=False)

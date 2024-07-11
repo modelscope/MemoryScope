@@ -76,23 +76,26 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self.get_context(CONTEXT_MEMORY_DICT)
 
     def get_memories(self, keys: str | List[str]) -> List[MemoryNode]:
-        memories: List[MemoryNode] = []
+        memories: Dict[str, MemoryNode] = {}
         if isinstance(keys, str):
             keys = [keys]
 
         for key in keys:
             memory_ids: List[str] = self.get_context(key)
             if memory_ids:
-                memories.extend([self.contex_memory_dict[x] for x in memory_ids])
-        return memories
+                memories.update({x: self.contex_memory_dict[x] for x in memory_ids})
+        return list(memories.values())
 
-    def set_memories(self, key: str, nodes: MemoryNode | List[MemoryNode]):
+    def set_memories(self, key: str, nodes: MemoryNode | List[MemoryNode], log_repeat: bool = True):
         if nodes is None:
             nodes = []
         elif isinstance(nodes, MemoryNode):
             nodes = [nodes]
         for node in nodes:
             if node.memory_id in self.contex_memory_dict:
+                if log_repeat:
+                    self.logger.warning(f"repeated_id memory id={node.memory_id} content={node.content} "
+                                        f"status={node.status}")
                 continue
             self.contex_memory_dict[node.memory_id] = node
             self.logger.info(f"add to memory context memory id={node.memory_id} content={node.content} "

@@ -69,7 +69,7 @@ class InfoFilterWorker(MemoryBaseWorker):
                 continue
 
             score = info_score[0]
-            if score in ("3",):
+            if score in self.preserved_scores:
                 msg.meta_data["info_score"] = score
                 filtered_messages.append(msg)
         self.chat_messages = filtered_messages

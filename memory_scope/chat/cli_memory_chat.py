@@ -76,7 +76,7 @@ class CliMemoryChat(BaseMemoryChat):
             self._generation_model = G_CONTEXT.model_dict[self._generation_model]
         return self._generation_model
 
-    def chat_with_memory(self, query: str, remember_response:bool=False) -> ModelResponse | ModelResponseGen:
+    def chat_with_memory(self, query: str, remember_response: bool = False) -> ModelResponse | ModelResponseGen:
         new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name=self.human_name, content=query)
         self.memory_service.add_messages(new_message)
 
@@ -107,7 +107,7 @@ class CliMemoryChat(BaseMemoryChat):
             assert not self.stream
             generated.message.role_name = self.assistant_name
             self.memory_service.add_messages(generated.message)
-        
+
         # return response or generator
         return generated
 
@@ -217,5 +217,3 @@ class CliMemoryChat(BaseMemoryChat):
                 traceback.print_exc()
                 self.logger.exception(f"An exception occurred when running cli memory chat. args={e.args}.")
                 continue
-
-        questionary.print(f"A memory writing thread is still running, please be patient and wait!")

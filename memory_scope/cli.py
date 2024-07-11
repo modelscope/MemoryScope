@@ -1,6 +1,8 @@
 import datetime
 import sys
 
+import questionary
+
 sys.path.append(".")  # noqa: E402
 
 import json
@@ -16,7 +18,7 @@ from memory_scope.enumeration.model_enum import ModelEnum
 from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.logger import Logger
 from memory_scope.utils.timer import timer
-from memory_scope.utils.tool_functions import init_instance_by_config
+from memory_scope.utils.tool_functions import init_instance_by_config, camelcase_to_underscore
 
 
 class MemoryScope(object):
@@ -24,7 +26,8 @@ class MemoryScope(object):
     def __init__(self):
         self.config: Dict[str, Any] = {}
         datetime_suffix = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.logger: Logger = Logger.get_logger(f"cli_job_{datetime_suffix}", to_stream=False)
+        class_name = camelcase_to_underscore(self.__class__.__name__)
+        self.logger: Logger = Logger.get_logger(f"{class_name}_{datetime_suffix}", to_stream=False)
 
     def load_config(self, path: str):
         with open(path) as f:
@@ -40,7 +43,7 @@ class MemoryScope(object):
 
     @staticmethod
     def shutdown():
-        print('Gracefully executing the shutdown function...')
+        questionary.print('Gracefully executing the shutdown function...')
         G_CONTEXT.memory_store.close()
         G_CONTEXT.monitor.close()
         G_CONTEXT.thread_pool.shutdown()
@@ -81,12 +84,12 @@ class MemoryScope(object):
         G_CONTEXT.worker_config = self.config["worker"]
 
     @property
-    def default_service(self):
-        return list(G_CONTEXT.memory_service_dict.values())[0]
-
-    @property
     def default_chat_handle(self):
         return list(G_CONTEXT.memory_chat_dict.values())[0]
+
+    @property
+    def default_service(self):
+        return self.default_chat_handle.memory_service
 
 
 class CliJob(MemoryScope):
@@ -94,10 +97,7 @@ class CliJob(MemoryScope):
     def run(self, config: str):
         self.load_config(config)
         self.init_global_content_by_config()
-
-        # with G_CONTEXT.thread_pool:
-        memory_chat = list(G_CONTEXT.memory_chat_dict.values())[0]
-        memory_chat.run()
+        self.default_chat_handle.run()
 
 
 if __name__ == "__main__":

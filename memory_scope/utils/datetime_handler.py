@@ -143,9 +143,9 @@ class DatetimeHandler(object):
 
     @classmethod
     def extract_date_parts(cls, input_string: str) -> dict:
-        func_name = f"extract_date_parts_{G_CONTEXT.language}"
+        func_name = f"extract_date_parts_{G_CONTEXT.language.value}"
         if not hasattr(cls, func_name):
-            cls.logger.warning(f"language={G_CONTEXT.language} needs to complete extract_date_parts func!")
+            cls.logger.warning(f"language={G_CONTEXT.language.value} needs to complete extract_date_parts func!")
             return {}
         return getattr(cls, func_name)(input_string=input_string)
 
@@ -166,9 +166,9 @@ class DatetimeHandler(object):
 
     @classmethod
     def format_time_by_extract_time(cls, extract_time_dict: Dict[str, str], meta_data: Dict[str, str]) -> str:
-        func_name = f"format_time_by_extract_time_{G_CONTEXT.language}"
+        func_name = f"format_time_by_extract_time_{G_CONTEXT.language.value}"
         if not hasattr(cls, func_name):
-            cls.logger.warning(f"language={G_CONTEXT.language} needs to complete format_time_by_extract_time func!")
+            cls.logger.warning(f"language={G_CONTEXT.language.value} needs to complete format_time_by_extract_time func!")
             return ""
         return getattr(cls, func_name)(extract_time_dict, meta_data)
 

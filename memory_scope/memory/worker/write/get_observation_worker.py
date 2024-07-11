@@ -1,7 +1,7 @@
 from typing import List
 
 from memory_scope.constants.common_constants import NEW_OBS_NODES, TIME_INFER
-from memory_scope.constants.language_constants import REPEATED_WORD, NONE_WORD, COLON_WORD
+from memory_scope.constants.language_constants import REPEATED_WORD, NONE_WORD, COLON_WORD, TIME_INFER_WORD
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
@@ -30,6 +30,8 @@ class GetObservationWorker(MemoryBaseWorker):
         if time_infer:
             dt_info_dict = DatetimeHandler.extract_date_parts(input_string=time_infer)
             meta_data.update({f"event_{k}": str(v) for k, v in dt_info_dict.items()})
+            obs_content = (f"{obs_content} ({self.get_language_value(TIME_INFER_WORD)}"
+                           f"{self.get_language_value(COLON_WORD)} {time_infer})")
 
         return MemoryNode(user_name=self.user_name,
                           target_name=self.target_name,

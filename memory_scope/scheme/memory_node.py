@@ -6,7 +6,7 @@ from pydantic import Field, BaseModel
 
 
 class MemoryNode(BaseModel):
-    memory_id: str = Field(str(uuid4()), description="unique id for memory")
+    memory_id: str = Field(default_factory=lambda: uuid4().hex, description="unique id for memory")
 
     user_name: str = Field("", description="the user who owns the memory")
 
@@ -33,7 +33,8 @@ class MemoryNode(BaseModel):
 
     vector: List[float] = Field([], description="content embedding result, return empty")
 
-    timestamp: int = Field(int(datetime.datetime.now().timestamp()), description="timestamp of the memory node")
+    timestamp: int = Field(default_factory=lambda: int(datetime.datetime.now().timestamp()),
+                           description="timestamp of the memory node")
 
     dt: str = Field("", description="dt of the memory node")
 

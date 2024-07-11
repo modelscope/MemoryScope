@@ -13,4 +13,5 @@ pydantic~=2.7.1
 dashscope~=1.19.1
 elasticsearch~=8.14.0
 pyyaml~=6.0.1
-ray
+ray~=2.31.0
+numpy~=1.26.4

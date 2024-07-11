@@ -33,6 +33,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
         not_reflected_count = len(not_reflected_nodes)
         if not_reflected_count <= self.reflect_obs_cnt_threshold:
             self.logger.info(f"not_reflected_count={not_reflected_count} is not enough, stop.")
+            self.continue_run = False
             return
 
         # get profile_keys

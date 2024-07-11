@@ -1,3 +1,4 @@
+import warnings
 from typing import Dict, List, Any, Optional, cast
 
 from llama_index.core import VectorStoreIndex
@@ -137,10 +138,13 @@ class LlamaIndexEsMemoryStoreSync(BaseMemoryStore):
                                                es_url=es_url,
                                                retrieval_strategy=_AsyncDenseVectorStrategy(hybrid=use_hybrid),
                                                **kwargs)
-        # use /dev/null
-        with open(os.devnull, 'w') as devnull:
+        # TODO The llamaIndex utilizes some deprecated functions, hence langchain logs warning messages. By
+        #  adding the following lines of code, the display of deprecated information is suppressed.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
             self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                             embed_model=self.embedding_model.model)
+
         self.index.build_index_from_nodes([TextNode(text="text")])
         self.logger = Logger.get_logger()
 

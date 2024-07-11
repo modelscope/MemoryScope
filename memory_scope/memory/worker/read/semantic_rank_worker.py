@@ -33,4 +33,4 @@ class SemanticRankWorker(MemoryBaseWorker):
         memory_node_list = sorted(memory_node_list, key=lambda n: n.score_rank, reverse=True)
         for node in memory_node_list:
             self.logger.info(f"rank_stage: content={node.content} score={node.score_rank}")
-        self.set_memories(RANKED_MEMORY_NODES, memory_node_list)
+        self.set_memories(RANKED_MEMORY_NODES, memory_node_list, log_repeat=False)

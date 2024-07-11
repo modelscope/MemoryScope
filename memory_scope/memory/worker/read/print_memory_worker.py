@@ -20,23 +20,26 @@ class PrintMemoryWorker(MemoryBaseWorker):
         i = 0
         j = 0
         k = 0
+        expired_content_set = set()
         for node in memory_node_list:
+            dt_handler = DatetimeHandler(node.timestamp)
+            dt = dt_handler.datetime_format("%Y%m%d %H:%M:%S")
+            line = f"{dt} {node.content}"
             if MemoryNodeStatus(node.status) is MemoryNodeStatus.EXPIRED:
-                i += 1
-                line = f"  {i} {node.content}"
-                expired_content_list.append(line)
+                if node.content in expired_content_set:
+                    continue
+                else:
+                    expired_content_set.add(node.content)
+                    i += 1
+                    expired_content_list.append(f"  {i} {line}")
 
             elif MemoryTypeEnum(node.memory_type) in [MemoryTypeEnum.OBSERVATION, MemoryTypeEnum.OBS_CUSTOMIZED]:
                 j += 1
-                dt_handler = DatetimeHandler(node.timestamp)
-                dt = dt_handler.datetime_format("%Y%m%d %H:%M:%S")
-                line = f"  {j} {dt} {node.content}"
-                obs_content_list.append(line)
+                obs_content_list.append(f"  {j} {line}")
 
             elif MemoryTypeEnum(node.memory_type) is MemoryTypeEnum.INSIGHT:
                 k += 1
-                line = f"  {k} {node.content}"
-                insight_content_list.append(line)
+                insight_content_list.append(f"  {k} {line}")
 
         obs_content = "\n".join(obs_content_list)
         insight_content = "\n".join(insight_content_list)

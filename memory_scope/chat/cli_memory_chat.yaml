@@ -4,8 +4,10 @@ system_prompt:
   en: |
     You are a helpful assistant, your name is MemoryScope.
 
+# 请记住以下信息，他们可以帮助更好地理解用户的问题。
 memory_prompt:
   cn: |
-    请记住以下信息，他们可以帮助更好地理解用户的问题。
+    如果用户问题和以下信息没有关联，请忘记这些信息；如果用户问题和以下信息有关联，请记住这些信息，他们可以帮助更好地理解用户的问题。
   en: |
-    Please remember the following information, as they can help better understand the user's question.
+    If the user's question is not related to the following information, please disregard it; if the user's question is related to the following information, please retain it, as it can help better understand the user's query.
+

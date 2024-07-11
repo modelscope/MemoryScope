@@ -11,7 +11,6 @@ memory_chat:
 memory_service:
   memory_chat_service:
     class: memory.service.chat_memory_service
-    history_msg_count: 32
     contextual_msg_count: 6
     memory_operations:
       read_message:
@@ -30,11 +29,11 @@ memory_service:
         workflow: info_filter,load_memory1,[get_observation|get_observation_with_time],contra_repeat,store_memory
         description: "write observation memories of the user"
         interval_time: 5
-#      summary_memory:
-#        class: memory.operation.summary_memory
-#        workflow: load_memory2,get_reflection_subject,update_insight,long_contra_repeat,store_memory
-#        description: "summary observation memories of the user"
-#        interval_time: 60
+      summary_memory:
+        class: memory.operation.summary_memory
+        workflow: load_memory2,get_reflection_subject,update_insight,long_contra_repeat,store_memory
+        description: "summary observation memories of the user"
+        interval_time: 30
 
 worker:
   dummy:
@@ -76,6 +75,7 @@ worker:
   info_filter:
     class: memory.worker.write.info_filter_worker
     generation_model: dashscope_generation
+    preserved_scores: 2,3
     info_filter_msg_max_size: 200
     generation_model_top_k: 1
   load_memory1:
@@ -110,7 +110,7 @@ worker:
   get_reflection_subject:
     class: memory.worker.summary.get_reflection_subject_worker
     retrieve_top_k: 100
-    reflect_obs_cnt_threshold: 32
+    reflect_obs_cnt_threshold: 10
     generation_model_top_k: 1
   update_insight:
     class: memory.worker.summary.update_insight_worker

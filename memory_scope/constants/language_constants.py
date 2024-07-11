@@ -159,3 +159,8 @@ DATATIME_KEY_MAP = {
         "Weekday": "weekday",
     }
 }
+
+TIME_INFER_WORD = {
+    LanguageEnum.CN: "推断时间",
+    LanguageEnum.EN: "Inference time"
+}

@@ -1,13 +1,19 @@
 """Elasticsearch vector store."""
 
-import asyncio
 from logging import getLogger
 from typing import Any, Callable, Dict, List, Literal, Optional, Union
 
 import nest_asyncio
 import numpy as np
 from elasticsearch import AsyncElasticsearch, Elasticsearch
-
+from elasticsearch.helpers.vectorstore import (
+    AsyncBM25Strategy,
+    AsyncSparseVectorStrategy,
+    AsyncDenseVectorStrategy,
+    AsyncRetrievalStrategy,
+    DistanceMetric,
+)
+from elasticsearch.helpers.vectorstore import VectorStore
 from llama_index.core.bridge.pydantic import PrivateAttr
 from llama_index.core.schema import BaseNode, MetadataMode, TextNode
 from llama_index.core.vector_stores.types import (
@@ -21,19 +27,9 @@ from llama_index.core.vector_stores.utils import (
     metadata_dict_to_node,
     node_to_metadata_dict,
 )
-from elasticsearch.helpers.vectorstore import AsyncVectorStore, VectorStore
-from elasticsearch.helpers.vectorstore import (
-    AsyncBM25Strategy,
-    AsyncSparseVectorStrategy,
-    AsyncDenseVectorStrategy,
-    AsyncRetrievalStrategy,
-    DistanceMetric,
-)
-
 from llama_index.vector_stores.elasticsearch.utils import (
     get_user_agent,
 )
-
 
 logger = getLogger(__name__)
 
@@ -43,13 +39,14 @@ DISTANCE_STRATEGIES = Literal[
     "EUCLIDEAN_DISTANCE",
 ]
 
+
 def get_elasticsearch_client(
-    url: Optional[str] = None,
-    cloud_id: Optional[str] = None,
-    api_key: Optional[str] = None,
-    username: Optional[str] = None,
-    password: Optional[str] = None,
-    use_async: Optional[bool] = False,
+        url: Optional[str] = None,
+        cloud_id: Optional[str] = None,
+        api_key: Optional[str] = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        use_async: Optional[bool] = False,
 ) -> AsyncElasticsearch:
     if url and cloud_id:
         raise ValueError(
@@ -126,7 +123,7 @@ def _to_llama_similarities(scores: List[float]) -> List[float]:
 
 
 def _mode_must_match_retrieval_strategy(
-    mode: VectorStoreQueryMode, retrieval_strategy: AsyncRetrievalStrategy
+        mode: VectorStoreQueryMode, retrieval_strategy: AsyncRetrievalStrategy
 ) -> None:
     """
     Different retrieval strategies require different ways of indexing that must be known at the
@@ -241,20 +238,21 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
     retrieval_strategy: AsyncRetrievalStrategy
 
     _store = PrivateAttr()
+
     def __init__(
-        self,
-        index_name: str,
-        es_client: Optional[Any] = None,
-        es_url: Optional[str] = None,
-        es_cloud_id: Optional[str] = None,
-        es_api_key: Optional[str] = None,
-        es_user: Optional[str] = None,
-        es_password: Optional[str] = None,
-        text_field: str = "content",
-        vector_field: str = "embedding",
-        batch_size: int = 200,
-        distance_strategy: Optional[DISTANCE_STRATEGIES] = "COSINE",
-        retrieval_strategy: Optional[AsyncRetrievalStrategy] = None,
+            self,
+            index_name: str,
+            es_client: Optional[Any] = None,
+            es_url: Optional[str] = None,
+            es_cloud_id: Optional[str] = None,
+            es_api_key: Optional[str] = None,
+            es_user: Optional[str] = None,
+            es_password: Optional[str] = None,
+            text_field: str = "content",
+            vector_field: str = "embedding",
+            batch_size: int = 200,
+            distance_strategy: Optional[DISTANCE_STRATEGIES] = "COSINE",
+            retrieval_strategy: Optional[AsyncRetrievalStrategy] = None,
     ) -> None:
         nest_asyncio.apply()
 
@@ -310,13 +308,13 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
 
     def close(self) -> None:
         return self._store.close()
-    
+
     def add(
-        self,
-        nodes: List[BaseNode],
-        *,
-        create_index_if_not_exists: bool = True,
-        **add_kwargs: Any,
+            self,
+            nodes: List[BaseNode],
+            *,
+            create_index_if_not_exists: bool = True,
+            **add_kwargs: Any,
     ) -> List[str]:
         """
         Add nodes to Elasticsearch index.
@@ -335,15 +333,15 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             ImportError: If elasticsearch['async'] python package is not installed.
             BulkIndexError: If AsyncElasticsearch async_bulk indexing fails.
         """
-        
+
         return self.sync_add(nodes, create_index_if_not_exists=create_index_if_not_exists)
-    
+
     def sync_add(
-        self,
-        nodes: List[BaseNode],
-        *,
-        create_index_if_not_exists: bool = True,
-        **add_kwargs: Any,
+            self,
+            nodes: List[BaseNode],
+            *,
+            create_index_if_not_exists: bool = True,
+            **add_kwargs: Any,
     ) -> List[str]:
         """
         Asynchronous method to add nodes to Elasticsearch index.
@@ -419,19 +417,19 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         return self._store.delete(query={"term": {"_id": ref_doc_id}}, **delete_kwargs)
 
     def query(
-        self,
-        query: VectorStoreQuery,
-        custom_query: Optional[
-            Callable[[Dict, Union[VectorStoreQuery, None]], Dict]
-        ] = None,
-        es_filter: Optional[List[Dict]] = None,
-        **kwargs: Any,
+            self,
+            query: VectorStoreQuery,
+            custom_query: Optional[
+                Callable[[Dict, Union[VectorStoreQuery, None]], Dict]
+            ] = None,
+            es_filter: Optional[List[Dict]] = None,
+            **kwargs: Any,
     ) -> VectorStoreQueryResult:
         """
         Query index for top k most similar nodes.
 
         Args:
-            query_embedding (List[float]): query embedding
+            query (List[float]): query embedding
             custom_query: Optional. custom query function that takes in the es query
                         body and returns a modified query body.
                         This can be used to add additional query
@@ -447,16 +445,16 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             Exception: If Elasticsearch query fails.
 
         """
-        return self.sync_query(query, custom_query, es_filter, **kwargs)    
-    
+        return self.sync_query(query, custom_query, es_filter, **kwargs)
+
     def sync_query(
-        self,
-        query: VectorStoreQuery,
-        custom_query: Optional[
-            Callable[[Dict, Union[VectorStoreQuery, None]], Dict]
-        ] = None,
-        es_filter: Optional[List[Dict]] = None,
-        **kwargs: Any,
+            self,
+            query: VectorStoreQuery,
+            custom_query: Optional[
+                Callable[[Dict, Union[VectorStoreQuery, None]], Dict]
+            ] = None,
+            es_filter: Optional[List[Dict]] = None,
+            **kwargs: Any,
     ) -> VectorStoreQueryResult:
         """
         Asynchronous query index for top k most similar nodes.
@@ -488,7 +486,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             query=query.query_str,
             query_vector=query.query_embedding,
             k=query.similarity_top_k,
-            num_candidates=100, # query.similarity_top_k * 10,
+            num_candidates=100,  # query.similarity_top_k * 10,
             filter=filter,
             custom_query=custom_query,
         )
@@ -531,13 +529,12 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             top_k_scores.append(hit.get("_rank", hit["_score"]))
 
         if (
-            isinstance(self.retrieval_strategy, AsyncDenseVectorStrategy)
-            and self.retrieval_strategy.hybrid
+                isinstance(self.retrieval_strategy, AsyncDenseVectorStrategy)
+                and self.retrieval_strategy.hybrid
         ):
             total_rank = sum(top_k_scores)
             top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
             # top_k_scores = [total_rank - rank / total_rank for rank in top_k_scores]
-
 
         return VectorStoreQueryResult(
             nodes=top_k_nodes,
