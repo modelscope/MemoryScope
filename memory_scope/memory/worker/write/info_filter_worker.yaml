@@ -12,7 +12,7 @@ info_filter_system:
     Note: A score of 0 indicates no information about {user_name}, 1 indicates hypothetical or fictional content about or from {user_name}, 2 indicates general, timely, or speculative information about {user_name}, and 3 indicates significant and verifiable information about {user_name} or information that {user_name} requested to be recorded.
     Perform information scoring for each sentence, and output a total of {batch_size} scores.
     Please ensure to output in the following format, and the final result must be enclosed in <>:
-    Thought: The basis and process of thinking, within 30 characters.
+    Thought: The basis and process of thinking, within 30 words.
     Result: <Score: 0 or 1 or 2 or 3>
     
 
