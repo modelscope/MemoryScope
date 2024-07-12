@@ -37,21 +37,34 @@ class BaseWorkflow(object):
             self._print_workflow()
 
     def _parse_workflow(self):
-        # re-match e.g., [a|b],c,[d,e,f|g,h],j
+        """
+        Parses the workflow string to configure worker threads and organizes them into execution order.
+
+        The workflow string format supports complex configurations with optional multi-threading indications.
+        E.g., `[task1,task2|task3],task4` denotes task1 and task2 can run in parallel to task3, followed by task4.
+
+        Returns:
+            List[List[List[str]]]: A nested list representing the execution plan, including parallel groups and tasks.
+        """
+        # Regular expression to match components of the workflow, handling both plain items and grouped items.
         pattern = r'(\[[^\]]*\]|[^,]+)'
+        # Find all matches in the workflow string based on the pattern.
         workflow_split = re.findall(pattern, self.workflow)
+        
         for workflow_part in workflow_split:
             # e.g., [d,e,f|g,h]
             workflow_part = workflow_part.strip()
             if '[' in workflow_part or ']' in workflow_part:
                 workflow_part = workflow_part.replace('[', '').replace(']', '')
 
-            # e.g., ["d,e,f", "g,h"]
+            # Split the part by '|' to identify potential parallel task groups.
             line_split = [x.strip() for x in workflow_part.split("|") if x]
+            
+            # Skip if no valid tasks are identified after splitting.
             if len(line_split) <= 0:
                 continue
 
-            # is under multi thread cond
+            # Determine if the current part involves multi-threading based on the number of groups.
             is_multi_thread: bool = len(line_split) > 1
 
             # e.g., ["d","e","f"]
@@ -62,27 +75,56 @@ class BaseWorkflow(object):
                 # add workers
                 for sub_item in sub_split:
                     self.worker_dict[sub_item] = is_multi_thread
+            
+            # Append the parsed and structured tasks to the workflow execution plan.
             self.workflow_worker_list.append(line_split_split)
+
+        # Return the fully constructed workflow execution plan.
         return self.workflow_worker_list
 
     def _print_workflow(self):
+        """
+        Prints the workflow stages in a structured format. Each stage of the workflow 
+        is detailed with its constituent parts, either single elements or grouped 
+        elements separated by ' | '.
+
+        The method iterates over the workflow parts, handling both singular steps 
+        and parallel steps (where elements are zipped together).
+        """
         self.logger.info(f"----- workflow.{self.name}.print.begin -----")
         i: int = 0
         for workflow_part in self.workflow_worker_list:
             if len(workflow_part) == 1:
+                # Handles workflow parts with single elements
                 for w in workflow_part[0]:
                     self.logger.info(f"stage{i}: {w}")
                     i += 1
             else:
+                # Handles workflow parts with multiple parallel elements (zipped)
                 for w_zip in zip_longest(*workflow_part, fillvalue="-"):
                     self.logger.info(f"stage{i}: {' | '.join(w_zip)}")
                     i += 1
+                    # Skips placeholder '-' used for uneven lists in zip_longest
                     for w in w_zip:
                         if w == "-":
                             continue
         self.logger.info(f"----- workflow.{self.name}.print.end -----")
 
     def init_workers(self, is_backend: bool = False, **kwargs):
+        """
+        Initializes worker instances based on the configuration for each worker defined in `G_CONTEXT.worker_config`.
+        Each worker can be set to run in a multi-threaded mode depending on the `is_backend` flag or the worker's individual configuration.
+
+        Args:
+            is_backend (bool, optional): A flag indicating whether the workers should be initialized in a backend context. Defaults to False.
+            **kwargs: Additional keyword arguments to be passed during worker initialization.
+
+        Raises:
+            RuntimeError: If a worker mentioned in `self.worker_dict` does not exist in `G_CONTEXT.worker_config`.
+
+        Note:
+            This method modifies `self.worker_dict` in-place, replacing the keys with actual worker instances.
+        """
         for name in list(self.worker_dict.keys()):
             if name not in G_CONTEXT.worker_config:
                 raise RuntimeError(f"worker={name} is not exists in worker_config!")
@@ -106,18 +148,31 @@ class BaseWorkflow(object):
         return True
 
     def run_workflow(self):
+        """
+        Executes the workflow by orchestrating the steps defined in `self.workflow_worker_list`.
+        This method supports both sequential and parallel execution of sub-workflows based on the structure of `self.workflow_worker_list`.
+        
+        If a workflow part consists of a single item, it is executed sequentially. For parts with multiple items,
+        they are submitted for parallel execution using a thread pool. The workflow will stop if any sub-workflow returns False.
+        """
         self.logger.info(f"----- workflow.{self.name}.begin -----")
         with Timer(self.name, log_time=False) as t:
             self.context[WORKFLOW_NAME] = self.name
+            
+            # Iterate over each part of the workflow
             for workflow_part in self.workflow_worker_list:
+                # Sequential execution for single-item parts
                 if len(workflow_part) == 1:
                     if not self._run_sub_workflow(workflow_part[0]):
                         break
+                # Parallel execution for multi-item parts
                 else:
                     t_list = []
+                    # Submit tasks to the thread pool
                     for sub_workflow in workflow_part:
                         t_list.append(G_CONTEXT.thread_pool.submit(self._run_sub_workflow, sub_workflow))
-
+                    
+                    # Check results; if any task returns False, stop the workflow
                     flag = True
                     for future in as_completed(t_list):
                         if not future.result():
@@ -125,4 +180,5 @@ class BaseWorkflow(object):
                             break
                     if not flag:
                         break
+            
             self.logger.info(f"----- workflow.{self.name}.end cost={t.cost_str}-----")

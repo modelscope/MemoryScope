@@ -6,13 +6,32 @@ from memory_scope.scheme.memory_node import MemoryNode
 
 
 class SemanticRankWorker(MemoryBaseWorker):
+    """
+    The `SemanticRankWorker` class processes queries by retrieving memory nodes, 
+    removing duplicates, ranking them based on semantic relevance using a model, 
+    assigning scores, sorting the nodes, and storing the ranked nodes back, 
+    while logging relevant information.
+    """
 
     def _run(self):
+        """
+        Executes the primary workflow of the SemanticRankWorker which includes:
+        - Retrieving query and timestamp from context.
+        - Fetching memory nodes.
+        - Removing duplicate nodes.
+        - Ranking nodes semantically.
+        - Assigning scores to nodes.
+        - Sorting nodes by score.
+        - Saving the ranked nodes back with logging.
+        
+        If no memory nodes are retrieved or if the ranking model fails, 
+        appropriate warnings are logged.
+        """
         # query
         query, _ = self.get_context(QUERY_WITH_TS)
         memory_node_list: List[MemoryNode] = self.get_memories(RETRIEVE_MEMORY_NODES)
         if not memory_node_list:
-            self.logger.warning(f"retrieve memory nodes is empty!")
+            self.logger.warning("Retrieve memory nodes is empty!")
             return
 
         # drop repeated
@@ -26,11 +45,16 @@ class SemanticRankWorker(MemoryBaseWorker):
         # set score
         for idx, score in response.rank_scores.items():
             if idx >= len(memory_node_list):
-                self.logger.warning(f"idx={idx} exceeds the maximum length of rank_scores!")
+                self.logger.warning(f"Idx={idx} exceeds the maximum length of rank_scores!")
                 continue
             memory_node_list[idx].score_rank = score
 
+        # sort by score
         memory_node_list = sorted(memory_node_list, key=lambda n: n.score_rank, reverse=True)
+        
+        # log ranked nodes
         for node in memory_node_list:
-            self.logger.info(f"rank_stage: content={node.content} score={node.score_rank}")
+            self.logger.info(f"Rank stage: Content={node.content}, Score={node.score_rank}")
+
+        # save ranked nodes back to memory
         self.set_memories(RANKED_MEMORY_NODES, memory_node_list, log_repeat=False)

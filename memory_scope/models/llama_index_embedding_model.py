@@ -8,8 +8,23 @@ from memory_scope.scheme.model_response import ModelResponse
 
 
 class LlamaIndexEmbeddingModel(BaseModel):
+    """
+    Manages text embeddings utilizing the DashScopeEmbedding within the LlamaIndex framework,
+    facilitating embedding operations for both sync and async modes, inheriting from BaseModel.
+    """
     m_type: ModelEnum = ModelEnum.EMBEDDING_MODEL
 
+    @classmethod
+    def register_model(cls, model_name: str, model_class: type):
+        """
+        Registers a new embedding model class with the model registry.
+
+        Args:
+            model_name (str): The name to register the model under.
+            model_class (type): The class of the model to register.
+        """
+        MODEL_REGISTRY.register(model_name, model_class)
+        
     MODEL_REGISTRY.register("dashscope_embedding", DashScopeEmbedding)
 
     def before_call(self, **kwargs):
@@ -34,14 +49,32 @@ class LlamaIndexEmbeddingModel(BaseModel):
 
     def _call(self, **kwargs) -> ModelResponse:
         """
-        :param kwargs:
-        :return:
+        Executes a synchronous call to generate embeddings for the input data.
+
+        This method utilizes the `get_text_embedding_batch` method of the encapsulated model,
+        passing the processed data from `self.data`. The result is then packaged into a
+        `ModelResponse` object with the model type specified by `self.m_type`.
+
+        Args:
+            **kwargs: Additional keyword arguments that might be used in the embedding process.
+
+        Returns:
+            ModelResponse: An object containing the embedding results and the model type.
         """
         return ModelResponse(m_type=self.m_type, raw=self.model.get_text_embedding_batch(**self.data))
 
     async def _async_call(self, **kwargs) -> ModelResponse:
         """
-        :param kwargs:
-        :return:
+        Executes an asynchronous call to generate embeddings for the input data.
+
+        Similar to `_call`, but uses the asynchronous `aget_text_embedding_batch` method
+        of the model. It handles the input data asynchronously and packages the result
+        within a `ModelResponse` instance.
+
+        Args:
+            **kwargs: Additional keyword arguments for the embedding process, if any.
+
+        Returns:
+            ModelResponse: An object encapsulating the embedding output and the model's type.
         """
         return ModelResponse(m_type=self.m_type, raw=await self.model.aget_text_embedding_batch(**self.data))

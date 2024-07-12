@@ -84,15 +84,21 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
 
 def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str, Any]:
     """
-    Convert standard filters to Elasticsearch filter.
+    Converts standard Llama-index filters into a format compatible with Elasticsearch.
+
+    This function transforms dictionary-based filters, where each key represents a field and 
+    the value is a list of strings, into an Elasticsearch query structure. It supports both 
+    list values (interpreted as 'should' clauses for OR logic) and single values (interpreted 
+    as 'must' clauses for AND logic).
 
     Args:
-        standard_filters: Standard Llama-index filters.
+        standard_filters (Dict[str, List[str]]): A dictionary containing filter criteria, 
+            where keys are field names and values are lists of strings or single string values 
+            representing filter values.
 
     Returns:
-        Elasticsearch filter.
+        Dict[str, Any]: A dictionary structured as an Elasticsearch filter query.
     """
-
     result = {
         "bool": {}
     }
@@ -108,8 +114,8 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
                             }
                     }
                 )
-            result['bool'].update({"should": operands})
-            result['bool'].update({"minimum_should_match": 1})
+            result['bool'].update({"should": operands})  # ⭐ Add 'should' clause for OR logic
+            result['bool'].update({"minimum_should_match": 1})  # Ensure at least one 'should' match
         else:
             operand = [{
                 "term": {
@@ -119,9 +125,9 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
                 }
             }]
             if "must" in result['bool']:
-                result['bool']['must'].extend(operand)
+                result['bool']['must'].extend(operand)  # Extend existing 'must' clause for AND logic
             else:
-                result['bool'].update({"must": operand})
+                result['bool'].update({"must": operand})  # Initialize 'must' clause if not present
     return result
 
 
@@ -192,9 +198,26 @@ class LlamaIndexEsMemoryStoreSync(BaseMemoryStore):
             self.update(node)
 
     def close(self):
+        """
+        Closes the Elasticsearch store, releasing any resources associated with it.
+        """
         self.es_store.close()
 
     def update_memories(self, nodes: MemoryNode | List[MemoryNode]):
+        """
+        Processes a list of MemoryNodes to update the Elasticsearch store based on their statuses.
+        NEW nodes are inserted, CONTENT_MODIFIED and MODIFIED nodes are updated (with embeddings for the former),
+        and EXPIRED nodes are deleted from the store.
+
+        Args:
+            nodes (MemoryNode | List[MemoryNode]): A single MemoryNode or a list of MemoryNodes to be processed.
+
+        Note:
+            - NEW nodes transition to ACTIVE after insertion.
+            - CONTENT_MODIFIED and MODIFIED nodes are re-embedded and transitioned to ACTIVE.
+            - EXPIRED nodes are removed from the store.
+            - Batch processing for insertion and deletion is planned but not yet implemented (TODOs).
+        """
         if not nodes:
             self.logger.warning("empty nodes!")
             return
@@ -203,7 +226,7 @@ class LlamaIndexEsMemoryStoreSync(BaseMemoryStore):
         if isinstance(nodes, MemoryNode):
             nodes = [nodes]
 
-        # emb & insert new memories
+        # Embed and insert new memories
         # TODO batch insert
         new_memories = [n for n in nodes if n.status == MemoryNodeStatus.NEW.value]
         if new_memories:
@@ -211,7 +234,7 @@ class LlamaIndexEsMemoryStoreSync(BaseMemoryStore):
                 n.status = MemoryNodeStatus.ACTIVE.value
                 self.insert(n)
 
-        # emb & update new memories
+        # Embed and update content modified memories (overwriting existing)
         # TODO insert overwrite
         c_modified_memories = [n for n in nodes if n.status == MemoryNodeStatus.CONTENT_MODIFIED.value]
         if c_modified_memories:
@@ -220,7 +243,7 @@ class LlamaIndexEsMemoryStoreSync(BaseMemoryStore):
                 self.delete(n)
                 self.insert(n)
 
-        # update new memories
+        # Update modified memories without re-embedding
         # TODO no emb
         modified_memories = [n for n in nodes if n.status == MemoryNodeStatus.MODIFIED.value]
         if modified_memories:
@@ -229,19 +252,36 @@ class LlamaIndexEsMemoryStoreSync(BaseMemoryStore):
                 self.delete(n)
                 self.insert(n)
 
-        # set memories expired
+        # Set and remove expired memories
         expired_memories = [n for n in nodes if n.status == MemoryNodeStatus.EXPIRED.value]
         if expired_memories:
             for n in expired_memories:
                 self.delete(n)
-                self.insert(n)
 
     @staticmethod
     def _memory_node_2_text_node(memory_node: MemoryNode) -> TextNode:
+        """
+        Converts a MemoryNode object into a TextNode object.
+
+        Args:
+            memory_node (MemoryNode): The MemoryNode to be converted.
+
+        Returns:
+            TextNode: The converted TextNode with content and metadata from the MemoryNode.
+        """
         return TextNode(id_=memory_node.memory_id,
                         text=memory_node.content,
                         metadata=memory_node.model_dump(exclude={"content"}))
 
     @staticmethod
     def _text_node_2_memory_node(text_node: NodeWithScore) -> MemoryNode:
+        """
+        Converts a NodeWithScore object into a MemoryNode object.
+
+        Args:
+            text_node (NodeWithScore): The NodeWithScore to be converted, typically retrieved from search results.
+
+        Returns:
+            MemoryNode: The converted MemoryNode with text and metadata from the NodeWithScore.
+        """
         return MemoryNode(content=text_node.text, **text_node.metadata)

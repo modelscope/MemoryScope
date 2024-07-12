@@ -9,9 +9,25 @@ from memory_scope.utils.timer import timer
 
 
 class RetrieveMemoryWorker(MemoryBaseWorker):
+    """
+    Retrieves memories based on specified criteria such as status, type, and timestamp.
+    Processes these memories concurrently, sorts them by similarity, and logs the activity,
+    facilitating efficient memory retrieval operations within a given scope.
+    """
 
     @timer
     def retrieve_from_observation(self, query: str) -> List[MemoryNode]:
+        """
+        Retrieves memory nodes from observation based on a query, considering active memories 
+        with specific types. If the retrieval limit is not set, an empty list is returned.
+
+        Args:
+            query (str): The query string used to filter and rank the memory nodes.
+
+        Returns:
+            List[MemoryNode]: A list of MemoryNode objects that match the query criteria, 
+                             sorted by their relevance. Returns an empty list if no retrieval limit is configured.
+        """
         if not self.retrieve_obs_top_k:
             return []
 
@@ -21,12 +37,24 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
+        # ⭐ Retrieve memories matching the query, filtered by the specified conditions, 
+        #     limited to a certain number, and sorted by relevance.
         return self.memory_store.retrieve_memories(query=query,
                                                    top_k=self.retrieve_obs_top_k,
                                                    filter_dict=filter_dict)
 
     @timer
     def retrieve_from_insight_and_profile(self, query: str) -> List[MemoryNode]:
+        """
+        Retrieves memories marked as insights from the database based on a query, filtered by user, target, and set to active status.
+
+        Args:
+            query (str): The search query to match against the insights.
+
+        Returns:
+            List[MemoryNode]: A list of MemoryNode objects that match the query criteria, limited by 'retrieve_ins_pf_top_k'.
+                              Returns an empty list if 'retrieve_ins_pf_top_k' is not set.
+        """
         if not self.retrieve_ins_pf_top_k:
             return []
 
@@ -36,6 +64,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
+        # ⭐ Retrieve insights matching the query, filtered, and limited by top_k
         return self.memory_store.retrieve_memories(query=query,
                                                    top_k=self.retrieve_ins_pf_top_k,
                                                    filter_dict=filter_dict)
@@ -56,6 +85,20 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
                                                    filter_dict=filter_dict)
 
     def _run(self):
+        """
+        Executes the main retrieval流程 for memories. It fetches the query from the context, initiates concurrent tasks 
+        to retrieve memories from observations, insights, and expired sources, collects the results, sorts them by 
+        similarity score, logs the details, and finally sets the retrieved memory nodes.
+
+        The method follows these steps:
+        1. Retrieves the query from the worker's context.
+        2. Submits tasks to asynchronously retrieve memories from various sources.
+        3. Gathers the results from all submitted tasks.
+        4. Logs the total number of collected memory nodes.
+        5. Sorts the memory nodes based on their similarity scores in descending order.
+        6. Logs detailed information about each memory node.
+        7. Stores the processed memory nodes for further use.
+        """
         query, _ = self.get_context(QUERY_WITH_TS)
         self.submit_thread_task(self.retrieve_from_observation, query=query)
         self.submit_thread_task(self.retrieve_from_insight_and_profile, query=query)

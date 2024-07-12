@@ -11,21 +11,51 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class LongContraRepeatWorker(MemoryBaseWorker):
+    """
+    Manages and updates memory entries within a conversation scope by identifying
+    and handling contradictions or redundancies. It extends the base MemoryBaseWorker
+    to provide specialized functionality for long conversations with potential
+    contradictory or repetitive statements.
+    """
     FILE_PATH: str = __file__
 
     def retrieve_similar_content(self, node: MemoryNode) -> (MemoryNode, List[MemoryNode]):
+        """
+        Retrieves memory nodes with content similar to the given node, filtering by user, target, status, and memory type.
+        Only returns nodes whose similarity score meets or exceeds the predefined threshold.
+
+        Args:
+            node (MemoryNode): The reference node used to find similar content in memory.
+
+        Returns:
+            Tuple[MemoryNode, List[MemoryNode]]: A tuple containing the original node and a list of similar nodes 
+            that passed the similarity threshold.
+        """
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
             "status": MemoryNodeStatus.ACTIVE.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value]
         }
+        # Retrieve memories similar to the node's content, limited by top_k and filtered by filter_dict
         retrieve_nodes = self.memory_store.retrieve_memories(query=node.content,
                                                              top_k=self.long_contra_repeat_top_k,
                                                              filter_dict=filter_dict)
+        # Filter retrieved nodes based on the similarity threshold
         return node, [n for n in retrieve_nodes if n.score_similar >= self.long_contra_repeat_threshold]
 
     def _run(self):
+        """
+        Executes the primary routine of the LongContraRepeatWorker. This involves:
+        1. Retrieving not updated memory nodes.
+        2. Gathering similar content for these nodes.
+        3. Organizing observed nodes and generating a prompt for the language model.
+        4. Calling the language model to process the prompt and receive a response.
+        5. Parsing the model's response to update memory node statuses.
+        6. Saving the modified memory nodes.
+
+        The process helps in maintaining conversation coherence by resolving contradictions and redundancies.
+        """
         not_updated_nodes: List[MemoryNode] = self.get_memories(NOT_UPDATED_NODES)
         for node in not_updated_nodes:
             self.submit_thread_task(fn=self.retrieve_similar_content, node=node)
@@ -59,20 +89,20 @@ class LongContraRepeatWorker(MemoryBaseWorker):
                                                    user_query=user_query)
         self.logger.info(f"long_contra_repeat_message={long_contra_repeat_message}")
 
-        # call llm
+        # Invokes the language model for processing the constructed prompt
         response = self.generation_model.call(messages=long_contra_repeat_message, top_k=self.generation_model_top_k)
 
-        # return if empty
+        # Handles the case where the model's response is empty
         if not response or not response.message.content:
             return
 
-        # parse text
+        # Parses the model's response text to identify updates for memory nodes
         idx_obs_info_list = ResponseTextParser(response.message.content).parse_v1(self.__class__.__name__)
         if len(idx_obs_info_list) <= 0:
             self.logger.warning("idx_obs_info_list is empty!")
             return
 
-        # add merged obs
+        # Processes parsed information to update memory nodes' statuses
         merge_obs_nodes: List[MemoryNode] = []
         for idx_obs_info in idx_obs_info_list:
             if not idx_obs_info:

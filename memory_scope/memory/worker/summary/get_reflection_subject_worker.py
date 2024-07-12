@@ -12,13 +12,27 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class GetReflectionSubjectWorker(MemoryBaseWorker):
+    """
+    A specialized worker class responsible for retrieving unreflected memory nodes,
+    generating reflection prompts with current insights, invoking an LLM for fresh insights,
+    parsing the LLM responses, forming new insight nodes, and updating memory statuses accordingly.
+    """
     FILE_PATH: str = __file__
 
     def new_insight_node(self, insight_key: str) -> MemoryNode:
-        dt_handler = DatetimeHandler()
-        meta_data = {k: str(v) for k, v in dt_handler.dt_info_dict.items()}
+        """
+        Creates a new MemoryNode for an insight with the given key, enriched with current datetime metadata.
 
-        return MemoryNode(user_name=self.user_name,
+        Args:
+            insight_key (str): The unique identifier for the insight.
+
+        Returns:
+            MemoryNode: A new MemoryNode instance representing the insight, marked as new and of type INSIGHT.
+        """
+        dt_handler = DatetimeHandler()
+        meta_data = {k: str(v) for k, v in dt_handler.dt_info_dict.items()}  # ⭐ Prepare metadata with current datetime info
+
+        return MemoryNode(user_name=self.user_name,  # ⭐ Populate MemoryNode attributes
                           target_name=self.target_name,
                           meta_data=meta_data,
                           key=insight_key,
@@ -26,21 +40,33 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
                           status=MemoryNodeStatus.NEW.value)
 
     def _run(self):
+        """
+        Executes the main logic of reflecting on unaudited memory nodes to derive new insights.
+
+        Steps include:
+        - Retrieving unaudited memory nodes.
+        - Checking the count against a threshold to decide whether to proceed.
+        - Compiling a list of existing insight keys.
+        - Generating a reflection prompt with system message, few-shot examples, and user queries.
+        - Calling the language model for new insights.
+        - Parsing the model's responses for new insight keys.
+        - Creating new insight nodes and updating the memory status accordingly.
+        """
         not_reflected_nodes: List[MemoryNode] = self.get_memories(NOT_REFLECTED_NODES)
         insight_nodes: List[MemoryNode] = self.get_memories(INSIGHT_NODES)
 
-        # count
+        # Count unaudited nodes
         not_reflected_count = len(not_reflected_nodes)
         if not_reflected_count <= self.reflect_obs_cnt_threshold:
-            self.logger.info(f"not_reflected_count={not_reflected_count} is not enough, stop.")
+            self.logger.info(f"not_reflected_count={not_reflected_count} is not enough, stopping process.")
             self.continue_run = False
             return
 
-        # get profile_keys
+        # Compile existing insight keys
         exist_keys: List[str] = [n.key for n in insight_nodes]
         self.logger.info(f"exist_keys={exist_keys}")
 
-        # gen reflect prompt
+        # Generate reflection prompt components
         user_query_list = [n.content for n in not_reflected_nodes]
         system_prompt = self.prompt_handler.get_reflection_subject_system.format(
             user_name=self.target_name,
@@ -51,21 +77,23 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
             exist_keys=self.get_language_value(COMMA_WORD).join(exist_keys),
             user_query="\n".join(user_query_list))
 
+        # Construct and log reflection message
         reflect_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"reflect_message={reflect_message}")
 
-        # # call LLM
+        # Invoke Language Model for new insights
         response = self.generation_model.call(messages=reflect_message, top_k=self.generation_model_top_k)
 
-        # return if empty
+        # Handle empty response
         if not response.status or not response.message.content:
             return
 
-        # parse text & save
+        # Parse LLM response for new insight keys and update memory
         new_insight_keys = ResponseTextParser(response.message.content).parse_v2(self.__class__.__name__)
         if new_insight_keys:
             for insight_key in new_insight_keys:
                 insight_nodes.append(self.new_insight_node(insight_key))
 
+        # Mark unaudited nodes as reflected
         for node in not_reflected_nodes:
             node.obs_reflected = True

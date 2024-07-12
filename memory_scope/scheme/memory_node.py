@@ -6,6 +6,10 @@ from pydantic import Field, BaseModel
 
 
 class MemoryNode(BaseModel):
+    """
+    Represents a memory node with comprehensive attributes to store memory information including unique ID, user details, 
+    content, metadata, scoring metrics, and status indicators. Automatically handles timestamp conversion to date format during initialization.
+    """
     memory_id: str = Field(default_factory=lambda: uuid4().hex, description="unique id for memory")
 
     user_name: str = Field("", description="the user who owns the memory")

@@ -8,9 +8,28 @@ from memory_scope.utils.logger import Logger
 
 
 class DatetimeHandler(object):
+    """
+    Handles operations related to datetime such as parsing, extraction, and formatting,
+    with support for both Chinese and English contexts including weekday names and 
+    specialized text parsing for date components.
+    """
+
     logger = Logger.get_logger()
 
     def __init__(self, dt: datetime.datetime | str | int | float = None):
+        """
+        Initialize the DatetimeHandler instance with a datetime object, string, integer, or float representation of a timestamp.
+        If no argument is provided, the current time is used.
+
+        Args:
+            dt (datetime.datetime | str | int | float, optional): 
+                The datetime to be handled. Can be a datetime object, a timestamp string, or a numeric timestamp.
+                Defaults to None, which sets the instance to the current datetime.
+
+        Attributes:
+            _dt (datetime.datetime): The internal datetime representation of the input.
+            _dt_info_dict (dict | None): A dictionary containing parsed datetime information, initialized as None.
+        """
         if isinstance(dt, str | int | float):
             if isinstance(dt, str):
                 dt = float(dt)
@@ -23,6 +42,15 @@ class DatetimeHandler(object):
         self._dt_info_dict: dict | None = None
 
     def _parse_dt_info(self):
+        """
+        Parses the datetime object (_dt) into a dictionary containing detailed date and time components,
+        including language-specific weekday representation.
+
+        Returns:
+            dict: A dictionary with keys representing date and time parts such as 'year', 'month', 
+                  'day', 'hour', 'minute', 'second', 'week', and 'weekday' with respective values.
+                  The 'weekday' value is translated based on the current language context.
+        """
         return {
             "year": self._dt.year,
             "month": self._dt.month,
@@ -36,12 +64,36 @@ class DatetimeHandler(object):
 
     @property
     def dt_info_dict(self):
+        """
+        Property method to get the dictionary containing parsed datetime information.
+        If not already parsed, it triggers the parsing process using `_parse_dt_info`.
+
+        Returns:
+            dict: A dictionary with parsed datetime information.
+        """
         if self._dt_info_dict is None:
             self._dt_info_dict = self._parse_dt_info()
         return self._dt_info_dict
 
     @classmethod
     def extract_date_parts_cn(cls, input_string: str) -> dict:
+        """
+        Extracts date components from a Chinese text string into a dictionary.
+
+        This method identifies year, month, day, weekday, and hour components within the input
+        string based on predefined patterns. It supports relative terms like '每' (every) and
+        translates weekday names into numeric representations.
+
+        Args:
+            input_string (str): The Chinese text containing date and time information.
+
+        Returns:
+            dict: A dictionary with keys 'year', 'month', 'day', 'weekday', and 'hour',
+                  each holding the corresponding extracted value. If a component is not found,
+                  it will not be included in the dictionary. For relative terms like '每' (every),
+                  the value is set to -1.
+
+        """
         # Extending our pattern to handle every/每 as a possible value.
         patterns = {
             "year": r"(\d+|每)年",
@@ -67,6 +119,19 @@ class DatetimeHandler(object):
 
     @classmethod
     def extract_date_parts_en(cls, input_string: str) -> dict:
+        """
+        Extracts various components of a date (year, month, day, etc.) from an input string based on English formats.
+
+        This method employs regex patterns to identify and parse different date and time elements within the provided text.
+        It supports extraction of year, month name, day, 12-hour and 24-hour time formats, and weekdays.
+
+        Args:
+            input_string (str): The string from which to extract date and time components.
+
+        Returns:
+            dict: A dictionary containing the extracted date parts with default values of -1 where components are not found.
+                  Keys include 'year', 'month', 'day', 'hour', 'minute', 'second', and 'weekday'.
+        """
         date_info = {
             "year": -1,
             "month": -1,
@@ -98,26 +163,27 @@ class DatetimeHandler(object):
             "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6, "Sunday": 7
         }
 
+        # Attempt to match full date (day month year)
         day_month_year_match = re.search(patterns["day_month_year"], input_string)
         if day_month_year_match:
             date_info["year"] = int(day_month_year_match.group("year"))
             date_info["month"] = month_mapping[day_month_year_match.group("month")]
             date_info["day"] = int(day_month_year_match.group("day"))
 
-        # Extract month and day without year
+        # If year wasn't found, try matching day and month without year
         elif date_info["year"] == -1:
             day_month_match = re.search(patterns["day_month"], input_string)
             if day_month_match:
                 date_info["month"] = month_mapping[day_month_match.group("month")]
                 date_info["day"] = int(day_month_match.group("day"))
 
-        # Extract year
+        # Extract year if not already found
         if date_info["year"] == -1:
             year_match = re.search(patterns["year"], input_string)
             if year_match:
                 date_info["year"] = int(year_match.group(0))
 
-        # Extract month
+        # Extract month if not already found
         if date_info["month"] == -1:
             month_match = re.search(patterns["month"], input_string)
             if month_match:
@@ -133,7 +199,7 @@ class DatetimeHandler(object):
                 hour = 0
             date_info["hour"] = hour
 
-        # Extract weekday
+        # Identify weekday
         for week_day, value in weekday_mapping.items():
             if week_day in input_string:
                 date_info["weekday"] = value
@@ -143,6 +209,19 @@ class DatetimeHandler(object):
 
     @classmethod
     def extract_date_parts(cls, input_string: str) -> dict:
+        """
+        Extracts various date components from the input string based on the current language context.
+
+        This method dynamically selects a language-specific function to parse the input string and extract
+        date parts such as year, month, day, etc. If the function for the current language context does not exist,
+        a warning is logged and an empty dictionary is returned.
+
+        Args:
+            input_string (str): The string containing date information to be parsed.
+
+        Returns:
+            dict: A dictionary containing extracted date components, or an empty dictionary if parsing fails.
+        """
         func_name = f"extract_date_parts_{G_CONTEXT.language.value}"
         if not hasattr(cls, func_name):
             cls.logger.warning(f"language={G_CONTEXT.language.value} needs to complete extract_date_parts func!")
@@ -151,6 +230,20 @@ class DatetimeHandler(object):
 
     @classmethod
     def format_time_by_extract_time_cn(cls, extract_time_dict: Dict[str, str], meta_data: Dict[str, str]) -> str:
+        """
+        Formats a time string based on extracted time elements with Chinese context.
+
+        This method constructs a time string using Chinese characters for year, month, and day,
+        and includes special handling for weekdays. If a value is '-1', it is replaced with '每'
+        to denote a recurring event in the formatted string.
+
+        Args:
+            extract_time_dict (Dict[str, str]): A dictionary mapping time elements to their respective placeholders.
+            meta_data (Dict[str, str]): A dictionary containing the actual values for the time elements.
+
+        Returns:
+            str: The formatted time string in Chinese context.
+        """
         cn_key_dict = {"year": "年", "month": "月", "day": "日", "weekday": ""}
         format_time_str = ""
         for key, value_cn in cn_key_dict.items():
@@ -166,6 +259,20 @@ class DatetimeHandler(object):
 
     @classmethod
     def format_time_by_extract_time(cls, extract_time_dict: Dict[str, str], meta_data: Dict[str, str]) -> str:
+        """
+        Formats the time based on extracted time components and additional metadata, considering the current language context.
+
+        This method dynamically selects a language-specific function to format the time. If the function for the current
+        language context does not exist, a warning is logged and an empty string is returned.
+
+        Args:
+            extract_time_dict (Dict[str, str]): A dictionary containing extracted time components like year, month, etc.
+            meta_data (Dict[str, str]): Additional contextual metadata that might be used in formatting.
+
+        Returns:
+            str: The formatted time string according to the current language settings, or an empty string if the formatting
+                 function is not implemented for the current language.
+        """
         func_name = f"format_time_by_extract_time_{G_CONTEXT.language.value}"
         if not hasattr(cls, func_name):
             cls.logger.warning(f"language={G_CONTEXT.language.value} needs to complete format_time_by_extract_time func!")
@@ -174,6 +281,15 @@ class DatetimeHandler(object):
 
     @classmethod
     def has_time_word(cls, query: str) -> bool:
+        """
+        Check if the input query contains any datetime-related words based on the current language context.
+
+        Args:
+            query (str): The input string to check for datetime words.
+
+        Returns:
+            bool: True if the query contains at least one datetime word, False otherwise.
+        """
         contain_datetime = False
         # TODO use re
         for datetime_word in DATATIME_WORD_LIST[G_CONTEXT.language]:
@@ -182,12 +298,36 @@ class DatetimeHandler(object):
                 break
         return contain_datetime
 
-    def datetime_format(self, dt_format: str = "%Y%m%d"):
+    def datetime_format(self, dt_format: str = "%Y%m%d") -> str:
+        """
+        Format the stored datetime object into a string based on the provided format.
+
+        Args:
+            dt_format (str, optional): The datetime format string. Defaults to "%Y%m%d".
+
+        Returns:
+            str: The formatted datetime string.
+        """
         return self._dt.strftime(dt_format)
 
-    def string_format(self, string_format: str):
+    def string_format(self, string_format: str) -> str:
+        """
+        Format the datetime information stored in the instance using a custom string format.
+
+        Args:
+            string_format (str): A format string where placeholders are keys from `dt_info_dict`.
+
+        Returns:
+            str: The formatted string with datetime information inserted.
+        """
         return string_format.format(**self.dt_info_dict)
 
     @property
     def timestamp(self) -> int:
+        """
+        Get the timestamp representation of the stored datetime.
+
+        Returns:
+            int: The timestamp value of the datetime.
+        """
         return int(self._dt.timestamp())

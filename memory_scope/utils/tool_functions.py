@@ -25,6 +25,15 @@ def underscore_to_camelcase(name: str, is_first_title: bool = True):
 
 
 def camelcase_to_underscore(name: str):
+    """
+    Converts a CamelCase string to underscore_notation.
+
+    Args:
+        name (str): The CamelCase formatted string to be converted.
+
+    Returns:
+        str: The converted string in underscore_notation.
+    """
     return re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
 
 
@@ -79,10 +88,21 @@ def init_instance_by_config(config: dict,
 
 
 def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str) -> List[Message]:
+    """
+    Converts input strings into a structured list of message objects suitable for AI interactions.
+
+    Args:
+        system_prompt (str): The system-level instruction or context.
+        few_shot (str): An example or demonstration input, often used for illustrating expected behavior.
+        user_query (str): The actual user query or prompt to be processed.
+
+    Returns:
+        List[Message]: A list of Message objects, each representing a part of the conversation setup.
+    """
     return [
-        Message(role=MessageRoleEnum.SYSTEM.value, content=system_prompt.strip()),
+        Message(role=MessageRoleEnum.SYSTEM.value, content=system_prompt.strip()),  # System message
         Message(role=MessageRoleEnum.USER.value,
-                content="\n".join([x.strip() for x in [few_shot, system_prompt, user_query]]))
+                content="\n".join([x.strip() for x in [few_shot, system_prompt, user_query]]))  # User message combining few shot, system prompt, and user query
     ]
 
 
@@ -106,12 +126,31 @@ def char_logo(words: str, seed: int = time.time_ns(), color=None):
 
 
 def md5_hash(input_string: str):
+    """
+    Computes the MD5 hash of a given input string.
+
+    Args:
+        input_string (str): The string for which the MD5 hash needs to be computed.
+
+    Returns:
+        str: The hexadecimal representation of the MD5 hash.
+    """
     m = hashlib.md5()
     m.update(input_string.encode('utf-8'))
     return m.hexdigest()
 
 
 def contains_keyword(text, keywords):
+    """
+    Checks if the given text contains any of the specified keywords, ignoring case.
+
+    Args:
+        text (str): The text to search within.
+        keywords (List[str]): A list of keywords to look for in the text.
+
+    Returns:
+        bool: True if any keyword is found in the text, False otherwise.
+    """
     escaped_keywords = map(re.escape, keywords)
     pattern = re.compile('|'.join(escaped_keywords), re.IGNORECASE)
     return pattern.search(text) is not None

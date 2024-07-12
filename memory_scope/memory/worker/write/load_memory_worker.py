@@ -87,9 +87,17 @@ class LoadMemoryWorker(MemoryBaseWorker):
         self.set_memories(TODAY_NODES, nodes)
 
     def _run(self):
-        mock_query = "-"
+        """
+        Initiates asynchronous tasks to retrieve various types of memory data including 
+        not reflected, not updated, insights, and data from today. After submitting all tasks, 
+        it waits for their completion by calling `gather_thread_result`.
+        
+        This method serves as the controller for data retrieval operations, enhancing efficiency 
+        by handling tasks concurrently.
+        """
+        mock_query = "-"  # Placeholder query
         self.submit_thread_task(self.retrieve_not_reflected_memory, query=mock_query)
         self.submit_thread_task(self.retrieve_not_updated_memory, query=mock_query)
         self.submit_thread_task(self.retrieve_insight_memory, query=mock_query)
         self.submit_thread_task(self.retrieve_today_memory)
-        self.gather_thread_result()
+        self.gather_thread_result()  # Waits for all submitted tasks to complete

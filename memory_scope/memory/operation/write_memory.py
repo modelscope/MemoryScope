@@ -27,6 +27,12 @@ class WriteMemory(BaseWorkflow, BaseBackendOperation):
 
     @property
     def not_memorized_size(self):
+        """
+        Calculates the count of chat messages that have not been memorized.
+
+        Returns:
+            int: The total count of chat messages which are not marked as memorized.
+        """
         return sum([not x.memorized for x in self.chat_messages])
 
     def set_memorized(self):
@@ -36,9 +42,29 @@ class WriteMemory(BaseWorkflow, BaseBackendOperation):
                     msg.memorized = True
 
     def init_workflow(self, **kwargs):
+        """
+        Initializes the workflow by setting up workers, considering backend-specific parameters.
+
+        Args:
+            **kwargs: Additional keyword arguments passed for initializing workers.
+        """
         self.init_workers(is_backend=True, **kwargs)
 
     def _run_operation(self, **kwargs):
+        """
+        Executes an operation after preparing the chat context, checking message memory status,
+        and updating workflow status accordingly.
+
+        If the number of not-memorized messages is less than the contextual message count,
+        the operation is skipped. Otherwise, it sets up the chat context, runs the workflow,
+        captures the result, and updates the memory status.
+
+        Args:
+            **kwargs: Keyword arguments for chat operation configuration.
+
+        Returns:
+            Any: The result obtained from running the workflow.
+        """
         self.context.clear()
         self.context[CHAT_KWARGS] = kwargs
         not_memorized_size = self.not_memorized_size

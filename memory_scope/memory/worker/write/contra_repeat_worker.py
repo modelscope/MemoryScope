@@ -1,5 +1,4 @@
 from typing import List
-
 from memory_scope.constants.common_constants import NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES, MERGE_OBS_NODES, TODAY_NODES
 from memory_scope.constants.language_constants import NONE_WORD, CONTRADICTORY_WORD, INCLUDED_WORD
 from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
@@ -10,9 +9,34 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class ContraRepeatWorker(MemoryBaseWorker):
+    """
+    The `ContraRepeatWorker` class specializes in processing memory nodes to identify and handle
+    contradictory and repetitive information. It extends the base functionality of `MemoryBaseWorker`.
+
+    Responsibilities:
+    - Collects observation nodes from various memory categories.
+    - Constructs a prompt with these observations for language model analysis.
+    - Parses the model's response to detect contradictions or redundancies.
+    - Adjusts the status of memory nodes based on the analysis.
+    - Persists the updated node statuses back into memory.
+    """
     FILE_PATH: str = __file__
 
     def _run(self):
+        """
+        Executes the primary routine of the ContraRepeatWorker which involves fetching memory nodes,
+        constructing a prompt, querying a language model, parsing the response to identify nodes for merging,
+        updating node statuses, and saving the updated nodes back to memory.
+
+        Steps:
+        1. Retrieves new observation nodes and nodes observed on the current day.
+        2. Optionally combines today's nodes with the new ones, sorts, and limits the list by a predefined count.
+        3. Constructs a prompt using the combined nodes, system prompt, and a few-shot example.
+        4. Queries a language model with the constructed prompt.
+        5. Parses the model's response to identify nodes to merge or exclude based on contradiction or redundancy.
+        6. Updates the status of nodes accordingly.
+        7. Persists the changes back to memory storage.
+        """
         all_obs_nodes: List[MemoryNode] = self.get_memories([NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES])
         if not all_obs_nodes:
             self.logger.info("all_obs_nodes is empty!")
@@ -58,7 +82,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
             if not obs_content_list:
                 continue
 
-            # [6, skipping classes]
+            # Expecting a pair [index, flag]
             if len(obs_content_list) != 2:
                 self.logger.warning(f"obs_content_list={obs_content_list} is invalid!")
                 continue

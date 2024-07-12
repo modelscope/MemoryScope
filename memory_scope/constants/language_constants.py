@@ -1,5 +1,7 @@
 from memory_scope.enumeration.language_enum import LanguageEnum
 
+# This dictionary maps languages to lists of words related to datetime expressions. 
+# It aids in recognizing and processing datetime mentions in text, enhancing the system's ability to understand temporal context across different languages.
 DATATIME_WORD_LIST = {
     LanguageEnum.CN: [
         "天",
@@ -86,6 +88,7 @@ DATATIME_WORD_LIST = {
     ]
 }
 
+# A mapping of weekdays for each supported language, facilitating calendar-related operations and understanding within the application.
 WEEKDAYS = {
     LanguageEnum.CN: [
         "周一",
@@ -107,42 +110,49 @@ WEEKDAYS = {
     ]
 }
 
+# Constants for the word 'none' in different languages
 NONE_WORD = {
     LanguageEnum.CN: "无",
     LanguageEnum.EN: "none"
 }
 
+# Constants for the word 'repeated' in different languages
 REPEATED_WORD = {
     LanguageEnum.CN: "重复",
     LanguageEnum.EN: "repeated"
 }
 
+# Constants for the word 'contradictory' in different languages
 CONTRADICTORY_WORD = {
     LanguageEnum.CN: "矛盾",
     LanguageEnum.EN: "contradictory"
 }
 
+# Constants for the phrase 'included' in different languages
 INCLUDED_WORD = {
     LanguageEnum.CN: "被包含",
     LanguageEnum.EN: "included"
 }
 
+# Constants for the symbol ':' in different languages' representations
 COLON_WORD = {
     LanguageEnum.CN: "：",
     LanguageEnum.EN: ":"
 }
 
-
+# Constants for the symbol ',' in different languages' representations
 COMMA_WORD = {
     LanguageEnum.CN: "，",
     LanguageEnum.EN: ","
 }
 
+# Default human name placeholders for different languages
 DEFAULT_HUMAN_NAME = {
     LanguageEnum.CN: "用户",
     LanguageEnum.EN: "user"
 }
 
+# Mapping of datetime terms from natural language to standardized keys for each supported language
 DATATIME_KEY_MAP = {
     LanguageEnum.CN: {
         "年": "year",
@@ -160,6 +170,7 @@ DATATIME_KEY_MAP = {
     }
 }
 
+# Phrase for indicating inferred time in different languages
 TIME_INFER_WORD = {
     LanguageEnum.CN: "推断时间",
     LanguageEnum.EN: "Inference time"

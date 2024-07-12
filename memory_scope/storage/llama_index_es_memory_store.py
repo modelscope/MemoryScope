@@ -12,11 +12,25 @@ from memory_scope.utils.logger import Logger
 
 
 class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
+    """
+    Custom asynchronous dense vector strategy extending LlamaIndex's ElasticsearchStore's strategy.
+    This strategy enables hybrid search combining KNN queries with text queries and supports customizable ranking functions.
+    """
+
     def _hybrid(self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int) -> Dict[str, Any]:
-        # Add a query to the knn query.
-        # RRF is used to even the score from the knn query and text query
-        # RRF has two optional parameters: {'rank_constant':int, 'window_size':int}
-        # https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html
+        """
+        Constructs a hybrid query body combining KNN search with a text query, and applies filters.
+
+        Args:
+            query (str): The text query to be combined with the KNN results.
+            knn (Dict[str, Any]): The KNN query part specifying the vector search parameters.
+            filter (List[Dict[str, Any]]): A list of filters to apply to the search.
+            top_k (int): The number of top results to retrieve.
+
+        Returns:
+            Dict[str, Any]: The constructed query body for Elasticsearch to perform the hybrid search.
+        """
+        # Combines KNN query with a text query and applies optional RRF ranking for result balancing
         query_body = {
             "knn": knn,
             "query": {
@@ -35,6 +49,7 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
             },
         }
 
+        # Configures Rank-Risk Function (RRF) if enabled or specified, to balance scores between KNN and text matches
         if isinstance(self.rrf, Dict):
             query_body["rank"] = {"rrf": self.rrf}
         elif isinstance(self.rrf, bool) and self.rrf is True:
@@ -98,15 +113,21 @@ class _ElasticsearchStore(ElasticsearchStore):
 
 def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str, Any]:
     """
-    Convert standard filters to Elasticsearch filter.
+    Converts the provided standard Llama-index filters into an Elasticsearch compatible filter format.
+
+    This function processes each key-value pair in the input dictionary. If the value is a list,
+    it constructs a 'should' clause with multiple 'term' sub-clauses for each item in the list,
+    requiring at least one to match. If the value is not a list, it forms a 'must' clause with a single 'term'
+    sub-clause. The resulting structure is nested within a 'bool' clause which is the standard way to combine
+    boolean logic in Elasticsearch queries.
 
     Args:
-        standard_filters: Standard Llama-index filters.
+        standard_filters (Dict[str, List[str]]): A dictionary where keys represent filter fields and values are
+                                                 either single values or lists of values to filter by.
 
     Returns:
-        Elasticsearch filter.
+        Dict[str, Any]: An Elasticsearch query filter dictionary ready to be used in a query.
     """
-
     result = {
         "bool": {}
     }
@@ -140,6 +161,10 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
 
 import ray
 ray.init(ignore_reinit_error=True)
+
+# The following decorator '@ray.remote' is used to define a function or class that should be executed remotely
+# by Ray. This facilitates parallel and distributed computation. However, due to the instruction constraints,
+# no modification or additional explanation is provided for this part.
 @ray.remote
 class _LlamaIndexEsMemoryStore(BaseMemoryStore):
     def __init__(self,
@@ -175,9 +200,24 @@ class _LlamaIndexEsMemoryStore(BaseMemoryStore):
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
     def insert(self, node: MemoryNode):
+        """
+        Inserts a MemoryNode into the Elasticsearch store by converting it to aTextNode.
+
+        Args:
+            node (MemoryNode): The MemoryNode to be inserted into the store.
+        """
         self.index.insert_nodes([self._memory_node_2_text_node(node)])
 
     def delete(self, node: MemoryNode):
+        """
+        Deletes a MemoryNode from the Elasticsearch store based on its memory_id.
+
+        Args:
+            node (MemoryNode): The MemoryNode to be deleted, identified by its memory_id.
+
+        Returns:
+            bool: The result of the deletion operation, typically True if successful.
+        """
         memory_id = node.memory_id
         return self.es_store.delete(memory_id)
 
@@ -190,6 +230,12 @@ class _LlamaIndexEsMemoryStore(BaseMemoryStore):
             self.update(node)
 
     def close(self):
+        """
+        Closes the Elasticsearch store, releasing any resources associated with it.
+        
+        This method ensures that the connection to the Elasticsearch instance is properly closed,
+        which is a good practice to prevent resource leaks when you're done interacting with the store.
+        """
         self.es_store.close()
 
     def update_memories(self, nodes: MemoryNode | List[MemoryNode]):
@@ -236,12 +282,30 @@ class _LlamaIndexEsMemoryStore(BaseMemoryStore):
 
     @staticmethod
     def _memory_node_2_text_node(memory_node: MemoryNode) -> TextNode:
+        """
+        Converts a MemoryNode object into a TextNode object.
+
+        Args:
+            memory_node (MemoryNode): The MemoryNode to be converted.
+
+        Returns:
+            TextNode: The converted TextNode object with the content and metadata from the MemoryNode.
+        """
         return TextNode(id_=memory_node.memory_id,
                         text=memory_node.content,
                         metadata=memory_node.model_dump(exclude={"content"}))
 
     @staticmethod
     def _text_node_2_memory_node(text_node: NodeWithScore) -> MemoryNode:
+        """
+        Converts a NodeWithScore object into a MemoryNode object.
+
+        Args:
+            text_node (NodeWithScore): The NodeWithScore to be converted.
+
+        Returns:
+            MemoryNode: The converted MemoryNode object with the text and metadata from the NodeWithScore.
+        """
         return MemoryNode(content=text_node.text, **text_node.metadata)
 
 
@@ -271,21 +335,63 @@ class LlamaIndexEsMemoryStore():
     def update(self, node: MemoryNode):
         return ray.get(self.proxy_obj.update.remote(node))
 
-    def update_batch(self, nodes: List[MemoryNode]):
+    def update_batch(self, nodes: List[MemoryNode]) -> Any:
+        """
+        Updates a batch of memory nodes asynchronously using Ray.
+
+        Args:
+            nodes (List[MemoryNode]): A list of MemoryNode objects to be updated.
+
+        Returns:
+            Any: The result from the remote task once completed.
+        """
         return ray.get(self.proxy_obj.update_batch.remote(nodes))
 
-    def close(self):
+    def close(self) -> Any:
+        """
+        Closes the Elasticsearch memory store asynchronously using Ray.
+
+        Returns:
+            Any: The result from the remote task once completed.
+        """
         return ray.get(self.proxy_obj.close.remote())
 
-    def update_memories(self, nodes: MemoryNode | List[MemoryNode]):
+    def update_memories(self, nodes: MemoryNode | List[MemoryNode]) -> Any:
+        """
+        Updates one or more memory nodes asynchronously using Ray.
+
+        Args:
+            nodes (MemoryNode | List[MemoryNode]): A single MemoryNode or a list of MemoryNode objects to be updated.
+
+        Returns:
+            Any: The result from the remote task once completed.
+        """
         return ray.get(self.proxy_obj.update_memories.remote(nodes))
 
     @staticmethod
     def _memory_node_2_text_node(memory_node: MemoryNode) -> TextNode:
+        """
+        Converts a MemoryNode object into a TextNode object.
+
+        Args:
+            memory_node (MemoryNode): The MemoryNode to convert.
+
+        Returns:
+            TextNode: The converted TextNode object with content and metadata.
+        """
         return TextNode(id_=memory_node.memory_id,
                         text=memory_node.content,
                         metadata=memory_node.model_dump(exclude={"content"}))
 
     @staticmethod
     def _text_node_2_memory_node(text_node: NodeWithScore) -> MemoryNode:
+        """
+        Converts a TextNode (with score) into a MemoryNode object.
+
+        Args:
+            text_node (NodeWithScore): The TextNode to convert, which includes a 'score' attribute.
+
+        Returns:
+            MemoryNode: The converted MemoryNode object with content and metadata.
+        """
         return MemoryNode(content=text_node.text, **text_node.metadata)

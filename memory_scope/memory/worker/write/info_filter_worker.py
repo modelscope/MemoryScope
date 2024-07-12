@@ -10,11 +10,26 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 class InfoFilterWorker(MemoryBaseWorker):
     """
-    This worker will filter and modify `self.chat_messages`, preserving only the messages that contain important information.
+    This worker filters and modifies the chat message history (`self.chat_messages`) by retaining only the messages 
+    that include significant information. It then constructs a prompt from these filtered messages, utilizes an AI 
+    model to process this prompt, parses the AI's generated response to allocate scores, and ultimately retains 
+    messages in `self.chat_messages` based on these assigned scores.
     """
     FILE_PATH: str = __file__
 
     def _run(self):
+        """
+        Filters user messages in the chat, generates a prompt incorporating these messages, 
+        utilizes an LLM to process the prompt, parses the LLM's response to score each message, 
+        and updates `self.chat_messages` to only include messages with designated scores.
+        
+        This method executes the following steps:
+        1. Filters out non-user messages and truncates long messages.
+        2. Constructs a prompt with user messages for LLM input.
+        3. Calls the LLM model with the constructed prompt.
+        4. Parses the LLM's response to extract message scores.
+        5. Retains messages in `self.chat_messages` based on their scores.
+        """
         # filter user msg
         info_messages: List[Message] = []
         for msg in self.chat_messages:

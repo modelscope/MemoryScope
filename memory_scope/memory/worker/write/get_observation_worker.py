@@ -51,21 +51,55 @@ class GetObservationWorker(MemoryBaseWorker):
         return filter_messages
 
     def build_message(self, filter_messages: List[Message]) -> List[Message]:
+        """
+        Constructs a formatted message for observation based on input messages, incorporating system prompts,
+        few-shot examples, and user queries.
+
+        Args:
+            filter_messages (List[Message]): A list of messages filtered for observation processing.
+
+        Returns:
+            List[Message]: A list containing the constructed message ready for observation.
+        """
         user_query_list = []
         for i, msg in enumerate(filter_messages):
+            # Construct each user query item with index, target name, and message content
             user_query_list.append(f"{i} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
 
+        # Format the system prompt with the number of observations and target name
         system_prompt = self.prompt_handler.get_observation_system.format(num_obs=len(user_query_list),
                                                                           user_name=self.target_name)
+        
+        # Incorporate few-shot examples into the prompt with the target name
         few_shot = self.prompt_handler.get_observation_few_shot.format(user_name=self.target_name)
+        
+        # Assemble the user query part of the prompt with the list of formatted user queries
         user_query = self.prompt_handler.get_observation_user_query.format(user_query="\n".join(user_query_list),
                                                                            user_name=self.target_name)
 
+        # Combine system prompt, few-shot, and user query into a single message for obtaining observations
         obtain_obs_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        
+        # Log the constructed observation message
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")
+        
+        # Return the processed message(s) for further steps in the observation workflow
         return obtain_obs_message
 
     def _run(self):
+        """
+        Processes chat messages to extract observations, inferring timestamps and content relevance, 
+        and stores the extracted information as MemoryNode objects within the conversation memory.
+
+        Steps:
+        1. Filters messages based on predefined criteria.
+        2. Constructs a message for the language model to generate observations.
+        3. Calls the language model to predict observation details.
+        4. Parses the model's response to extract observation lists.
+        5. Validates and structures each observed event into MemoryNode objects.
+        6. Stores these MemoryNodes in the conversation memory under a specific key.
+        """
+        # Filters messages and constructs an input message for the language model
         filter_messages = self.filter_messages()
         if not filter_messages:
             self.logger.warning("get obs filter_messages is empty!")
@@ -73,36 +107,37 @@ class GetObservationWorker(MemoryBaseWorker):
 
         obtain_obs_message = self.build_message(filter_messages)
 
-        # call LLM
+        # Generates observations using the language model
         response = self.generation_model.call(messages=obtain_obs_message, top_k=self.generation_model_top_k)
-
-        # return if empty
         if not response.status or not response.message.content:
             return
+
         response_text = response.message.content
 
-        # parse text
+        # Parses the generated text to extract observation indices, times, contents, and keywords
         idx_obs_list = ResponseTextParser(response_text).parse_v1(self.__class__.__name__)
         if len(idx_obs_list) <= 0:
             self.logger.warning("idx_obs_list is empty!")
             return
 
-        # gene new obs nodes
+        # Processes each extracted observation to create MemoryNode objects
         new_obs_nodes: List[MemoryNode] = []
         for obs_content_list in idx_obs_list:
             if not obs_content_list:
                 continue
 
-            # [1, In June 2022, the user will travel to Hangzhou for tourism, tourism]
+            # Expected format: [index, time_inference, observation_content, keywords]
             if len(obs_content_list) != 4:
                 self.logger.warning(f"obs_content_list={obs_content_list} is invalid!")
                 continue
 
             idx, time_infer, obs_content, keywords = obs_content_list
 
+            # Skips processing if content indicates no meaningful observation
             if obs_content in self.get_language_value([NONE_WORD, REPEATED_WORD]):
                 continue
 
+            # Validates index format
             if not idx.isdigit():
                 self.logger.warning(f"idx={idx} is invalid!")
                 continue
@@ -110,15 +145,17 @@ class GetObservationWorker(MemoryBaseWorker):
             if time_infer == self.get_language_value(NONE_WORD):
                 time_infer = ""
 
-            # index number needs to be corrected to -1
+            # Adjusts index to zero-based and checks validity against filtered messages
             idx = int(idx) - 1
             if idx >= len(filter_messages):
                 self.logger.warning(f"idx={idx} is invalid! filter_messages.size={len(filter_messages)}")
                 continue
 
+            # Creates a MemoryNode for the validated observation and adds it to the list
             new_obs_nodes.append(self.add_observation(message=filter_messages[idx],
                                                       time_infer=time_infer,
                                                       obs_content=obs_content,
                                                       keywords=keywords))
 
+        # Stores the extracted and structured observations in the conversation memory
         self.set_memories(self.OBS_STORE_KEY, new_obs_nodes)
