@@ -168,14 +168,14 @@ ray.init(ignore_reinit_error=True)
 @ray.remote
 class _LlamaIndexEsMemoryStore(BaseMemoryStore):
     def __init__(self,
-                 embedding_model_conf: dict,
+                 embedding_model: dict,
                  index_name: str,
                  es_url: str,
                  use_hybrid: bool = True,
                  **kwargs):
 
         from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
-        embedding_model = LlamaIndexEmbeddingModel(**embedding_model_conf)
+        embedding_model = LlamaIndexEmbeddingModel(**embedding_model)
         self.embedding_model: BaseModel = embedding_model
         self.es_store = _ElasticsearchStore(index_name=index_name,
                                             es_url=es_url,
@@ -312,13 +312,13 @@ class _LlamaIndexEsMemoryStore(BaseMemoryStore):
 
 class LlamaIndexEsMemoryStore():
     def __init__(self,
-                 embedding_model_conf: BaseModel,
+                 embedding_model: BaseModel,
                  index_name: str,
                  es_url: str,
                  use_hybrid: bool = True,
                  **kwargs):
         if 'embedding_model' in kwargs: kwargs.pop('embedding_model')
-        self.proxy_obj = _LlamaIndexEsMemoryStore.remote(embedding_model_conf, index_name, es_url, use_hybrid, **kwargs)
+        self.proxy_obj = _LlamaIndexEsMemoryStore.remote(embedding_model.kwargs, index_name, es_url, use_hybrid, **kwargs)
 
     def retrieve_memories(self,
                           query: str,

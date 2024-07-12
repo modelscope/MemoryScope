@@ -47,30 +47,12 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
 
     @property
     def chat_messages(self) -> List[Message]:
-        """
-        Getter property to retrieve the list of chat messages from the context.
-
-        Returns:
-            List[Message]: A list of Message objects representing the chat messages.
-        """
         return self.get_context(CHAT_MESSAGES)
 
     @chat_messages.setter
-    def chat_messages(self, messages: List[Message]) -> None:
-        """
-        Setter property to update the list of chat messages in the context.
-
-        Args:
-            messages (List[Message]): A list of Message objects to set as the new chat messages.
-        """
     def chat_messages(self, value):
-        """
-        Sets the context for chat messages with the provided value.
-
-        Args:
-            value: The value to be set for the chat messages context. The type of `value` is inferred from the usage context.
-        """
         self.set_context(CHAT_MESSAGES, value)
+
 
     @property
     def chat_kwargs(self) -> Dict[str, str]:
