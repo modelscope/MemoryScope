@@ -16,7 +16,7 @@ class BaseWorkflow(object):
 
     def __init__(self,
                  name: str,
-                 workflow: str,
+                 workflow: str = "",
                  thread_pool: ThreadPoolExecutor = G_CONTEXT.thread_pool,
                  **kwargs):
 
@@ -113,10 +113,12 @@ class BaseWorkflow(object):
     def init_workers(self, is_backend: bool = False, **kwargs):
         """
         Initializes worker instances based on the configuration for each worker defined in `G_CONTEXT.worker_config`.
-        Each worker can be set to run in a multi-threaded mode depending on the `is_backend` flag or the worker's individual configuration.
+        Each worker can be set to run in a multithreaded mode depending on the `is_backend` flag or the worker's
+        individual configuration.
 
         Args:
-            is_backend (bool, optional): A flag indicating whether the workers should be initialized in a backend context. Defaults to False.
+            is_backend (bool, optional): A flag indicating whether the workers should be initialized in a
+            backend context. Defaults to False.
             **kwargs: Additional keyword arguments to be passed during worker initialization.
 
         Raises:
@@ -150,13 +152,14 @@ class BaseWorkflow(object):
     def run_workflow(self):
         """
         Executes the workflow by orchestrating the steps defined in `self.workflow_worker_list`.
-        This method supports both sequential and parallel execution of sub-workflows based on the structure of `self.workflow_worker_list`.
+        This method supports both sequential and parallel execution of sub-workflows based on the structure
+        of `self.workflow_worker_list`.
         
         If a workflow part consists of a single item, it is executed sequentially. For parts with multiple items,
-        they are submitted for parallel execution using a thread pool. The workflow will stop if any sub-workflow returns False.
+        they are submitted for parallel execution using a thread pool. The workflow will stop if any sub-workflow
+        returns False.
         """
-        self.logger.info(f"----- workflow.{self.name}.begin -----")
-        with Timer(self.name, log_time=False) as t:
+        with Timer(self.name, time_log_type="wrap"):
             self.context[WORKFLOW_NAME] = self.name
             
             # Iterate over each part of the workflow
@@ -177,8 +180,6 @@ class BaseWorkflow(object):
                     for future in as_completed(t_list):
                         if not future.result():
                             flag = False
-                            break
                     if not flag:
                         break
             
-            self.logger.info(f"----- workflow.{self.name}.end cost={t.cost_str}-----")
