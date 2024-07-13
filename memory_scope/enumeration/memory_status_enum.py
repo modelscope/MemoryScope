@@ -17,3 +17,5 @@ class MemoryNodeStatus(str, Enum):
     CONTENT_MODIFIED = "content_modified"
     ACTIVE = "active"
     EXPIRED = "expired"
+
+    DELETED = "deleted"

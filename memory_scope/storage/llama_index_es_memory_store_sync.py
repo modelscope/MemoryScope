@@ -258,6 +258,12 @@ class LlamaIndexEsMemoryStoreSync(BaseMemoryStore):
             for n in expired_memories:
                 self.delete(n)
 
+        # delete memories
+        deleted_memories = [n for n in nodes if n.status == MemoryNodeStatus.DELETED.value]
+        if deleted_memories:
+            for n in deleted_memories:
+                self.delete(n)
+
     @staticmethod
     def _memory_node_2_text_node(memory_node: MemoryNode) -> TextNode:
         """

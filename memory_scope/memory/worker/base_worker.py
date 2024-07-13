@@ -61,8 +61,7 @@ class BaseWorker(metaclass=ABCMeta):
         raise NotImplementedError
 
     def run(self):
-        self.logger.info(f"----- worker.{self.name}.begin -----")
-        with Timer(self.name, log_time=False) as t:
+        with Timer(f"worker.{self.name}", time_log_type="wrap"):
             if self.raise_exception:
                 self._run()
             else:
@@ -70,8 +69,6 @@ class BaseWorker(metaclass=ABCMeta):
                     self._run()
                 except Exception as e:
                     self.logger.exception(f"run {self.name} failed! args={e.args}")
-
-            self.logger.info(f"----- worker.{self.name}.end cost={t.cost_str}-----")
 
     def get_context(self, key: str, default=None):
         return self.context.get(key, default)

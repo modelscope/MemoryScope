@@ -6,7 +6,7 @@ from memory_scope.memory.operation.base_workflow import BaseWorkflow
 from memory_scope.scheme.message import Message
 
 
-class ReadMemory(BaseWorkflow, BaseOperation):
+class FrontendOperation(BaseWorkflow, BaseOperation):
     operation_type: OPERATION_TYPE = "frontend"
 
     def __init__(self,

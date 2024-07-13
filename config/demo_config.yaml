@@ -14,14 +14,14 @@ memory_service:
     contextual_msg_count: 6
     memory_operations:
       read_message:
-        class: memory.operation.read_message
+        class: memory.operation.frontend_operation
         description: "read session messages of the user"
       read_memory:
-        class: memory.operation.read_memory
+        class: memory.operation.frontend_operation
         workflow: set_query,[extract_time|retrieve_memory1,semantic_rank],fuse_rerank
         description: "read related memories of the user"
       list_memory:
-        class: memory.operation.read_memory
+        class: memory.operation.frontend_operation
         workflow: set_query,retrieve_memory2,print_memory
         description: "read all memories of the user"
       write_memory:

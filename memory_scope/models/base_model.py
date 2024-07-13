@@ -83,7 +83,7 @@ class BaseModel(metaclass=ABCMeta):
         :param kwargs:
         :return:
         """
-        with Timer(self.__class__.__name__, log_time=False) as t:
+        with Timer(self.__class__.__name__, time_log_type="none") as t:
             self.before_call(stream=stream, **kwargs)
             for i in range(self.max_retries):
                 if self.raise_exception:
@@ -95,7 +95,7 @@ class BaseModel(metaclass=ABCMeta):
                         model_response = ModelResponse(m_type=self.m_type, status=False, details=e.args)
 
                 if isinstance(model_response, ModelResponse) and not model_response.status:
-                    self.logger.warning(f"call model={self.model_name} failed! cost={t.cost_str} retry_cnt={i} "
+                    self.logger.warning(f"call model={self.model_name} failed! {t.cost_str} retry_cnt={i} "
                                         f"details={model_response.details}", stacklevel=2)
                     time.sleep(i * self.retry_interval)
                 else:
@@ -113,7 +113,7 @@ class BaseModel(metaclass=ABCMeta):
         :param kwargs:
         :return:
         """
-        with Timer(self.__class__.__name__, log_time=False) as t:
+        with Timer(self.__class__.__name__, time_log_type="none") as t:
             self.before_call(**kwargs)
             for i in range(self.max_retries):
                 if self.raise_exception:
@@ -125,7 +125,7 @@ class BaseModel(metaclass=ABCMeta):
                         model_response = ModelResponse(m_type=self.m_type, status=False, details=e.args)
 
                 if not model_response.status:
-                    self.logger.warning(f"async_call model={self.model_name} failed! cost={t.cost_str} retry_cnt={i} "
+                    self.logger.warning(f"async_call model={self.model_name} failed! {t.cost_str} retry_cnt={i} "
                                         f"details={model_response.details}", stacklevel=2)
                     time.sleep(i * self.retry_interval)
                 else:

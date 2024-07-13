@@ -110,6 +110,10 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
                 memory_node_list.extend(result)
         self.logger.info(f"memory_node_list.size={len(memory_node_list)}")
 
+        if not memory_node_list:
+            self.continue_run = False
+            return
+
         memory_node_list = sorted(memory_node_list, key=lambda x: x.score_similar, reverse=True)
         for node in memory_node_list:
             self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} "
