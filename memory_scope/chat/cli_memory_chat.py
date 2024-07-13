@@ -116,7 +116,8 @@ class CliMemoryChat(BaseMemoryChat):
     @property
     def generation_model(self) -> BaseModel:
         """
-        Property to get the generation model. If the model is set as a string, it will be resolved from the global context's model dictionary.
+        Property to get the generation model. If the model is set as a string, it will be resolved from the global
+        context's model dictionary.
 
         Raises:
             ValueError: If the model string is not found in the global context's model dictionary.
@@ -192,7 +193,8 @@ class CliMemoryChat(BaseMemoryChat):
             query (str): The raw input string from the user which includes the command and its arguments.
 
         Returns:
-            tuple: A tuple containing the command (str) as the first element and a dictionary (kwargs) of keyword arguments as the second element.
+            tuple: A tuple containing the command (str) as the first element and a dictionary (kwargs) of keyword
+            arguments as the second element.
         """
         query_split = query.lstrip("/").lower().split(" ")  # Split and preprocess the input command
         command = query_split[0]  # Extract the command
@@ -200,7 +202,8 @@ class CliMemoryChat(BaseMemoryChat):
         kwargs = {}  # Initialize dictionary to hold keyword arguments
 
         for arg in args:
-            if not args:  # Skip if no arguments exist (unnecessary check due to prior assignment, but retained as per original)
+            # Skip if no arguments exist (unnecessary check due to prior assignment, but retained as per original)
+            if not args:
                 continue
             arg_split = arg.split("=")  # Split argument into key-value pair
             if len(arg_split) >= 2:  # Ensure there's both a key and value

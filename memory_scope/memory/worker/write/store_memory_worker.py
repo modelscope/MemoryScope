@@ -11,10 +11,10 @@ class StoreMemoryWorker(MemoryBaseWorker):
         store_key: str = self.store_key
 
         if store_key == "all":
-            self.save_memories()
+            self.update_memories()
 
         elif self.has_content(store_key):
-            self.save_memories(store_key)
+            self.update_memories(store_key)
 
         elif store_key in self.chat_kwargs:
             query = self.chat_kwargs[store_key]

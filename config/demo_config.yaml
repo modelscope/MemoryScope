@@ -15,24 +15,29 @@ memory_service:
     memory_operations:
       read_message:
         class: memory.operation.frontend_operation
-        description: "read session messages of the user"
+        workflow: read_message
+        description: "read short memory"
       read_memory:
         class: memory.operation.frontend_operation
         workflow: set_query,[extract_time|retrieve_memory1,semantic_rank],fuse_rerank
-        description: "read related memories of the user"
+        description: "read long-term memory"
       list_memory:
         class: memory.operation.frontend_operation
         workflow: set_query,retrieve_memory2,print_memory
-        description: "read all memories of the user"
+        description: "read all long-term memory of the user"
+      delete_memory:
+        class: memory.operation.frontend_operation
+        workflow: set_query,retrieve_memory3,delete_memory,store_memory
+        description: "delete all long-term memory"
       write_memory:
         class: memory.operation.write_memory
         workflow: info_filter,load_memory1,[get_observation|get_observation_with_time],contra_repeat,store_memory
-        description: "write observation memories of the user"
+        description: "write observation memory of the user"
         interval_time: 5
       summary_memory:
         class: memory.operation.summary_memory
         workflow: load_memory2,get_reflection_subject,update_insight,long_contra_repeat,store_memory
-        description: "summary observation memories of the user"
+        description: "summary observation memory of the user"
         interval_time: 30
 
 worker:
@@ -41,22 +46,24 @@ worker:
     generation_model: dashscope_generation
     embedding_model: dashscope_embedding
     rank_model: dashscope_rank
+  read_message:
+    class: memory.worker.frontend.read_message_worker
   set_query:
-    class: memory.worker.read.set_query_worker
+    class: memory.worker.frontend.set_query_worker
   retrieve_memory1:
-    class: memory.worker.read.retrieve_memory_worker
+    class: memory.worker.frontend.retrieve_memory_worker
     retrieve_obs_top_k: 100
     retrieve_ins_pf_top_k: 100
     retrieve_expired_top_k: 0
   extract_time:
-    class: memory.worker.read.extract_time_worker
+    class: memory.worker.frontend.extract_time_worker
     generation_model: dashscope_generation
     generation_model_top_k: 1
   semantic_rank:
-    class: memory.worker.read.semantic_rank_worker
+    class: memory.worker.frontend.semantic_rank_worker
     rank_model: dashscope_rank
   fuse_rerank:
-    class: memory.worker.read.fuse_rerank_worker
+    class: memory.worker.frontend.fuse_rerank_worker
     fuse_score_threshold: 0.1
     fuse_ratio_dict:
       conversation: 0.5
@@ -66,12 +73,24 @@ worker:
     fuse_time_ratio: 2.0
     fuse_rerank_top_k: 10
   retrieve_memory2:
-    class: memory.worker.read.retrieve_memory_worker
+    class: memory.worker.frontend.retrieve_memory_worker
     retrieve_obs_top_k: 100
     retrieve_ins_pf_top_k: 100
     retrieve_expired_top_k: 100
   print_memory:
-    class: memory.worker.read.print_memory_worker
+    class: memory.worker.frontend.print_memory_worker
+  retrieve_memory3:
+    class: memory.worker.frontend.retrieve_memory_worker
+    retrieve_obs_top_k: 10000
+    retrieve_ins_pf_top_k: 10000
+    retrieve_expired_top_k: 10000
+  delete_memory:
+    class: memory.worker.frontend.update_status_worker
+    expired_action: delete
+    valid_action_dict:
+      obs_customized: delete
+      insight: delete
+      observation: delete
   info_filter:
     class: memory.worker.write.info_filter_worker
     generation_model: dashscope_generation
@@ -142,7 +161,7 @@ models:
     model_name: dummy_generation_model
 
 memory_store:
-  class: storage.llama_index_es_memory_store_sync
+  class: storage.llama_index_es_memory_store
   embedding_model: dashscope_embedding
   index_name: memory_index
   es_url: http://localhost:9200

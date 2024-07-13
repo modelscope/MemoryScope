@@ -32,7 +32,8 @@ class ChatMemoryService(BaseMemoryService):
                 self.logger.warning(f"memory operation={name} is repeated!")
                 continue
 
-            self._operation_dict[name] = init_instance_by_config(  # ⭐ Initialize operation instance by its config
+            # ⭐ Initialize operation instance by its config
+            self._operation_dict[name] = init_instance_by_config(
                 config=operation_config,
                 name=name,
                 chat_messages=self.chat_messages,

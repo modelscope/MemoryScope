@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class MemoryNodeStatus(str, Enum):
+class ActionStatusEnum(str, Enum):
     """
     Enumeration representing various statuses of a memory node.
     
@@ -9,13 +9,15 @@ class MemoryNodeStatus(str, Enum):
     - NEW: Indicates a newly created node.
     - MODIFIED: Signifies that the node has been altered.
     - CONTENT_MODIFIED: Specifies changes in the actual content of the node.
-    - ACTIVE: Denotes that the node is currently in use or accessible.
-    - EXPIRED: Implies that the node is no longer valid or needed.
+    - NONE: do nothing.
+    - DELETE: delete memories.
     """
     NEW = "new"
-    MODIFIED = "modified"
-    CONTENT_MODIFIED = "content_modified"
-    ACTIVE = "active"
-    EXPIRED = "expired"
 
-    DELETED = "deleted"
+    MODIFIED = "modified"
+
+    CONTENT_MODIFIED = "content_modified"
+
+    NONE = "none"
+
+    DELETE = "delete"

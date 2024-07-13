@@ -23,7 +23,7 @@ class PrintMemoryWorker(MemoryBaseWorker):
         expired_content_set = set()
         for node in memory_node_list:
             dt_handler = DatetimeHandler(node.timestamp)
-            dt = dt_handler.datetime_format("%Y%m%d %H:%M:%S")
+            dt = dt_handler.datetime_format("%Y%m%d-%H:%M:%S")
             line = f"{dt} {node.content}"
             if MemoryNodeStatus(node.status) is MemoryNodeStatus.EXPIRED:
                 if node.content in expired_content_set:

@@ -1,8 +1,9 @@
 from typing import List
 
 from memory_scope.constants.common_constants import QUERY_WITH_TS, RETRIEVE_MEMORY_NODES
-from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
+from memory_scope.enumeration.action_status_enum import ActionStatusEnum
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
+from memory_scope.enumeration.store_status_enum import StoreStatusEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.utils.timer import timer
@@ -34,7 +35,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
-            "status": MemoryNodeStatus.ACTIVE.value,
+            "store_status": StoreStatusEnum.VALID.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
         # ⭐ Retrieve memories matching the query, filtered by the specified conditions, 
@@ -46,13 +47,15 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
     @timer
     def retrieve_from_insight_and_profile(self, query: str) -> List[MemoryNode]:
         """
-        Retrieves memories marked as insights from the database based on a query, filtered by user, target, and set to active status.
+        Retrieves memories marked as insights from the database based on a query, filtered by user, target,
+        and set to active status.
 
         Args:
             query (str): The search query to match against the insights.
 
         Returns:
-            List[MemoryNode]: A list of MemoryNode objects that match the query criteria, limited by 'retrieve_ins_pf_top_k'.
+            List[MemoryNode]: A list of MemoryNode objects that match the query criteria,
+                              limited by 'retrieve_ins_pf_top_k'.
                               Returns an empty list if 'retrieve_ins_pf_top_k' is not set.
         """
         if not self.retrieve_ins_pf_top_k:
@@ -61,7 +64,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
-            "status": MemoryNodeStatus.ACTIVE.value,
+            "store_status": StoreStatusEnum.VALID.value,
             "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
         # ⭐ Retrieve insights matching the query, filtered, and limited by top_k
@@ -77,7 +80,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
-            "status": MemoryNodeStatus.EXPIRED.value,
+            "store_status": StoreStatusEnum.EXPIRED.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
         return self.memory_store.retrieve_memories(query=query,
@@ -116,6 +119,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
 
         memory_node_list = sorted(memory_node_list, key=lambda x: x.score_similar, reverse=True)
         for node in memory_node_list:
+            node.action_status = ActionStatusEnum.NONE
             self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} "
                              f"type={node.memory_type} status={node.status}")
-        self.set_memories(RETRIEVE_MEMORY_NODES, memory_node_list)
+        self.memory_handler.set_memories(RETRIEVE_MEMORY_NODES, memory_node_list)

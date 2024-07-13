@@ -13,13 +13,11 @@ class FrontendOperation(BaseWorkflow, BaseOperation):
                  name: str,
                  description: str,
                  chat_messages: List[Message],
-                 his_msg_count: int = 0,  # supplement to the current query
                  **kwargs):
         super().__init__(name=name, **kwargs)
         BaseOperation.__init__(self, name=name, description=description)
 
         self.chat_messages: List[Message] = chat_messages
-        self.his_msg_count: int = his_msg_count
 
     def init_workflow(self, **kwargs):
         """
@@ -41,11 +39,17 @@ class FrontendOperation(BaseWorkflow, BaseOperation):
         Returns:
             Any: The result obtained from executing the workflow.
         """
-        self.context.clear()  # Clear the previous operation context
-        max_count = 1 + self.his_msg_count  # Determine the number of historical messages to include
+        self.context.clear()
+
         # Include the most recent messages in the operation context
-        self.context[CHAT_MESSAGES] = [x.copy(deep=True) for x in self.chat_messages[-max_count:]]
-        self.context[CHAT_KWARGS] = kwargs  # Add additional arguments to the context
-        self.run_workflow()  # Execute the workflow with the prepared context
-        result = self.context.get(RESULT)  # Retrieve the result from the context after workflow execution
-        return result
+        self.context[CHAT_MESSAGES] = self.chat_messages
+
+        # Add additional arguments to the context
+        kwargs.update(**self.kwargs)
+        self.context[CHAT_KWARGS] = kwargs
+
+        # Execute the workflow with the prepared context
+        self.run_workflow()
+
+        # Retrieve the result from the context after workflow execution
+        return self.context.get(RESULT)

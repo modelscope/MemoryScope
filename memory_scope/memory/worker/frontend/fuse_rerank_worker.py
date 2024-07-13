@@ -1,7 +1,6 @@
 from typing import Dict, List
 
 from memory_scope.constants.common_constants import EXTRACT_TIME_DICT, RANKED_MEMORY_NODES, RESULT
-from memory_scope.constants.language_constants import COLON_WORD
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.utils.datetime_handler import DatetimeHandler
@@ -43,7 +42,8 @@ class FuseRerankWorker(MemoryBaseWorker):
         
         This method performs the following steps:
         1. Retrieves extraction time data and a list of ranked memory nodes from the worker's context.
-        2. Reranks nodes based on a combination of their original rank score, type, and temporal alignment with extracted events/messages.
+        2. Reranks nodes based on a combination of their original rank score, type,
+           and temporal alignment with extracted events/messages.
         3. Selects the top-K reranked nodes according to the predefined threshold.
         4. Optionally infuses inferred time information into the content of selected nodes.
         5. Logs reranking details and formats the final list of memories for output.
@@ -80,21 +80,15 @@ class FuseRerankWorker(MemoryBaseWorker):
         reranked_memory_nodes = sorted(reranked_memory_nodes,
                                        key=lambda x: x.score_rerank,
                                        reverse=True)[: self.fuse_rerank_top_k]
-        for node in reranked_memory_nodes:
+        for i, node in enumerate(reranked_memory_nodes):
+
             # Log reranking details including flags for event and message matches
-            f_event = int(node.meta_data["match_event_flag"])
-            f_msg = int(node.meta_data["match_msg_flag"])
             self.logger.info(f"Rerank Stage: Content={node.content}, Score={node.score_rerank}, "
-                             f"Event Flag={f_event}, Message Flag={f_msg}")
-            
-            # Infuse time inference if relevant flags are set
-            content = node.content
-            if f_event or f_msg:
-                time_infer = DatetimeHandler.format_time_by_extract_time(extract_time_dict=extract_time_dict,
-                                                                         meta_data=node.memory_node.metaData)
-                if time_infer:
-                    content = f"{time_infer}{self.get_language_value(COLON_WORD)}{content}"
-            memories.append(content)
+                             f"Event Flag={node.meta_data["match_event_flag"]}, "
+                             f"Message Flag={node.meta_data["match_msg_flag"]}")
+
+            time_str = DatetimeHandler(node.timestamp).datetime_format("%Y%m%d-%H:%M:%S")
+            memories.append(f"{i} {time_str} {node.content}")
 
         # Set the final list of formatted memories back into the worker's context
         self.set_context(RESULT, "\n".join(memories))

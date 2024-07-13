@@ -57,4 +57,4 @@ class SemanticRankWorker(MemoryBaseWorker):
             self.logger.info(f"Rank stage: Content={node.content}, Score={node.score_rank}")
 
         # save ranked nodes back to memory
-        self.set_memories(RANKED_MEMORY_NODES, memory_node_list, log_repeat=False)
+        self.memory_handler.set_memories(RANKED_MEMORY_NODES, memory_node_list, log_repeat=False)

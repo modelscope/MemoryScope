@@ -12,6 +12,9 @@ class MemoryTypeEnum(str, Enum):
     - OBS_CUSTOMIZED: Customized observational memories.
     """
     CONVERSATION = "conversation"
+
     OBSERVATION = "observation"
+
     INSIGHT = "insight"
+
     OBS_CUSTOMIZED = "obs_customized"

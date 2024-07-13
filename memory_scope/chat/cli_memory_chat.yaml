@@ -4,7 +4,6 @@ system_prompt:
   en: |
     You are a helpful assistant, your name is MemoryScope.
 
-# 请记住以下信息，他们可以帮助更好地理解用户的问题。
 memory_prompt:
   cn: |
     如果用户问题和以下信息没有关联，请忘记这些信息；如果用户问题和以下信息有关联，请记住这些信息，他们可以帮助更好地理解用户的问题。

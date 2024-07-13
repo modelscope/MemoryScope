@@ -11,5 +11,7 @@ class ModelEnum(str, Enum):
         RANK_MODEL: Denotes a model that specializes in ranking, often used to order items based on relevance or importance.
     """
     GENERATION_MODEL = "generation_model"
+
     EMBEDDING_MODEL = "embedding_model"
+
     RANK_MODEL = "rank_model"

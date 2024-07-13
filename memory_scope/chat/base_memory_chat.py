@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+
 from memory_scope.memory.service.base_memory_service import BaseMemoryService
 
 
@@ -18,7 +19,8 @@ class BaseMemoryChat(metaclass=ABCMeta):
 
         Returns:
             This method should return the chat response generated after processing the query
-            with the associated memory context. The actual return type and content are defined by the implementing subclass.
+            with the associated memory context. The actual return type and content are defined by the implementing
+            subclass.
         """
 
     @property

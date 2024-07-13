@@ -24,51 +24,19 @@ class DummyMemoryStore(BaseMemoryStore):
         self.kwargs = kwargs
 
     def retrieve_memories(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
-        """
-        Retrieves a list of MemoryNode objects that are most relevant to the query, 
-        considering a filter dictionary for additional constraints. The number of nodes returned 
-        is limited by top_k.
-
-        Args:
-            query (str): The query string used to find relevant memories.
-            top_k (int): The maximum number of MemoryNode objects to return.
-            filter_dict (Dict[str, List[str]]): A dictionary with keys representing filter fields 
-                                                and values as lists of strings for filtering criteria.
-
-        Returns:
-            List[MemoryNode]: A list of MemoryNode objects sorted by relevance to the query, 
-                              limited to top_k items.
-        """
         pass
 
     async def a_retrieve_memories(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
-        """
-        Asynchronously retrieves a list of MemoryNode objects that best match the query, 
-        respecting a filter dictionary, with the result size capped at top_k.
-
-        Args:
-            query (str): The text to search for in memory nodes.
-            top_k (int): Maximum number of nodes to return.
-            filter_dict (Dict[str, List[str]]): Filters to apply on memory nodes.
-
-        Returns:
-            List[MemoryNode]: A list of up to top_k MemoryNode objects matching the criteria.
-        """
         pass
 
-    def update_memories(self, nodes: MemoryNode | List[MemoryNode]):
-        """
-        Updates the stored memories with a single MemoryNode or a list of MemoryNode objects.
+    def batch_insert(self, nodes: List[MemoryNode]):
+        pass
 
-        Args:
-            nodes (MemoryNode | List[MemoryNode]): A single MemoryNode or a collection of MemoryNode objects 
-                                                   to be updated in the memory store.
-        """
+    def batch_update(self, nodes: List[MemoryNode], update_embedding: bool = True):
+        pass
+
+    def batch_delete(self, nodes: List[MemoryNode]):
         pass
 
     def close(self):
-        """
-        Closes the memory store, releasing any resources it holds. This method should be called 
-        when the memory store is no longer needed.
-        """
         pass

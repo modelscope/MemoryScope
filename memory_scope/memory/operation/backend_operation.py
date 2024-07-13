@@ -1,28 +1,31 @@
 import time
-from abc import abstractmethod
+from typing import List
 
+from memory_scope.constants.common_constants import CHAT_KWARGS, RESULT, CHAT_MESSAGES
 from memory_scope.memory.operation.base_operation import BaseOperation, OPERATION_TYPE
+from memory_scope.memory.operation.base_workflow import BaseWorkflow
+from memory_scope.scheme.message import Message
 from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.logger import Logger
 
 
-class BaseBackendOperation(BaseOperation):
+class BackendOperation(BaseWorkflow, BaseOperation):
     """
-    BaseBackendOperation serves as an abstract base class for defining backend operations within a specified time interval.
-    It manages operation status, loop control, and integrates with a logging facility and a global context for thread management.
+    BaseBackendOperation serves as an abstract base class for defining backend operations.
+    It manages operation status, loop control, and integrates with a global context for thread management.
     """
     operation_type: OPERATION_TYPE = "backend"
 
-    def __init__(self, interval_time: int, **kwargs):
-        """
-        Initializes the BaseBackendOperation instance with an interval time for recurring operations.
+    def __init__(self,
+                 name: str,
+                 description: str,
+                 chat_messages: List[Message],
+                 interval_time: int,
+                 **kwargs):
+        super().__init__(name=name, **kwargs)
+        BaseOperation.__init__(self, name=name, description=description)
 
-        Args:
-            interval_time (int): The time interval in seconds at which the operation should run.
-            **kwargs: Additional keyword arguments passed to the parent class's initializer.
-        """
-        super(BaseBackendOperation, self).__init__(**kwargs)
-
+        self.chat_messages: List[Message] = chat_messages
         self.interval_time: int = interval_time
 
         self._operation_status_run: bool = False
@@ -31,21 +34,40 @@ class BaseBackendOperation(BaseOperation):
 
         self.logger = Logger.get_logger()
 
-    @abstractmethod
-    def _run_operation(self, **kwargs):
+    def init_workflow(self, **kwargs):
         """
-        Abstract method to define the logic of the operation executed by the backend.
-
-        This method needs to be implemented by any subclass of BaseBackendOperation.
-        It serves as the core execution unit for backend-specific tasks.
+        Initializes the workflow by setting up workers with provided keyword arguments.
 
         Args:
-            **kwargs: Arbitrary keyword arguments that might be necessary for the operation.
-
-        Raises:
-            NotImplementedError: If the method is not overridden in a subclass.
+            **kwargs: Arbitrary keyword arguments to be passed during worker initialization.
         """
-        raise NotImplementedError
+        self.init_workers(is_backend=True, **kwargs)
+
+    def _run_operation(self, **kwargs):
+        """
+        Executes an operation within the workflow by clearing the context,
+        setting chat arguments, running the workflow, and returning the result.
+
+        Args:
+            **kwargs: Keyword arguments necessary for the operation, including chat parameters.
+
+        Returns:
+            Any: The result obtained after executing the workflow.
+        """
+        self.context.clear()
+
+        # Add additional arguments to the context
+        kwargs.update(**self.kwargs)
+        self.context[CHAT_KWARGS] = kwargs
+
+        # Include the most recent messages in the operation context
+        self.context[CHAT_MESSAGES] = self.chat_messages
+
+        # Execute the workflow with the prepared context
+        self.run_workflow()
+
+        # Retrieve the result from the context after workflow execution
+        return self.context.get(RESULT)
 
     def run_operation(self, **kwargs):
         """

@@ -1,7 +1,8 @@
 from memory_scope.enumeration.language_enum import LanguageEnum
 
 # This dictionary maps languages to lists of words related to datetime expressions. 
-# It aids in recognizing and processing datetime mentions in text, enhancing the system's ability to understand temporal context across different languages.
+# It aids in recognizing and processing datetime mentions in text, enhancing the system's ability to understand
+# temporal context across different languages.
 DATATIME_WORD_LIST = {
     LanguageEnum.CN: [
         "天",
@@ -88,7 +89,8 @@ DATATIME_WORD_LIST = {
     ]
 }
 
-# A mapping of weekdays for each supported language, facilitating calendar-related operations and understanding within the application.
+# A mapping of weekdays for each supported language, facilitating calendar-related operations and understanding
+# within the application.
 WEEKDAYS = {
     LanguageEnum.CN: [
         "周一",

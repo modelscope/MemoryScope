@@ -7,8 +7,9 @@ from pydantic import Field, BaseModel
 
 class MemoryNode(BaseModel):
     """
-    Represents a memory node with comprehensive attributes to store memory information including unique ID, user details, 
-    content, metadata, scoring metrics, and status indicators. Automatically handles timestamp conversion to date format during initialization.
+    Represents a memory node with comprehensive attributes to store memory information including unique ID,
+    user details, content, metadata, scoring metrics.
+    Automatically handles timestamp conversion to date format during initialization.
     """
     memory_id: str = Field(default_factory=lambda: uuid4().hex, description="unique id for memory")
 
@@ -30,10 +31,11 @@ class MemoryNode(BaseModel):
 
     score_rerank: float = Field(0, description="rerank score")
 
-    memory_type: str = Field("", description="conversation/observation/insight...")
+    memory_type: str = Field("", description="conversation / observation / insight...")
 
-    status: str = Field("active", description="db status: active / expired; modification_status: "
-                                              "new / content_modified / modified / active / expired")
+    action_status: str = Field("none", description="new / content_modified / modified / deleted / none")
+
+    store_status: str = Field("valid", description="store_status: valid / expired")
 
     vector: List[float] = Field([], description="content embedding result, return empty")
 

@@ -1,6 +1,7 @@
 import datetime
 
 from memory_scope.constants.common_constants import QUERY_WITH_TS
+from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 
 
@@ -29,8 +30,10 @@ class SetQueryWorker(MemoryBaseWorker):
 
         # If no explicit query is given, use the content of the latest chat message
         elif self.chat_messages:
-            query = self.chat_messages[-1].content
-            query_timestamp = self.chat_messages[-1].time_created
+            message = self.chat_messages[-1]
+            assert message.role == MessageRoleEnum.USER.value
+            query = message.content
+            query_timestamp = message.time_created
 
         # Store the determined query and its timestamp in the context
         self.set_context(QUERY_WITH_TS, (query, query_timestamp))

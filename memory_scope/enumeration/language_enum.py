@@ -10,4 +10,5 @@ class LanguageEnum(str, Enum):
         - EN: Represents the English language.
     """
     CN = "cn"
+
     EN = "en"
