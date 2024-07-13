@@ -1,6 +1,7 @@
 from typing import Dict, List, Set
 
 from memory_scope.enumeration.action_status_enum import ActionStatusEnum
+from memory_scope.enumeration.store_status_enum import StoreStatusEnum
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.storage.base_memory_store import BaseMemoryStore
 from memory_scope.utils.global_context import G_CONTEXT
@@ -122,6 +123,11 @@ class MemoryHandler(object):
         """
         if not nodes:
             return
+
+        for node in nodes:
+            # Non-deleted expired memory nodes need to be changed to a modified state.
+            if node.store_status == StoreStatusEnum.EXPIRED.value and node.action_status != ActionStatusEnum.DELETE:
+                node.action_status = ActionStatusEnum.MODIFIED
 
         # emb & insert new memories
         new_memories = [n for n in nodes if n.action_status == ActionStatusEnum.NEW.value]

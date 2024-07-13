@@ -2,8 +2,9 @@ from typing import List, Dict
 
 from memory_scope.constants.common_constants import NOT_UPDATED_NODES, MERGE_OBS_NODES
 from memory_scope.constants.language_constants import NONE_WORD, INCLUDED_WORD, CONTRADICTORY_WORD
-from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
+from memory_scope.enumeration.action_status_enum import ActionStatusEnum
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
+from memory_scope.enumeration.store_status_enum import StoreStatusEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.utils.response_text_parser import ResponseTextParser
@@ -34,7 +35,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
-            "status": MemoryNodeStatus.ACTIVE.value,
+            "store_status": StoreStatusEnum.VALID.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value]
         }
         # Retrieve memories similar to the node's content, limited by top_k and filtered by filter_dict
@@ -129,13 +130,13 @@ class LongContraRepeatWorker(MemoryBaseWorker):
             node: MemoryNode = all_obs_nodes[idx]
             if status == self.get_language_value(CONTRADICTORY_WORD):
                 if not content:
-                    node.status = MemoryNodeStatus.EXPIRED.value
+                    node.store_status = StoreStatusEnum.EXPIRED.value
                 else:
                     node.content = content
-                    node.status = MemoryNodeStatus.CONTENT_MODIFIED.value
+                    node.action_status = ActionStatusEnum.CONTENT_MODIFIED.value
 
             elif status == self.get_language_value(INCLUDED_WORD):
-                node.status = MemoryNodeStatus.EXPIRED.value
+                node.store_status = StoreStatusEnum.EXPIRED.value
 
             merge_obs_nodes.append(node)
             self.logger.info(f"after_long_contra_repeat: {node.content} {node.status}")

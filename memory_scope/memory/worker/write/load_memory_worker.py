@@ -81,7 +81,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "dt": dt_handler.datetime_format(),
         }
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=message.content,
-                                                                      top_k=self.today_obs_top_k,
+                                                                      top_k=self.retrieve_today_top_k,
                                                                       filter_dict=filter_dict)
 
         self.memory_handler.set_memories(TODAY_NODES, nodes)

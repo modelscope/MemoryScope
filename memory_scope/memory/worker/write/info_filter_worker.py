@@ -33,15 +33,17 @@ class InfoFilterWorker(MemoryBaseWorker):
         # filter user msg
         info_messages: List[Message] = []
         for msg in self.chat_messages:
+            if msg.memorized:
+                continue
+
             # TODO: add memory for assistant
             if msg.role != MessageRoleEnum.USER.value:
                 continue
+
             if len(msg.content) >= self.info_filter_msg_max_size:
                 half_size = int(self.info_filter_msg_max_size * 0.5 + 0.5)
                 msg.content = msg.content[: half_size] + msg.content[-half_size:]
             info_messages.append(msg)
-
-        self.logger.warning(info_messages)
 
         if not info_messages:
             self.logger.warning("info_messages is empty!")
@@ -79,12 +81,25 @@ class InfoFilterWorker(MemoryBaseWorker):
 
         # filter messages
         filtered_messages: List[Message] = []
-        for msg, info_score in zip(info_messages, info_score_list):
+        for info_score in info_score_list:
             if not info_score:
                 continue
 
-            score = info_score[0]
+            if len(info_score) != 2:
+                self.logger.warning(f"info_score={info_score} is invalid!")
+                continue
+
+            idx, score = info_score
+
+            idx = int(idx) - 1
+            if idx >= len(info_messages):
+                self.logger.warning(f"idx={idx} is invalid! info_messages.size={len(info_messages)}")
+                continue
+            message = info_messages[idx]
+
             if score in self.preserved_scores:
-                msg.meta_data["info_score"] = score
-                filtered_messages.append(msg)
+                message.meta_data["info_score"] = score
+                filtered_messages.append(message)
+                self.logger.info(f"info filter stage: keep {message.content}")
+
         self.chat_messages = filtered_messages

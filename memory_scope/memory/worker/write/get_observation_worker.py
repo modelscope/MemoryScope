@@ -2,7 +2,7 @@ from typing import List
 
 from memory_scope.constants.common_constants import NEW_OBS_NODES, TIME_INFER
 from memory_scope.constants.language_constants import REPEATED_WORD, NONE_WORD, COLON_WORD, TIME_INFER_WORD
-from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
+from memory_scope.enumeration.action_status_enum import ActionStatusEnum
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
@@ -38,10 +38,8 @@ class GetObservationWorker(MemoryBaseWorker):
                           meta_data=meta_data,
                           content=obs_content,
                           memory_type=MemoryTypeEnum.OBSERVATION.value,
-                          status=MemoryNodeStatus.NEW.value,
-                          timestamp=message.time_created,
-                          obs_reflected=False,
-                          obs_updated=False)
+                          action_status=ActionStatusEnum.NEW.value,
+                          timestamp=message.time_created)
 
     def filter_messages(self) -> List[Message]:
         filter_messages = []
@@ -134,6 +132,7 @@ class GetObservationWorker(MemoryBaseWorker):
             idx, time_infer, obs_content, keywords = obs_content_list
 
             # Skips processing if content indicates no meaningful observation
+            obs_content = obs_content.lower()
             if obs_content in self.get_language_value([NONE_WORD, REPEATED_WORD]):
                 continue
 
@@ -142,7 +141,7 @@ class GetObservationWorker(MemoryBaseWorker):
                 self.logger.warning(f"idx={idx} is invalid!")
                 continue
 
-            if time_infer == self.get_language_value(NONE_WORD):
+            if time_infer.lower() == self.get_language_value(NONE_WORD):
                 time_infer = ""
 
             # Adjusts index to zero-based and checks validity against filtered messages

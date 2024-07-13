@@ -2,7 +2,7 @@ from typing import List
 
 from memory_scope.constants.common_constants import NOT_REFLECTED_NODES, INSIGHT_NODES
 from memory_scope.constants.language_constants import COMMA_WORD
-from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
+from memory_scope.enumeration.action_status_enum import ActionStatusEnum
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
@@ -30,14 +30,15 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
             MemoryNode: A new MemoryNode instance representing the insight, marked as new and of type INSIGHT.
         """
         dt_handler = DatetimeHandler()
-        meta_data = {k: str(v) for k, v in dt_handler.dt_info_dict.items()}  # ⭐ Prepare metadata with current datetime info
+        # Prepare metadata with current datetime info
+        meta_data = {k: str(v) for k, v in dt_handler.dt_info_dict.items()}
 
-        return MemoryNode(user_name=self.user_name,  # ⭐ Populate MemoryNode attributes
+        return MemoryNode(user_name=self.user_name,
                           target_name=self.target_name,
                           meta_data=meta_data,
                           key=insight_key,
                           memory_type=MemoryTypeEnum.INSIGHT.value,
-                          status=MemoryNodeStatus.NEW.value)
+                          action_status=ActionStatusEnum.NEW.value)
 
     def _run(self):
         """
@@ -58,7 +59,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
         # Count unaudited nodes
         not_reflected_count = len(not_reflected_nodes)
         if not_reflected_count <= self.reflect_obs_cnt_threshold:
-            self.logger.info(f"not_reflected_count={not_reflected_count} is not enough, stopping process.")
+            self.logger.info(f"not_reflected_count={not_reflected_count} is not enough, skip.")
             self.continue_run = False
             return
 

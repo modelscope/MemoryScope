@@ -112,7 +112,7 @@ worker:
     retrieve_not_reflected_top_k: 0
     retrieve_not_updated_top_k: 0
     retrieve_insight_top_k: 0
-    today_obs_top_k: 100
+    retrieve_today_top_k: 100
   get_observation:
     class: memory.worker.write.get_observation_worker
     generation_model: dashscope_generation
@@ -135,7 +135,7 @@ worker:
     retrieve_not_reflected_top_k: 100
     retrieve_not_updated_top_k: 100
     retrieve_insight_top_k: 100
-    today_obs_top_k: 0
+    retrieve_today_top_k: 0
   get_reflection_subject:
     class: memory.worker.summary.get_reflection_subject_worker
     retrieve_top_k: 100

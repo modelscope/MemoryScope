@@ -1,7 +1,8 @@
 from typing import List
+
 from memory_scope.constants.common_constants import NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES, MERGE_OBS_NODES, TODAY_NODES
 from memory_scope.constants.language_constants import NONE_WORD, CONTRADICTORY_WORD, INCLUDED_WORD
-from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
+from memory_scope.enumeration.store_status_enum import StoreStatusEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.utils.response_text_parser import ResponseTextParser
@@ -106,8 +107,8 @@ class ContraRepeatWorker(MemoryBaseWorker):
 
             node: MemoryNode = all_obs_nodes[idx]
             if keep_flag != self.get_language_value(NONE_WORD):
-                node.status = MemoryNodeStatus.EXPIRED.value
-            self.logger.info(f"contra_repeat stage: {node.content} {node.status}")
+                node.store_status = StoreStatusEnum.EXPIRED.value
+            self.logger.info(f"contra_repeat stage: {node.content} {node.store_status} {node.action_status}")
             merge_obs_nodes.append(node)
 
         # save context
