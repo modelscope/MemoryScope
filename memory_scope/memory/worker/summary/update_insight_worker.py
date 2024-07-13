@@ -152,9 +152,9 @@ class UpdateInsightWorker(MemoryBaseWorker):
         5. Gather the results of all update tasks.
         6. Mark processed nodes as updated in memory.
         """
-        insight_nodes: List[MemoryNode] = self.get_memories(INSIGHT_NODES)
-        not_updated_nodes: List[MemoryNode] = self.get_memories(NOT_UPDATED_NODES)
-        not_reflected_nodes: List[MemoryNode] = self.get_memories(NOT_REFLECTED_NODES)
+        insight_nodes: List[MemoryNode] = self.memory_handler.get_memories(INSIGHT_NODES)
+        not_updated_nodes: List[MemoryNode] = self.memory_handler.get_memories(NOT_UPDATED_NODES)
+        not_reflected_nodes: List[MemoryNode] = self.memory_handler.get_memories(NOT_REFLECTED_NODES)
 
         if not insight_nodes:
             self.logger.warning("insight_nodes is empty, stopping processing.")

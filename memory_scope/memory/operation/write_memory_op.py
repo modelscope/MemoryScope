@@ -1,9 +1,9 @@
 from memory_scope.constants.common_constants import CHAT_MESSAGES, RESULT, CHAT_KWARGS
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
-from memory_scope.memory.operation.base_backend_operation import BaseBackendOperation
+from memory_scope.memory.operation.backend_operation import BackendOperation
 
 
-class WriteMemoryOp(BaseBackendOperation):
+class WriteMemoryOp(BackendOperation):
 
     def __init__(self,
                  message_lock=None,

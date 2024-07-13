@@ -10,7 +10,7 @@ class UpdateStatusWorker(MemoryBaseWorker):
     def _run(self):
         expired_action = self.expired_action
         valid_action_dict: dict = self.valid_action_dict
-        memory_node_list: List[MemoryNode] = self.get_memories(RETRIEVE_MEMORY_NODES)
+        memory_node_list: List[MemoryNode] = self.memory_handler.get_memories(RETRIEVE_MEMORY_NODES)
         if not memory_node_list:
             return
 

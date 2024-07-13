@@ -11,7 +11,7 @@ from memory_scope.utils.datetime_handler import DatetimeHandler
 class PrintMemoryWorker(MemoryBaseWorker):
 
     def _run(self):
-        memory_node_list: List[MemoryNode] = self.get_memories(RETRIEVE_MEMORY_NODES)
+        memory_node_list: List[MemoryNode] = self.memory_handler.get_memories(RETRIEVE_MEMORY_NODES)
         memory_node_list = sorted(memory_node_list, key=lambda x: x.timestamp, reverse=True)
 
         expired_content_list: List[str] = ["----- expired -----"]

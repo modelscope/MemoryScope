@@ -1,8 +1,8 @@
 from typing import List
 
 from memory_scope.constants.common_constants import NOT_REFLECTED_NODES, NOT_UPDATED_NODES, INSIGHT_NODES, TODAY_NODES
-from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
+from memory_scope.enumeration.store_status_enum import StoreStatusEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.scheme.message import Message
@@ -20,14 +20,14 @@ class LoadMemoryWorker(MemoryBaseWorker):
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
-            "status": MemoryNodeStatus.ACTIVE.value,
+            "store_status": StoreStatusEnum.VALID.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "obs_reflected": False,
         }
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
                                                                       top_k=self.retrieve_not_reflected_top_k,
                                                                       filter_dict=filter_dict)
-        self.set_memories(NOT_REFLECTED_NODES, nodes)
+        self.memory_handler.set_memories(NOT_REFLECTED_NODES, nodes)
 
     @timer
     def retrieve_not_updated_memory(self, query: str):
@@ -37,14 +37,14 @@ class LoadMemoryWorker(MemoryBaseWorker):
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
-            "status": MemoryNodeStatus.ACTIVE.value,
+            "store_status": StoreStatusEnum.VALID.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "obs_updated": False,
         }
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
                                                                       top_k=self.retrieve_not_updated_top_k,
                                                                       filter_dict=filter_dict)
-        self.set_memories(NOT_UPDATED_NODES, nodes)
+        self.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
 
     @timer
     def retrieve_insight_memory(self, query: str):
@@ -54,13 +54,13 @@ class LoadMemoryWorker(MemoryBaseWorker):
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
-            "status": MemoryNodeStatus.ACTIVE.value,
+            "store_status": StoreStatusEnum.VALID.value,
             "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
                                                                       top_k=self.retrieve_insight_top_k,
                                                                       filter_dict=filter_dict)
-        self.set_memories(INSIGHT_NODES, nodes)
+        self.memory_handler.set_memories(INSIGHT_NODES, nodes)
 
     @timer
     def retrieve_today_memory(self):
@@ -76,7 +76,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
-            "status": MemoryNodeStatus.ACTIVE.value,
+            "store_status": StoreStatusEnum.VALID.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "dt": dt_handler.datetime_format(),
         }
@@ -84,11 +84,11 @@ class LoadMemoryWorker(MemoryBaseWorker):
                                                                       top_k=self.today_obs_top_k,
                                                                       filter_dict=filter_dict)
 
-        self.set_memories(TODAY_NODES, nodes)
+        self.memory_handler.set_memories(TODAY_NODES, nodes)
 
     def _run(self):
         """
-        Initiates asynchronous tasks to retrieve various types of memory data including 
+        Initiates asynchronous tasks to retrieve various types of memory data including
         not reflected, not updated, insights, and data from today. After submitting all tasks, 
         it waits for their completion by calling `gather_thread_result`.
         

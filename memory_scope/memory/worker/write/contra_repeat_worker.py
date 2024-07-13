@@ -37,13 +37,13 @@ class ContraRepeatWorker(MemoryBaseWorker):
         6. Updates the status of nodes accordingly.
         7. Persists the changes back to memory storage.
         """
-        all_obs_nodes: List[MemoryNode] = self.get_memories([NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES])
+        all_obs_nodes: List[MemoryNode] = self.memory_handler.get_memories([NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES])
         if not all_obs_nodes:
             self.logger.info("all_obs_nodes is empty!")
             self.continue_run = False
             return
 
-        today_obs_nodes: List[MemoryNode] = self.get_memories(TODAY_NODES)
+        today_obs_nodes: List[MemoryNode] = self.memory_handler.get_memories(TODAY_NODES)
 
         if today_obs_nodes:
             all_obs_nodes.extend(today_obs_nodes)
@@ -111,4 +111,4 @@ class ContraRepeatWorker(MemoryBaseWorker):
             merge_obs_nodes.append(node)
 
         # save context
-        self.set_memories(MERGE_OBS_NODES, merge_obs_nodes, log_repeat=False)
+        self.memory_handler.set_memories(MERGE_OBS_NODES, merge_obs_nodes, log_repeat=False)

@@ -17,23 +17,33 @@ memory_service:
         class: memory.operation.frontend_operation
         workflow: read_message
         description: "read short memory"
+
       read_memory:
         class: memory.operation.frontend_operation
         workflow: set_query,[extract_time|retrieve_memory1,semantic_rank],fuse_rerank
         description: "read long-term memory"
+
       list_memory:
         class: memory.operation.frontend_operation
         workflow: set_query,retrieve_memory2,print_memory
         description: "read all long-term memory of the user"
+
       delete_memory:
         class: memory.operation.frontend_operation
-        workflow: set_query,retrieve_memory3,delete_memory,store_memory
+        workflow: set_query,retrieve_memory3,delete_memory
         description: "delete all long-term memory"
+
+      add_memory:
+        class: memory.operation.frontend_operation
+        workflow: store_memory
+        description: "delete all long-term memory"
+
       write_memory:
         class: memory.operation.write_memory
         workflow: info_filter,load_memory1,[get_observation|get_observation_with_time],contra_repeat,store_memory
         description: "write observation memory of the user"
         interval_time: 5
+
       summary_memory:
         class: memory.operation.summary_memory
         workflow: load_memory2,get_reflection_subject,update_insight,long_contra_repeat,store_memory

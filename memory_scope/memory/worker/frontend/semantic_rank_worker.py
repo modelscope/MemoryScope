@@ -29,7 +29,7 @@ class SemanticRankWorker(MemoryBaseWorker):
         """
         # query
         query, _ = self.get_context(QUERY_WITH_TS)
-        memory_node_list: List[MemoryNode] = self.get_memories(RETRIEVE_MEMORY_NODES)
+        memory_node_list: List[MemoryNode] = self.memory_handler.get_memories(RETRIEVE_MEMORY_NODES)
         if not memory_node_list:
             self.logger.warning("Retrieve memory nodes is empty!")
             return

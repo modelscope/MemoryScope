@@ -158,4 +158,4 @@ class GetObservationWorker(MemoryBaseWorker):
                                                       keywords=keywords))
 
         # Stores the extracted and structured observations in the conversation memory
-        self.set_memories(self.OBS_STORE_KEY, new_obs_nodes)
+        self.memory_handler.set_memories(self.OBS_STORE_KEY, new_obs_nodes)

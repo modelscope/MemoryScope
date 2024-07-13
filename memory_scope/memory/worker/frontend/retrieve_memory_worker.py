@@ -89,7 +89,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
 
     def _run(self):
         """
-        Executes the main retrieval流程 for memories. It fetches the query from the context, initiates concurrent tasks 
+        Executes the main retrieval for memories. It fetches the query from the context, initiates concurrent tasks
         to retrieve memories from observations, insights, and expired sources, collects the results, sorts them by 
         similarity score, logs the details, and finally sets the retrieved memory nodes.
 

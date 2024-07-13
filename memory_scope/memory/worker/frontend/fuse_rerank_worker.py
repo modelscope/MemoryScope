@@ -50,7 +50,7 @@ class FuseRerankWorker(MemoryBaseWorker):
         """
         # Parse input parameters from the worker's context
         extract_time_dict: Dict[str, str] = self.get_context(EXTRACT_TIME_DICT)
-        memory_node_list: List[MemoryNode] = self.get_memories(RANKED_MEMORY_NODES)
+        memory_node_list: List[MemoryNode] = self.memory_handler.get_memories(RANKED_MEMORY_NODES)
         
         # Check if memory nodes are available; warn and return if not
         if not memory_node_list:

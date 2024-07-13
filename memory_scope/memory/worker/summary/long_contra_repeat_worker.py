@@ -56,7 +56,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
 
         The process helps in maintaining conversation coherence by resolving contradictions and redundancies.
         """
-        not_updated_nodes: List[MemoryNode] = self.get_memories(NOT_UPDATED_NODES)
+        not_updated_nodes: List[MemoryNode] = self.memory_handler.get_memories(NOT_UPDATED_NODES)
         for node in not_updated_nodes:
             self.submit_thread_task(fn=self.retrieve_similar_content, node=node)
 
@@ -141,4 +141,4 @@ class LongContraRepeatWorker(MemoryBaseWorker):
             self.logger.info(f"after_long_contra_repeat: {node.content} {node.status}")
 
         # save context
-        self.set_memories(MERGE_OBS_NODES, merge_obs_nodes)
+        self.memory_handler.set_memories(MERGE_OBS_NODES, merge_obs_nodes)
