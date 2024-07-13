@@ -4,6 +4,11 @@ update_insight_system:
     请一步步思考，并按如下格式输出:
     思考: 思考的依据和过程，150字以内。
     {user_name}的资料: <信息>, 一定加<>
+  en: |
+    Extract profile information of {user_name} from the sentences below according to the given category and determine whether it contradicts existing information. If there is a contradiction, the new information should take precedence. Integrate the existing information with the new information and output it.
+    Please think step-by-step and output in the following format:
+    Thought: The basis and process of thinking, within 150 words.
+    {user_name}'s profile: <Information>, make sure to enclose it in <>"
 
 
 update_insight_few_shot:
@@ -49,8 +54,54 @@ update_insight_few_shot:
     情感状况无关。整合得出{user_name}情感状况为单身，受到一名18岁男生的追求但并不喜欢他。
     {user_name}的资料：<单身，受到一名18岁男生的追求但并不喜欢他。>
 
+  en: |
+    Example 1:
+    Because it rained heavily in Chengdu yesterday, {user_name} got completely soaked.
+    {user_name} is concerned about Chengdu's weather forecast for tomorrow.
+    Category: {user_name}'s location
+    Existing information: {user_name}'s location: Hangzhou
+    Thought: From the first sentence, it can be inferred that {user_name} is in Chengdu. The second sentence does not directly reveal {user_name}'s location but matches the information that {user_name} is in Chengdu from the first sentence. This contradicts the existing information (that {user_name} is in Hangzhou), so we output the updated information.
+    {user_name}'s profile: <Chengdu>
+
+    Example 2:
+    {user_name} recently recovered from stomach issues.
+    {user_name} is interested in traditional Chinese medicine.
+    Category: {user_name}'s health status
+    Existing information: {user_name}'s health status: Stomach issues, high blood pressure
+    Thought: From the first sentence, it can be inferred that {user_name} recently recovered from stomach issues, which contradicts the existing information. Therefore, the new information should take precedence. The second sentence is not related to {user_name}'s health status. Integrating the existing information and the new information, we get that {user_name}'s health status is healthy stomach and high blood pressure.
+    {user_name}'s profile: <Healthy stomach, high blood pressure>
+    
+    Example 3:
+    {user_name} just graduated, and their first job is as a bank receptionist.
+    {user_name}'s dream job is to be a professional gamer.
+    Category: {user_name}'s occupation
+    Existing information: {user_name}'s occupation: Works at China Merchants Bank
+    Thought: Integrating the existing information and the information from the first sentence, it can be inferred that {user_name}'s current occupation is a receptionist at China Merchants Bank. The second sentence explains {user_name}'s dream job but not the current occupation.
+    {user_name}'s profile: <Receptionist at China Merchants Bank>
+
+    Example 4:
+    {user_name} was exposed to optimization algorithm research during university.
+    Category: {user_name}'s field of study
+    Existing information: {user_name}'s field of study: Related to artificial intelligence
+    Thought: From the sentence, it can be inferred that {user_name}'s university major is related to optimization algorithms. This does not contradict the existing information (that {user_name}'s major is related to artificial intelligence). Integrating both, we can conclude that {user_name}'s university major is related to artificial intelligence and optimization algorithms.
+    {user_name}'s profile: <Related to artificial intelligence and optimization algorithms>
+
+    Example 5:
+    {user_name} is single.
+    {user_name} is pursued by an 18-year-old male but doesn't want to accept his advances or hurt him.
+    {user_name} prefers mature and emotionally stable men.
+    Category: {user_name}'s relationship status
+    Existing information: {user_name}'s relationship status: Has a boyfriend
+    Thought: From the first sentence, it can be inferred that {user_name} is currently single, which contradicts the existing information. Therefore, the new information should take precedence. From the second sentence, it can be inferred that {user_name} is being pursued by an 18-year-old male but does not like him. The third sentence expresses {user_name}'s ideal partner type but is not related to {user_name}'s relationship status. Integrating this, we conclude that {user_name}'s relationship status is single and being pursued by an 18-year-old male but does not like him.
+    {user_name}'s profile: <Single, pursued by an 18-year-old male but does not like him>
+
 update_insight_user_query:
   cn: |
     {user_query}
     类别：{insight_key}
     已有信息：{insight_key_value}
+
+  en: |
+    {user_query}
+    Category: {insight_key}
+    Existing information: {insight_key_value}
