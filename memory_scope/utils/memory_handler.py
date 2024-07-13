@@ -37,7 +37,7 @@ class MemoryHandler(object):
         self._id_memory_dict.clear()
         self._key_id_dict.clear()
 
-    def add_memories(self, nodes: MemoryNode | List[MemoryNode], log_repeat: bool = True):
+    def set_memories(self, key: str, nodes: MemoryNode | List[MemoryNode], log_repeat: bool = True):
         if nodes is None:
             nodes = []
         elif isinstance(nodes, MemoryNode):
@@ -47,15 +47,13 @@ class MemoryHandler(object):
             if node.memory_id in self._id_memory_dict:
                 if log_repeat:
                     self.logger.warning(f"repeated_id memory id={node.memory_id} content={node.content} "
-                                        f"status={node.status}")
+                                        f"store_status={node.store_status} action_status={node.action_status}")
                 continue
 
             self._id_memory_dict[node.memory_id] = node
             self.logger.info(f"add to memory context memory id={node.memory_id} content={node.content} "
-                             f"status={node.status}")
+                             f"store_status={node.store_status} action_status={node.action_status}")
 
-    def set_memories(self, key: str, nodes: MemoryNode | List[MemoryNode], log_repeat: bool = True):
-        self.add_memories(nodes=nodes, log_repeat=log_repeat)
         self._key_id_dict[key] = [n.memory_id for n in nodes]
 
     def get_memories(self, keys: str | List[str]) -> List[MemoryNode]:
@@ -78,25 +76,23 @@ class MemoryHandler(object):
             keys = [keys]
 
         for key in keys:
+            if key not in self._key_id_dict:
+                continue
             memory_ids: List[str] = self._key_id_dict[key]
             if memory_ids:
                 memories.update({x: self._id_memory_dict[x] for x in memory_ids})
         return list(memories.values())
 
-    def update_memories(self, keys: str | List[str] = None, nodes: MemoryNode | List[MemoryNode] = None):
-        if keys is None:
-            keys = []
-        elif keys == "all":
-            keys = list(self._id_memory_dict.keys())
-        elif isinstance(keys, str):
-            keys = [keys]
-
-        # combine keys
+    def update_memories(self, key: str = "", nodes: MemoryNode | List[MemoryNode] = None):
         ids: Set[str] = set()
-        for key in keys:
-            t_ids: List[str] = self._key_id_dict[key]
-            if t_ids:
-                ids.update(t_ids)
+
+        if key == "all":
+            ids.update(self._id_memory_dict.keys())
+        elif key:
+            for k in key.split(","):
+                t_ids: List[str] = self._key_id_dict.get(k.strip())
+                if t_ids:
+                    ids.update(t_ids)
 
         # Remove and collect nodes by IDs
         update_nodes: List[MemoryNode] = [self._id_memory_dict.pop(_) for _ in ids]
@@ -148,9 +144,9 @@ class MemoryHandler(object):
         if modified_memories:
             for n in modified_memories:
                 n.action_status = ActionStatusEnum.NONE.value
-            self.memory_store.batch_update(c_modified_memories, update_embedding=False)
+            self.memory_store.batch_update(modified_memories, update_embedding=False)
 
         # set memories expired
         delete_memories = [n for n in nodes if n.action_status == ActionStatusEnum.DELETE]
         if delete_memories:
-            self.memory_store.batch_delete(nodes)
+            self.memory_store.batch_delete(delete_memories)

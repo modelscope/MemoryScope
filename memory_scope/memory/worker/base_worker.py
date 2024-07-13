@@ -62,6 +62,10 @@ class BaseWorker(metaclass=ABCMeta):
 
     def run(self):
         with Timer(f"worker.{self.name}", time_log_type="wrap"):
+            self.continue_run = True
+            self.async_task_list.clear()
+            self.thread_task_list.clear()
+
             if self.raise_exception:
                 self._run()
             else:

@@ -5,7 +5,6 @@ from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.enumeration.store_status_enum import StoreStatusEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
-from memory_scope.scheme.message import Message
 from memory_scope.utils.datetime_handler import DatetimeHandler
 from memory_scope.utils.timer import timer
 
@@ -63,24 +62,18 @@ class LoadMemoryWorker(MemoryBaseWorker):
         self.memory_handler.set_memories(INSIGHT_NODES, nodes)
 
     @timer
-    def retrieve_today_memory(self):
-        if not self.today_obs_top_k:
+    def retrieve_today_memory(self, query: str, dt: str):
+        if not self.retrieve_today_top_k:
             return
 
-        if not self.chat_messages:
-            self.logger.warning("chat_messages is empty!")
-            return
-
-        message: Message = self.chat_messages[-1]
-        dt_handler = DatetimeHandler(message.time_created)
         filter_dict = {
             "user_name": self.user_name,
             "target_name": self.target_name,
             "store_status": StoreStatusEnum.VALID.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
-            "dt": dt_handler.datetime_format(),
+            "dt": dt,
         }
-        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=message.content,
+        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
                                                                       top_k=self.retrieve_today_top_k,
                                                                       filter_dict=filter_dict)
 
@@ -95,9 +88,14 @@ class LoadMemoryWorker(MemoryBaseWorker):
         This method serves as the controller for data retrieval operations, enhancing efficiency 
         by handling tasks concurrently.
         """
-        mock_query = "-"  # Placeholder query
-        self.submit_thread_task(self.retrieve_not_reflected_memory, query=mock_query)
-        self.submit_thread_task(self.retrieve_not_updated_memory, query=mock_query)
-        self.submit_thread_task(self.retrieve_insight_memory, query=mock_query)
-        self.submit_thread_task(self.retrieve_today_memory)
-        self.gather_thread_result()  # Waits for all submitted tasks to complete
+
+        # Placeholder query
+        query = "-"
+        dt = DatetimeHandler().datetime_format()
+        self.submit_thread_task(self.retrieve_not_reflected_memory, query=query)
+        self.submit_thread_task(self.retrieve_not_updated_memory, query=query)
+        self.submit_thread_task(self.retrieve_insight_memory, query=query)
+        self.submit_thread_task(self.retrieve_today_memory, query=query, dt=dt)
+
+        # Waits for all submitted tasks to complete
+        self.gather_thread_result()

@@ -76,7 +76,6 @@ class InfoFilterWorker(MemoryBaseWorker):
         info_score_list = ResponseTextParser(response_text).parse_v1(self.__class__.__name__)
         if len(info_score_list) != len(info_messages):
             self.logger.warning(f"score_size != messages_size, {len(info_score_list)} vs {len(info_messages)}")
-            self.continue_run = False
             return
 
         # filter messages

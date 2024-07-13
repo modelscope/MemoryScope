@@ -114,12 +114,12 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
         self.logger.info(f"memory_node_list.size={len(memory_node_list)}")
 
         if not memory_node_list:
-            self.continue_run = False
             return
 
         memory_node_list = sorted(memory_node_list, key=lambda x: x.score_similar, reverse=True)
         for node in memory_node_list:
             node.action_status = ActionStatusEnum.NONE
-            self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} "
-                             f"type={node.memory_type} status={node.status}")
-        self.memory_handler.set_memories(RETRIEVE_MEMORY_NODES, memory_node_list)
+            self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} type={node.memory_type} "
+                             f"store_status={node.store_status} action_status={node.action_status}")
+
+            self.memory_handler.set_memories(RETRIEVE_MEMORY_NODES, memory_node_list)

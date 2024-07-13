@@ -1,8 +1,8 @@
 from typing import List
 
 from memory_scope.constants.common_constants import RETRIEVE_MEMORY_NODES, RESULT
-from memory_scope.enumeration.memory_status_enum import MemoryNodeStatus
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
+from memory_scope.enumeration.store_status_enum import StoreStatusEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.utils.datetime_handler import DatetimeHandler
@@ -25,7 +25,7 @@ class PrintMemoryWorker(MemoryBaseWorker):
             dt_handler = DatetimeHandler(node.timestamp)
             dt = dt_handler.datetime_format("%Y%m%d-%H:%M:%S")
             line = f"{dt} {node.content}"
-            if MemoryNodeStatus(node.status) is MemoryNodeStatus.EXPIRED:
+            if StoreStatusEnum(node.store_status) is StoreStatusEnum.EXPIRED:
                 if node.content in expired_content_set:
                     continue
                 else:

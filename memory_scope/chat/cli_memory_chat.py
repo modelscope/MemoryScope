@@ -110,7 +110,8 @@ class CliMemoryChat(BaseMemoryChat):
             if self._memory_service not in G_CONTEXT.memory_service_dict:
                 raise ValueError("Missing declaration of memory_service in yaml configuration: " + self._memory_service)
             self._memory_service = G_CONTEXT.memory_service_dict[self._memory_service]
-            self._memory_service.start_service()  # ⭐ Initialize and start the memory service
+            self._memory_service.init_service()
+            self._memory_service.start_backend_service()
         return self._memory_service
 
     @property
@@ -230,7 +231,7 @@ class CliMemoryChat(BaseMemoryChat):
         command, kwargs = self.parse_query_command(query)
 
         if command == "exit":
-            self.memory_service.stop_service()
+            self.memory_service.stop_backend_service()
             continue_run = False
 
         elif command == "clear":
@@ -250,16 +251,23 @@ class CliMemoryChat(BaseMemoryChat):
             refresh_time = kwargs.pop("refresh_time", "")
             if refresh_time and refresh_time.isdigit():
                 refresh_time = int(refresh_time)
+                self.memory_service.stop_backend_service()
                 while True:
                     result = self.memory_service.do_operation(op_name=command, **kwargs)
                     os.system("clear")
                     self.print_logo()
-                    questionary.print(result)
+                    if result:
+                        questionary.print(result)
+                    else:
+                        questionary.print(f"command={command} result is empty! kwargs={kwargs}")
                     time.sleep(refresh_time)
 
             else:
                 result = self.memory_service.do_operation(op_name=command, **kwargs)
-                questionary.print(result)
+                if result:
+                    questionary.print(result)
+                else:
+                    questionary.print(f"command={command} result is empty! kwargs={kwargs}")
 
         else:
             questionary.print(f"Unknown command={command} received.")
@@ -297,6 +305,7 @@ class CliMemoryChat(BaseMemoryChat):
                 questionary.print(f"{self.assistant_name}: ", end="", style="bold")
 
                 # Fetch and display AI's response, with support for streaming
+                self.memory_service.start_backend_service()
                 if self.stream:
                     model_response = None
                     for model_response in self.chat_with_memory(query=query):
@@ -316,7 +325,7 @@ class CliMemoryChat(BaseMemoryChat):
                 questionary.print("User interrupt occurred.")
                 is_exit = questionary.confirm("Continue exit?").unsafe_ask()
                 if is_exit:
-                    self.memory_service.stop_service()
+                    self.memory_service.stop_backend_service()
                     break
 
             except Exception as e:

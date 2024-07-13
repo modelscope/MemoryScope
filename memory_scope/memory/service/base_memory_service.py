@@ -42,36 +42,8 @@ class BaseMemoryService(metaclass=ABCMeta):
         self.kwargs = kwargs
 
     @abstractmethod
-    def _init_operation(self, memory_operations: Dict[str, dict]):
-        """
-        Initializes the memory operations with a given dictionary of operations.
-
-        This method is to be implemented by subclasses to set up or configure
-        the memory operations based on the provided dictionary.
-
-        Args:
-            memory_operations (Dict[str, dict]): A dictionary containing configuration
-                                                 details for each memory operation.
-
-        Raises:
-            NotImplementedError: This exception is raised to indicate that the method
-                                  needs to be overridden in the subclass.
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def add_messages(self, messages: List[Message] | Message):
         raise NotImplementedError
-
-    def start_service(self, **kwargs):
-        """
-        This method is intended to initiate the service with provided keyword arguments,
-        preparing the necessary resources for executing operations.
-        
-        Args:
-            **kwargs: Additional keyword arguments used to configure the service upon startup.
-        """
-        pass
 
     @abstractmethod
     def do_operation(self, op_name: str, **kwargs):
@@ -123,9 +95,12 @@ class BaseMemoryService(metaclass=ABCMeta):
         assert self.read_message_key in self._operation_dict, f"op={self.read_message_key} is not inited!"
         return self.do_operation(self.read_message_key)
 
-    def stop_service(self):
-        """
-        Placeholder method to stop the service.
-        Intended to be overridden by subclasses to define specific shutdown logic.
-        """
+    @abstractmethod
+    def init_service(self):
+        raise NotImplementedError
+
+    def start_backend_service(self):
+        pass
+
+    def stop_backend_service(self):
         pass

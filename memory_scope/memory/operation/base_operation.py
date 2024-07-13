@@ -17,18 +17,16 @@ class BaseOperation(metaclass=ABCMeta):
     
     operation_type: OPERATION_TYPE = "frontend"
 
-    def __init__(self, name: str, description: str = "", **kwargs):
+    def __init__(self, name: str, description: str = ""):
         """
         Initializes a new instance of the BaseOperation.
 
         Args:
             name (str): The name identifying the operation.
             description (str): An optional description detailing the operation's purpose or behavior.
-            **kwargs: Arbitrary keyword arguments for custom settings or parameters.
         """
         self.name: str = name
         self.description: str = description
-        self.kwargs: dict = kwargs
 
     def init_workflow(self, **kwargs):
         """

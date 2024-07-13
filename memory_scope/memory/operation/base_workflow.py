@@ -146,6 +146,7 @@ class BaseWorkflow(object):
             worker = self.worker_dict[name]
             worker.run()
             if not worker.continue_run:
+                self.logger.warning(f"worker={worker.name} stop workflow!")
                 return False
         return True
 
@@ -159,7 +160,7 @@ class BaseWorkflow(object):
         they are submitted for parallel execution using a thread pool. The workflow will stop if any sub-workflow
         returns False.
         """
-        with Timer(self.name, time_log_type="wrap"):
+        with Timer(f"workflow.{self.name}", time_log_type="wrap"):
             self.context[WORKFLOW_NAME] = self.name
             
             # Iterate over each part of the workflow

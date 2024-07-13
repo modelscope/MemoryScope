@@ -22,7 +22,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
 
     def retrieve_similar_content(self, node: MemoryNode) -> (MemoryNode, List[MemoryNode]):
         """
-        Retrieves memory nodes with content similar to the given node, filtering by user, target, status, and memory type.
+        Retrieves memory nodes with content similar to the given node, filtering by user/target/status/memory_type.
         Only returns nodes whose similarity score meets or exceeds the predefined threshold.
 
         Args:
@@ -139,7 +139,8 @@ class LongContraRepeatWorker(MemoryBaseWorker):
                 node.store_status = StoreStatusEnum.EXPIRED.value
 
             merge_obs_nodes.append(node)
-            self.logger.info(f"after_long_contra_repeat: {node.content} {node.status}")
+            self.logger.info(f"after_long_contra_repeat: {node.content} store_status={node.store_status} "
+                             f"action_status={node.action_status}")
 
         # save context
         self.memory_handler.set_memories(MERGE_OBS_NODES, merge_obs_nodes)

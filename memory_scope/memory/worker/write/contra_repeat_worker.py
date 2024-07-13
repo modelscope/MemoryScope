@@ -74,7 +74,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
         # parse text
         idx_merge_obs_list = ResponseTextParser(response_text).parse_v1(self.__class__.__name__)
         if len(idx_merge_obs_list) <= 0:
-            self.add_run_info("idx_merge_obs_list is empty!")
+            self.logger.warning("idx_merge_obs_list is empty!")
             return
 
         # add merged obs

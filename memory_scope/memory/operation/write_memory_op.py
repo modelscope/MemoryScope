@@ -30,6 +30,9 @@ class WriteMemoryOp(BackendOperation):
             Any: The result obtained from running the workflow.
         """
 
+        if not self.chat_messages:
+            return
+
         # Use shallow copy to prevent adding new messages.
         chat_messages = self.chat_messages.copy()
 

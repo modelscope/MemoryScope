@@ -23,4 +23,4 @@ class StoreMemoryWorker(MemoryBaseWorker):
                               timestamp=dt_handler.timestamp)
             self.memory_handler.update_memories(nodes=node)
         else:
-            self.memory_handler.update_memories(self.store_key)
+            self.memory_handler.update_memories(key=self.store_key)

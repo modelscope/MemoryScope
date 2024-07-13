@@ -5,6 +5,7 @@ from memory_scope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS, 
 from memory_scope.memory.worker.base_worker import BaseWorker
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.message import Message
+from memory_scope.storage.base_memory_store import BaseMemoryStore
 from memory_scope.storage.base_monitor import BaseMonitor
 from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.memory_handler import MemoryHandler
@@ -36,6 +37,8 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         self._embedding_model: BaseModel | str = embedding_model
         self._generation_model: BaseModel | str = generation_model
         self._rank_model: BaseModel | str = rank_model
+
+        self._memory_store: BaseMemoryStore | None = None
         self._monitor: BaseMonitor | None = None
 
         self._user_name: str | None = None
@@ -105,10 +108,10 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self._rank_model
 
     @property
-    def memory_handler(self) -> MemoryHandler:
-        if not self.has_content(MEMORY_HANDLER):
-            self.set_context(MEMORY_HANDLER, MemoryHandler())  # Initialize the memory handler if not present
-        return self.get_context(MEMORY_HANDLER)
+    def memory_store(self) -> BaseMemoryStore:
+        if self._memory_store is None:
+            self._memory_store = G_CONTEXT.memory_store
+        return self._memory_store
 
     @property
     def monitor(self) -> BaseMonitor:
@@ -159,6 +162,12 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         if self._prompt_handler is None:
             self._prompt_handler = PromptHandler(self.FILE_PATH, **self.kwargs)
         return self._prompt_handler
+
+    @property
+    def memory_handler(self) -> MemoryHandler:
+        if not self.has_content(MEMORY_HANDLER):
+            self.set_context(MEMORY_HANDLER, MemoryHandler())  # Initialize the memory handler if not present
+        return self.get_context(MEMORY_HANDLER)
 
     def __getattr__(self, key: str):
         """
