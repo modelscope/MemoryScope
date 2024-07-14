@@ -1,8 +1,9 @@
 import unittest
 
+from memory_scope.storage.llama_index_es_memory_store_sync import LlamaIndexEsMemoryStoreSync
+
 from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
 from memory_scope.scheme.memory_node import MemoryNode
-from memory_scope.storage.llama_index_es_memory_store_sync import LlamaIndexEsMemoryStoreSync
 
 
 class TestLlamaIndexElasticSearchStore(unittest.TestCase):

@@ -25,12 +25,12 @@ repos:
     hooks:
       - id: mypy
         exclude:
-            (?x)(
-                pb2\.py$
-                | grpc\.py$
-                | ^docs
-                | \.html$
-            )
+          (?x)(
+          pb2\.py$
+          | grpc\.py$
+          | ^docs
+          | \.html$
+          )
         args: [ --disallow-untyped-defs,
                 --disallow-incomplete-defs,
                 --ignore-missing-imports,
@@ -42,7 +42,7 @@ repos:
                 --disable-error-code=truthy-function,
                 --follow-imports=skip,
                 --explicit-package-bases,
-                ]
+        ]
   # - repo: https://github.com/numpy/numpydoc
   #   rev: v1.6.0
   #   hooks:
@@ -50,25 +50,25 @@ repos:
   - repo: https://github.com/psf/black
     rev: 23.3.0
     hooks:
-    - id: black
-      args: [--line-length=79]
+      - id: black
+        args: [ --line-length=79 ]
   - repo: https://github.com/PyCQA/flake8
     rev: 6.1.0
     hooks:
       - id: flake8
-        args: ["--extend-ignore=E203"]
+        args: [ "--extend-ignore=E203" ]
   - repo: https://github.com/pylint-dev/pylint
     rev: v3.0.2
     hooks:
       - id: pylint
         exclude:
-            (?x)(
-                ^docs
-                | pb2\.py$
-                | grpc\.py$
-                | \.demo$
-                | \.md$
-                | \.html$
+          (?x)(
+          ^docs
+          | pb2\.py$
+          | grpc\.py$
+          | \.demo$
+          | \.md$
+          | \.html$
           )
         args: [
           --disable=W0511,
@@ -101,4 +101,4 @@ repos:
     rev: "4.0"
     hooks:
       - id: pyroma
-        args: [--min=10, .]
+        args: [ --min=10, . ]

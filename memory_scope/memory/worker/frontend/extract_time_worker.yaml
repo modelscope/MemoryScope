@@ -4,7 +4,7 @@ extract_time_system:
 
   en: |
     Instructions: From the sentences and the time when they occurred, infer and extract the time periods indicated in the content of the sentences. Answer with the most complete time periods possible. The format of the answers must strictly adhere to the specifications in the examples provided. If the sentence does not involve time, respond with "none."
-    
+
 
 extract_time_few_shot:
   cn: |
@@ -104,7 +104,7 @@ extract_time_few_shot:
     Time: January 23, 2015, 4th week of 2015, Thursday, 7:38:0.
     Answer:
     None
-    
+
 
 extract_time_user_query:
   cn: |

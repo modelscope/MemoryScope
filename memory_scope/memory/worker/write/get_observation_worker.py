@@ -70,20 +70,20 @@ class GetObservationWorker(MemoryBaseWorker):
         # Format the system prompt with the number of observations and target name
         system_prompt = self.prompt_handler.get_observation_system.format(num_obs=len(user_query_list),
                                                                           user_name=self.target_name)
-        
+
         # Incorporate few-shot examples into the prompt with the target name
         few_shot = self.prompt_handler.get_observation_few_shot.format(user_name=self.target_name)
-        
+
         # Assemble the user query part of the prompt with the list of formatted user queries
         user_query = self.prompt_handler.get_observation_user_query.format(user_query="\n".join(user_query_list),
                                                                            user_name=self.target_name)
 
         # Combine system prompt, few-shot, and user query into a single message for obtaining observations
         obtain_obs_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
-        
+
         # Log the constructed observation message
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")
-        
+
         # Return the processed message(s) for further steps in the observation workflow
         return obtain_obs_message
 

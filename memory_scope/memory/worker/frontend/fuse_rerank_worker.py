@@ -57,7 +57,7 @@ class FuseRerankWorker(MemoryBaseWorker):
         # Parse input parameters from the worker's context
         extract_time_dict: Dict[str, str] = self.get_context(EXTRACT_TIME_DICT)
         memory_node_list: List[MemoryNode] = self.memory_handler.get_memories(RANKED_MEMORY_NODES)
-        
+
         # Check if memory nodes are available; warn and return if not
         if not memory_node_list:
             self.logger.warning("Ranked memory nodes list is empty.")
@@ -69,16 +69,16 @@ class FuseRerankWorker(MemoryBaseWorker):
             # Skip nodes below the fuse score threshold
             if node.score_rank < self.fuse_score_threshold:
                 continue
-            
+
             # Calculate type-based adjustment factor
             if node.memory_type not in self.fuse_ratio_dict:
                 self.logger.warning(f"{node.memory_type} 'factor is not configured!")
             type_ratio: float = self.fuse_ratio_dict.get(node.memory_type, 0.1)
-            
+
             # Determine time relevance adjustment factor
             match_event_flag, match_msg_flag = self.match_node_time(extract_time_dict=extract_time_dict, node=node)
             fuse_time_ratio: float = self.fuse_time_ratio if match_event_flag or match_msg_flag else 1.0
-            
+
             # Apply reranking score adjustments
             node.score_rerank = node.score_rank * type_ratio * fuse_time_ratio
             reranked_memory_nodes.append(node)
@@ -89,7 +89,6 @@ class FuseRerankWorker(MemoryBaseWorker):
                                        key=lambda x: x.score_rerank,
                                        reverse=True)[: self.fuse_rerank_top_k]
         for i, node in enumerate(reranked_memory_nodes):
-
             # Log reranking details including flags for event and message matches
             self.logger.info(f"Rerank Stage: Content={node.content}, Score={node.score_rerank}, "
                              f"Event Flag={node.meta_data["match_event_flag"]}, "

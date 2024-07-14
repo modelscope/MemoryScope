@@ -1,12 +1,10 @@
-import ray
-
 from typing import Dict, List, Any, Optional, cast
 
+import ray
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import TextNode, NodeWithScore
 from llama_index.vector_stores.elasticsearch import ElasticsearchStore, AsyncDenseVectorStrategy
 
-from memory_scope.enumeration.action_status_enum import ActionStatusEnum
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.storage.base_memory_store import BaseMemoryStore

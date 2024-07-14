@@ -102,7 +102,8 @@ def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str) -> List[Me
     return [
         Message(role=MessageRoleEnum.SYSTEM.value, content=system_prompt.strip()),  # System message
         Message(role=MessageRoleEnum.USER.value,
-                content="\n".join([x.strip() for x in [few_shot, system_prompt, user_query]]))  # User message combining few shot, system prompt, and user query
+                content="\n".join([x.strip() for x in [few_shot, system_prompt, user_query]]))
+        # User message combining few shot, system prompt, and user query
     ]
 
 
