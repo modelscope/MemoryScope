@@ -24,6 +24,7 @@ class BaseWorker(metaclass=ABCMeta):
         self.raise_exception: bool = raise_exception
         self.is_multi_thread: bool = is_multi_thread
         self.thread_pool: ThreadPoolExecutor = thread_pool
+        self.kwargs: dict = kwargs
 
         self.continue_run: bool = True
         self.async_task_list: list = []
