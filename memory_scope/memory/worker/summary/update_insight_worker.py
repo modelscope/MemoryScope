@@ -199,4 +199,3 @@ class UpdateInsightWorker(MemoryBaseWorker):
         for node in not_reflected_nodes:
             node.obs_updated = 1
             node.action_status = ActionStatusEnum.MODIFIED
-

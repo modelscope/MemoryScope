@@ -1,8 +1,8 @@
 import re
 
-from memory_scope.utils.logger import Logger
 from memory_scope.constants.language_constants import NONE_WORD
 from memory_scope.utils.global_context import G_CONTEXT
+from memory_scope.utils.logger import Logger
 
 
 class ResponseTextParser(object):

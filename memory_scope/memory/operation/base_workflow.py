@@ -50,7 +50,7 @@ class BaseWorkflow(object):
         pattern = r'(\[[^\]]*\]|[^,]+)'
         # Find all matches in the workflow string based on the pattern.
         workflow_split = re.findall(pattern, self.workflow)
-        
+
         for workflow_part in workflow_split:
             # e.g., [d,e,f|g,h]
             workflow_part = workflow_part.strip()
@@ -59,7 +59,7 @@ class BaseWorkflow(object):
 
             # Split the part by '|' to identify potential parallel task groups.
             line_split = [x.strip() for x in workflow_part.split("|") if x]
-            
+
             # Skip if no valid tasks are identified after splitting.
             if len(line_split) <= 0:
                 continue
@@ -75,7 +75,7 @@ class BaseWorkflow(object):
                 # add workers
                 for sub_item in sub_split:
                     self.worker_dict[sub_item] = is_multi_thread
-            
+
             # Append the parsed and structured tasks to the workflow execution plan.
             self.workflow_worker_list.append(line_split_split)
 
@@ -162,7 +162,7 @@ class BaseWorkflow(object):
         """
         with Timer(f"workflow.{self.name}", time_log_type="wrap"):
             self.context[WORKFLOW_NAME] = self.name
-            
+
             # Iterate over each part of the workflow
             for workflow_part in self.workflow_worker_list:
                 # Sequential execution for single-item parts
@@ -175,7 +175,7 @@ class BaseWorkflow(object):
                     # Submit tasks to the thread pool
                     for sub_workflow in workflow_part:
                         t_list.append(G_CONTEXT.thread_pool.submit(self._run_sub_workflow, sub_workflow))
-                    
+
                     # Check results; if any task returns False, stop the workflow
                     flag = True
                     for future in as_completed(t_list):
@@ -183,4 +183,3 @@ class BaseWorkflow(object):
                             flag = False
                     if not flag:
                         break
-            

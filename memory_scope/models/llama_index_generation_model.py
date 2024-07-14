@@ -63,6 +63,7 @@ class LlamaIndexGenerationModel(BaseModel):
                     model_response.message.content += response.delta
                     model_response.delta = response.delta
                     yield model_response
+
             return gen()
         else:
             if isinstance(call_result, CompletionResponse):
@@ -113,6 +114,6 @@ class LlamaIndexGenerationModel(BaseModel):
             response = await self.model.acomplete(**self.data)
         else:
             response = await self.model.achat(**self.data)
-        
+
         results.raw = response
         return results

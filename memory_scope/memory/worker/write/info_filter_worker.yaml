@@ -14,7 +14,7 @@ info_filter_system:
     Please ensure to output in the following format, and the final result must be enclosed in <>:
     Thought: The basis and process of thinking, within 30 words.
     Result: <Score: 0 or 1 or 2 or 3>
-    
+
 
 info_filter_few_shot:
   cn: |

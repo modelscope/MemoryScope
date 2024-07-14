@@ -1,5 +1,6 @@
-import unittest
 import asyncio
+import unittest
+
 from memory_scope.models.llama_index_rank_model import LlamaIndexRankModel
 
 

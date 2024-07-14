@@ -14,7 +14,7 @@ class BaseOperation(metaclass=ABCMeta):
         description (str): A description of the operation.
         kwargs (dict): Additional keyword arguments for operation configuration.
     """
-    
+
     operation_type: OPERATION_TYPE = "frontend"
 
     def __init__(self, name: str, description: str = ""):

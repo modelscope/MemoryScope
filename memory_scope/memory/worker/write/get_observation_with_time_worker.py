@@ -1,4 +1,5 @@
 from typing import List
+
 from memory_scope.constants.common_constants import NEW_OBS_WITH_TIME_NODES
 from memory_scope.constants.language_constants import COLON_WORD
 from memory_scope.memory.worker.write.get_observation_worker import GetObservationWorker
@@ -54,10 +55,10 @@ class GetObservationWithTimeWorker(GetObservationWorker):
         # Construct the system prompt with the count of observations
         system_prompt = self.prompt_handler.get_observation_with_time_system.format(num_obs=len(user_query_list),
                                                                                     user_name=self.target_name)
-        
+
         # Retrieve the few-shot examples for the prompt
         few_shot = self.prompt_handler.get_observation_with_time_few_shot.format(user_name=self.target_name)
-        
+
         # Format the user query section with the concatenated list of timestamped queries
         user_query = self.prompt_handler.get_observation_with_time_user_query.format(
             user_query="\n".join(user_query_list),
@@ -65,9 +66,9 @@ class GetObservationWithTimeWorker(GetObservationWorker):
 
         # Assemble the final message for observation retrieval
         obtain_obs_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
-        
+
         # Log the constructed message for debugging purposes
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")
-        
+
         # Return the newly created message
         return obtain_obs_message

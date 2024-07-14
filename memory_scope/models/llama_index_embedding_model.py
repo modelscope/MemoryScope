@@ -24,7 +24,7 @@ class LlamaIndexEmbeddingModel(BaseModel):
             model_class (type): The class of the model to register.
         """
         MODEL_REGISTRY.register(model_name, model_class)
-        
+
     MODEL_REGISTRY.register("dashscope_embedding", DashScopeEmbedding)
 
     def before_call(self, **kwargs):

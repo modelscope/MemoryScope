@@ -2,9 +2,7 @@
 
 # ModelScope
 
-
 ## 概念解释
-
 
 - service: 在顶层的交互对象，用于定义operation的使用范围
 
