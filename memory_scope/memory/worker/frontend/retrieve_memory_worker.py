@@ -16,6 +16,11 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
     facilitating efficient memory retrieval operations within a given scope.
     """
 
+    def _parse_params(self, **kwargs):
+        self.retrieve_obs_top_k: int = kwargs.get("retrieve_obs_top_k", 0)
+        self.retrieve_ins_top_k: int = kwargs.get("retrieve_ins_top_k", 0)
+        self.retrieve_expired_top_k: int = kwargs.get("retrieve_expired_top_k", 0)
+
     @timer
     def retrieve_from_observation(self, query: str) -> List[MemoryNode]:
         """
@@ -45,7 +50,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
                                                    filter_dict=filter_dict)
 
     @timer
-    def retrieve_from_insight_and_profile(self, query: str) -> List[MemoryNode]:
+    def retrieve_from_insight(self, query: str) -> List[MemoryNode]:
         """
         Retrieves memories marked as insights from the database based on a query, filtered by user, target,
         and set to active status.
@@ -58,7 +63,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
                               limited by 'retrieve_ins_pf_top_k'.
                               Returns an empty list if 'retrieve_ins_pf_top_k' is not set.
         """
-        if not self.retrieve_ins_pf_top_k:
+        if not self.retrieve_ins_top_k:
             return []
 
         filter_dict = {
@@ -69,7 +74,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
         }
         # ⭐ Retrieve insights matching the query, filtered, and limited by top_k
         return self.memory_store.retrieve_memories(query=query,
-                                                   top_k=self.retrieve_ins_pf_top_k,
+                                                   top_k=self.retrieve_ins_top_k,
                                                    filter_dict=filter_dict)
 
     @timer
@@ -104,7 +109,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
         """
         query, _ = self.get_context(QUERY_WITH_TS)
         self.submit_thread_task(self.retrieve_from_observation, query=query)
-        self.submit_thread_task(self.retrieve_from_insight_and_profile, query=query)
+        self.submit_thread_task(self.retrieve_from_insight, query=query)
         self.submit_thread_task(self.retrieve_expired_memory, query=query)
 
         memory_node_list: List[MemoryNode] = []

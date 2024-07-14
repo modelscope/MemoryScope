@@ -1,10 +1,10 @@
 import datetime
 
 from memory_scope.constants.common_constants import RESULT, WORKFLOW_NAME, CHAT_KWARGS
-from memory_scope.memory.worker.base_worker import BaseWorker
+from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 
 
-class DummyWorker(BaseWorker):
+class DummyWorker(MemoryBaseWorker):
     def _run(self):
         """
         Executes the dummy worker's run logic by logging workflow entry, capturing the current timestamp,

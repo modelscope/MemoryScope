@@ -57,7 +57,7 @@ class ChatMemoryService(BaseMemoryService):
             return
         return self._operation_dict[op_name].run_operation(**kwargs)  # Execute the operation
 
-    def init_service(self):
+    def init_service(self, **kwargs):
         for name, operation_config in self.memory_operations.items():
             if name in self._operation_dict:
                 self.logger.warning(f"memory operation={name} is repeated!")
@@ -70,7 +70,7 @@ class ChatMemoryService(BaseMemoryService):
                 chat_messages=self.chat_messages,
                 message_lock=self.message_lock,
                 contextual_msg_count=self.contextual_msg_count)
-            operation.init_workflow()  # Initialize workflow for each operation
+            operation.init_workflow(**kwargs)  # Initialize workflow for each operation
 
             self._operation_dict[name] = operation
             self.logger.info(f"service={self.__class__.__name__} init operation={name}")

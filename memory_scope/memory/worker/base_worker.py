@@ -24,12 +24,16 @@ class BaseWorker(metaclass=ABCMeta):
         self.raise_exception: bool = raise_exception
         self.is_multi_thread: bool = is_multi_thread
         self.thread_pool: ThreadPoolExecutor = thread_pool
-        self.kwargs: dict = kwargs
 
         self.continue_run: bool = True
         self.async_task_list: list = []
         self.thread_task_list: list = []
         self.logger: Logger = Logger.get_logger()
+
+        self._parse_params(**kwargs)
+
+    def _parse_params(self, **kwargs):
+        pass
 
     def submit_async_task(self, fn, *args, **kwargs):
         if self.is_multi_thread:

@@ -22,7 +22,7 @@ class Message(BaseModel):
 
     content: str = Field(..., description="The primary content of the message")
 
-    time_created: int = Field(int(datetime.datetime.now().timestamp()),
+    time_created: int = Field(default_factory=lambda: int(datetime.datetime.now().timestamp()),
                               description="Timestamp marking the message creation time")
 
     memorized: bool = Field(False, description="Indicates if the message is flagged for memory retention")

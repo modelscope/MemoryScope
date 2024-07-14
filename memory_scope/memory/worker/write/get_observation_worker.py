@@ -16,6 +16,9 @@ class GetObservationWorker(MemoryBaseWorker):
     FILE_PATH: str = __file__
     OBS_STORE_KEY: str = NEW_OBS_NODES
 
+    def _parse_params(self, **kwargs):
+        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+
     def add_observation(self, message: Message, time_infer: str, obs_content: str, keywords: str):
         dt_handler = DatetimeHandler(dt=message.time_created)
 

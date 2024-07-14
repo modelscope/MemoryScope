@@ -23,6 +23,11 @@ class ContraRepeatWorker(MemoryBaseWorker):
     """
     FILE_PATH: str = __file__
 
+    def _parse_params(self, **kwargs):
+        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.retrieve_top_k: int = kwargs.get("retrieve_top_k", 30)
+        self.contra_repeat_max_count: int = kwargs.get("contra_repeat_max_count", 50)
+
     def _run(self):
         """
         Executes the primary routine of the ContraRepeatWorker which involves fetching memory nodes,

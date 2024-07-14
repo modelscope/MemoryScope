@@ -18,6 +18,9 @@ class ExtractTimeWorker(MemoryBaseWorker):
     EXTRACT_TIME_PATTERN = r'-\s*(\S+)：(\d+)'
     FILE_PATH: str = __file__
 
+    def _parse_params(self, **kwargs):
+        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+
     def _run(self):
         """
         Executes the primary logic of identifying and extracting time data from an LLM's response.

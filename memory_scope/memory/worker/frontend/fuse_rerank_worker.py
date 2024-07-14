@@ -8,6 +8,12 @@ from memory_scope.utils.datetime_handler import DatetimeHandler
 
 class FuseRerankWorker(MemoryBaseWorker):
 
+    def _parse_params(self, **kwargs):
+        self.fuse_score_threshold: float = kwargs.get("fuse_score_threshold", 0.1)
+        self.fuse_ratio_dict: Dict[str, float] = kwargs.get("fuse_ratio_dict", {})
+        self.fuse_time_ratio: float = kwargs.get("fuse_time_ratio", 2.0)
+        self.fuse_rerank_top_k: int = kwargs.get("fuse_rerank_top_k", 10)
+
     @staticmethod
     def match_node_time(extract_time_dict: Dict[str, str], node: MemoryNode):
         if extract_time_dict:
@@ -65,6 +71,8 @@ class FuseRerankWorker(MemoryBaseWorker):
                 continue
             
             # Calculate type-based adjustment factor
+            if node.memory_type not in self.fuse_ratio_dict:
+                self.logger.warning(f"{node.memory_type} 'factor is not configured!")
             type_ratio: float = self.fuse_ratio_dict.get(node.memory_type, 0.1)
             
             # Determine time relevance adjustment factor

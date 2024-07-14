@@ -24,16 +24,20 @@ class SetQueryWorker(MemoryBaseWorker):
         query = "_"  # Default query value
         query_timestamp = int(datetime.datetime.now().timestamp())  # Current timestamp as default
 
-        # Check if a specific 'query' has been provided via chat kwargs
         if "query" in self.chat_kwargs:
+            # Check if a specific 'query' has been provided via chat kwargs
             query = self.chat_kwargs["query"]
+            if not query:
+                query = ""
+            query = query.strip()
 
-        # If no explicit query is given, use the content of the latest chat message
         elif self.chat_messages:
-            message = self.chat_messages[-1]
-            assert message.role == MessageRoleEnum.USER.value
-            query = message.content
-            query_timestamp = message.time_created
+            # If no explicit query is given, use the content of the latest chat message
+            chat_messages = [msg for msg in self.chat_messages if msg.role == MessageRoleEnum.USER.value]
+            if chat_messages:
+                message = chat_messages[-1]
+                query = message.content
+                query_timestamp = message.time_created
 
         # Store the determined query and its timestamp in the context
         self.set_context(QUERY_WITH_TS, (query, query_timestamp))

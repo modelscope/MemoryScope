@@ -96,7 +96,7 @@ class BaseMemoryService(metaclass=ABCMeta):
         return self.do_operation(self.read_message_key)
 
     @abstractmethod
-    def init_service(self):
+    def init_service(self, **kwargs):
         raise NotImplementedError
 
     def start_backend_service(self):

@@ -17,6 +17,11 @@ class InfoFilterWorker(MemoryBaseWorker):
     """
     FILE_PATH: str = __file__
 
+    def _parse_params(self, **kwargs):
+        self.preserved_scores: str = kwargs.get("preserved_scores", "2,3")
+        self.info_filter_msg_max_size: int = kwargs.get("info_filter_msg_max_size", 200)
+        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+
     def _run(self):
         """
         Filters user messages in the chat, generates a prompt incorporating these messages, 

@@ -169,18 +169,6 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             self.set_context(MEMORY_HANDLER, MemoryHandler())  # Initialize the memory handler if not present
         return self.get_context(MEMORY_HANDLER)
 
-    def __getattr__(self, key: str):
-        """
-        Custom attribute access to directly retrieve values from kwargs.
-
-        Args:
-            key (str): The attribute key to look up in kwargs.
-
-        Returns:
-            Any: The value associated with the key in kwargs.
-        """
-        return self.kwargs[key]
-
     @staticmethod
     def get_language_value(languages: dict | list[dict]) -> Any | list[Any]:
         """

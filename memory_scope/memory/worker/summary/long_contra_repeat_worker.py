@@ -20,6 +20,11 @@ class LongContraRepeatWorker(MemoryBaseWorker):
     """
     FILE_PATH: str = __file__
 
+    def _parse_params(self, **kwargs):
+        self.long_contra_repeat_top_k: int = kwargs.get("long_contra_repeat_top_k", 2)
+        self.long_contra_repeat_threshold: float = kwargs.get("long_contra_repeat_threshold", 0.1)
+        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+
     def retrieve_similar_content(self, node: MemoryNode) -> (MemoryNode, List[MemoryNode]):
         """
         Retrieves memory nodes with content similar to the given node, filtering by user/target/status/memory_type.

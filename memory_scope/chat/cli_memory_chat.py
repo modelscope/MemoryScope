@@ -230,6 +230,10 @@ class CliMemoryChat(BaseMemoryChat):
         continue_run = True
         command, kwargs = self.parse_query_command(query)
 
+        # Print prompt for AI's response
+        questionary.print("> ", end="", style="fg:yellow")
+        questionary.print(f"{self.assistant_name}: ", end="", style="bold")
+
         if command == "exit":
             self.memory_service.stop_backend_service()
             continue_run = False
@@ -257,6 +261,8 @@ class CliMemoryChat(BaseMemoryChat):
                     os.system("clear")
                     self.print_logo()
                     if result:
+                        if isinstance(result, list):
+                            result = "\n".join([str(x) for x in result])
                         questionary.print(result)
                     else:
                         questionary.print(f"command={command} result is empty! kwargs={kwargs}")
@@ -265,6 +271,8 @@ class CliMemoryChat(BaseMemoryChat):
             else:
                 result = self.memory_service.do_operation(op_name=command, **kwargs)
                 if result:
+                    if isinstance(result, list):
+                        result = "\n".join([str(x) for x in result])
                     questionary.print(result)
                 else:
                     questionary.print(f"command={command} result is empty! kwargs={kwargs}")

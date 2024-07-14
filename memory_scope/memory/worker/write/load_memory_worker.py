@@ -10,6 +10,11 @@ from memory_scope.utils.timer import timer
 
 
 class LoadMemoryWorker(MemoryBaseWorker):
+    def _parse_params(self, **kwargs):
+        self.retrieve_not_reflected_top_k: int = kwargs.get("retrieve_not_reflected_top_k", 0)
+        self.retrieve_not_updated_top_k: int = kwargs.get("retrieve_not_updated_top_k", 0)
+        self.retrieve_insight_top_k: int = kwargs.get("retrieve_insight_top_k", 0)
+        self.retrieve_today_top_k: int = kwargs.get("retrieve_today_top_k", 0)
 
     @timer
     def retrieve_not_reflected_memory(self, query: str):

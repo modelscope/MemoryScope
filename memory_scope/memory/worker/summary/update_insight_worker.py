@@ -19,6 +19,11 @@ class UpdateInsightWorker(MemoryBaseWorker):
     """
     FILE_PATH: str = __file__
 
+    def _parse_params(self, **kwargs):
+        self.update_insight_threshold: float = kwargs.get("update_insight_threshold", 0.1)
+        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.update_insight_max_count: int = kwargs.get("update_insight_max_count", 10)
+
     def filter_obs_nodes(self,
                          insight_node: MemoryNode,
                          obs_nodes: List[MemoryNode]) -> (MemoryNode, List[MemoryNode], float):
@@ -178,7 +183,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
             if not filtered_nodes:
                 continue
             result_list.append(result)
-        result_sorted = sorted(result_list, key=lambda x: x[2], reverse=True)[: self.update_insight_max_thread]
+        result_sorted = sorted(result_list, key=lambda x: x[2], reverse=True)[: self.update_insight_max_count]
 
         # Submit tasks to update insights for the top nodes
         for insight_node, filtered_nodes, _ in result_sorted:

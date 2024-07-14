@@ -1,4 +1,4 @@
-from typing import Dict, List, Set
+from typing import Dict, List
 
 from memory_scope.enumeration.action_status_enum import ActionStatusEnum
 from memory_scope.enumeration.store_status_enum import StoreStatusEnum
@@ -57,53 +57,34 @@ class MemoryHandler(object):
         self._key_id_dict[key] = [n.memory_id for n in nodes]
 
     def get_memories(self, keys: str | List[str]) -> List[MemoryNode]:
-        """
-        Retrieves memory nodes associated with the given keys.
-
-        This method accepts a single key or a list of keys. For each key, it fetches the
-        associated memory IDs from the context. If memory IDs are found, they are used to
-        collect the corresponding MemoryNode objects from the contex_memory_dict. The final
-        result is a list of unique MemoryNode values, avoiding duplicates.
-
-        Args:
-            keys (str | List[str]): The key or list of keys to retrieve memories for.
-
-        Returns:
-            List[MemoryNode]: A list of MemoryNode objects associated with the input keys.
-        """
         memories: Dict[str, MemoryNode] = {}
+
         if isinstance(keys, str):
             keys = [keys]
 
         for key in keys:
-            if key not in self._key_id_dict:
+            if key == "all":
+                memories.update(self._id_memory_dict)
+                break
+            elif key not in self._key_id_dict:
                 continue
-            memory_ids: List[str] = self._key_id_dict[key]
+
+            memory_ids: List[str] = self._key_id_dict.get(key.strip())
             if memory_ids:
                 memories.update({x: self._id_memory_dict[x] for x in memory_ids})
+
         return list(memories.values())
 
-    def update_memories(self, key: str = "", nodes: MemoryNode | List[MemoryNode] = None):
-        ids: Set[str] = set()
-
-        if key == "all":
-            ids.update(self._id_memory_dict.keys())
-        elif key:
-            for k in key.split(","):
-                t_ids: List[str] = self._key_id_dict.get(k.strip())
-                if t_ids:
-                    ids.update(t_ids)
-
-        # Remove and collect nodes by IDs
-        update_nodes: List[MemoryNode] = [self._id_memory_dict.pop(_) for _ in ids]
+    def update_memories(self, keys: str = "", nodes: MemoryNode | List[MemoryNode] = None):
+        update_memories: Dict[str, MemoryNode] = {n.memory_id: n for n in self.get_memories(keys=keys)}
 
         if nodes is not None:
             if isinstance(nodes, MemoryNode):
                 nodes = [nodes]
-            update_nodes.extend(nodes)
+            update_memories.update({n.memory_id: n for n in nodes})
 
         # Save collected nodes to memory store
-        self._update_memories(update_nodes)
+        self._update_memories(list(update_memories.values()))
 
     def _update_memories(self, nodes: List[MemoryNode]):
         """

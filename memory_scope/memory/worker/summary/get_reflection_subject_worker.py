@@ -19,6 +19,11 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
     """
     FILE_PATH: str = __file__
 
+    def _parse_params(self, **kwargs):
+        self.reflect_obs_cnt_threshold: int = kwargs.get("reflect_obs_cnt_threshold", 10)
+        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.reflect_num_questions: int = kwargs.get("reflect_num_questions", 5)
+
     def new_insight_node(self, insight_key: str) -> MemoryNode:
         """
         Creates a new MemoryNode for an insight with the given key, enriched with current datetime metadata.
