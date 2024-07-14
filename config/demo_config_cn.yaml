@@ -30,7 +30,12 @@ memory_service:
 
       delete_memory:
         class: memory.operation.frontend_operation
-        workflow: set_query,retrieve_all_memory,delete_memory
+        workflow: set_query,retrieve_all_memory,delete_query
+        description: "delete a single long-term memory"
+
+      delete_all:
+        class: memory.operation.frontend_operation
+        workflow: set_query,retrieve_all_memory,delete_all
         description: "delete all long-term memory"
 
       add_memory:
@@ -92,16 +97,14 @@ worker:
     retrieve_obs_top_k: 10000
     retrieve_ins_top_k: 10000
     retrieve_expired_top_k: 10000
-  delete_memory:
-    class: memory.worker.frontend.update_memory_worker
-    method: modify_action_status
-    expired_action: delete
-    valid_action_dict:
-      obs_customized: delete
-      insight: delete
-      observation: delete
+  delete_query:
+    class: memory.worker.write.update_memory_worker
+    method: delete_query
+  delete_all:
+    class: memory.worker.write.update_memory_worker
+    method: delete_all
   add_memory:
-    class: memory.worker.frontend.update_memory_worker
+    class: memory.worker.write.update_memory_worker
     method: from_query
   info_filter:
     class: memory.worker.write.info_filter_worker

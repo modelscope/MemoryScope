@@ -46,8 +46,8 @@ class MemoryHandler(object):
         for node in nodes:
             if node.memory_id in self._id_memory_dict:
                 if log_repeat:
-                    self.logger.warning(f"repeated_id memory id={node.memory_id} content={node.content} "
-                                        f"store_status={node.store_status} action_status={node.action_status}")
+                    self.logger.debug(f"repeated_id memory id={node.memory_id} content={node.content} "
+                                      f"store_status={node.store_status} action_status={node.action_status}")
                 continue
 
             self._id_memory_dict[node.memory_id] = node

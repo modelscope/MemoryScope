@@ -35,7 +35,7 @@ class PrintMemoryWorker(MemoryBaseWorker):
 
             elif MemoryTypeEnum(node.memory_type) in [MemoryTypeEnum.OBSERVATION, MemoryTypeEnum.OBS_CUSTOMIZED]:
                 j += 1
-                obs_content_list.append(f"  {j} {line}")
+                obs_content_list.append(f"  {j} {line}    status={node.obs_reflected},{node.obs_updated}")
 
             elif MemoryTypeEnum(node.memory_type) is MemoryTypeEnum.INSIGHT:
                 k += 1

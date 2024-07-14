@@ -193,7 +193,10 @@ class UpdateInsightWorker(MemoryBaseWorker):
         self.gather_thread_result()
 
         for node in not_updated_nodes:
-            node.obs_updated = True
+            node.obs_updated = 1
+            node.action_status = ActionStatusEnum.MODIFIED
 
         for node in not_reflected_nodes:
-            node.obs_updated = True
+            node.obs_updated = 1
+            node.action_status = ActionStatusEnum.MODIFIED
+

@@ -123,7 +123,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
 
         memory_node_list = sorted(memory_node_list, key=lambda x: x.score_similar, reverse=True)
         for node in memory_node_list:
-            node.action_status = ActionStatusEnum.NONE
+            node.action_status = ActionStatusEnum.NONE.value
             self.logger.info(f"recall_stage: content={node.content} score={node.score_similar} type={node.memory_type} "
                              f"store_status={node.store_status} action_status={node.action_status}")
 

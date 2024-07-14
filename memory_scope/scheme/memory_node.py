@@ -44,9 +44,9 @@ class MemoryNode(BaseModel):
 
     dt: str = Field("", description="dt of the memory node")
 
-    obs_reflected: bool = Field(False, description="if the observation is reflected")
+    obs_reflected: int = Field(0, description="if the observation is reflected: 0/1")
 
-    obs_updated: bool = Field(False, description="if the observation has updated user profile or insight")
+    obs_updated: int = Field(0, description="if the observation has updated user profile or insight: 0/1")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

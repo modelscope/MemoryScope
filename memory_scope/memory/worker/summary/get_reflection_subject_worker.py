@@ -63,8 +63,8 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
 
         # Count unaudited nodes
         not_reflected_count = len(not_reflected_nodes)
-        if not_reflected_count <= self.reflect_obs_cnt_threshold:
-            self.logger.info(f"not_reflected_count={not_reflected_count} is not enough, skip.")
+        if not_reflected_count < self.reflect_obs_cnt_threshold:
+            self.logger.info(f"not_reflected_count({not_reflected_count}) < is not enough, skip.")
             self.continue_run = False
             return
 
@@ -102,4 +102,5 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
 
         # Mark unaudited nodes as reflected
         for node in not_reflected_nodes:
-            node.obs_reflected = True
+            node.obs_reflected = 1
+            node.action_status = ActionStatusEnum.MODIFIED

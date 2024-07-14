@@ -26,7 +26,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "target_name": self.target_name,
             "store_status": StoreStatusEnum.VALID.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
-            "obs_reflected": False,
+            "obs_reflected": 0,
         }
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
                                                                       top_k=self.retrieve_not_reflected_top_k,
@@ -43,7 +43,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "target_name": self.target_name,
             "store_status": StoreStatusEnum.VALID.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
-            "obs_updated": False,
+            "obs_updated": 0,
         }
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
                                                                       top_k=self.retrieve_not_updated_top_k,
