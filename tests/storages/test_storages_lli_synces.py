@@ -1,6 +1,6 @@
 import unittest
 
-from memory_scope.storage.llama_index_es_memory_store_sync import LlamaIndexEsMemoryStoreSync
+from memory_scope.storage.llama_index_es_memory_store import LlamaIndexEsMemoryStore
 
 from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
 from memory_scope.scheme.memory_node import MemoryNode
@@ -18,13 +18,13 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
         emb = LlamaIndexEmbeddingModel(**config)
 
         config = {
-            "index_name": "0708_5",
+            "index_name": "0708_8",
             "es_url": "http://localhost:9200",
             "embedding_model": emb,
             "use_hybrid": True
 
         }
-        self.es_store = LlamaIndexEsMemoryStoreSync(**config)
+        self.es_store = LlamaIndexEsMemoryStore(**config)
         self.data = [
             MemoryNode(
                 content="The lives of two mob hitmen, a boxer, a gangster and his wife, "
@@ -33,6 +33,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="0",
                 status="valid",
                 memory_id="aaa123",
+                timestamp=1,
 
             ),
             MemoryNode(
@@ -43,7 +44,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="1",
                 status="valid",
                 memory_id="bbb456",
-                meta_data={"1": "1"}
+                meta_data={"1": "1"},
+                timestamp=2,
             ),
             MemoryNode(
                 content="An insomniac office worker and a devil-may-care soapmaker form an underground fight "
@@ -52,7 +54,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="2",
                 status="valid",
                 memory_id="ccc789",
-                meta_data={"2": "2"}
+                meta_data={"2": "2"},
+                timestamp=3,
             ),
             MemoryNode(
                 content="A thief who steals corporate secrets through the use of dream-sharing technology "
@@ -61,7 +64,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="3",
                 status="valid",
                 memory_id="ddd012",
-                meta_data={"3": "3"}
+                meta_data={"3": "3"},
+                timestamp=4,
 
             ),
             MemoryNode(
@@ -71,7 +75,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="4",
                 status="valid",
                 memory_id="eee345",
-                meta_data={"4": "4"}
+                meta_data={"4": "4"},
+                timestamp=5,
 
             ),
             MemoryNode(
@@ -82,6 +87,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 status="valid",
                 memory_id="fff678",
                 meta_data={"5": "5"},
+                timestamp=6,
 
             ),
             MemoryNode(
@@ -91,7 +97,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="6",
                 status="valid",
                 memory_id="ggg901",
-                meta_data={"5": "5"}
+                meta_data={"5": "5"},
+                timestamp=7,
 
             ),
             MemoryNode(
@@ -100,7 +107,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="6",
                 status="valid",
                 memory_id="ggg234",
-                meta_data={"5": "5"}
+                meta_data={"5": "5"},
+                timestamp=8,
 
             ),
             MemoryNode(
@@ -109,7 +117,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="6",
                 status="valid",
                 memory_id="hhh234",
-                meta_data={"5": "5"}
+                meta_data={"5": "5"},
+                timestamp=9,
 
             ),
             MemoryNode(
@@ -118,7 +127,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="6",
                 status="valid",
                 memory_id="iii234",
-                meta_data={"5": "5"}
+                meta_data={"5": "5"},
+                timestamp=10,
 
             ),
             MemoryNode(
@@ -127,7 +137,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="6",
                 status="valid",
                 memory_id="jjj234",
-                meta_data={"5": "5"}
+                meta_data={"5": "5"},
+                timestamp=11,
 
             ),
             MemoryNode(
@@ -136,16 +147,18 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
                 user_id="6",
                 status="valid",
                 memory_id="kkk234",
-                meta_data={"5": "5"}
+                meta_data={"5": "5"},
+                timestamp=12,
 
             ),
         ]
 
     def test_retrieve(self):
-        # filter_dict = {
-        #     "user_id": "6",
-        # }
-        filter_dict = {}
+        filter_dict = {
+          "timestamp": 12,
+           # "memory_id": "bbb456",
+           #"score_rank": 0,
+        }
 
         for node in self.data:
             self.es_store.insert(node)
@@ -156,7 +169,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             user_id="6",
             status="valid",
             memory_id="ggg567",
-            meta_data={"5": "5"}
+            meta_data={"5": "5"},
+            timestamp=13
         ))
         res = self.es_store.retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15)
         print(len(res))
@@ -167,7 +181,9 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             memory_type="profile",
             user_id="6",
             status="invalid",
-            memory_id="ggg567"
+            memory_id="ggg567",
+            timestamp=13,
+
         ))
         res = self.es_store.retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15)
         print(len(res))
@@ -178,7 +194,8 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             memory_type="profile",
             user_id="6",
             status="invalid",
-            memory_id="ggg567"
+            memory_id="ggg567",
+            timestamp=13,
         ))
         import asyncio
         res = asyncio.run(self.es_store.a_retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15))
