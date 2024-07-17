@@ -141,6 +141,10 @@ docs/sphinx_doc/build/
 
 # Used to save loggings and files
 *runs/
-agentscope.db
+memoryscope.db
 tmp*.json
 cradle*
+
+# sphinx docs
+
+memory_scope*.rst
