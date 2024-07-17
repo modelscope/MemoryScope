@@ -1,6 +1,6 @@
 time_string_format:
   cn: |
-    {year}年{month}月{day}日{weekday}{hour}点
+    {year}年{month}{day}日{weekday}{hour}点
   en: |
     {month} {day}, {year}, {weekday}, at {hour}
 
