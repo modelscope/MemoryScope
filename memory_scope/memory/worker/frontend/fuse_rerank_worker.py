@@ -91,8 +91,8 @@ class FuseRerankWorker(MemoryBaseWorker):
         for i, node in enumerate(reranked_memory_nodes):
             # Log reranking details including flags for event and message matches
             self.logger.info(f"Rerank Stage: Content={node.content}, Score={node.score_rerank}, "
-                             f"Event Flag={node.meta_data["match_event_flag"]}, "
-                             f"Message Flag={node.meta_data["match_msg_flag"]}")
+                             f"Event Flag={node.meta_data['match_event_flag']}, "
+                             f"Message Flag={node.meta_data['match_msg_flag']}")
 
             time_str = DatetimeHandler(node.timestamp).datetime_format("%Y%m%d-%H:%M:%S")
             memories.append(f"{i} {time_str} {node.content}")
