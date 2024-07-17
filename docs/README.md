@@ -15,4 +15,5 @@ cd sphinx_doc
 ./build_sphinx_doc.sh
 
 # step 4: view sphinx_doc/build/html/index.html using your browser
+cd docs/sphinx_doc/build/html && python -m http.server 8899
 ```
