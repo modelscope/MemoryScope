@@ -9,7 +9,7 @@ from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.tool_functions import init_instance_by_config
 
 
-class TestInfoFilter(unittest.TestCase):
+class TestWorkersCn(unittest.TestCase):
     """Tests for LLIEmbedding"""
 
     def setUp(self):
