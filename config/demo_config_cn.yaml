@@ -30,7 +30,7 @@ memory_service:
 
       delete_memory:
         class: memory.operation.frontend_operation
-        workflow: set_query,retrieve_all_memory,delete_query
+        workflow: set_query,retrieve_all_memory,delete_memory
         description: "delete a single long-term memory"
 
       delete_all:
@@ -77,7 +77,7 @@ worker:
     rank_model: dashscope_rank
   fuse_rerank:
     class: memory.worker.frontend.fuse_rerank_worker
-    fuse_score_threshold: 0.1
+    fuse_score_threshold: 0.05
     fuse_ratio_dict:
       conversation: 0.5
       observation: 1
@@ -94,12 +94,12 @@ worker:
     class: memory.worker.frontend.print_memory_worker
   retrieve_all_memory:
     class: memory.worker.frontend.retrieve_memory_worker
-    retrieve_obs_top_k: 10000
-    retrieve_ins_top_k: 10000
-    retrieve_expired_top_k: 10000
-  delete_query:
+    retrieve_obs_top_k: 100
+    retrieve_ins_top_k: 100
+    retrieve_expired_top_k: 100
+  delete_memory:
     class: memory.worker.write.update_memory_worker
-    method: delete_query
+    method: delete_memory
   delete_all:
     class: memory.worker.write.update_memory_worker
     method: delete_all
@@ -160,7 +160,7 @@ memory_store:
   embedding_model: dashscope_embedding
   index_name: memory_index
   es_url: http://localhost:9200
-  use_hybrid: false
+  use_hybrid: true
 
 monitor:
   class: storage.dummy_monitor

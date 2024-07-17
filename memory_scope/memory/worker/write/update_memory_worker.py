@@ -43,22 +43,36 @@ class UpdateMemoryWorker(MemoryBaseWorker):
         self.logger.info(f"delete_all.size={len(nodes)}")
         return nodes
 
-    def delete_query(self):
-        if "query" not in self.chat_kwargs:
-            return
+    def delete_memory(self):
+        if "query" in self.chat_kwargs:
+            query = self.chat_kwargs["query"].strip()
+            if not query:
+                return
 
-        query = self.chat_kwargs["query"].strip()
-        if not query:
-            return
+            i = 0
+            nodes: List[MemoryNode] = self.memory_handler.get_memories(keys="all")
+            for node in nodes:
+                if node.content == query:
+                    i += 1
+                    node.action_status = ActionStatusEnum.DELETE.value
+            self.logger.info(f"delete_memory.query.size={len(nodes)}")
+            return nodes
 
-        i = 0
-        nodes: List[MemoryNode] = self.memory_handler.get_memories(keys="all")
-        for node in nodes:
-            if node.content == query:
-                i += 1
-                node.action_status = ActionStatusEnum.DELETE.value
-        self.logger.info(f"delete_query.size={len(nodes)}")
-        return nodes
+        elif "memory_id" in self.chat_kwargs:
+            memory_id = self.chat_kwargs["memory_id"].strip()
+            if not memory_id:
+                return
+
+            i = 0
+            nodes: List[MemoryNode] = self.memory_handler.get_memories(keys="all")
+            for node in nodes:
+                if node.memory_id == memory_id:
+                    i += 1
+                    node.action_status = ActionStatusEnum.DELETE.value
+            self.logger.info(f"delete_memory.memory_id.size={len(nodes)}")
+            return nodes
+
+        return []
 
     def _run(self):
         method = self.method.strip()

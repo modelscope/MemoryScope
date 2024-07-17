@@ -216,16 +216,14 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         # Connecting to ElasticsearchStore locally
         es_local = ElasticsearchStore(
             index_name=index_name,
-            es_url=es_url,
-        )
+            es_url=es_url)
 
         # Connecting to Elastic Cloud with username and password
         es_cloud_user_pass = ElasticsearchStore(
             index_name=index_name,
             es_cloud_id=es_cloud_id,
             es_user=es_user,
-            es_password=es_password,
-        )
+            es_password=es_password)
 
         # Connecting to Elastic Cloud with API Key
         es_cloud_api_key = ElasticsearchStore(

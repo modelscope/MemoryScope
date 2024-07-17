@@ -112,6 +112,37 @@ WEEKDAYS = {
     ]
 }
 
+MONTH_DICT = {
+    LanguageEnum.CN: [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+    ],
+    LanguageEnum.EN: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ]
+}
+
 # Constants for the word 'none' in different languages
 NONE_WORD = {
     LanguageEnum.CN: "无",

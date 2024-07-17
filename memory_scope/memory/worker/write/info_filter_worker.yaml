@@ -1,15 +1,17 @@
 info_filter_system:
   cn: |
-    任务指令：对所给{batch_size}个句子中所含有的关于{user_name}的信息打分，分数为0,1,2或3。
-    注意：其中0表示不包含{user_name}信息，1表示句子中只包含{user_name}假设的信息或者{user_name}虚构的内容，2表示包含{user_name}的一般信息，时效性信息或者需要猜测才能得到的{user_name}信息，3表示明确含有或者可以确定推断出关于{user_name}的重要信息，或者{user_name}要求记录。
+    任务：对所给{batch_size}个句子中所含有的关于{user_name}的信息打分，分数为0,1,2或3。
+    注意：其中0表示不包含用户信息，1表示句子中包含用户假设的信息或者用户虚构的内容比如用户创作的小说或剧本，2表示包含用户的一般信息，时效性信息或者需要猜测才能得到的用户信息，3表示明确含有或者可以确定推断出关于用户的重要信息，或者用户要求记录。
+    用户信息可以包含用户基本信息，用户画像信息，用户兴趣偏好信息，用户性格，用户价值观，用户重大事件转折点等等重要信息。
     对每个句子都做一次信息打分，一共输出{batch_size}个分数。
     请一定要按如下格式依次输出，最后的结果一定要加<>:
     思考：思考的依据和过程，30字以内。
     结果：<句子序号> <分数:0或1或2或3>
 
   en: |
-    Instruction: Evaluate the given {batch_size} sentences for information about {user_name}, with a score of 0, 1, 2, or 3.
-    Note: A score of 0 indicates no information about {user_name}, 1 indicates hypothetical or fictional content about or from {user_name}, 2 indicates general, timely, or speculative information about {user_name}, and 3 indicates significant and verifiable information about {user_name} or information that {user_name} requested to be recorded.
+    Task: Evaluate the given {batch_size} sentences for information about {user_name}, with a score of 0, 1, 2, or 3.
+    Note: A score of 0 indicates no information about {user_name}, 1 indicates the sentence contains hypothetical information about the user or content concocted by the user, such as novels or scripts they have authored, 2 indicates general, timely, or speculative information about {user_name}, and 3 indicates significant and verifiable information about {user_name} or information that {user_name} requested to be recorded.
+    The user information may include basic user details, user profile data, user preferences, user personality, user values, user critical life events, turning points, and other important information.
     Perform information scoring for each sentence, and output a total of {batch_size} scores.
     Please ensure to output in the following format, and the final result must be enclosed in <>:
     Thought: The basis and process of thinking, within 30 words.

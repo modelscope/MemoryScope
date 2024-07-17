@@ -30,7 +30,7 @@ memory_service:
 
       delete_memory:
         class: memory.operation.frontend_operation
-        workflow: set_query,retrieve_all_memory,delete_query
+        workflow: set_query,retrieve_all_memory,delete_memory
         description: "delete a single long-term memory"
 
       delete_all:
@@ -94,12 +94,12 @@ worker:
     class: memory.worker.frontend.print_memory_worker
   retrieve_all_memory:
     class: memory.worker.frontend.retrieve_memory_worker
-    retrieve_obs_top_k: 10000
-    retrieve_ins_top_k: 10000
-    retrieve_expired_top_k: 10000
-  delete_query:
+    retrieve_obs_top_k: 100
+    retrieve_ins_top_k: 100
+    retrieve_expired_top_k: 100
+  delete_memory:
     class: memory.worker.write.update_memory_worker
-    method: delete_query
+    method: delete_memory
   delete_all:
     class: memory.worker.write.update_memory_worker
     method: delete_all

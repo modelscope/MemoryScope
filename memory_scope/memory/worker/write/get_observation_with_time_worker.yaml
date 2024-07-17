@@ -1,10 +1,12 @@
 time_string_format:
   cn: |
     {year}年{month}月{day}日{weekday}{hour}点
+  en: |
+    {month} {day}, {year}, {weekday}, at {hour}
 
 get_observation_with_time_system:
   cn: |
-    任务指令：从下面的{num_obs}句{user_name}句子中依次提取出关于{user_name}的重要信息，相应的关键词与时间信息。
+    任务：从下面的{num_obs}句{user_name}句子中依次提取出关于{user_name}的重要信息，相应的关键词与时间信息。
     每一句{user_name}句子的格式是：<序号> <对话时间> {user_name}：<句子>
     对每一句句子，只提取非常明确的信息和进行非常确定的推断，不要进行任何猜测。不要提取重复的信息，如果句子中的所有信息与已经提取出的信息重复了则回答“重复“，如果没有重要信息则回答“无”。
     如果{user_name}信息涉及时间，则结合对话时间推断{user_name}信息的时间信息，没有则不输出。注意区分，对于句子中包含{user_name}假设的信息或者{user_name}虚构的内容比如{user_name}创作的小说或剧本，不要提取信息。
