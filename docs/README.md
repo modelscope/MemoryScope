@@ -4,8 +4,6 @@
 
 Please use the following commands to build sphinx doc of MemoryScope.
 
-参考：https://github.com/modelscope/agentscope/blob/main/docs/README.md
-
 ```shell
 # step 1: Install dependencies
 pip install sphinx sphinx-autobuild sphinx_rtd_theme myst-parser sphinxcontrib-mermaid
@@ -17,4 +15,5 @@ cd sphinx_doc
 ./build_sphinx_doc.sh
 
 # step 4: view sphinx_doc/build/html/index.html using your browser
+cd docs/sphinx_doc/build/html && python -m http.server 8899
 ```

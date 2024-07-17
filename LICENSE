@@ -213,7 +213,7 @@ also licensed under the terms of the Apache 2.0.
 
 --------------------------------------------------------------------------------
 
-Code in src/agentscope/web/static/js/socket.io.js is adapted from
+Code in src/memoryscope/web/static/js/socket.io.js is adapted from
 https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.3/socket.io.js (MIT License)
 
 Copyright (c) 2014-2021 Guillermo Rauch
@@ -238,7 +238,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Code in src/agentscope/web/static/js/jquery-3.3.1.min.js is adapted from
+Code in src/memoryscope/web/static/js/jquery-3.3.1.min.js is adapted from
 https://code.jquery.com/jquery-3.3.1.min.js (MIT License)
 
 Copyright (c) JS Foundation and other contributors
@@ -263,7 +263,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Code in src/agentscope/web/static/js/bootstrap.bundle.min.js is adapted from
+Code in src/memoryscope/web/static/js/bootstrap.bundle.min.js is adapted from
 https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js
  (MIT License)
 
@@ -290,7 +290,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Code in src/agentscope/web/static/js/bootstrap-table.min.js is adapted from
+Code in src/memoryscope/web/static/js/bootstrap-table.min.js is adapted from
 https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js (MIT
 License)
 
@@ -316,7 +316,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Code in src/agentscope/web/static/css/bootstrap.min.css is adapted from
+Code in src/memoryscope/web/static/css/bootstrap.min.css is adapted from
 https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css (MIT
 License)
 
@@ -344,7 +344,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Fonts in src/agentscope/web/static/fonts/KRYPTON.ttf is adapted from
+Fonts in src/memoryscope/web/static/fonts/KRYPTON.ttf is adapted from
 https://github.com/githubnext/monaspace (SIL Open Font License 1.1). These
 fonts are distributed with their original license. See https://github
 .com/githubnext/monaspace/blob/main/LICENSE for the full text of the license.
@@ -369,7 +369,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Fonts in src/agentscope/web/static/fonts/OSWALD.ttf is adapted from
+Fonts in src/memoryscope/web/static/fonts/OSWALD.ttf is adapted from
 https://fonts.google.com/specimen/Oswald (SIL Open Font License 1.1). These
 fonts are distributed with their original license. See https://github
 .com/googlefonts/OswaldFont/blob/main/OFL.txt for the full text of the license.
