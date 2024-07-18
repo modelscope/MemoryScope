@@ -1,20 +1,22 @@
 get_observation_system:
   cn: |
-    任务：从下面的{num_obs}句{user_name}句子中依次提取出关于{user_name}的重要信息，与相应的关键词。最多提取{num_obs}条信息。对每一句句子，只提取非常明确的信息和进行非常确定的推断，不要进行任何猜测。
-    不要提取重复的信息，如果句子中的所有信息与已经提取出的信息重复了则回答“重复“，如果没有重要信息则回答“无”。注意区分，对于句子中包含{user_name}假设的信息或者{user_name}虚构的内容比如{user_name}创作的小说或剧本，不要提取信息。
+    任务：从下面的{num_obs}句{user_name}句子中依次提取出关于{user_name}的重要信息，与相应的关键词。如果没有重要信息则回答“无”，最多提取{num_obs}条信息。
+    {user_name}的重要信息可以包含用户基本信息，用户画像信息，用户兴趣偏好信息，用户性格，用户价值观，用户人际关系，用户重大事件转折点等等重要信息。
+    如果句子中只包含{user_name}假设的信息或者{user_name}虚构的内容比如{user_name}创作的小说或剧本，回答“无”。
     对每个句子都做一次信息提取，最后一共输出{num_obs}条信息。
-    请一定要按如下格式依次输出，最后的结果一定要加<>:
+    请一步步思考，并一定要按如下格式依次输出，最后的结果一定要加<>:
     思考：思考的依据和过程，50字以内。
-    信息：<句子序号> <> <明确的重要信息或“重复”或”无“> <关键词>
+    信息：<句子序号> <> <明确的重要信息或“无”> <关键词>
 
   en: |
-    Task: Extract important information and corresponding keywords from the following {num_obs} sentences about {user_name}. Extract up to {num_obs} pieces of information. For each sentence, only extract very clear information and make very certain inferences without any speculation.
-    Do not extract repeated information. If all information in the sentence repeats what has already been extracted, respond with "repeat." If there is no important information, respond with "none." Be sure to distinguish information; for example, do not extract hypothetical or fictional content from {user_name} such as {user_name}'s novels or scripts.
+    Task: Extract important information, interests and corresponding keywords from the following {num_obs} sentences about {user_name} in sequence. Extract up to {num_obs} pieces of information.
+    If all the information in a sentence is completely repetitive of what has already been extracted, reply "repetitive," and if there is no important information, reply "none."
+    The user information may include basic user information, user profiles, user interests and preferences, personality, values, significant life events, turning points, and other important information.
+    Be sure to distinguish information, for example, do not extract hypothetical or fictional content from {user_name} such as {user_name}'s novels or scripts.
     Perform information extraction for each sentence, resulting in a total of {num_obs} pieces of information.
     Please output the results in the following format, with the final output enclosed in <>:
     Thought: The basis and process of the thought, within 50 words.
     Information: <sentence number> <> <Clear important information or “Repeat” or “None”> <keywords>
-
 
 get_observation_few_shot:
   cn: |
@@ -22,16 +24,22 @@ get_observation_few_shot:
     {user_name}句子：
     1 {user_name}：我现在处境很糟，没有工作，负债几万，怎么办
     2 {user_name}：有人说兴趣是最好的老师，也建议兴趣和职业联系起来，但我发现喜欢打篮球的人很多，但靠打篮球成职业的稀少，赚钱的更少，此外，怎么分辨兴趣和喜欢
-    3 {user_name}：我现在处境很糟，没有工作，负债几万，怎么办
+    3 {user_name}：我现在心情很糟糕
     4 {user_name}：我是一个刚毕业的学生，对社会，行业不了解，给我介绍一下社会系统和行业格局
+    5 {user_name}：我花5000元买了100股海天味业。
+    6 {user_name}：我花50000元买了100股茅台。
     思考：从第1句可以得知{user_name}现在没有工作，负债几万，这是关于{user_name}工作与经济状况的重要信息。
     信息：<1> <> <{user_name}当前无工作且负债几万> <无工作, 负债几万>
     思考：第2句是{user_name}对他人观点的讨论和疑问，没有明确提及{user_name}个人信息。
     信息：<2> <> <无> <>
-    思考：第3句含有的信息与第1句重复了。
-    信息：<3> <> <重复> <>
+    思考：从第3句可以得知{user_name}当前心情不好。
+    信息：<3> <> <{user_name}当前心情不好> <心情>
     思考：从第4句可以得知{user_name}是一个刚毕业的学生，这是关于{user_name}身份背景状况的重要信息。其余信息重要性不足。
     信息：<4> <> <{user_name}是一名刚毕业的学生。> <刚毕业, 学生>
+    思考：从第5句可以得知{user_name}购买了海天味业股票，购买数量为100股，购买金额为5000元，这是关于{user_name}的投资决策的重要信息。
+    信息：<5> <> <{user_name}购买了海天味业股票，购买数量为100股，购买金额为5000元。> <海天味业, 股票>
+    思考：第6句含有的信息与第1句相似，可以得知{user_name}购买了茅台股票。
+    信息：<6> <> <{user_name}购买了茅台股票，购买数量为100股，购买金额为50000元。> <茅台, 股票>
     
     示例2：
     {user_name}句子：
@@ -61,7 +69,7 @@ get_observation_few_shot:
     6 {user_name}：李增杰:这个是星座蛙设，但是我是处女座的，我妈感觉因为我的不正常，我妈不让我看了\n雌猴摸了摸李增杰的头，这样啊\n雌猴打开了哔哩哔哩看了看\n雌猴:要不换个设吧，我听你未来的你说，有一个叫难忘的朱古力232这个人，他弄的设是Windows设\n这是剧本1，剧本2未完待续
     思考：从第1句可以得知{user_name}寻求购买新能源汽车的建议或推荐，这是这是关于{user_name}的大宗消费的重要的信息。
     信息：<1> <> <{user_name}寻求购买新能源汽车的建议或推荐。> <购买, 新能源汽车>
-    思考：从第2句可以得知{user_name}当前所在城市为上海，这是关于{user_name}的生活地区的重要信息。其余信息与第1句重复了。
+    思考：从第2句可以得知{user_name}当前所在城市为上海，这是关于{user_name}的生活地区的重要信息。
     信息：<2> <> <{user_name}所在的城市是上海。> <上海>
     思考：第3句是{user_name}对某个观点的讨论和疑问，没有明确提及{user_name}个人信息。
     信息：<3> <> <无> <>
@@ -71,6 +79,16 @@ get_observation_few_shot:
     信息：<5> <> <{user_name}购买了海天味业股票，购买数量为100股，购买金额为5000元。> <海天味业, 股票>
     思考：第6句是{user_name}创作的剧本内容，无法提取{user_name}个人信息。
     信息：<6> <> <无> <>
+    
+    示例4：
+    {user_name}句子：
+    1 {user_name}：李子好酸啊，我不太喜欢吃。
+    2 {user_name}：桃子上的毛太多了，我不爱吃他。
+    思考：从第1句可以得知{user_name}不太喜欢吃李子。
+    信息：<1> <> <{user_name}不喜欢吃李子。> <李子>
+    思考：从第2句可以得知{user_name}不喜欢吃桃子，和上一句相似都是对某一种水果不喜欢，但是表达了不同的信息。
+    信息：<2> <> <{user_name}不喜欢吃桃子。> <西瓜>
+
 
   en: |
     Example 1:

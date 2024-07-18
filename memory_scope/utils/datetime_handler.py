@@ -1,7 +1,7 @@
 import datetime
 import re
 
-from memory_scope.constants.language_constants import WEEKDAYS, DATATIME_WORD_LIST
+from memory_scope.constants.language_constants import WEEKDAYS, DATATIME_WORD_LIST, MONTH_DICT
 from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.logger import Logger
 
@@ -52,7 +52,7 @@ class DatetimeHandler(object):
         """
         return {
             "year": self._dt.year,
-            "month": self._dt.month,
+            "month": MONTH_DICT[G_CONTEXT.language][self._dt.month - 1],
             "day": self._dt.day,
             "hour": self._dt.hour,
             "minute": self._dt.minute,

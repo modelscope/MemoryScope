@@ -49,6 +49,7 @@ class LlamaIndexGenerationModel(BaseModel):
                 self.data = {"messages": [ChatMessage(role=msg.role, content=msg.content) for msg in messages]}
         else:
             raise RuntimeError("prompt and messages are both empty!")
+        self.data.update(**kwargs)
 
     def after_call(self,
                    model_response: ModelResponse,

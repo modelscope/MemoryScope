@@ -53,6 +53,8 @@ class CliMemoryChat(BaseMemoryChat):
         """
         self._memory_service: BaseMemoryService | str = memory_service
         self._generation_model: BaseModel | str = generation_model
+        self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
+
         self.stream: bool = stream
         self.human_name: str = human_name
         self.assistant_name: str = assistant_name
@@ -174,7 +176,7 @@ class CliMemoryChat(BaseMemoryChat):
         self.logger.info(f"messages={messages}")
 
         # Invoke the Language Model with the constructed message context, respecting streaming setting
-        generated = self.generation_model.call(messages=messages, stream=self.stream)
+        generated = self.generation_model.call(messages=messages, stream=self.stream, **self.generation_model_kwargs)
 
         # In non-streaming interactions, explicitly save the AI's reply to memory if instructed
         if remember_response:

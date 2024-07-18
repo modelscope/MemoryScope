@@ -1,7 +1,7 @@
 get_reflection_subject_system:
   cn: |
     任务：从下面的信息中提取出最重要的最多{num_questions}条{user_name}属性，要求不与已有的{user_name}属性语义重复。
-    要求1：{user_name}属性可以是一般的{user_name}偏好，也可以是运动偏好，旅游偏好，饮食偏好等等，也可以是重要事件性质，比如最近重要的事情，也可以是一些高度概括的人生理想，价值观，人生观，性格， 也可以是和朋友的人际关系等等。
+    要求1：{user_name}属性可以是基本信息，基础画像，也可以是运动偏好，旅游偏好，饮食偏好等等兴趣偏好，也可以是重要事件性质，比如最近重要的事情，也可以是一些高度概括的人生理想，价值观，人生观，性格，也可以是和朋友的人际关系等等。
     要求2：根据{user_name}属性，我们可以生成“{user_name}的<{user_name}属性>是什么？”的问题，以此可以从下面的信息中提取{user_name}属性对应的值。
     输出格式：每一行输出一个{user_name}属性，每个{user_name}属性推荐4个字，如果没有信息请回答无，最多输出{num_questions}条。
 
@@ -81,9 +81,9 @@ get_reflection_subject_few_shot:
     {user_name}年龄为28岁。
     {user_name}体重为70kg。
     {user_name}是男性。
-    已有{user_name}属性：性别，年龄，体重，当前学习进展
+    已有{user_name}属性：性别，体重，当前学习进展
     新增{user_name}属性：
-    无
+    年龄
 
 get_reflection_subject_user_query:
   cn: |

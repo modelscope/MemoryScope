@@ -105,3 +105,9 @@ update_insight_user_query:
     {user_query}
     Category: {insight_key}
     Existing information: {insight_key_value}
+
+insight_string_format:
+  cn: |
+    {name}的{key}
+  en: |
+    The {key} of {name}

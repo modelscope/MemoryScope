@@ -37,6 +37,23 @@ class MemoryHandler(object):
         self._id_memory_dict.clear()
         self._key_id_dict.clear()
 
+    def add_memories(self, key: str, nodes: MemoryNode | List[MemoryNode], log_repeat: bool = True):
+        if key not in self._key_id_dict:
+            return self.set_memories(key, nodes, log_repeat)
+
+        if isinstance(nodes, MemoryNode):
+            nodes = [nodes]
+
+        for node in nodes:
+            _id = node.memory_id
+            if _id not in self._key_id_dict[key]:
+                self._key_id_dict[key].append(_id)
+
+            if _id not in self._id_memory_dict:
+                self._id_memory_dict[_id] = node
+                self.logger.info(f"add to memory context memory id={node.memory_id} content={node.content or node.key} "
+                                 f"store_status={node.store_status} action_status={node.action_status}")
+
     def set_memories(self, key: str, nodes: MemoryNode | List[MemoryNode], log_repeat: bool = True):
         if nodes is None:
             nodes = []

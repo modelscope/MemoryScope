@@ -20,7 +20,7 @@ class InfoFilterWorker(MemoryBaseWorker):
     def _parse_params(self, **kwargs):
         self.preserved_scores: str = kwargs.get("preserved_scores", "2,3")
         self.info_filter_msg_max_size: int = kwargs.get("info_filter_msg_max_size", 200)
-        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
 
     def _run(self):
         """
@@ -69,7 +69,7 @@ class InfoFilterWorker(MemoryBaseWorker):
         self.logger.info(f"info_filter_message={info_filter_message}")
 
         # call llm
-        response = self.generation_model.call(messages=info_filter_message, top_k=self.generation_model_top_k)
+        response = self.generation_model.call(messages=info_filter_message, **self.generation_model_kwargs)
 
         # return if empty
         if not response.status or not response.message.content:
@@ -81,7 +81,6 @@ class InfoFilterWorker(MemoryBaseWorker):
         info_score_list = ResponseTextParser(response_text).parse_v1(self.__class__.__name__)
         if len(info_score_list) != len(info_messages):
             self.logger.warning(f"score_size != messages_size, {len(info_score_list)} vs {len(info_messages)}")
-            return
 
         # filter messages
         filtered_messages: List[Message] = []
