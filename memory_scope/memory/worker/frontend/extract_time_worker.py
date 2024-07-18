@@ -19,7 +19,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
     FILE_PATH: str = __file__
 
     def _parse_params(self, **kwargs):
-        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
 
     def _run(self):
         """
@@ -47,7 +47,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
         self.logger.info(f"extract_time_message={extract_time_message}")
 
         # Invoke the LLM to generate a response
-        response = self.generation_model.call(messages=extract_time_message, top_k=self.generation_model_top_k)
+        response = self.generation_model.call(messages=extract_time_message, **self.generation_model_kwargs)
 
         # Handle empty or unsuccessful responses
         if not response.status or not response.message.content:
