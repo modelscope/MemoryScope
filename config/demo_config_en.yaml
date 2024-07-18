@@ -72,12 +72,14 @@ worker:
   extract_time:
     class: memory.worker.frontend.extract_time_worker
     generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   semantic_rank:
     class: memory.worker.frontend.semantic_rank_worker
     rank_model: dashscope_rank
   fuse_rerank:
     class: memory.worker.frontend.fuse_rerank_worker
-    fuse_score_threshold: 0.1
+    fuse_score_threshold: 0.05
     fuse_ratio_dict:
       conversation: 0.5
       observation: 1
@@ -109,18 +111,26 @@ worker:
   info_filter:
     class: memory.worker.write.info_filter_worker
     generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   load_today_memory:
     class: memory.worker.write.load_memory_worker
     retrieve_today_top_k: 100
   get_observation:
     class: memory.worker.write.get_observation_worker
     generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   get_observation_with_time:
     class: memory.worker.write.get_observation_with_time_worker
     generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   contra_repeat:
     class: memory.worker.write.contra_repeat_worker
     generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   store_memory:
     class: memory.worker.write.update_memory_worker
     method: from_memory_key
@@ -132,16 +142,27 @@ worker:
     retrieve_insight_top_k: 100
   get_reflection_subject:
     class: memory.worker.summary.get_reflection_subject_worker
+    generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   update_insight:
     class: memory.worker.summary.update_insight_worker
+    generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
+    rank_model: dashscope_rank
   long_contra_repeat:
     class: memory.worker.summary.long_contra_repeat_worker
+    generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
 
 models:
   dashscope_generation:
     class: models.llama_index_generation_model
     module_name: dashscope_generation
     model_name: qwen-max
+    max_tokens: 2000
   dashscope_embedding:
     class: models.llama_index_embedding_model
     module_name: dashscope_embedding
@@ -160,7 +181,7 @@ memory_store:
   embedding_model: dashscope_embedding
   index_name: memory_index
   es_url: http://localhost:9200
-  use_hybrid: false
+  use_hybrid: true
 
 monitor:
   class: storage.dummy_monitor

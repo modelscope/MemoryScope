@@ -13,7 +13,7 @@ from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.tool_functions import init_instance_by_config
 
 
-class TestWorkersCn(unittest.TestCase):
+class TestWorkersEn(unittest.TestCase):
     """Tests for LLIEmbedding"""
 
     def setUp(self):
@@ -21,7 +21,7 @@ class TestWorkersCn(unittest.TestCase):
         self.logger: Logger = Logger.get_logger(f"test_worker_{datetime_suffix}", to_stream=True)
 
         ms = MemoryScope()
-        ms.load_config("config/demo_config_cn.yaml")
+        ms.load_config("config/demo_config_en.yaml")
         ms.init_global_content_by_config()
 
     def tearDown(self):
