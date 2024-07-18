@@ -532,11 +532,12 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             filter = [_to_elasticsearch_filter(query.filters)]
         else:
             filter = es_filter or []
+        num_candidates = query.similarity_top_k * 10 if query.similarity_top_k <= 1000 else query.similarity_top_k
         hits = self._store.search(
             query=query.query_str,
             query_vector=query.query_embedding,
             k=query.similarity_top_k,
-            num_candidates=100,  # query.similarity_top_k * 10,
+            num_candidates=num_candidates,  # query.similarity_top_k * 10,
             filter=filter,
             custom_query=custom_query,
         )
