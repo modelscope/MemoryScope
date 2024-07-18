@@ -17,4 +17,4 @@ COPY . .
 RUN pip install -r requirements.txt
 
 # 启动（必要）
-CMD ["python3", "memory_scope/cli.py", "config/demo_config.yaml"]
+CMD ["python3", "memory_scope/cli.py", "config/demo_config_cn.yaml"]
