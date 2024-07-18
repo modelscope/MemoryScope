@@ -17,7 +17,7 @@ class GetObservationWorker(MemoryBaseWorker):
     OBS_STORE_KEY: str = NEW_OBS_NODES
 
     def _parse_params(self, **kwargs):
-        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
 
     def add_observation(self, message: Message, time_infer: str, obs_content: str, keywords: str):
         dt_handler = DatetimeHandler(dt=message.time_created)
@@ -65,7 +65,7 @@ class GetObservationWorker(MemoryBaseWorker):
         user_query_list = []
         for i, msg in enumerate(filter_messages):
             # Construct each user query item with index, target name, and message content
-            user_query_list.append(f"{i} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
+            user_query_list.append(f"{i + 1} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
 
         # Format the system prompt with the number of observations and target name
         system_prompt = self.prompt_handler.get_observation_system.format(num_obs=len(user_query_list),
@@ -109,7 +109,7 @@ class GetObservationWorker(MemoryBaseWorker):
         obtain_obs_message = self.build_message(filter_messages)
 
         # Generates observations using the language model
-        response = self.generation_model.call(messages=obtain_obs_message, top_k=self.generation_model_top_k)
+        response = self.generation_model.call(messages=obtain_obs_message, **self.generation_model_kwargs)
         if not response.status or not response.message.content:
             return
 

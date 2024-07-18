@@ -24,7 +24,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
     FILE_PATH: str = __file__
 
     def _parse_params(self, **kwargs):
-        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
         self.retrieve_top_k: int = kwargs.get("retrieve_top_k", 30)
         self.contra_repeat_max_count: int = kwargs.get("contra_repeat_max_count", 50)
 
@@ -69,7 +69,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
         self.logger.info(f"contra_repeat_message={contra_repeat_message}")
 
         # call LLM
-        response = self.generation_model.call(messages=contra_repeat_message, top_k=self.generation_model_top_k)
+        response = self.generation_model.call(messages=contra_repeat_message, **self.generation_model_kwargs)
 
         # return if empty
         if not response.status or not response.message.content:

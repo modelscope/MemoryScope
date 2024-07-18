@@ -52,6 +52,7 @@ class BaseModel(metaclass=ABCMeta):
             else:
                 kwargs = self.kwargs
             self._model = obj_cls(**kwargs)
+
         return self._model
 
     @abstractmethod

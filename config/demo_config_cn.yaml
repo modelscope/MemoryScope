@@ -115,12 +115,18 @@ worker:
   get_observation:
     class: memory.worker.write.get_observation_worker
     generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   get_observation_with_time:
     class: memory.worker.write.get_observation_with_time_worker
     generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   contra_repeat:
     class: memory.worker.write.contra_repeat_worker
     generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   store_memory:
     class: memory.worker.write.update_memory_worker
     method: from_memory_key
@@ -142,6 +148,7 @@ models:
     class: models.llama_index_generation_model
     module_name: dashscope_generation
     model_name: qwen-max
+    max_tokens: 2000
   dashscope_embedding:
     class: models.llama_index_embedding_model
     module_name: dashscope_embedding

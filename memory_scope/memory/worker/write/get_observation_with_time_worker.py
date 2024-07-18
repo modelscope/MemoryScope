@@ -50,7 +50,7 @@ class GetObservationWithTimeWorker(GetObservationWorker):
             dt_handler = DatetimeHandler(dt=msg.time_created)
             dt = dt_handler.string_format(self.prompt_handler.time_string_format)
             # Append formatted timestamp-query pairs to the user_query_list
-            user_query_list.append(f"{i} {dt} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
+            user_query_list.append(f"{i + 1} {dt} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
 
         # Construct the system prompt with the count of observations
         system_prompt = self.prompt_handler.get_observation_with_time_system.format(num_obs=len(user_query_list),
