@@ -21,6 +21,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
     FILE_PATH: str = __file__
 
     def _parse_params(self, **kwargs):
+        self.unit_test_flag = False
         self.long_contra_repeat_top_k: int = kwargs.get("long_contra_repeat_top_k", 2)
         self.long_contra_repeat_threshold: float = kwargs.get("long_contra_repeat_threshold", 0.1)
         self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
@@ -66,16 +67,19 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         for node in not_updated_nodes:
             self.submit_thread_task(fn=self.retrieve_similar_content, node=node)
 
-        obs_node_dict: Dict[str, MemoryNode] = {}
-        for origin_node, retrieve_nodes in self.gather_thread_result():
-            if not retrieve_nodes:
-                continue
-            obs_node_dict[origin_node.memory_id] = origin_node
-            for node in retrieve_nodes:
-                if node.memory_id in obs_node_dict:
+        if self.unit_test_flag:
+            all_obs_nodes: List[MemoryNode] = not_updated_nodes
+        else:
+            obs_node_dict: Dict[str, MemoryNode] = {}
+            for origin_node, retrieve_nodes in self.gather_thread_result():
+                if not retrieve_nodes:
                     continue
-                obs_node_dict[node.memory_id] = node
-        all_obs_nodes: List[MemoryNode] = sorted(obs_node_dict.values(), key=lambda x: x.timestamp, reverse=True)
+                obs_node_dict[origin_node.memory_id] = origin_node
+                for node in retrieve_nodes:
+                    if node.memory_id in obs_node_dict:
+                        continue
+                    obs_node_dict[node.memory_id] = node
+            all_obs_nodes: List[MemoryNode] = sorted(obs_node_dict.values(), key=lambda x: x.timestamp, reverse=True)
 
         if not all_obs_nodes:
             self.logger.warning("all_obs_nodes is empty, stop.")

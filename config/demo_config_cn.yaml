@@ -148,6 +148,7 @@ worker:
     generation_model: dashscope_generation
     generation_model_kwargs:
       top_k: 1
+    rank_model: dashscope_rank
   long_contra_repeat:
     class: memory.worker.summary.long_contra_repeat_worker
     generation_model: dashscope_generation

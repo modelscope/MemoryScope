@@ -44,8 +44,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
         filtered_nodes: List[MemoryNode] = []
 
         # Check if insight node key or value is empty and log a warning
-        if not insight_node.key or not insight_node.value:
-            self.logger.warning(f"insight_key={insight_node.key} insight_value={insight_node.value} is empty!")
+        if not insight_node.key:
+            self.logger.warning(f"insight_key={insight_node.key} is empty!")
             return insight_node, filtered_nodes, max_score
 
         # Call the ranking model to get scores for each observed node's content against the insight key
@@ -62,7 +62,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
                 filtered_nodes.append(node)
                 max_score = max(max_score, score)
             # Log information about each node's processing
-            self.logger.info(f"insight_key={insight_node.key} insight_value={insight_node.value} "
+            self.logger.info(f"insight_key={insight_node.key} content={node.content} "
                              f"score={score} keep_flag={keep_flag}")
 
         # Warn if no nodes were filtered
@@ -74,8 +74,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
     def update_insight_node(self, insight_node: MemoryNode, insight_value: str):
         dt_handler = DatetimeHandler()
-        content = (f"{self.user_name}{self.get_language_value(COLON_WORD)}{insight_node.key}"
-                   f"{self.get_language_value(COLON_WORD)}{insight_value}")
+        key = self.prompt_handler.insight_string_format.format(name=self.target_name, key=insight_node.key)
+        content = f"{key}{self.get_language_value(COLON_WORD)}{insight_value}"
         insight_node.content = content
         insight_node.value = insight_value
         insight_node.meta_data.update({k: str(v) for k, v in dt_handler.dt_info_dict.items()})
@@ -97,18 +97,17 @@ class UpdateInsightWorker(MemoryBaseWorker):
         Returns:
             MemoryNode: The updated MemoryNode with potentially revised insight value.
         """
-        self.logger.info(f"Updating insight for key={insight_node.key}, value={insight_node.value}, "
+        self.logger.info(f"Updating insight for key={insight_node.key}, old_value={insight_node.value}, "
                          f"with {len(filtered_nodes)} documents considered.")
 
         # Generate the prompt for updating insight
         user_query_list = [n.content for n in filtered_nodes]
-        system_prompt = self.prompt_handler.update_insight_system.foramt(user_name=self.target_name)
-        few_shot = self.prompt_handler.update_insight_few_shot.foramt(user_name=self.target_name)
-        user_query = self.prompt_handler.update_insight_user_query.foramt(
+        system_prompt = self.prompt_handler.update_insight_system.format(user_name=self.target_name)
+        few_shot = self.prompt_handler.update_insight_few_shot.format(user_name=self.target_name)
+        user_query = self.prompt_handler.update_insight_user_query.format(
             user_query="\n".join(user_query_list),
             insight_key=insight_node.key,
             insight_key_value=insight_node.key + self.get_language_value(COLON_WORD) + insight_node.value)
-
         # Construct the message for LLM interaction
         update_insight_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"Generated insight update message: {update_insight_message}")
@@ -170,11 +169,11 @@ class UpdateInsightWorker(MemoryBaseWorker):
             if node.action_status == ActionStatusEnum.NONE.value:
                 self.submit_thread_task(fn=self.filter_obs_nodes,
                                         insight_node=node,
-                                        not_updated_nodes=not_updated_nodes)
+                                        obs_nodes=not_updated_nodes)
             else:
                 self.submit_thread_task(fn=self.filter_obs_nodes,
                                         insight_node=node,
-                                        not_updated_nodes=not_reflected_nodes)
+                                        obs_nodes=not_reflected_nodes)
 
         # select top n
         result_list = []
@@ -190,7 +189,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.submit_thread_task(fn=self.update_insight, insight_node=insight_node, filtered_nodes=filtered_nodes)
 
         # Gather the final results from all update tasks
-        self.gather_thread_result()
+        for _ in self.gather_thread_result():
+            pass
 
         for node in not_updated_nodes:
             node.obs_updated = 1

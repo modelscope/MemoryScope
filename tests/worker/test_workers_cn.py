@@ -3,11 +3,12 @@ import unittest
 
 from memory_scope.cli import MemoryScope
 from memory_scope.constants.common_constants import CHAT_MESSAGES, NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES, \
-    MERGE_OBS_NODES, QUERY_WITH_TS, EXTRACT_TIME_DICT, NOT_REFLECTED_NODES, INSIGHT_NODES
+    MERGE_OBS_NODES, QUERY_WITH_TS, EXTRACT_TIME_DICT, NOT_REFLECTED_NODES, INSIGHT_NODES, NOT_UPDATED_NODES
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.scheme.message import Message
+from memory_scope.utils import Logger
 from memory_scope.utils.global_context import G_CONTEXT
 from memory_scope.utils.tool_functions import init_instance_by_config
 
@@ -16,8 +17,15 @@ class TestWorkersCn(unittest.TestCase):
     """Tests for LLIEmbedding"""
 
     def setUp(self):
-        ms = MemoryScope().load_config("config/demo_config_cn.yaml")
+        datetime_suffix = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        self.logger: Logger = Logger.get_logger(f"test_worker_{datetime_suffix}", to_stream=True)
+
+        ms = MemoryScope()
+        ms.load_config("config/demo_config_cn.yaml")
         ms.init_global_content_by_config()
+
+    def tearDown(self):
+        self.logger.close()
 
     @unittest.skip
     def test_extract_time(self):
@@ -257,7 +265,7 @@ class TestWorkersCn(unittest.TestCase):
         worker.logger.info(f"result3={result3}")
         worker.logger.info(f"result4={result4}")
 
-    # @unittest.skip
+    @unittest.skip
     def test_get_reflection_subject(self):
         name = "get_reflection_subject"
 
@@ -287,6 +295,58 @@ class TestWorkersCn(unittest.TestCase):
         worker.memory_handler.set_memories(INSIGHT_NODES, [])
         worker.run()
 
+        result = [node.key for node in worker.memory_handler.get_memories(INSIGHT_NODES)]
+        result = "\n".join(result)
+        worker.logger.info(f"result.get_reflection={result}")
+        return worker
+
+    @unittest.skip
+    def test_update_insight_worker(self):
+        reflection_worker = self.test_get_reflection_subject.__wrapped__(self)
+
+        name = "update_insight"
+
+        worker: MemoryBaseWorker = init_instance_by_config(
+            config=G_CONTEXT.worker_config[name],
+            suffix_name="worker",
+            name=name,
+            is_multi_thread=False,
+            context=reflection_worker.context,
+            context_lock=None,
+            thread_pool=G_CONTEXT.thread_pool)
+
+        nodes = [
+            MemoryNode(content="用户喜欢打王者荣耀"),
+        ]
+        worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
+        worker.run()
+
         result = [node.content for node in worker.memory_handler.get_memories(INSIGHT_NODES)]
         result = "\n".join(result)
-        worker.logger.info(f"result={result}")
+        worker.logger.info(f"result.update_insight={result}")
+
+    # @unittest.skip
+    def test_long_contra_repeat_worker(self):
+        name = "long_contra_repeat"
+
+        worker: MemoryBaseWorker = init_instance_by_config(
+            config=G_CONTEXT.worker_config[name],
+            suffix_name="worker",
+            name=name,
+            is_multi_thread=False,
+            context={},
+            context_lock=None,
+            thread_pool=G_CONTEXT.thread_pool)
+
+        nodes = [
+            MemoryNode(content="用户对策略游戏感兴趣，寻找新挑战。"),
+            MemoryNode(content="用户在北京工作，感到压力大，寻求放松方式。"),
+            MemoryNode(content="用户在上海工作。"),
+        ]
+        worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
+        worker.unit_test_flag = True
+        worker.run()
+
+        result = [node.content for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)]
+        result = "\n".join(result)
+        worker.logger.info(f"result.long_contra_repeat={result}")

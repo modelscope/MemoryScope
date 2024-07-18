@@ -103,4 +103,5 @@ class LoadMemoryWorker(MemoryBaseWorker):
         self.submit_thread_task(self.retrieve_today_memory, query=query, dt=dt)
 
         # Waits for all submitted tasks to complete
-        self.gather_thread_result()
+        for _ in self.gather_thread_result():
+            pass

@@ -21,7 +21,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
 
     def _parse_params(self, **kwargs):
         self.reflect_obs_cnt_threshold: int = kwargs.get("reflect_obs_cnt_threshold", 10)
-        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
         self.reflect_num_questions: int = kwargs.get("reflect_num_questions", 5)
 
     def new_insight_node(self, insight_key: str) -> MemoryNode:
@@ -88,7 +88,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
         self.logger.info(f"reflect_message={reflect_message}")
 
         # Invoke Language Model for new insights
-        response = self.generation_model.call(messages=reflect_message, top_k=self.generation_model_top_k)
+        response = self.generation_model.call(messages=reflect_message, **self.generation_model_kwargs)
 
         # Handle empty response
         if not response.status or not response.message.content:
@@ -98,7 +98,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
         new_insight_keys = ResponseTextParser(response.message.content).parse_v2(self.__class__.__name__)
         if new_insight_keys:
             for insight_key in new_insight_keys:
-                insight_nodes.append(self.new_insight_node(insight_key))
+                self.memory_handler.add_memories(INSIGHT_NODES, self.new_insight_node(insight_key))
 
         # Mark unaudited nodes as reflected
         for node in not_reflected_nodes:
