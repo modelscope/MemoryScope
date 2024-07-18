@@ -1,7 +1,7 @@
 """Elasticsearch vector store."""
 
 from logging import getLogger
-from typing import Any, Callable, Dict, List, Literal, Optional, Union
+from typing import Any, Callable, Dict, List, Literal, Optional, Union, cast
 
 import nest_asyncio
 import numpy as np
@@ -38,6 +38,7 @@ DISTANCE_STRATEGIES = Literal[
     "DOT_PRODUCT",
     "EUCLIDEAN_DISTANCE",
 ]
+
 
 
 def get_elasticsearch_client(
@@ -78,47 +79,6 @@ def get_elasticsearch_client(
     es_client.info()  # use sync client so don't have to 'await' to just get info
 
     return es_client
-
-
-def _to_elasticsearch_filter(standard_filters: MetadataFilters) -> Dict[str, Any]:
-    """
-    Transforms Llama-index standard filters into an Elasticsearch-compatible filter structure.
-
-    This function supports both single-term filters and multiple operands combined 
-    with a boolean 'should' clause for more complex queries.
-
-    Args:
-        standard_filters (MetadataFilters): An instance of MetadataFilters containing 
-                                           the filtering criteria to be applied.
-
-    Returns:
-        Dict[str, Any]: A dictionary representing the Elasticsearch filter query.
-    """
-    if len(standard_filters.legacy_filters()) == 1:
-        # For a single filter term, construct a simple term filter.
-        filter = standard_filters.legacy_filters()[0]
-        return {
-            "term": {
-                f"metadata.{filter.key}.keyword": {
-                    "value": filter.value,
-                }
-            }
-        }
-    else:
-        # When multiple filters are present, create a boolean 'should' clause
-        # with each individual filter as an operand.
-        operands = []
-        for filter in standard_filters.legacy_filters():
-            operands.append(
-                {
-                    "term": {
-                        f"metadata.{filter.key}.keyword": {
-                            "value": filter.value,
-                        }
-                    }
-                }
-            )
-        return {"bool": {"should": operands}}
 
 
 def _to_llama_similarities(scores: List[float]) -> List[float]:
@@ -171,6 +131,129 @@ def _mode_must_match_retrieval_strategy(
 
     if mode == VectorStoreQueryMode.HYBRID and not retrieval_strategy.hybrid:
         raise ValueError(f"to enable hybrid mode, it must be set in retrieval strategy")
+
+
+
+
+class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
+    def _hybrid(self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int) -> Dict[str, Any]:
+        # Add a query to the knn query.
+        # RRF is used to even the score from the knn query and text query
+        # RRF has two optional parameters: {'rank_constant':int, 'window_size':int}
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html
+        query_body = {
+            "knn": knn,
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                self.text_field: {
+                                    "query": query,
+                                }
+                            }
+                        }
+                    ],
+                    "filter": filter,
+                }
+            },
+        }
+
+        if isinstance(self.rrf, Dict):
+            query_body["rank"] = {"rrf": self.rrf}
+        elif isinstance(self.rrf, bool) and self.rrf is True:
+            query_body["rank"] = {"rrf": {"window_size": top_k}}
+        return query_body
+
+    def es_query(
+            self,
+            *,
+            query: Optional[str],
+            query_vector: Optional[List[float]],
+            text_field: str,
+            vector_field: str,
+            k: int,
+            num_candidates: int,
+            filter: List[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        if filter is None:
+            filter = []
+
+        knn = {
+            "filter": filter,
+            "field": vector_field,
+            "k": k,
+            "num_candidates": num_candidates,
+        }
+
+        if query_vector is not None:
+            knn["query_vector"] = query_vector
+        else:
+            # Inference in Elasticsearch. When initializing we make sure to always have
+            # a model_id if we don't have an embedding_service.
+            knn["query_vector_builder"] = {
+                "text_embedding": {
+                    "model_id": self.model_id,
+                    "model_text": query,
+                }
+            }
+
+        if self.hybrid:
+            return self._hybrid(query=cast(str, query), knn=knn, filter=filter, top_k=k)
+
+        return {"knn": knn}
+
+
+def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str, Any]:
+    """
+    Converts standard Llama-index filters into a format compatible with Elasticsearch.
+
+    This function transforms dictionary-based filters, where each key represents a field and 
+    the value is a list of strings, into an Elasticsearch query structure. It supports both 
+    list values (interpreted as 'should' clauses for OR logic) and single values (interpreted 
+    as 'must' clauses for AND logic).
+
+    Args:
+        standard_filters (Dict[str, List[str]]): A dictionary containing filter criteria, 
+            where keys are field names and values are lists of strings or single string values 
+            representing filter values.
+
+    Returns:
+        Dict[str, Any]: A dictionary structured as an Elasticsearch filter query.
+    """
+    result = {
+        "bool": {}
+    }
+    for key, value in standard_filters.items():
+        if isinstance(value, list):
+            operands = []
+            for v in value:
+                key_str = f"metadata.{key}.keyword" if isinstance(v, str) else f"metadata.{key}"
+                operands.append(
+                    {
+                        "term":
+                            {
+                                key_str: {"value": v}
+                            }
+                    }
+                )
+            result['bool'].update({"should": operands})  # ⭐ Add 'should' clause for OR logic
+            result['bool'].update({"minimum_should_match": 1})  # Ensure at least one 'should' match
+        else:
+            key_str = f"metadata.{key}.keyword" if isinstance(value, str) else f"metadata.{key}"
+            operand = [{
+                "term": {
+                    key_str: {
+                        "value": value,
+                    }
+                }
+            }]
+            if "must" in result['bool']:
+                result['bool']['must'].extend(operand)  # Extend existing 'must' clause for AND logic
+            else:
+                result['bool'].update({"must": operand})  # Initialize 'must' clause if not present
+    return result
+
 
 
 class SyncElasticsearchStore(BasePydanticVectorStore):
@@ -545,6 +628,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         top_k_nodes = []
         top_k_ids = []
         top_k_scores = []
+        print("hits:", len(hits))
         for hit in hits:
             source = hit["_source"]
             metadata = source.get("metadata", None)
