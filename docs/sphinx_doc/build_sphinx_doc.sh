@@ -1,7 +1,5 @@
 #!/bin/bash
 rm -rf build/html/*
-rm en/source/agentscope*.rst
-rm zh_CN/source/agentscope*.rst
 rm en/source/memory_scope*.rst
 rm zh_CN/source/memory_scope*.rst
 sphinx-apidoc -f -o en/source ../../memory_scope -t template -e
