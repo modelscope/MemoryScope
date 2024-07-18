@@ -9,7 +9,7 @@ Please use the following commands to build sphinx doc of MemoryScope.
 pip install sphinx sphinx-autobuild sphinx_rtd_theme myst-parser sphinxcontrib-mermaid
 
 # step 2: go into the sphinx_doc dir
-cd sphinx_doc
+cd docs/sphinx_doc
 
 # step 3: build the sphinx doc
 ./build_sphinx_doc.sh
