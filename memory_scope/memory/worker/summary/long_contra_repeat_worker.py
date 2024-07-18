@@ -24,7 +24,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         self.unit_test_flag = False
         self.long_contra_repeat_top_k: int = kwargs.get("long_contra_repeat_top_k", 2)
         self.long_contra_repeat_threshold: float = kwargs.get("long_contra_repeat_threshold", 0.1)
-        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
 
     def retrieve_similar_content(self, node: MemoryNode) -> (MemoryNode, List[MemoryNode]):
         """
@@ -100,7 +100,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         self.logger.info(f"long_contra_repeat_message={long_contra_repeat_message}")
 
         # Invokes the language model for processing the constructed prompt
-        response = self.generation_model.call(messages=long_contra_repeat_message, top_k=self.generation_model_top_k)
+        response = self.generation_model.call(messages=long_contra_repeat_message, **self.generation_model_kwargs)
 
         # Handles the case where the model's response is empty
         if not response or not response.message.content:

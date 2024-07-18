@@ -21,7 +21,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
     def _parse_params(self, **kwargs):
         self.update_insight_threshold: float = kwargs.get("update_insight_threshold", 0.1)
-        self.generation_model_top_k: int = kwargs.get("generation_model_top_k", 1)
+        self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
         self.update_insight_max_count: int = kwargs.get("update_insight_max_count", 10)
 
     def filter_obs_nodes(self,
@@ -113,7 +113,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
         self.logger.info(f"Generated insight update message: {update_insight_message}")
 
         # Call the Language Model for insight update
-        response = self.generation_model.call(messages=update_insight_message, top_k=self.generation_model_top_k)
+        response = self.generation_model.call(messages=update_insight_message, **self.generation_model_kwargs)
 
         # Handle empty or invalid responses
         if not response.status or not response.message.content:

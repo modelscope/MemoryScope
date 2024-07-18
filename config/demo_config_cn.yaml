@@ -111,6 +111,8 @@ worker:
   info_filter:
     class: memory.worker.write.info_filter_worker
     generation_model: dashscope_generation
+    generation_model_kwargs:
+      top_k: 1
   load_today_memory:
     class: memory.worker.write.load_memory_worker
     retrieve_today_top_k: 100
