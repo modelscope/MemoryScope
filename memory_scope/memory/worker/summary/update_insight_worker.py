@@ -129,7 +129,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.warning(f"update_{insight_node.key} insight_value_list is empty!")
             return insight_node
 
-        insight_value = insight_value_list[0]
+        insight_value = insight_value_list[0].lower()
         if not insight_value or insight_value in self.get_language_value([NONE_WORD, REPEATED_WORD]):
             self.logger.info(f"update_{insight_node.key} insight_value={insight_value} is invalid.")
             return insight_node
