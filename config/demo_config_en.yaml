@@ -143,6 +143,7 @@ worker:
   get_reflection_subject:
     class: memory.worker.summary.get_reflection_subject_worker
     generation_model: dashscope_generation
+    reflect_obs_cnt_threshold: 10
     generation_model_kwargs:
       top_k: 1
   update_insight:

@@ -87,7 +87,7 @@ def init_instance_by_config(config: dict,
     return getattr(module, cls_name)(**config_copy)
 
 
-def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str) -> List[Message]:
+def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str, concat_system_prompt: bool = True) -> List[Message]:
     """
     Converts input strings into a structured list of message objects suitable for AI interactions.
 
@@ -95,14 +95,28 @@ def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str) -> List[Me
         system_prompt (str): The system-level instruction or context.
         few_shot (str): An example or demonstration input, often used for illustrating expected behavior.
         user_query (str): The actual user query or prompt to be processed.
+        concat_system_prompt(bool): Concat system prompt again or not in the user message.
+            A simple method to improve the effectiveness for some LLMs.
 
     Returns:
         List[Message]: A list of Message objects, each representing a part of the conversation setup.
     """
+    if concat_system_prompt:
+        user_message = Message(
+            role=MessageRoleEnum.USER.value,
+            content="\n".join(
+                [x.strip() for x in [few_shot, system_prompt, user_query]]
+            ),
+        )
+    else:
+        user_message = Message(
+            role=MessageRoleEnum.USER.value,
+            content="\n".join([x.strip() for x in [few_shot, user_query]]),
+        )
+
     return [
         Message(role=MessageRoleEnum.SYSTEM.value, content=system_prompt.strip()),  # System message
-        Message(role=MessageRoleEnum.USER.value,
-                content="\n".join([x.strip() for x in [few_shot, system_prompt, user_query]]))
+        user_message
         # User message combining few shot, system prompt, and user query
     ]
 

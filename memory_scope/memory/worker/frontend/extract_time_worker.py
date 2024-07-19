@@ -41,7 +41,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
         # Prepare the prompt with necessary contextual details
         query_time_str = DatetimeHandler(dt=query_timestamp).string_format(self.prompt_handler.time_string_format)
         system_prompt = self.prompt_handler.extract_time_system
-        few_shot = self.prompt_handler.extract_time_few_shot.format(user_name=self.target_name)
+        few_shot = self.prompt_handler.extract_time_few_shot
         user_query = self.prompt_handler.extract_time_user_query.format(query=query, query_time_str=query_time_str)
         extract_time_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"extract_time_message={extract_time_message}")

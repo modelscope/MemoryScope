@@ -7,6 +7,18 @@ from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.utils.datetime_handler import DatetimeHandler
 
+PRINT_TEMPLATE = """
+The memories of {user_name} about {target_name}.
+
+{obs_content}
+
+
+{insight_content}
+
+
+{expired_content}
+"""
+
 
 class PrintMemoryWorker(MemoryBaseWorker):
 
@@ -44,15 +56,11 @@ class PrintMemoryWorker(MemoryBaseWorker):
         obs_content = "\n".join(obs_content_list)
         insight_content = "\n".join(insight_content_list)
         expired_content = "\n".join(expired_content_list)
-        result: str = f"""
-The memories of {self.user_name} about {self.target_name}.
-
-{obs_content}
-
-
-{insight_content}
-
-
-{expired_content}
-        """.strip()
+        result: str = PRINT_TEMPLATE.format(
+            user_name=self.user_name,
+            target_name=self.target_name,
+            obs_content=obs_content,
+            insight_content=insight_content,
+            expired_content=expired_content,
+        ).strip()
         self.set_context(RESULT, result)

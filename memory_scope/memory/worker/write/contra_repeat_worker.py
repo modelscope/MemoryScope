@@ -63,8 +63,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
         system_prompt = self.prompt_handler.contra_repeat_system.format(num_obs=len(user_query_list),
                                                                         user_name=self.target_name)
         few_shot = self.prompt_handler.contra_repeat_few_shot.format(user_name=self.target_name)
-        user_query = self.prompt_handler.contra_repeat_user_query.format(user_query="\n".join(user_query_list),
-                                                                         user_name=self.target_name)
+        user_query = self.prompt_handler.contra_repeat_user_query.format(user_query="\n".join(user_query_list))
         contra_repeat_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"contra_repeat_message={contra_repeat_message}")
 
