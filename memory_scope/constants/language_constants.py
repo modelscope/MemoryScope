@@ -158,13 +158,13 @@ REPEATED_WORD = {
 # Constants for the word 'contradictory' in different languages
 CONTRADICTORY_WORD = {
     LanguageEnum.CN: "矛盾",
-    LanguageEnum.EN: "contradictory"
+    LanguageEnum.EN: "contradiction"
 }
 
 # Constants for the phrase 'included' in different languages
-INCLUDED_WORD = {
+CONTAINED_WORD = {
     LanguageEnum.CN: "被包含",
-    LanguageEnum.EN: "included"
+    LanguageEnum.EN: "contained"
 }
 
 # Constants for the symbol ':' in different languages' representations

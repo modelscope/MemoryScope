@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 from memory_scope.constants.common_constants import NOT_UPDATED_NODES, MERGE_OBS_NODES
-from memory_scope.constants.language_constants import NONE_WORD, INCLUDED_WORD, CONTRADICTORY_WORD
+from memory_scope.constants.language_constants import NONE_WORD, CONTAINED_WORD, CONTRADICTORY_WORD
 from memory_scope.enumeration.action_status_enum import ActionStatusEnum
 from memory_scope.enumeration.memory_type_enum import MemoryTypeEnum
 from memory_scope.enumeration.store_status_enum import StoreStatusEnum
@@ -132,7 +132,8 @@ class LongContraRepeatWorker(MemoryBaseWorker):
                 self.logger.warning(f"idx={idx} is invalid!")
                 continue
 
-            if status not in self.get_language_value([CONTRADICTORY_WORD, INCLUDED_WORD, NONE_WORD]):
+            status = status.lower()
+            if status not in self.get_language_value([CONTRADICTORY_WORD, CONTAINED_WORD, NONE_WORD]):
                 self.logger.warning(f"status={status} is invalid!")
                 continue
 
@@ -144,7 +145,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
                     node.content = content
                     node.action_status = ActionStatusEnum.CONTENT_MODIFIED.value
 
-            elif status == self.get_language_value(INCLUDED_WORD):
+            elif status == self.get_language_value(CONTAINED_WORD):
                 node.store_status = StoreStatusEnum.EXPIRED.value
 
             merge_obs_nodes.append(node)

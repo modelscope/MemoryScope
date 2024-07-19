@@ -9,14 +9,14 @@ get_observation_system:
     信息：<句子序号> <> <明确的重要信息或“无”> <关键词>
 
   en: |
-    Task: Extract important information, interests and corresponding keywords from the following {num_obs} sentences about {user_name} in sequence. Extract up to {num_obs} pieces of information.
-    If all the information in a sentence is completely repetitive of what has already been extracted, reply "repetitive," and if there is no important information, reply "none."
-    The user information may include basic user information, user profiles, user interests and preferences, personality, values, significant life events, turning points, and other important information.
-    Be sure to distinguish information, for example, do not extract hypothetical or fictional content from {user_name} such as {user_name}'s novels or scripts.
-    Perform information extraction for each sentence, resulting in a total of {num_obs} pieces of information.
-    Please output the results in the following format, with the final output enclosed in <>:
-    Thought: The basis and process of the thought, within 50 words.
-    Information: <sentence number> <> <Clear important information or “Repeat” or “None”> <keywords>
+    Task: Sequentially extract important information about {user_name} from the following {num_obs} sentences along with corresponding keywords. If there is no important information, answer "None". Extract up to {num_obs} pieces of information.
+    Important information about {user_name} can include basic information, user profile information, user interests and preferences, user personality, user values, user relationships, major turning points in the user's life, and other important information.
+    If the sentence only contains hypothetical information about {user_name} or fictional content created by {user_name} such as novels or scripts, respond "None".
+    Perform information extraction for each sentence, and output {num_obs} pieces of information in total.
+    Please think step-by-step, and be sure to output in the following format, ending with '<>':
+    Thought: Basis and process of thinking, within 50 words.
+    Information: <Sentence number> <> <Clear important information or "None"> <Keywords>
+
 
 get_observation_few_shot:
   cn: |
@@ -27,7 +27,7 @@ get_observation_few_shot:
     3 {user_name}：我现在心情很糟糕
     4 {user_name}：我是一个刚毕业的学生，对社会，行业不了解，给我介绍一下社会系统和行业格局
     5 {user_name}：我花5000元买了100股海天味业。
-    6 {user_name}：我花50000元买了100股茅台。
+    6 {user_name}：我花50000元买了100股阿里巴巴。
     思考：从第1句可以得知{user_name}现在没有工作，负债几万，这是关于{user_name}工作与经济状况的重要信息。
     信息：<1> <> <{user_name}当前无工作且负债几万> <无工作, 负债几万>
     思考：第2句是{user_name}对他人观点的讨论和疑问，没有明确提及{user_name}个人信息。
@@ -38,8 +38,8 @@ get_observation_few_shot:
     信息：<4> <> <{user_name}是一名刚毕业的学生。> <刚毕业, 学生>
     思考：从第5句可以得知{user_name}购买了海天味业股票，购买数量为100股，购买金额为5000元，这是关于{user_name}的投资决策的重要信息。
     信息：<5> <> <{user_name}购买了海天味业股票，购买数量为100股，购买金额为5000元。> <海天味业, 股票>
-    思考：第6句含有的信息与第1句相似，可以得知{user_name}购买了茅台股票。
-    信息：<6> <> <{user_name}购买了茅台股票，购买数量为100股，购买金额为50000元。> <茅台, 股票>
+    思考：第6句含有的信息与第1句相似，可以得知{user_name}购买了阿里巴巴股票。
+    信息：<6> <> <{user_name}购买了阿里巴巴股票，购买数量为100股，购买金额为50000元。> <阿里巴巴, 股票>
     
     示例2：
     {user_name}句子：
@@ -97,6 +97,9 @@ get_observation_few_shot:
     2 {user_name}: Someone said that passion is the best teacher and suggested linking passion with a career, but I found that many people like playing basketball, but few make it a profession and even fewer make money from it. Also, how do you distinguish passion from liking?
     3 {user_name}: I'm in a terrible situation right now, I don't have a job, and I'm in debt by tens of thousands. What should I do?
     4 {user_name}: I'm a recent graduate who doesn't understand society or the industry. Can you introduce me to the social system and industry structure?
+    5 {user_name}: I spent $5000 to buy 100 shares of General Motors.
+    6 {user_name}: I spent $50000 to buy 100 shares of Alibaba.
+
     Thought: From the first sentence, it can be inferred that {user_name} currently has no job and is in debt by tens of thousands. This is important information about {user_name}'s employment and financial status.
     Information: <1> <> <{user_name} currently has no job and is in debt by tens of thousands> <no job, in debt by tens of thousands>
     Thought: The second sentence is a discussion and query about others' opinions by {user_name}, with no clear mention of {user_name}'s personal information.
@@ -105,6 +108,10 @@ get_observation_few_shot:
     Information: <3> <> <Repeat> <>
     Thought: From the fourth sentence, it can be inferred that {user_name} is a recent graduate, which is important information about {user_name}'s background. The remaining information is of insufficient importance.
     Information: <4> <> <{user_name} is a recent graduate> <recent graduate, student>
+    Thought: It can be inferred that {user_name} bought 100 shares of General Motors stock for $5000. This is important information about {user_name}'s investment decision. 
+    Information: <5> <> <{user_name} bought 100 shares of General Motors stock for $5000> <General Motors, stock>
+    Thought: The information of the sentence is similar to, but not a repetition of the sentence before. It can be deduced that {user_name} purchased Alibaba stock.
+    Information: <6> <> <{user_name} purchased 100 shares of Alibaba stock for 50,000 RMB.> <Alibaba, stock>
     
     Example 2:
     {user_name} sentences:

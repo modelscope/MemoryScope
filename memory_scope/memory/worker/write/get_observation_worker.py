@@ -144,7 +144,8 @@ class GetObservationWorker(MemoryBaseWorker):
                 self.logger.warning(f"idx={idx} is invalid!")
                 continue
 
-            if time_infer.lower() == self.get_language_value(NONE_WORD):
+            time_infer = time_infer.lower()
+            if time_infer == self.get_language_value(NONE_WORD):
                 time_infer = ""
 
             # Adjusts index to zero-based and checks validity against filtered messages

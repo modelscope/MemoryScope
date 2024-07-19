@@ -4,7 +4,11 @@ get_reflection_subject_system:
     要求1：{user_name}属性可以是基本信息，基础画像，也可以是运动偏好，旅游偏好，饮食偏好等等兴趣偏好，也可以是重要事件性质，比如最近重要的事情，也可以是一些高度概括的人生理想，价值观，人生观，性格，也可以是和朋友的人际关系等等。
     要求2：根据{user_name}属性，我们可以生成“{user_name}的<{user_name}属性>是什么？”的问题，以此可以从下面的信息中提取{user_name}属性对应的值。
     输出格式：每一行输出一个{user_name}属性，每个{user_name}属性推荐4个字，如果没有信息请回答无，最多输出{num_questions}条。
-
+  en: |
+    Task: Extract the most important information from the following and provide up to {num_questions} attributes for {user_name}, ensuring that they do not semantically duplicate the existing attributes of {user_name}.
+    Requirement 1: {user_name} attributes can be basic information, basic profile descriptions, sports preferences, travel preferences, dietary preferences, interests, important life events, highly generalized life goals, values, life views, personality, interpersonal relationships with friends, etc.
+    Requirement 2: Based on the {user_name} attributes, we should be able to generate a question in the form of “What is {user_name}'s <attribute>?” From this, we can extract the corresponding values for the {user_name} attributes from the information below.
+    Output format: Output one {user_name} attribute per line, each attribute suggested to be 4 characters. If there is no information, please respond with "None". Output up to {num_questions} attributes.
 
 get_reflection_subject_few_shot:
   cn: |
@@ -85,9 +89,91 @@ get_reflection_subject_few_shot:
     新增{user_name}属性：
     年龄
 
+  en: |
+    Example 1
+    Information:
+    {user_name} wants to know the weather forecast for Shanghai tomorrow.
+    {user_name} might be working in Shanghai and is concerned about whether they need to bring an umbrella to work.
+    {user_name} works near the Alibaba Xuhui Riverside Park office.
+    {user_name} plans to have lunch near the office.
+    {user_name} is allergic to caffeine.
+    {user_name} experiences insomnia at night after drinking coffee.
+    {user_name} prefers mild-flavored, non-spicy Chinese restaurants.
+    {user_name} just started their first job.
+    {user_name} works as an algorithm engineer at Alibaba.
+    {user_name} is seeking workplace advice related to this role.
+    {user_name} is facing the challenge of effectively communicating with their supervisor during the early stages of a project.
+    {user_name}'s goal is to provide timely updates on project status to their supervisor.
+    {user_name} wants to learn about the development overview and latest advances in image generation technology.
+    {user_name} is interested in techniques like variational auto-encoders, GANs, and Diffusion Models, as well as their interrelationships.
+    Existing {user_name} attributes: gender, workplace location, employer, sleep condition, food preferences
+    New {user_name} attributes:
+    Allergens
+    Technical direction
+    Job position
+    
+    Example 2
+    Information:
+    {user_name} wants to learn how to use the torchvision library to visualize progress information for deep learning tasks.
+    {user_name} wants to know how to migrate parallel computing solutions based on numpy and pytorch to run on CUDA-supported GPUs.
+    {user_name} is asking if specific packages are needed to accomplish this task.
+    {user_name} wants to learn how to customize processes and threads in Python to achieve parallel computing.
+    {user_name} has encountered parallel computing-related issues in programming.
+    {user_name} wants to learn how to perform simple parallel computing on GPUs using Python (numpy, pytorch).
+    {user_name} wants to understand the basic concepts of parallel computing, including threads.
+    {user_name} is inquiring about famous cuisines from around the world.
+    {user_name} is very interested in global cuisines.
+    {user_name} is concerned about the relationship between their weight, the extra calories burned through exercise, and their heart rate.
+    {user_name} is asking how many extra calories need to be burned daily to achieve this goal.
+    {user_name} wants to lose 1kg per month.
+    {user_name} is seeking recommendations for similar strategy mobile games.
+    {user_name} likes playing strategy games such as the Romance of the Three Kingdoms series, the Civilization series, Total War, and Mount & Blade.
+    {user_name} wants to receive new game recommendations based on their preferences.
+    {user_name} has specified their favorite game types, including the Romance of the Three Kingdoms series, the Civilization series, Total War, and Mount & Blade.
+    {user_name} enjoys playing strategy games.
+    Existing {user_name} attributes: workplace location, gender, food preferences
+    New {user_name} attributes:
+    Game preferences
+    Exercise plan
+    Technical direction
+    
+    Example 3
+    Information:
+    {user_name} is seeking a recommendation for a related course or website for learning.
+    {user_name} plans to travel to Qingdao.
+    {user_name} is selecting a birthday gift for Zhang San's daughter.
+    {user_name} requests a warm birthday message for Zhang San's daughter.
+    {user_name}'s colleague is named Zhang San.
+    {user_name} has scheduled a discussion with Zhang San about the Alibaba Cloud BaiLian project.
+    {user_name} has discussed the project's PRD (Product Requirement Document) with their colleague Zhang San.
+    Zhang San plans to finalize the PRD next week.
+    Zhang San has also scheduled a discussion for the POC (Proof of Concept) for the following week.
+    {user_name} wants to know the responsible team for the project's engineering development to understand the project's organizational structure and division of labor.
+    Existing {user_name} attributes:
+    New {user_name} attributes:
+    Friend relationships
+    
+    Example 4
+    Information:
+    {user_name} is seeking tutorials or website recommendations for massage techniques.
+    {user_name} wants to systematically learn official massage techniques.
+    {user_name} is interested in massage and often visits massage parlors.
+    {user_name} wants to know approximately how many calories they would burn in one hour at rest.
+    {user_name} is 28 years old.
+    {user_name} weighs 70kg.
+    {user_name} is male.
+    Existing {user_name} attributes: gender, weight, current learning progress
+    New {user_name} attributes:
+    Age
+
 get_reflection_subject_user_query:
   cn: |
     信息：
     {user_query}
     已有{user_name}属性：{exist_keys}
     新增{user_name}属性：
+  en: |
+    Information:
+    {user_query}
+    Existing {user_name} attributes: {exist_keys}
+    New {user_name} attributes:

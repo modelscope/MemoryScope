@@ -9,13 +9,17 @@ info_filter_system:
     结果：<句子序号> <分数:0或1或2或3>
 
   en: |
-    Task: Evaluate the given {batch_size} sentences for information about {user_name}, with a score of 0, 1, 2, or 3.
-    Note: A score of 0 indicates no information about {user_name}, 1 indicates the sentence contains hypothetical information about the user or content concocted by the user, such as novels or scripts they have authored, 2 indicates general, timely, or speculative information about {user_name}, and 3 indicates significant and verifiable information about {user_name} or information that {user_name} requested to be recorded.
-    The user information may include basic user details, user profile data, user preferences, user personality, user values, user critical life events, turning points, and other important information.
-    Perform information scoring for each sentence, and output a total of {batch_size} scores.
-    Please ensure to output in the following format, and the final result must be enclosed in <>:
-    Thought: The basis and process of thinking, within 30 words.
-    Result: <Score: 0 or 1 or 2 or 3>
+    Task: Score the information about {user_name} contained in the given batch of {batch_size} sentences, with scores of 0, 1, 2, or 3.
+    Note: 
+    0 indicates no user information is included.
+    1 indicates only hypothetical information about the user or fictitious content such as novels or scripts created by the user.
+    2 indicates general information about the user, timely information, or information that requires inference.
+    3 indicates clear and important information about the user, or information explicitly requested for recording.
+    Important information about {user_name} can include basic information about the user, user profile information, user interests and preferences, user personality, user values, user relationships, significant life events, and other crucial information.
+    Score each sentence individually and output a total of {batch_size} scores without providing the final result.
+    Please ensure to output in the following format and wrap the final result in <>:
+    Thought: Basis and reasoning process, within 30 characters.
+    Result: <Sentence Index> <Score: 0, 1, 2, or 3>
 
 
 info_filter_few_shot:

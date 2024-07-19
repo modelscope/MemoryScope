@@ -8,8 +8,8 @@ from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.scheme.message import Message
-from memory_scope.utils import Logger
 from memory_scope.utils.global_context import G_CONTEXT
+from memory_scope.utils.logger import Logger
 from memory_scope.utils.tool_functions import init_instance_by_config
 
 
@@ -206,7 +206,7 @@ class TestWorkersCn(unittest.TestCase):
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
-    @unittest.skip
+    # @unittest.skip
     def test_contra_repeat(self):
         name = "contra_repeat"
 
@@ -240,8 +240,8 @@ class TestWorkersCn(unittest.TestCase):
                              for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
-            MemoryNode(user_name="AI", target_name="用户", content="用户在京东工作"),
-            MemoryNode(user_name="AI", target_name="用户", content="用户在美团干活"),
+            MemoryNode(user_name="AI", target_name="用户", content="用户在京东工作或有工作经验。"),
+            MemoryNode(user_name="AI", target_name="用户", content="用户跳槽至openai工作。"),
         ]
 
         worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
@@ -253,6 +253,8 @@ class TestWorkersCn(unittest.TestCase):
             MemoryNode(user_name="AI", target_name="用户", content="我喜欢吃西瓜"),
             MemoryNode(user_name="AI", target_name="用户", content="用户在阿里巴巴干活"),
             MemoryNode(user_name="AI", target_name="用户", content="我不爱吃西瓜"),
+            MemoryNode(user_name="AI", target_name="用户", content="我喜欢吃葡萄"),
+            MemoryNode(user_name="AI", target_name="用户", content="我爱吃苹果和香蕉"),
         ]
 
         worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
@@ -325,7 +327,7 @@ class TestWorkersCn(unittest.TestCase):
         result = "\n".join(result)
         worker.logger.info(f"result.update_insight={result}")
 
-    # @unittest.skip
+    @unittest.skip
     def test_long_contra_repeat_worker(self):
         name = "long_contra_repeat"
 

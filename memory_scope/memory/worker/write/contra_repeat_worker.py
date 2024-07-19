@@ -1,7 +1,7 @@
 from typing import List
 
 from memory_scope.constants.common_constants import NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES, MERGE_OBS_NODES, TODAY_NODES
-from memory_scope.constants.language_constants import NONE_WORD, CONTRADICTORY_WORD, INCLUDED_WORD
+from memory_scope.constants.language_constants import NONE_WORD, CONTRADICTORY_WORD, CONTAINED_WORD
 from memory_scope.enumeration.store_status_enum import StoreStatusEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
@@ -106,7 +106,8 @@ class ContraRepeatWorker(MemoryBaseWorker):
                 continue
 
             # judge flag
-            if keep_flag not in self.get_language_value([NONE_WORD, CONTRADICTORY_WORD, INCLUDED_WORD]):
+            keep_flag = keep_flag.lower()
+            if keep_flag not in self.get_language_value([NONE_WORD, CONTRADICTORY_WORD, CONTAINED_WORD]):
                 self.logger.warning(f"keep_flag={keep_flag} is invalid!")
                 continue
 
