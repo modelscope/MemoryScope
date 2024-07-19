@@ -87,7 +87,10 @@ def init_instance_by_config(config: dict,
     return getattr(module, cls_name)(**config_copy)
 
 
-def prompt_to_msg(system_prompt: str, few_shot: str, user_query: str, concat_system_prompt: bool = True) -> List[Message]:
+def prompt_to_msg(system_prompt: str,
+                  few_shot: str,
+                  user_query: str,
+                  concat_system_prompt: bool = True) -> List[Message]:
     """
     Converts input strings into a structured list of message objects suitable for AI interactions.
 

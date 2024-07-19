@@ -1,9 +1,8 @@
 import unittest
 
-from memory_scope.storage.llama_index_es_memory_store import LlamaIndexEsMemoryStore
-
 from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
 from memory_scope.scheme.memory_node import MemoryNode
+from memory_scope.storage.llama_index_es_memory_store import LlamaIndexEsMemoryStore
 
 
 class TestLlamaIndexElasticSearchStore(unittest.TestCase):
@@ -155,9 +154,9 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
 
     def test_retrieve(self):
         filter_dict = {
-          "timestamp": 12,
-           # "memory_id": "bbb456",
-           #"score_rank": 0,
+            "timestamp": 12,
+            # "memory_id": "bbb456",
+            # "score_rank": 0,
         }
 
         for node in self.data:

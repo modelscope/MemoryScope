@@ -1,4 +1,3 @@
-import time
 from typing import List, Dict
 
 from memory_scope.constants.common_constants import NOT_UPDATED_NODES, MERGE_OBS_NODES
