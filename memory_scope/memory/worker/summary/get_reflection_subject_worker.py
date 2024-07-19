@@ -22,7 +22,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
     def _parse_params(self, **kwargs):
         self.reflect_obs_cnt_threshold: int = kwargs.get("reflect_obs_cnt_threshold", 10)
         self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
-        self.reflect_num_questions: int = kwargs.get("reflect_num_questions", 5)
+        self.reflect_num_questions: int = kwargs.get("reflect_num_questions", 0)
 
     def new_insight_node(self, insight_key: str) -> MemoryNode:
         """
@@ -74,9 +74,14 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
 
         # Generate reflection prompt components
         user_query_list = [n.content for n in not_reflected_nodes]
+        if self.reflect_num_questions > 0:
+            num_questions = self.reflect_num_questions
+        else:
+            num_questions = len(user_query_list)
+
         system_prompt = self.prompt_handler.get_reflection_subject_system.format(
             user_name=self.target_name,
-            num_questions=self.reflect_num_questions)
+            num_questions=num_questions)
         few_shot = self.prompt_handler.get_reflection_subject_few_shot.format(user_name=self.target_name)
         user_query = self.prompt_handler.get_reflection_subject_user_query.format(
             user_name=self.target_name,

@@ -50,9 +50,27 @@ update_insight_few_shot:
     {user_name}喜欢成熟且情绪稳定的男生。
     类别：{user_name}情感状况
     已有信息：{user_name}情感状况：有男朋友
-    思考：从第一句句子可以得出{user_name}现在单身，与已有信息矛盾，以新信息为准。从第二句句子得出{user_name}受到一名18岁男生的追求但并不喜欢他。第三句话表达了{user_name}理想的伴侣类型但与{user_name}
-    情感状况无关。整合得出{user_name}情感状况为单身，受到一名18岁男生的追求但并不喜欢他。
+    思考：从第一句句子可以得出{user_name}现在单身，与已有信息矛盾，以新信息为准。从第二句句子得出{user_name}受到一名18岁男生的追求但并不喜欢他。第三句话表达了{user_name}理想的伴侣类型但与{user_name}情感状况无关。整合得出{user_name}情感状况为单身，受到一名18岁男生的追求但并不喜欢他。
     {user_name}的资料：<单身，受到一名18岁男生的追求但并不喜欢他。>
+
+    示例6:
+    {user_name}女朋友下个月过生日。
+    {user_name}生日在7月15日。
+    {user_name}的还在在学校经常逃课。
+    {user_name}喜欢打篮球。
+    类别：{user_name}生日
+    已有信息：{user_name}生日：1987年7月15日。
+    思考：第一句句子中提及生日，但并不是用户的生日，无法得出用户生日信息。从第二句句子可以得出用户生日在7月15日，与已有信息不矛盾，整合可以得出用户生日是1987年7月15日。
+    {user_name}的资料：<1987年7月15日>
+    
+    示例7:
+    今天{user_name}和同学去打球了。
+    明天{user_name}和女朋友一起去杭州旅游。
+    今天{user_name}买入了100股阿里巴巴股票。
+    类别：{user_name}公司地址
+    已有信息：{user_name}公司地址：
+    思考：和公司地址都没有关联，没有新提取的信息。
+    {user_name}的资料：<无>
 
   en: |
     Example 1:
@@ -94,6 +112,25 @@ update_insight_few_shot:
     Existing information: {user_name}'s relationship status: Has a boyfriend
     Thought: From the first sentence, it can be inferred that {user_name} is currently single, which contradicts the existing information. Therefore, the new information should take precedence. From the second sentence, it can be inferred that {user_name} is being pursued by an 18-year-old male but does not like him. The third sentence expresses {user_name}'s ideal partner type but is not related to {user_name}'s relationship status. Integrating this, we conclude that {user_name}'s relationship status is single and being pursued by an 18-year-old male but does not like him.
     {user_name}'s profile: <Single, pursued by an 18-year-old male but does not like him>
+
+    Example 6:
+    {user_name}'s girlfriend's birthday is next month.
+    {user_name}'s birthday is on July 15th.
+    {user_name} often skips classes at school.
+    {user_name} likes playing basketball.
+    Category: {user_name}'s Birthday
+    Existing Information: {user_name}'s Birthday: July 15, 1987.
+    Thoughts: The first sentence mentions a birthday, but it is not the user's birthday, so it does not provide information about the user's birthday. From the second sentence, we know that the user's birthday is on July 15th, which is consistent with the existing information. We can conclude that the user's birthday is July 15, 1987.
+    {user_name}'s profile: <July 15, 1987>
+    
+    Example 7:
+    Today, {user_name} played basketball with classmates.
+    Tomorrow, {user_name} is going to Hangzhou with his girlfriend.
+    Today, {user_name} bought 100 shares of Alibaba stock.
+    Category: {user_name}'s Company Address
+    Existing Information: {user_name}'s Company Address:
+    Thoughts: There is no information related to the company address, no new information extracted.
+    {user_name}'s profile: <None>
 
 update_insight_user_query:
   cn: |
