@@ -32,11 +32,12 @@ class GetObservationWithTimeWorker(GetObservationWorker):
 
     def build_message(self, filter_messages: List[Message]) -> List[Message]:
         """
-        Constructs a message for obtaining observations with timestamps based on filtered chat messages.
+        Constructs a prompt message for obtaining observations with timestamp information
+         based on filtered chat messages.
 
-        This method processes each filtered message to append a timestamp formatted per the specified format.
-        It then organizes these timestamped queries into a structured prompt that includes a system prompt,
-        few-shot examples, and the concatenated user queries, tailored to a target individual with a given language setting.
+        This method processes each filtered message with the timestamp information.
+        It then organizes these timestamped messages into a structured prompt that includes a system prompt,
+        few-shot examples, and the concatenated user queries.
 
         Args:
             filter_messages (List[Message]): A list of Message objects that have been filtered for processing.

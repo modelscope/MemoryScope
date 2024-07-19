@@ -24,8 +24,8 @@ class InfoFilterWorker(MemoryBaseWorker):
 
     def _run(self):
         """
-        Filters user messages in the chat, generates a prompt incorporating these messages, 
-        utilizes an LLM to process the prompt, parses the LLM's response to score each message, 
+        Filters user messages in the chat, generates a prompt incorporating these messages,
+        utilizes an LLM to rate the information score for each message,
         and updates `self.chat_messages` to only include messages with designated scores.
         
         This method executes the following steps:
@@ -33,7 +33,7 @@ class InfoFilterWorker(MemoryBaseWorker):
         2. Constructs a prompt with user messages for LLM input.
         3. Calls the LLM model with the constructed prompt.
         4. Parses the LLM's response to extract message scores.
-        5. Retains messages in `self.chat_messages` based on their scores.
+        5. Retains message in `self.chat_messages` based on their scores.
         """
         # filter user msg
         info_messages: List[Message] = []

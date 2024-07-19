@@ -54,12 +54,12 @@ class LongContraRepeatWorker(MemoryBaseWorker):
     def _run(self):
         """
         Executes the primary routine of the LongContraRepeatWorker. This involves:
-        1. Retrieving not updated memory nodes.
-        2. Gathering similar content for these nodes.
-        3. Organizing observed nodes and generating a prompt for the language model.
-        4. Calling the language model to process the prompt and receive a response.
-        5. Parsing the model's response to update memory node statuses.
-        6. Saving the modified memory nodes.
+        1. Retrieve not updated memory nodes.
+        2. Gather similar content for these nodes.
+        3. Organize observed nodes and generating a prompt for the language model.
+        4. Call the language model to judge the contradictions or redundancies in retrieved memories.
+        5. Parse the model's response to update memory node statuses.
+        6. Save the modified memory nodes.
 
         The process helps in maintaining conversation coherence by resolving contradictions and redundancies.
         """
