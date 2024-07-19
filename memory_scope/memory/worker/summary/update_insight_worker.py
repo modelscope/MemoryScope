@@ -1,3 +1,4 @@
+import time
 from typing import List
 
 from memory_scope.constants.common_constants import INSIGHT_NODES, NOT_UPDATED_NODES, NOT_REFLECTED_NODES
@@ -48,8 +49,14 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.warning(f"insight_key={insight_node.key} is empty!")
             return insight_node, filtered_nodes, max_score
 
+        if not obs_nodes:
+            self.logger.warning("obs_nodes is empty!")
+            return insight_node, filtered_nodes, max_score
+
         # Call the ranking model to get scores for each observed node's content against the insight key
-        response = self.rank_model.call(query=insight_node.key, documents=[x.content for x in obs_nodes])
+        documents = [x.content for x in obs_nodes]
+        self.logger.debug(f"update.insight.rank key={insight_node.key} \n docs={'|'.join(documents)}")
+        response = self.rank_model.call(query=insight_node.key, documents=documents)
         if not response.status:
             return insight_node, filtered_nodes, max_score
 
@@ -75,7 +82,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
     def update_insight_node(self, insight_node: MemoryNode, insight_value: str):
         dt_handler = DatetimeHandler()
         key = self.prompt_handler.insight_string_format.format(name=self.target_name, key=insight_node.key)
-        content = f"{key}{self.get_language_value(COLON_WORD)}{insight_value}"
+        content = f"{key}{self.get_language_value(COLON_WORD)} {insight_value}"
         insight_node.content = content
         insight_node.value = insight_value
         insight_node.meta_data.update({k: str(v) for k, v in dt_handler.dt_info_dict.items()})
@@ -166,6 +173,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         # Process active insight nodes with corresponding not updated nodes
         for node in insight_nodes:
+            time.sleep(1)
             if node.action_status == ActionStatusEnum.NEW.value:
                 self.submit_thread_task(fn=self.filter_obs_nodes,
                                         insight_node=node,
@@ -186,6 +194,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         # Submit tasks to update insights for the top nodes
         for insight_node, filtered_nodes, _ in result_sorted:
+            time.sleep(1)
             self.submit_thread_task(fn=self.update_insight, insight_node=insight_node, filtered_nodes=filtered_nodes)
 
         # Gather the final results from all update tasks

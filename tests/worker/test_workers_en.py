@@ -8,8 +8,8 @@ from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memory_scope.scheme.memory_node import MemoryNode
 from memory_scope.scheme.message import Message
-from memory_scope.utils import Logger
 from memory_scope.utils.global_context import G_CONTEXT
+from memory_scope.utils.logger import Logger
 from memory_scope.utils.tool_functions import init_instance_by_config
 
 
@@ -40,7 +40,7 @@ class TestWorkersEn(unittest.TestCase):
             context_lock=None,
             thread_pool=G_CONTEXT.thread_pool)
 
-        query = "明天我去上海出差"
+        query = "I will be on a business trip to Shanghai tomorrow."
         query_timestamp = int(datetime.datetime.now().timestamp())
         worker.set_context(QUERY_WITH_TS, (query, query_timestamp))
         worker.run()
@@ -62,9 +62,10 @@ class TestWorkersEn(unittest.TestCase):
             thread_pool=G_CONTEXT.thread_pool)
 
         chat_messages = [
-            Message(role=MessageRoleEnum.USER.value, content="我爱吃川菜"),
-            Message(role=MessageRoleEnum.USER.value, content="我不喜欢吃苹果"),
-            Message(role=MessageRoleEnum.USER.value, content="明天我要去高考"),
+            Message(role=MessageRoleEnum.USER.value, content="I love to eat Sichuan cuisine."),
+            Message(role=MessageRoleEnum.USER.value, content="I don't like eating apples."),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I'm going to take the college entrance examination tomorrow."),
         ]
 
         worker.set_context(CHAT_MESSAGES, chat_messages)
@@ -88,19 +89,32 @@ class TestWorkersEn(unittest.TestCase):
             thread_pool=G_CONTEXT.thread_pool)
 
         chat_messages = [
-            Message(role=MessageRoleEnum.USER.value, content="你知道北京哪里的海鲜最新鲜吗"),
-            Message(role=MessageRoleEnum.USER.value, content="有没有推荐的策略游戏？最近想找新的挑战。"),
-            Message(role=MessageRoleEnum.USER.value, content="听说篮球运动对身体很好，是真的吗？"),
-            Message(role=MessageRoleEnum.USER.value, content="最近在北京的工作压力太大，有什么放松的建议吗？"),
-            Message(role=MessageRoleEnum.USER.value, content="说到朋友，我确实有几位很要好的朋友，我们经常一起出去吃饭。"),
-            Message(role=MessageRoleEnum.USER.value, content="对了，最近想换工作，你觉得北京的哪个区工作机会更多？"),
-            Message(role=MessageRoleEnum.USER.value, content="听你这么说，我感觉挺有信心的，谢了！"),
-            Message(role=MessageRoleEnum.USER.value, content="我很喜欢尝试新的美食，有没有推荐的美食应用？"),
-            Message(role=MessageRoleEnum.USER.value, content="我有时也喜欢自己在家做饭，你有没有好的海鲜菜谱推荐？"),
-            Message(role=MessageRoleEnum.USER.value, content="听说打篮球可以长高，这是真的吗？"),
-            Message(role=MessageRoleEnum.USER.value, content="我在北京阿里云园区工作"),
-            Message(role=MessageRoleEnum.USER.value, content="我是阿里云百炼的工程师"),
-            Message(role=MessageRoleEnum.USER.value, content="最后一个问题，你知道怎么才能维持广泛的社交关系吗？"),
+            Message(role=MessageRoleEnum.USER.value, content="Do you know where the freshest seafood is in Beijing?"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="Are there any strategy games you would recommend? I'm looking for a new challenge."),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I heard that basketball is good for your health, is that true?"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I’ve been under a lot of work pressure in Beijing lately. Do you have any "
+                            "suggestions for relaxing?"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="Speaking of friends, I do have a few very good friends and we often go out "
+                            "to eat together."),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="By the way, I want to change jobs recently. Which district in Beijing do you think "
+                            "has more job opportunities?"),
+            Message(role=MessageRoleEnum.USER.value, content="Hearing you say that, I feel more confident. Thank you!"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I love trying new food, are there any food apps you would recommend?"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I also like to cook at home sometimes. Do you have any good seafood recipes to "
+                            "recommend?"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I heard that playing basketball can help you grow taller, is this true?"),
+            Message(role=MessageRoleEnum.USER.value, content="I work at Alibaba Cloud in Beijing"),
+            Message(role=MessageRoleEnum.USER.value, content="I am an engineer at Alibaba Cloud Bailian"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="Last question, do you know how to maintain extensive social relationships?"),
         ]
 
         worker.set_context(CHAT_MESSAGES, chat_messages)
@@ -123,19 +137,15 @@ class TestWorkersEn(unittest.TestCase):
             context_lock=None,
             thread_pool=G_CONTEXT.thread_pool)
 
+        # FIXME Does the appearance of 'am' indicate the presence of a time keyword?
         chat_messages = [
-            Message(role=MessageRoleEnum.USER.value, content="我爱吃川菜"),
-            Message(role=MessageRoleEnum.USER.value, content="我不喜欢吃苹果"),
-            Message(role=MessageRoleEnum.USER.value, content="我准备去高考"),
-            Message(role=MessageRoleEnum.USER.value, content="我不喜欢吃西瓜"),
-            Message(role=MessageRoleEnum.USER.value, content="我不爱吃西瓜"),
-            Message(role=MessageRoleEnum.USER.value, content="我在一家叫京东的公司干活"),
+            Message(role=MessageRoleEnum.USER.value, content="I love Sichuan cuisine"),
+            Message(role=MessageRoleEnum.USER.value, content="I don't like eating apples"),
+            Message(role=MessageRoleEnum.USER.value, content="I am preparing for the college entrance examination"),
+            Message(role=MessageRoleEnum.USER.value, content="I don't like eating watermelon"),
+            Message(role=MessageRoleEnum.USER.value, content="I don't like watermelon"),
+            Message(role=MessageRoleEnum.USER.value, content="I work for a company called JD.com"),
         ]
-
-        # chat_messages = [
-        #     Message(role=MessageRoleEnum.USER.value, content="我不喜欢吃西瓜"),
-        #     Message(role=MessageRoleEnum.USER.value, content="我在一家叫京东的公司干活"),
-        # ]
 
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
@@ -158,15 +168,26 @@ class TestWorkersEn(unittest.TestCase):
             thread_pool=G_CONTEXT.thread_pool)
 
         chat_messages = [
-            Message(role=MessageRoleEnum.USER.value, content="有没有推荐的策略游戏？最近想找新的挑战。"),
-            Message(role=MessageRoleEnum.USER.value, content="最近在北京的工作压力太大，有什么放松的建议吗？"),
-            Message(role=MessageRoleEnum.USER.value, content="说到朋友，我确实有几位很要好的朋友，我们经常一起出去吃饭。"),
-            Message(role=MessageRoleEnum.USER.value, content="对了，最近想换工作，你觉得北京的哪个区工作机会更多？"),
-            Message(role=MessageRoleEnum.USER.value, content="我很喜欢尝试新的美食，有没有推荐的美食应用？"),
-            Message(role=MessageRoleEnum.USER.value, content="我有时也喜欢自己在家做饭，你有没有好的海鲜菜谱推荐？"),
-            Message(role=MessageRoleEnum.USER.value, content="我在北京阿里云园区工作"),
-            Message(role=MessageRoleEnum.USER.value, content="我是阿里云百炼的工程师"),
-            Message(role=MessageRoleEnum.USER.value, content="最后一个问题，你知道怎么才能维持广泛的社交关系吗？"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="Are there any strategy games you would recommend? I'm looking for a new challenge."),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I’ve been under a lot of work pressure in Beijing lately. Do you have any suggestions "
+                            "for relaxing?"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="Speaking of friends, I do have a few very good friends and we often go out to "
+                            "eat together."),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="By the way, I want to change jobs recently. Which district in Beijing do you think has "
+                            "more job opportunities?"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I love trying new food, are there any food apps you would recommend?"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I also like to cook at home sometimes. Do you have any good seafood recipes to "
+                            "recommend?"),
+            Message(role=MessageRoleEnum.USER.value, content="I work at Alibaba Cloud in Beijing"),
+            Message(role=MessageRoleEnum.USER.value, content="I am an engineer at Alibaba Cloud Bailian"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="Last question, do you know how to maintain extensive social relationships?"),
         ]
 
         worker.set_context(CHAT_MESSAGES, chat_messages)
@@ -190,13 +211,16 @@ class TestWorkersEn(unittest.TestCase):
             thread_pool=G_CONTEXT.thread_pool)
 
         chat_messages = [
-            Message(role=MessageRoleEnum.USER.value, content="去年我们一起合作了因果推断技术"),
-            Message(role=MessageRoleEnum.USER.value, content="上个月我去了杭州旅游"),
-            Message(role=MessageRoleEnum.USER.value, content="下周我要去高考"),
-            Message(role=MessageRoleEnum.USER.value, content="明天我去北京出差"),
-            Message(role=MessageRoleEnum.USER.value, content="前天我把苹果扔掉了"),
-            Message(role=MessageRoleEnum.USER.value, content="前天我把苹果扔掉了，我不喜欢吃"),
-            Message(role=MessageRoleEnum.USER.value, content="明天是我生日"),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="Last year we worked together on causal inference technology."),
+            Message(role=MessageRoleEnum.USER.value, content="Last month I went to Hangzhou for a trip."),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="I'm going to take the college entrance examination next week."),
+            Message(role=MessageRoleEnum.USER.value, content="I'm going to Beijing on a business trip tomorrow."),
+            Message(role=MessageRoleEnum.USER.value, content="I threw away the apple the day before yesterday."),
+            Message(role=MessageRoleEnum.USER.value,
+                    content="The day before yesterday I threw away the apple. I don't like eating it."),
+            Message(role=MessageRoleEnum.USER.value, content="Tomorrow is my birthday."),
         ]
 
         worker.set_context(CHAT_MESSAGES, chat_messages)
@@ -220,8 +244,8 @@ class TestWorkersEn(unittest.TestCase):
             thread_pool=G_CONTEXT.thread_pool)
 
         nodes = [
-            MemoryNode(user_name="AI", target_name="用户", content="用户在美团干活"),
-            MemoryNode(user_name="AI", target_name="用户", content="用户在阿里巴巴工作"),
+            MemoryNode(user_name="AI", target_name="用户", content="User is working in Meituan"),
+            MemoryNode(user_name="AI", target_name="用户", content="User works at Alibaba"),
         ]
 
         worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
@@ -230,8 +254,8 @@ class TestWorkersEn(unittest.TestCase):
                              for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
-            MemoryNode(user_name="AI", target_name="用户", content="用户在京东工作"),
-            MemoryNode(user_name="AI", target_name="用户", content="用户在美团干活"),
+            MemoryNode(user_name="AI", target_name="用户", content="User works at JD.com"),
+            MemoryNode(user_name="AI", target_name="用户", content="Users working in Meituan"),
         ]
 
         worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
@@ -240,8 +264,8 @@ class TestWorkersEn(unittest.TestCase):
                              for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
-            MemoryNode(user_name="AI", target_name="用户", content="用户在京东工作"),
-            MemoryNode(user_name="AI", target_name="用户", content="用户在美团干活"),
+            MemoryNode(user_name="AI", target_name="用户", content="User works at JD.com"),
+            MemoryNode(user_name="AI", target_name="用户", content="User is working in Meituan"),
         ]
 
         worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
@@ -250,9 +274,9 @@ class TestWorkersEn(unittest.TestCase):
                              for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
-            MemoryNode(user_name="AI", target_name="用户", content="我喜欢吃西瓜"),
-            MemoryNode(user_name="AI", target_name="用户", content="用户在阿里巴巴干活"),
-            MemoryNode(user_name="AI", target_name="用户", content="我不爱吃西瓜"),
+            MemoryNode(user_name="AI", target_name="用户", content="I like to eat watermelon"),
+            MemoryNode(user_name="AI", target_name="用户", content="User is working in Alibaba"),
+            MemoryNode(user_name="AI", target_name="用户", content="I don't like watermelon"),
         ]
 
         worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
@@ -279,16 +303,17 @@ class TestWorkersEn(unittest.TestCase):
             thread_pool=G_CONTEXT.thread_pool)
 
         nodes = [
-            MemoryNode(content="用户对策略游戏感兴趣，寻找新挑战。"),
-            MemoryNode(content="用户在北京工作，感到压力大，寻求放松方式。"),
-            MemoryNode(content="用户有要好朋友，常一起外出就餐。"),
-            MemoryNode(content="用户打算换工作，关心北京的工作机会分布。"),
-            MemoryNode(content="用户喜爱尝试新美食，求美食应用推荐。"),
-            MemoryNode(content="用户喜欢在家做饭，寻求海鲜菜谱。"),
-            MemoryNode(content="用户在北京阿里云园区工作。"),
-            MemoryNode(content="用户是阿里云百炼的工程师。"),
-            MemoryNode(content="用户目前的工作是大语言模型的应用开发"),
-            MemoryNode(content="用户想知道维持广泛社交关系的方法。"),
+            MemoryNode(content="Users are interested in strategy games and looking for new challenges."),
+            MemoryNode(content="The user works in Beijing, feels stressed, and is looking for ways to relax."),
+            MemoryNode(content="The user has good friends and often goes out to eat together."),
+            MemoryNode(content="The user is planning to change jobs and is concerned about the distribution of job "
+                               "opportunities in Beijing."),
+            MemoryNode(content="Users love to try new food and ask for food app recommendations."),
+            MemoryNode(content="Users love to cook at home and seek seafood recipes."),
+            MemoryNode(content="The user works in the Alibaba Cloud campus in Beijing."),
+            MemoryNode(content="The user is an engineer at Alibaba Cloud Bailian."),
+            MemoryNode(content="The user's current job is application development of large language models"),
+            MemoryNode(content="Users want to know how to maintain extensive social relationships."),
         ]
 
         worker.memory_handler.set_memories(NOT_REFLECTED_NODES, nodes)
@@ -316,7 +341,7 @@ class TestWorkersEn(unittest.TestCase):
             thread_pool=G_CONTEXT.thread_pool)
 
         nodes = [
-            MemoryNode(content="用户喜欢打王者荣耀"),
+            MemoryNode(content="Users like to play King of Glory"),
         ]
         worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
         worker.run()
@@ -339,9 +364,9 @@ class TestWorkersEn(unittest.TestCase):
             thread_pool=G_CONTEXT.thread_pool)
 
         nodes = [
-            MemoryNode(content="用户对策略游戏感兴趣，寻找新挑战。"),
-            MemoryNode(content="用户在北京工作，感到压力大，寻求放松方式。"),
-            MemoryNode(content="用户在上海工作。"),
+            MemoryNode(content="Users are interested in strategy games and looking for new challenges."),
+            MemoryNode(content="The user works in Beijing, feels stressed, and is looking for ways to relax."),
+            MemoryNode(content="User works in Shanghai."),
         ]
         worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
         worker.unit_test_flag = True

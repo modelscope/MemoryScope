@@ -49,6 +49,8 @@ class GetObservationWorker(MemoryBaseWorker):
         for msg in self.chat_messages:
             if not DatetimeHandler.has_time_word(query=msg.content):
                 filter_messages.append(msg)
+
+        self.logger.info(f"after filter_messages.size from {len(self.chat_messages)} to {len(filter_messages)}")
         return filter_messages
 
     def build_message(self, filter_messages: List[Message]) -> List[Message]:

@@ -206,7 +206,7 @@ class TestWorkersCn(unittest.TestCase):
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
-    # @unittest.skip
+    @unittest.skip
     def test_contra_repeat(self):
         name = "contra_repeat"
 

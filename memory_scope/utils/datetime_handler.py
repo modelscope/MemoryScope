@@ -228,9 +228,9 @@ class DatetimeHandler(object):
         return getattr(cls, func_name)(input_string=input_string)
 
     @classmethod
-    def has_time_word(cls, query: str) -> bool:
+    def has_time_word_cn(cls, query: str) -> bool:
         """
-        Check if the input query contains any datetime-related words based on the current language context.
+        Check if the input query contains any datetime-related words based on the cn language context.
 
         Args:
             query (str): The input string to check for datetime words.
@@ -245,6 +245,35 @@ class DatetimeHandler(object):
                 contain_datetime = True
                 break
         return contain_datetime
+
+    @classmethod
+    def has_time_word_en(cls, query: str) -> bool:
+        """
+        Check if the input query contains any datetime-related words based on the en language context.
+
+        Args:
+            query (str): The input string to check for datetime words.
+
+        Returns:
+            bool: True if the query contains at least one datetime word, False otherwise.
+        """
+        contain_datetime = False
+        for datetime_word in DATATIME_WORD_LIST[G_CONTEXT.language]:
+            datetime_word = datetime_word.lower()
+            # TODO fix strip
+            if datetime_word in [x.strip().lower().strip(",").strip(".").strip("?").strip(":")
+                                 for x in query.split(" ")]:
+                contain_datetime = True
+                break
+        return contain_datetime
+
+    @classmethod
+    def has_time_word(cls, query: str) -> bool:
+        func_name = f"has_time_word_{G_CONTEXT.language.value}"
+        if not hasattr(cls, func_name):
+            cls.logger.warning(f"language={G_CONTEXT.language.value} needs to complete has_time_word func!")
+            return False
+        return getattr(cls, func_name)(query=query)
 
     def datetime_format(self, dt_format: str = "%Y%m%d") -> str:
         """

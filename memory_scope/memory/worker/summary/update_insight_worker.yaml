@@ -1,14 +1,16 @@
 update_insight_system:
   cn: |
-    从下面的句子中提取出给定类别的{user_name}的资料信息，并判断与已有信息是否矛盾，若矛盾以新信息为准。整合已有信息和新信息并输出。
-    请一步步思考，并按如下格式输出:
+    从下面的句子中提取出给定类别的{user_name}的资料信息，并判断与已有信息是否矛盾，若矛盾以新信息为准整合已有信息和新信息并输出。若不需要更改，则回答“无”。
+    其中矛盾的形式可以有很多种，可以是逻辑上的矛盾，可以是属性上的变化导致的矛盾，比如不能同时在两个地方工作，同一个时刻不能在两个地点，同一个时刻不能干两件事情等等。
+    请一步步思考，并按如下格式输出, 其中信息一定加<>:
     思考: 思考的依据和过程，150字以内。
-    {user_name}的资料: <信息>, 一定加<>
+    {user_name}的资料: <信息>
   en: |
-    Extract profile information of {user_name} from the sentences below according to the given category and determine whether it contradicts existing information. If there is a contradiction, the new information should take precedence. Integrate the existing information with the new information and output it.
-    Please think step-by-step and output in the following format:
-    Thought: The basis and process of thinking, within 150 words.
-    {user_name}'s profile: <Information>, make sure to enclose it in <>"
+    Extract the given category of {user_name}'s profile information from the following sentences and determine if it contradicts the existing information. If there is a contradiction, integrate the existing information and the new information, prioritizing the new information, and output the result. If no changes are needed, respond with 'None'.
+    The contradictions can come in many forms, such as logical contradictions or changes in attributes leading to contradictions, for example, not being able to work in two places simultaneously, being unable to be in two locations at the same time, or being unable to perform two tasks at the same time, etc.
+    Think step by step, and output in the following format, with information enclosed in <>:
+    Thoughts: The basis and process of your thinking, within 150 words.
+    {user_name}'s profile: <Information>
 
 
 update_insight_few_shot:
