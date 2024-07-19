@@ -39,9 +39,9 @@ long_contra_repeat_few_shot:
     思考：第5句中陈伟业是{user_name}的领导的信息被前面序号中第3句的信息包含，但新增了陈伟业是银行分行行长的信息，故不是被完全包含。
     判断：<5> <无> <>
     思考：第6句中表达了{user_name}的水果偏好，喜欢吃西瓜，信息没有在前面序号句子中出现。
-    判断：<6> <无>
+    判断：<6> <无> <>
     思考：第7句也表达了{user_name}的水果偏好，喜欢吃桃子，和前面序号中的第6句不冲突，喜好可以同时存在。
-    判断：<7> <无>
+    判断：<7> <无> <>
     
     示例2
     句子：
@@ -87,9 +87,9 @@ long_contra_repeat_few_shot:
     Thought: The information that Charles is {user_name}'s supervisor in the fifth sentence is contained within the information of the third sentence, but the new information that Charles is the branch manager of a bank is not, so it is not contained.
     Judgment: <5> <None> <>
     Thought: Sentence 6 expresses {user_name}'s fruit preference, liking to eat watermelon, which is information not present in any preceding sentences.
-    Judgment: <6> <None>
+    Judgment: <6> <None> <>
     Thought: Sentence 7 also expresses {user_name}'s fruit preference, liking to eat apples; it does not conflict with sentence 6, and both preferences can coexist.
-    Judgment: <7> <None>
+    Judgment: <7> <None> <>
     
     Example 2
     Sentences:

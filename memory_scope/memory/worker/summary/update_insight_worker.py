@@ -166,14 +166,14 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         # Process active insight nodes with corresponding not updated nodes
         for node in insight_nodes:
-            if node.action_status == ActionStatusEnum.NONE.value:
-                self.submit_thread_task(fn=self.filter_obs_nodes,
-                                        insight_node=node,
-                                        obs_nodes=not_updated_nodes)
-            else:
+            if node.action_status == ActionStatusEnum.NEW.value:
                 self.submit_thread_task(fn=self.filter_obs_nodes,
                                         insight_node=node,
                                         obs_nodes=not_reflected_nodes)
+            else:
+                self.submit_thread_task(fn=self.filter_obs_nodes,
+                                        insight_node=node,
+                                        obs_nodes=not_updated_nodes)
 
         # select top n
         result_list = []

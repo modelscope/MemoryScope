@@ -63,8 +63,7 @@ class InfoFilterWorker(MemoryBaseWorker):
         system_prompt = self.prompt_handler.info_filter_system.format(batch_size=len(info_messages),
                                                                       user_name=self.target_name)
         few_shot = self.prompt_handler.info_filter_few_shot.format(user_name=self.target_name)
-        user_query = self.prompt_handler.info_filter_user_query.format(user_query="\n".join(user_query_list),
-                                                                       user_name=self.target_name)
+        user_query = self.prompt_handler.info_filter_user_query.format(user_query="\n".join(user_query_list))
         info_filter_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"info_filter_message={info_filter_message}")
 
