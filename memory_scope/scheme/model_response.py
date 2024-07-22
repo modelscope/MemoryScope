@@ -26,6 +26,8 @@ class ModelResponse(BaseModel):
 
     raw: Any = Field("", description="Raw response from model call")
 
+    meta_data: Dict[str, Any] = Field({}, description="meta data for model response")
+
     def __str__(self, max_size=100, **kwargs):
         result = {}
         for key, value in self.model_dump().items():

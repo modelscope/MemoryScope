@@ -34,9 +34,7 @@ class BaseModel(metaclass=ABCMeta):
         self.raise_exception: bool = raise_exception
         self.kwargs: dict = kwargs
 
-        self.data = {}
         self._model: Any = None
-
         self.logger = Logger.get_logger()
 
     @property
@@ -56,44 +54,31 @@ class BaseModel(metaclass=ABCMeta):
         return self._model
 
     @abstractmethod
-    def before_call(self, **kwargs) -> None:
-        """prepare data before call
-        :param kwargs:
-        :return:
-        """
+    def before_call(self, model_response: ModelResponse, **kwargs):
+        pass
 
     @abstractmethod
-    def after_call(self, model_response: ModelResponse | ModelResponseGen,
-                   **kwargs) -> ModelResponse | ModelResponseGen:
-        """
-        :param model_response:
-        :param kwargs:
-        :return:
-        """
+    def after_call(self, model_response: ModelResponse, **kwargs) -> ModelResponse | ModelResponseGen:
+        pass
 
     @abstractmethod
-    def _call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
-        """
-        :param kwargs:
-        :return:
-        """
+    def _call(self, model_response: ModelResponse, stream: bool = False, **kwargs):
+        pass
 
     def call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
-        """
-        :param stream: only llm needs stream
-        :param kwargs:
-        :return:
-        """
         with Timer(self.__class__.__name__, time_log_type="none") as t:
-            self.before_call(stream=stream, **kwargs)
+            model_response = ModelResponse(m_type=self.m_type)
+
+            self.before_call(stream=stream, model_response=model_response, **kwargs)
             for i in range(self.max_retries):
                 if self.raise_exception:
-                    model_response = self._call(stream=stream, **kwargs)
+                    self._call(stream=stream, model_response=model_response, **kwargs)
                 else:
                     try:
-                        model_response = self._call(stream=stream, **kwargs)
+                        self._call(stream=stream, model_response=model_response, **kwargs)
                     except Exception as e:
-                        model_response = ModelResponse(m_type=self.m_type, status=False, details=e.args)
+                        model_response.status = False
+                        model_response.details = e.args
 
                 if isinstance(model_response, ModelResponse) and not model_response.status:
                     self.logger.warning(f"call model={self.model_name} failed! {t.cost_str} retry_cnt={i} "
@@ -103,27 +88,23 @@ class BaseModel(metaclass=ABCMeta):
                     return self.after_call(stream=stream, model_response=model_response, **kwargs)
 
     @abstractmethod
-    async def _async_call(self, **kwargs) -> ModelResponse:
-        """
-        :param kwargs:
-        :return:
-        """
+    async def _async_call(self, model_response: ModelResponse, **kwargs) -> ModelResponse:
+        pass
 
     async def async_call(self, **kwargs) -> ModelResponse:
-        """ 异步不需要stream
-        :param kwargs:
-        :return:
-        """
         with Timer(self.__class__.__name__, time_log_type="none") as t:
-            self.before_call(**kwargs)
+            model_response = ModelResponse(m_type=self.m_type)
+
+            self.before_call(model_response=model_response, **kwargs)
             for i in range(self.max_retries):
                 if self.raise_exception:
-                    model_response = self._async_call(**kwargs)
+                    await self._async_call(model_response=model_response, **kwargs)
                 else:
                     try:
-                        model_response = self._async_call(**kwargs)
+                        await self._async_call(model_response=model_response, **kwargs)
                     except Exception as e:
-                        model_response = ModelResponse(m_type=self.m_type, status=False, details=e.args)
+                        model_response.status = False
+                        model_response.details = e.args
 
                 if not model_response.status:
                     self.logger.warning(f"async_call model={self.model_name} failed! {t.cost_str} retry_cnt={i} "

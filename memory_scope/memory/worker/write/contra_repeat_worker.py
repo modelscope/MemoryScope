@@ -46,7 +46,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
         all_obs_nodes: List[MemoryNode] = self.memory_handler.get_memories([NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES])
         if not all_obs_nodes:
             self.logger.info("all_obs_nodes is empty!")
-            self.continue_run = False
+            # self.continue_run = False
             return
 
         today_obs_nodes: List[MemoryNode] = self.memory_handler.get_memories(TODAY_NODES)
@@ -54,6 +54,10 @@ class ContraRepeatWorker(MemoryBaseWorker):
         if today_obs_nodes:
             all_obs_nodes.extend(today_obs_nodes)
         all_obs_nodes = sorted(all_obs_nodes, key=lambda x: x.timestamp, reverse=True)[:self.contra_repeat_max_count]
+
+        if len(all_obs_nodes) == 1:
+            self.logger.info("all_obs_nodes.size=1, stop.")
+            return
 
         # build prompt
         user_query_list = []

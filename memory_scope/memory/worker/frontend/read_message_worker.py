@@ -6,10 +6,11 @@ from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 class ReadMessageWorker(MemoryBaseWorker):
 
     def _run(self):
-        contextual_msg_count: int = self.chat_kwargs["contextual_msg_count"]
-
-        chat_messages = self.chat_messages.copy()
+        chat_messages = [x for x in self.chat_messages if not x.memorized]
         if len(chat_messages) > 0 and chat_messages[-1].role == MessageRoleEnum.USER.value:
             chat_messages = chat_messages[:-1]
 
-        self.set_context(RESULT, chat_messages[-contextual_msg_count:])
+        contextual_msg_max_count: int = self.chat_kwargs["contextual_msg_max_count"]
+        chat_messages = chat_messages[-contextual_msg_max_count:]
+
+        self.set_context(RESULT, chat_messages)

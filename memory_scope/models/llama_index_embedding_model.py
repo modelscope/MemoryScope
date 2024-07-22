@@ -27,11 +27,11 @@ class LlamaIndexEmbeddingModel(BaseModel):
 
     MODEL_REGISTRY.register("dashscope_embedding", DashScopeEmbedding)
 
-    def before_call(self, **kwargs):
+    def before_call(self, model_response: ModelResponse, **kwargs):
         text: str | List[str] = kwargs.pop("text", "")
         if isinstance(text, str):
             text = [text]
-        self.data = dict(texts=text)
+        model_response.meta_data["data"] = dict(texts=text)
 
     def after_call(self, model_response: ModelResponse, **kwargs) -> ModelResponse:
         embeddings = model_response.raw
@@ -47,7 +47,7 @@ class LlamaIndexEmbeddingModel(BaseModel):
         model_response.embedding_results = embeddings
         return model_response
 
-    def _call(self, **kwargs) -> ModelResponse:
+    def _call(self, model_response: ModelResponse, **kwargs):
         """
         Executes a synchronous call to generate embeddings for the input data.
 
@@ -61,9 +61,9 @@ class LlamaIndexEmbeddingModel(BaseModel):
         Returns:
             ModelResponse: An object containing the embedding results and the model type.
         """
-        return ModelResponse(m_type=self.m_type, raw=self.model.get_text_embedding_batch(**self.data))
+        model_response.raw = self.model.get_text_embedding_batch(**model_response.meta_data["data"])
 
-    async def _async_call(self, **kwargs) -> ModelResponse:
+    async def _async_call(self, model_response: ModelResponse, **kwargs):
         """
         Executes an asynchronous call to generate embeddings for the input data.
 
@@ -77,4 +77,4 @@ class LlamaIndexEmbeddingModel(BaseModel):
         Returns:
             ModelResponse: An object encapsulating the embedding output and the model's type.
         """
-        return ModelResponse(m_type=self.m_type, raw=await self.model.aget_text_embedding_batch(**self.data))
+        model_response.raw = await self.model.aget_text_embedding_batch(**model_response.meta_data["data"])

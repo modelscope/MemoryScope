@@ -59,7 +59,6 @@ class InfoFilterWorker(MemoryBaseWorker):
         user_query_list = []
         for i, msg in enumerate(info_messages):
             user_query_list.append(f"{i + 1} {self.target_name}{self.get_language_value(COLON_WORD)} {msg.content}")
-        self.logger.warning(self.prompt_handler.prompt_dict)
         system_prompt = self.prompt_handler.info_filter_system.format(batch_size=len(info_messages),
                                                                       user_name=self.target_name)
         few_shot = self.prompt_handler.info_filter_few_shot.format(user_name=self.target_name)

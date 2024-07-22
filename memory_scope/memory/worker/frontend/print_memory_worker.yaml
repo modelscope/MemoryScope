@@ -1,0 +1,22 @@
+print_template:
+  cn: |
+    ========== {user_name}关于{target_name}的长期记忆 ==========
+    ----- 观察记忆 -----
+    {observation_memory}
+    
+    ----- 洞察记忆 -----
+    {insight_memory}
+    
+    ----- 过期记忆 -----
+    {expired_memory}
+
+  en: |
+    ========== The {user_name}'s long-term memory about {target_name} ==========
+    ----- observation memory -----
+    {observation_memory}
+    
+    ----- insight memory -----
+    {insight_memory}
+    
+    ----- expired memory -----
+    {expired_memory}

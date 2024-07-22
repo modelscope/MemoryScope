@@ -5,13 +5,12 @@ global_config:
 memory_chat:
   cli_memory_chat:
     class: chat.cli_memory_chat
-    memory_service: memory_chat_service
+    memory_service: chat_memory_service
     generation_model: dashscope_generation
 
 memory_service:
-  memory_chat_service:
+  chat_memory_service:
     class: memory.service.chat_memory_service
-    contextual_msg_count: 6
     memory_operations:
       read_message:
         class: memory.operation.frontend_operation
@@ -47,13 +46,13 @@ memory_service:
         class: memory.operation.write_memory_op
         workflow: info_filter,[get_observation|get_observation_with_time|load_today_memory],contra_repeat,store_memory
         description: "write observation memory of the user"
-        interval_time: 5
+        interval_time: 1
 
       summary_memory:
         class: memory.operation.backend_operation
         workflow: load_obs_and_insight,get_reflection_subject,update_insight,long_contra_repeat,store_memory
         description: "summary observation memory of the user"
-        interval_time: 30
+        interval_time: 15
 
 worker:
   dummy:

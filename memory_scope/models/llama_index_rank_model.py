@@ -20,26 +20,29 @@ class LlamaIndexRankModel(BaseModel):
 
     MODEL_REGISTRY.register("dashscope_rank", DashScopeRerank)
 
-    def before_call(self, **kwargs) -> None:
+    def before_call(self, model_response: ModelResponse, **kwargs):
         """
         Prepares necessary data before the ranking call by extracting the query and documents,
         ensuring they are valid, and initializing nodes with dummy scores.
 
         Args:
+            model_response: model response
             **kwargs: Keyword arguments containing 'query' and 'documents'.
         """
         query: str = kwargs.pop("query", "")
         documents: List[str] = kwargs.pop("documents", [])
         if isinstance(documents, str):
             documents = [documents]
-
-        assert query and documents, f"query or documents is empty! query={query}, documents={len(documents)}"
+        assert query and documents and all(documents), \
+            f"query or documents is empty! query={query}, documents={len(documents)}"
 
         # Using -1.0 as dummy scores
         nodes = [NodeWithScore(node=Node(text=doc), score=-1.0) for doc in documents]
-        self._get_documents_mapping(documents)
 
-        self.data = {"nodes": nodes, "query_str": query}
+        model_response.meta_data.update({
+            "data": {"nodes": nodes, "query_str": query},
+            "documents_map": {doc: idx for idx, doc in enumerate(documents)},
+        })
 
     def after_call(self, model_response: ModelResponse, **kwargs) -> ModelResponse:
         """
@@ -56,13 +59,14 @@ class LlamaIndexRankModel(BaseModel):
         if not model_response.rank_scores:
             model_response.rank_scores = {}
 
+        documents_map = model_response.meta_data["documents_map"]
         for node in model_response.raw:
             text = node.node.text
-            idx = self.documents_map[text]
+            idx = documents_map[text]
             model_response.rank_scores[idx] = node.score
         return model_response
 
-    def _call(self, **kwargs) -> ModelResponse:
+    def _call(self, model_response: ModelResponse, **kwargs):
         """
         Executes the ranking process by passing prepared data to the model's postprocessing method.
 
@@ -72,7 +76,7 @@ class LlamaIndexRankModel(BaseModel):
         Returns:
             ModelResponse: A response object encapsulating the ranked nodes.
         """
-        return ModelResponse(m_type=self.m_type, raw=self.model.postprocess_nodes(**self.data))
+        model_response.raw = self.model.postprocess_nodes(**model_response.meta_data["data"])
 
     async def _async_call(self, **kwargs) -> ModelResponse:
         """
@@ -84,15 +88,4 @@ class LlamaIndexRankModel(BaseModel):
         Returns:
             ModelResponse: A response object encapsulating the ranked nodes.
         """
-        return self._call(**kwargs)
-
-    def _get_documents_mapping(self, documents):
-        """
-        Generates a mapping of each document to its index within the provided document list.
-
-        Args:
-            documents (List[str]): The list of documents.
-        """
-        self.documents_map = {}
-        for idx, doc in enumerate(documents):
-            self.documents_map[doc] = idx
+        raise NotImplementedError

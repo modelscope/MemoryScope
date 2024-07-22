@@ -1,18 +1,15 @@
-from memory_scope.constants.common_constants import CHAT_MESSAGES, RESULT, CHAT_KWARGS
+from memory_scope.constants.common_constants import CHAT_KWARGS, CHAT_MESSAGES, RESULT
 from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.operation.backend_operation import BackendOperation
 
 
 class WriteMemoryOp(BackendOperation):
 
-    def __init__(self,
-                 message_lock=None,
-                 contextual_msg_count: int = 6,
-                 **kwargs):
+    def __init__(self, **kwargs):
         super(WriteMemoryOp, self).__init__(**kwargs)
 
-        self.message_lock = message_lock
-        self.contextual_msg_count: int = contextual_msg_count
+        self.message_lock = kwargs.get("message_lock", None)
+        self.contextual_msg_min_count: int = kwargs.get("contextual_msg_min_count", 0)
 
     def _run_operation(self, **kwargs):
         """
@@ -41,15 +38,15 @@ class WriteMemoryOp(BackendOperation):
             chat_messages = chat_messages[:-1]
 
         not_memorized_size = sum([not x.memorized for x in chat_messages])
-        if not_memorized_size < self.contextual_msg_count:
+        if not_memorized_size < self.contextual_msg_min_count:
             self.logger.info(f"not_memorized_size({not_memorized_size}) < "
-                             f"contextual_msg_count({self.contextual_msg_count}), skip.")
+                             f"contextual_msg_min_count({self.contextual_msg_min_count}), skip.")
             return
 
         self.context.clear()
 
         # Add additional arguments to the context
-        kwargs.update({"contextual_msg_count": self.contextual_msg_count, **self.kwargs})
+        kwargs.update(**self.kwargs)
         self.context[CHAT_KWARGS] = kwargs
 
         # Include the most recent messages in the operation context
@@ -62,9 +59,8 @@ class WriteMemoryOp(BackendOperation):
         result = self.context.get(RESULT)
 
         # set message memorized
-        if self.message_lock:
-            with self.message_lock:
-                for message in chat_messages:
-                    message.memorized = True
+        with self.message_lock:
+            for message in chat_messages:
+                message.memorized = True
 
         return result

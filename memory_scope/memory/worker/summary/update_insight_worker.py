@@ -23,7 +23,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
     def _parse_params(self, **kwargs):
         self.update_insight_threshold: float = kwargs.get("update_insight_threshold", 0.1)
         self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
-        self.update_insight_max_count: int = kwargs.get("update_insight_max_count", 10)
+        self.update_insight_max_count: int = kwargs.get("update_insight_max_count", 5)
 
     def filter_obs_nodes(self,
                          insight_node: MemoryNode,
@@ -165,7 +165,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
         """
         insight_nodes: List[MemoryNode] = self.memory_handler.get_memories(INSIGHT_NODES)
         not_updated_nodes: List[MemoryNode] = self.memory_handler.get_memories(NOT_UPDATED_NODES)
-        not_reflected_nodes: List[MemoryNode] = self.memory_handler.get_memories(NOT_REFLECTED_NODES)
+        not_reflected_nodes: List[MemoryNode] = self.memory_handler.get_memories(keys=[NOT_REFLECTED_NODES,
+                                                                                       NOT_UPDATED_NODES])
 
         if not insight_nodes:
             self.logger.warning("insight_nodes is empty, stopping processing.")
@@ -201,10 +202,14 @@ class UpdateInsightWorker(MemoryBaseWorker):
         for _ in self.gather_thread_result():
             pass
 
+        # delete empty nodes
+        empty_nodes = [n for n in insight_nodes if not n.content.strip()]
+        self.memory_handler.delete_memories(empty_nodes)
+
         for node in not_updated_nodes:
             node.obs_updated = 1
             node.action_status = ActionStatusEnum.MODIFIED
 
-        for node in not_reflected_nodes:
-            node.obs_updated = 1
-            node.action_status = ActionStatusEnum.MODIFIED
+        # for node in not_reflected_nodes:
+        #     node.obs_updated = 1
+        #     node.action_status = ActionStatusEnum.MODIFIED

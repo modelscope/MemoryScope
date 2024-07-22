@@ -7,11 +7,26 @@ from memory_scope.utils.tool_functions import init_instance_by_config
 
 
 class ChatMemoryService(BaseMemoryService):
-    def __init__(self, history_msg_count: int = 100, contextual_msg_count: int = 6, **kwargs):
+    def __init__(self,
+                 history_msg_count: int = 100,
+                 contextual_msg_max_count: int = 20,
+                 contextual_msg_min_count: int = 0,
+                 **kwargs):
+        """
+        init function.
+        Args:
+            history_msg_count (int): The conversation history in memory, control the quantity, and reduce memory usage.
+            contextual_msg_max_count (int): The maximum context length in a conversation. If it exceeds this length,
+                    it will not be included in the context to prevent token overflow.
+            contextual_msg_min_count (int): The minimum context length in a conversation. If it is shorter than this
+                    length, no conversation summary will be made and no long-term memory will be generated.
+            kwargs (dict): other kwargs
+        """
         super().__init__(**kwargs)
         self.history_msg_count: int = history_msg_count
-        self.contextual_msg_count: int = contextual_msg_count
-        assert self.history_msg_count >= self.contextual_msg_count
+        self.contextual_msg_max_count: int = contextual_msg_max_count
+        self.contextual_msg_min_count: int = contextual_msg_min_count
+        assert history_msg_count >= contextual_msg_max_count >= contextual_msg_min_count
 
     def add_messages(self, messages: List[Message] | Message):
         """
@@ -26,17 +41,18 @@ class ChatMemoryService(BaseMemoryService):
         if isinstance(messages, Message):
             messages = [messages]
 
-        # Sort the messages by their creation time to maintain chronological order
-        messages = sorted(messages, key=lambda x: x.time_created)
+        with self.message_lock:
+            # Append the sorted messages to the chat history
+            self.chat_messages.extend(messages)
 
-        # Append the sorted messages to the chat history
-        self.chat_messages.extend(messages)
+            # Sort the messages by their creation time to maintain chronological order
+            self.chat_messages.sort(key=lambda x: x.time_created)
 
-        # If the chat history exceeds the allowed message count, remove the oldest messages
-        if len(self.chat_messages) > self.history_msg_count:
-            gap_size = len(self.chat_messages) - self.history_msg_count
-            for _ in range(gap_size):
-                self.chat_messages.pop(0)
+            # If the chat history exceeds the allowed message count, remove the oldest messages
+            if len(self.chat_messages) > self.history_msg_count:
+                gap_size = len(self.chat_messages) - self.history_msg_count
+                for _ in range(gap_size):
+                    self.chat_messages.pop(0)
 
     def do_operation(self, op_name: str, **kwargs):
         """
@@ -69,13 +85,17 @@ class ChatMemoryService(BaseMemoryService):
                 name=name,
                 chat_messages=self.chat_messages,
                 message_lock=self.message_lock,
-                contextual_msg_count=self.contextual_msg_count)
+                contextual_msg_max_count=self.contextual_msg_max_count,
+                contextual_msg_min_count=self.contextual_msg_min_count)
             operation.init_workflow(**kwargs)  # Initialize workflow for each operation
 
             self._operation_dict[name] = operation
             self.logger.info(f"service={self.__class__.__name__} init operation={name}")
 
     def start_backend_service(self):
+        """
+        Start all backend operations.
+        """
         for _, operation in self._operation_dict.items():
             if operation.operation_type == "backend":
                 # Run backend operations

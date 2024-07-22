@@ -88,9 +88,27 @@ class MemoryHandler(object):
 
             memory_ids: List[str] = self._key_id_dict.get(key.strip())
             if memory_ids:
-                memories.update({x: self._id_memory_dict[x] for x in memory_ids})
+                memories.update({x: self._id_memory_dict[x] for x in memory_ids if x in self._id_memory_dict})
 
         return list(memories.values())
+
+    def delete_memories(self, nodes: MemoryNode | List[MemoryNode], key: str = None):
+        if isinstance(nodes, MemoryNode):
+            nodes = [nodes]
+
+        for n in nodes:
+            _id = n.memory_id
+            if _id in self._id_memory_dict:
+                self._id_memory_dict.pop(_id, None)
+
+            if key is None:
+                for _, id_list in self._key_id_dict.items():
+                    if _id in id_list:
+                        id_list.remove(_id)
+            else:
+                id_list = self._key_id_dict[key]
+                if _id in id_list:
+                    id_list.remove(_id)
 
     def update_memories(self, keys: str = "", nodes: MemoryNode | List[MemoryNode] = None):
         update_memories: Dict[str, MemoryNode] = {n.memory_id: n for n in self.get_memories(keys=keys)}

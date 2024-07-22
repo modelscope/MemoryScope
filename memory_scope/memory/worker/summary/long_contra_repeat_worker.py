@@ -85,6 +85,10 @@ class LongContraRepeatWorker(MemoryBaseWorker):
             self.logger.warning("all_obs_nodes is empty, stop.")
             return
 
+        if len(all_obs_nodes) == 1:
+            self.logger.info("all_obs_nodes.size=1, stop.")
+            return
+
         # gene prompt
         user_query_list = []
         for i, n in enumerate(all_obs_nodes):

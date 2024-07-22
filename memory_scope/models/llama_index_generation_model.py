@@ -23,7 +23,7 @@ class LlamaIndexGenerationModel(BaseModel):
 
     MODEL_REGISTRY.register("dashscope_generation", DashScope)
 
-    def before_call(self, **kwargs):
+    def before_call(self, model_response: ModelResponse, **kwargs):
         """
         Prepares the input data before making a call to the language model.
         It accepts either a 'prompt' directly or a list of 'messages'.
@@ -32,6 +32,7 @@ class LlamaIndexGenerationModel(BaseModel):
         Raises an error if neither 'prompt' nor 'messages' are supplied.
 
         Args:
+            model_response: model_response
             **kwargs: Arbitrary keyword arguments including 'prompt' and 'messages'.
 
         Raises:
@@ -41,15 +42,16 @@ class LlamaIndexGenerationModel(BaseModel):
         messages: List[Message] | List[dict] = kwargs.pop("messages", [])
 
         if prompt:
-            self.data = {"prompt": prompt}
+            data = {"prompt": prompt}
         elif messages:
             if isinstance(messages[0], dict):
-                self.data = {"messages": [ChatMessage(role=msg["role"], content=msg["content"]) for msg in messages]}
+                data = {"messages": [ChatMessage(role=msg["role"], content=msg["content"]) for msg in messages]}
             else:
-                self.data = {"messages": [ChatMessage(role=msg.role, content=msg.content) for msg in messages]}
+                data = {"messages": [ChatMessage(role=msg.role, content=msg.content) for msg in messages]}
         else:
             raise RuntimeError("prompt and messages are both empty!")
-        self.data.update(**kwargs)
+        data.update(**kwargs)
+        model_response.meta_data["data"] = data
 
     def after_call(self,
                    model_response: ModelResponse,
@@ -76,24 +78,23 @@ class LlamaIndexGenerationModel(BaseModel):
 
             return model_response
 
-    def _call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:
-        assert "prompt" in self.data or "messages" in self.data
-        results = ModelResponse(m_type=self.m_type)
+    def _call(self, model_response: ModelResponse, stream: bool = False, **kwargs):
+        data = model_response.meta_data["data"]
 
-        if "prompt" in self.data:
+        if "prompt" in data:
             if stream:
-                response = self.model.stream_complete(**self.data)
+                model_response.raw = self.model.stream_complete(**data)
             else:
-                response = self.model.complete(**self.data)
+                model_response.raw = self.model.complete(**data)
+        elif "messages" in data:
+            if stream:
+                model_response.raw = self.model.stream_chat(**data)
+            else:
+                model_response.raw = self.model.chat(**data)
         else:
-            if stream:
-                response = self.model.stream_chat(**self.data)
-            else:
-                response = self.model.chat(**self.data)
-        results.raw = response
-        return results
+            raise RuntimeError("prompt or messages is missing!")
 
-    async def _async_call(self, **kwargs) -> ModelResponse:
+    async def _async_call(self, model_response: ModelResponse, **kwargs):
         """
         Asynchronously calls the language model with the provided prompt or message history,
         and packages the raw response into a ModelResponse object.
@@ -108,13 +109,11 @@ class LlamaIndexGenerationModel(BaseModel):
         Returns:
             ModelResponse: An object containing the raw response from the language model.
         """
-        assert "prompt" in self.data or "messages" in self.data
-        results = ModelResponse(m_type=self.m_type)
+        data = model_response.meta_data["data"]
 
-        if "prompt" in self.data:
-            response = await self.model.acomplete(**self.data)
+        if "prompt" in data:
+            model_response.raw = await self.model.acomplete(**data)
+        elif "messages" in data:
+            model_response.raw = await self.model.achat(**data)
         else:
-            response = await self.model.achat(**self.data)
-
-        results.raw = response
-        return results
+            raise RuntimeError("prompt or messages is missing!")

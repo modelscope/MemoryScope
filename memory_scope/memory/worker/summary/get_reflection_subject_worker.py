@@ -64,8 +64,9 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
         # Count unaudited nodes
         not_reflected_count = len(not_reflected_nodes)
         if not_reflected_count < self.reflect_obs_cnt_threshold:
-            self.logger.info(f"not_reflected_count({not_reflected_count}) < is not enough, skip.")
-            self.continue_run = False
+            self.logger.info(f"not_reflected_count({not_reflected_count}) < threshold({self.reflect_obs_cnt_threshold})"
+                             f" is not enough, skip.")
+            # self.continue_run = False
             return
 
         # Compile existing insight keys

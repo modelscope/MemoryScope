@@ -35,7 +35,7 @@ class SemanticRankWorker(MemoryBaseWorker):
             return
 
         # drop repeated
-        memory_node_dict: Dict[str, MemoryNode] = {n.content: n for n in memory_node_list}
+        memory_node_dict: Dict[str, MemoryNode] = {n.content.strip(): n for n in memory_node_list if n.content.strip()}
         memory_node_list = list(memory_node_dict.values())
 
         response = self.rank_model.call(query=query, documents=[n.content for n in memory_node_list])
