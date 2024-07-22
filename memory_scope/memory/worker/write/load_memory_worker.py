@@ -18,6 +18,12 @@ class LoadMemoryWorker(MemoryBaseWorker):
 
     @timer
     def retrieve_not_reflected_memory(self, query: str):
+        """
+        Retrieves top-K not reflected memories based on the query and stores them in the memory handler.
+
+        Args:
+            query (str): The search query for retrieving memories.
+        """
         if not self.retrieve_not_reflected_top_k:
             return
 
@@ -35,6 +41,12 @@ class LoadMemoryWorker(MemoryBaseWorker):
 
     @timer
     def retrieve_not_updated_memory(self, query: str):
+        """
+        Retrieves top-K not updated memories based on the query and stores them in the memory handler.
+
+        Args:
+            query (str): The search query for retrieving memories.
+        """
         if not self.retrieve_not_updated_top_k:
             return
 
@@ -52,6 +64,12 @@ class LoadMemoryWorker(MemoryBaseWorker):
 
     @timer
     def retrieve_insight_memory(self, query: str):
+        """
+        Retrieves top-K insight memories based on the query and stores them in the memory handler.
+
+        Args:
+            query (str): The search query for retrieving memories.
+        """
         if not self.retrieve_insight_top_k:
             return
 
@@ -68,6 +86,13 @@ class LoadMemoryWorker(MemoryBaseWorker):
 
     @timer
     def retrieve_today_memory(self, query: str, dt: str):
+        """
+        Retrieves top-K memories from today based on the query and stores them in the memory handler.
+
+        Args:
+            query (str): The search query for retrieving memories.
+            dt (str): The date string to filter today's memories.
+        """
         if not self.retrieve_today_top_k:
             return
 
@@ -86,7 +111,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
 
     def _run(self):
         """
-        Initiates asynchronous tasks to retrieve various types of memory data including
+        Initiates multithread tasks to retrieve various types of memory data including
         not reflected, not updated, insights, and data from today. After submitting all tasks, 
         it waits for their completion by calling `gather_thread_result`.
         

@@ -13,6 +13,9 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 
 class GetObservationWorker(MemoryBaseWorker):
+    """
+    A specialized worker class to generate the observations from the original chat histories.
+    """
     FILE_PATH: str = __file__
     OBS_STORE_KEY: str = NEW_OBS_NODES
 
@@ -20,6 +23,18 @@ class GetObservationWorker(MemoryBaseWorker):
         self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
 
     def add_observation(self, message: Message, time_infer: str, obs_content: str, keywords: str):
+        """
+        Builds a MemoryNode containing the observation details.
+
+        Args:
+            message (Message): The source message from which the observation is derived.
+            time_infer (str): The inferred time if available.
+            obs_content (str): The content of the observation.
+            keywords (str): Keywords associated with the observation.
+
+        Returns:
+            MemoryNode: The constructed MemoryNode containing the observation.
+        """
         dt_handler = DatetimeHandler(dt=message.time_created)
 
         # buidl meta data
@@ -45,6 +60,12 @@ class GetObservationWorker(MemoryBaseWorker):
                           timestamp=message.time_created)
 
     def filter_messages(self) -> List[Message]:
+        """
+        Filters the chat messages to only include those which not contain time-related keywords.
+
+        Returns:
+            List[Message]: A list of filtered messages that mention time.
+        """
         filter_messages = []
         for msg in self.chat_messages:
             if not DatetimeHandler.has_time_word(query=msg.content):
@@ -95,7 +116,7 @@ class GetObservationWorker(MemoryBaseWorker):
         and stores the extracted information as MemoryNode objects within the conversation memory.
 
         Steps:
-        1. Filters messages based on predefined criteria.
+        1. Filter messages based on predefined criteria.
         2. Constructs a message for the language model to generate observations.
         3. Calls the language model to predict observation details.
         4. Parses the model's response to extract observation lists.

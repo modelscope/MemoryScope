@@ -13,7 +13,7 @@ from memory_scope.utils.tool_functions import prompt_to_msg
 
 class UpdateInsightWorker(MemoryBaseWorker):
     """
-    This class is responsible for updating insights in a memory system. It filters insight nodes 
+    This class is responsible for updating insight value in a memory system. It filters insight nodes
     based on their association with observed nodes, utilizes a ranking model to prioritize them, 
     generates refreshed insights via an LLM, and manages node statuses and content updates, 
     incorporating features for concurrent execution and logging.
@@ -80,6 +80,16 @@ class UpdateInsightWorker(MemoryBaseWorker):
         return insight_node, filtered_nodes, max_score
 
     def update_insight_node(self, insight_node: MemoryNode, insight_value: str):
+        """
+        Updates the MemoryNode with the new insight value.
+
+        Args:
+            insight_node (MemoryNode): The MemoryNode whose insight value needs to be updated.
+            insight_value (str): The new insight value.
+
+        Returns:
+            MemoryNode: The updated MemoryNode with potentially revised insight value.
+        """
         dt_handler = DatetimeHandler()
         key = self.prompt_handler.insight_string_format.format(name=self.target_name, key=insight_node.key)
         content = f"{key}{self.get_language_value(COLON_WORD)} {insight_value}"
@@ -156,12 +166,13 @@ class UpdateInsightWorker(MemoryBaseWorker):
         it updates the status of processed nodes and gathers the results from all threads.
 
         Steps include:
-        1. Retrieve lists of insight, not updated, and not reflected nodes from memory.
-        2. Filter and process active insight nodes with respective not updated nodes.
-        3. Sort processed results by score and select the top N.
-        4. Submit tasks to update insights for the selected nodes.
-        5. Gather the results of all update tasks.
-        6. Mark processed nodes as updated in memory.
+        1. Get lists of insight node.
+        2. Get not updated, and not reflected observation nodes from memory.
+        3. Filter and process active insight nodes with respective not updated observation nodes.
+        4. Sort processed results by score and select the top N.
+        5. Submit tasks to update insight value for the selected nodes.
+        6. Gather the results of all update tasks.
+        7. Mark processed nodes as updated in memory.
         """
         insight_nodes: List[MemoryNode] = self.memory_handler.get_memories(INSIGHT_NODES)
         not_updated_nodes: List[MemoryNode] = self.memory_handler.get_memories(NOT_UPDATED_NODES)

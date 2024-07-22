@@ -43,15 +43,6 @@ repos:
                 --follow-imports=skip,
                 --explicit-package-bases,
         ]
-  # - repo: https://github.com/numpy/numpydoc
-  #   rev: v1.6.0
-  #   hooks:
-  #     - id: numpydoc-validation
-  - repo: https://github.com/psf/black
-    rev: 23.3.0
-    hooks:
-      - id: black
-        args: [ --line-length=79 ]
   - repo: https://github.com/PyCQA/flake8
     rev: 6.1.0
     hooks:
