@@ -4,7 +4,6 @@ from typing import Dict, List, Any, Optional, cast
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import TextNode, NodeWithScore, QueryBundle
-from llama_index.vector_stores.elasticsearch import AsyncDenseVectorStrategy
 
 from memory_scope.models.base_model import BaseModel
 from memory_scope.scheme.memory_node import MemoryNode
@@ -23,6 +22,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                  emb_dims: int = 1536,
                  **kwargs):
 
+        self.emb_dims = emb_dims
         self.embedding_model: BaseModel = embedding_model
         self.es_store = SyncElasticsearchStore(index_name=index_name,
                                                es_url=es_url,
@@ -30,9 +30,8 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                                                **kwargs)
         # TODO The llamaIndex utilizes some deprecated functions, hence langchain logs warning messages. By
         #  adding the following lines of code, the display of deprecated information is suppressed.
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
+        
+        self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                             embed_model=self.embedding_model.model)
 
         self.index.build_index_from_nodes([TextNode(text="text")])
@@ -49,7 +48,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter}, similarity_top_k=top_k,
                                             sparse_top_k=top_k)
         if query is None:
-            query = QueryBundle(query_str='-',
+            query = QueryBundle(query_str='**--**',
                                 embedding=self.dummy_query_vector())
             
         text_nodes = retriever.retrieve(query)
@@ -69,7 +68,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
             similarity_top_k=top_k)
         
         if query is None:
-            query = QueryBundle(query_str='-',
+            query = QueryBundle(query_str='**--**',
                                 embedding=self.dummy_query_vector())
             
         text_nodes: List[NodeWithScore] = await retriever.aretrieve(query)

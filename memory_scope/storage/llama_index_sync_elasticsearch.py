@@ -40,7 +40,6 @@ DISTANCE_STRATEGIES = Literal[
 ]
 
 
-
 def get_elasticsearch_client(
         url: Optional[str] = None,
         cloud_id: Optional[str] = None,
@@ -133,36 +132,43 @@ def _mode_must_match_retrieval_strategy(
         raise ValueError(f"to enable hybrid mode, it must be set in retrieval strategy")
 
 
-
-
 class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
     def _hybrid(self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int) -> Dict[str, Any]:
         # Add a query to the knn query.
         # RRF is used to even the score from the knn query and text query
         # RRF has two optional parameters: {'rank_constant':int, 'window_size':int}
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html
-        query_body = {
-            "knn": knn,
-            "query": {
-                "bool": {
-                    "must": [
-                        {
-                            "match": {
-                                self.text_field: {
-                                    "query": query,
+        if query == "**--**":
+            query_body = {
+                "query": {
+                        "bool": {
+                            "filter": filter,
+                        }
+                    },
+            }
+        else:
+            query_body = {
+                "knn": knn,
+                "query": {
+                    "bool": {
+                        "must": [
+                            {
+                                "match": {
+                                    self.text_field: {
+                                        "query": query,
+                                    }
                                 }
                             }
-                        }
-                    ],
-                    "filter": filter,
-                }
-            },
-        }
+                        ],
+                        "filter": filter,
+                    }
+                },
+            }
 
-        if isinstance(self.rrf, Dict):
-            query_body["rank"] = {"rrf": self.rrf}
-        elif isinstance(self.rrf, bool) and self.rrf is True:
-            query_body["rank"] = {"rrf": {"window_size": top_k}}
+            if isinstance(self.rrf, Dict):
+                query_body["rank"] = {"rrf": self.rrf}
+            elif isinstance(self.rrf, bool) and self.rrf is True:
+                query_body["rank"] = {"rrf": {"window_size": top_k}}
         return query_body
 
     def es_query(
@@ -668,8 +674,9 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
                 isinstance(self.retrieval_strategy, AsyncDenseVectorStrategy)
                 and self.retrieval_strategy.hybrid
         ):
-            total_rank = sum(top_k_scores)
-            top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
+            total_rank = sum(top_k_scores) 
+            top_k_scores = [rank for rank in top_k_scores]
+            #top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
             # top_k_scores = [total_rank - rank / total_rank for rank in top_k_scores]
 
         return VectorStoreQueryResult(
