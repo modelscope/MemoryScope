@@ -95,6 +95,10 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
     def delete(self, node: MemoryNode):
         return self.es_store.delete(node.memory_id)
 
+    def delete_conditional(self, filter_dict: Dict = {}):
+        nodes = self.retrieve_memories(filter_dict=filter_dict, top_k=10000)
+        self.batch_delete(nodes)
+
     def update(self, node: MemoryNode, update_embedding: bool = True):
         # TODO update without embedding?
         self.delete(node)
