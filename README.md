@@ -3,7 +3,7 @@ English | [**中文**](./README_ZH.md)
 # MemoryScope
 
 
-# Installation
+# 🚀 Installation
 
 ## (1) Docker-Compose (Recommanded)
 1. Clone the project and edit the config.
@@ -49,3 +49,31 @@ English | [**中文**](./README_ZH.md)
     ```
     sudo docker run -it --rm --net=host memoryscope
     ```
+   
+# 💡 Contribute
+
+Contributions are always encouraged!
+
+We highly recommend install pre-commit hooks in this repo before committing pull requests.
+These hooks are small house-keeping scripts executed every time you make a git commit, 
+which will take care of the formatting and linting automatically.
+```shell
+poetry install --with dev
+pre-commit install
+```
+
+
+
+# 📖 Citation
+
+Reference to cite if you use MemoryScope in a paper:
+
+```
+@software{MemoryScope,
+author = {},
+month = {08},
+title = {{MemoryScope}},
+url = {https://github.com/modelscope/MemoryScope},
+year = {2024}
+}
+```
