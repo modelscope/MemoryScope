@@ -26,7 +26,8 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         Args:
             embedding_model (str): Identifier or instance of the embedding model used for transforming text.
             generation_model (str): Identifier or instance of the text generation model.
-            rank_model (str): Identifier or instance of the ranking model for sorting or prioritizing data.
+            rank_model (str): Identifier or instance of the ranking model for sorting the retrieved memories
+                wrt. the semantic similarities.
             **kwargs: Additional keyword arguments passed to the parent class initializer.
 
         The constructor also initializes key attributes related to memory store, monitoring, 
@@ -47,10 +48,20 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
 
     @property
     def chat_messages(self) -> List[Message]:
+        """
+        Property to get the chat messages.
+
+        Returns:
+            List[Message]: List of chat messages.
+        """
         return self.get_context(CHAT_MESSAGES)
 
     @chat_messages.setter
     def chat_messages(self, value):
+        """
+        Set the chat messages with the new value.
+        """
+
         self.set_context(CHAT_MESSAGES, value)
 
     @property
@@ -101,7 +112,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         from the global context's model dictionary before returning it.
 
         Returns:
-            BaseModel: The rank model instance used for ranking tasks within the conversation management system.
+            BaseModel: The rank model instance used for ranking tasks.
         """
         if isinstance(self._rank_model, str):
             self._rank_model = G_CONTEXT.model_dict[self._rank_model]  # Fetch model instance if string reference
@@ -109,6 +120,13 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
 
     @property
     def memory_store(self) -> BaseMemoryStore:
+        """
+        Property to access the memory vector store. If not initialized, it fetches
+        the global memory store.
+
+        Returns:
+            BaseMemoryStore: The memory store instance used for inserting, updating, retrieving and deleting operations.
+        """
         if self._memory_store is None:
             self._memory_store = G_CONTEXT.memory_store
         return self._memory_store
@@ -133,7 +151,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         If not set initially, it retrieves the 'assistant_name' as the username.
 
         Returns:
-            str: The name of the user.
+            str: The name of the assistant.
         """
         if self._user_name is None:
             self._user_name = G_CONTEXT.meta_data["assistant_name"]
@@ -145,7 +163,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         Retrieves the target name, initializing it from meta_data if not set.
 
         Returns:
-            str: The human-readable name of the target.
+            str: The readable name of the human.
         """
         if self._target_name is None:
             self._target_name = G_CONTEXT.meta_data["human_name"]
@@ -165,6 +183,12 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
 
     @property
     def memory_handler(self) -> MemoryHandler:
+        """
+        Lazily initializes and returns the MemoryHandler instance.
+
+        Returns:
+            MemoryHandler: An instance of MemoryHandler.
+        """
         if not self.has_content(MEMORY_HANDLER):
             self.set_context(MEMORY_HANDLER, MemoryHandler())  # Initialize the memory handler if not present
         return self.get_context(MEMORY_HANDLER)
