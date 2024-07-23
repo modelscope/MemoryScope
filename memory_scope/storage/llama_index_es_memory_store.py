@@ -124,9 +124,10 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
         Returns:
             TextNode: The converted TextNode with content and metadata from the MemoryNode.
-        """
+        """        
         return TextNode(id_=memory_node.memory_id,
                         text=memory_node.content,
+                        embedding=memory_node.vector,
                         metadata=memory_node.model_dump(exclude={"content"}))
 
     @staticmethod
@@ -140,4 +141,4 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         Returns:
             MemoryNode: The converted MemoryNode with text and metadata from the NodeWithScore.
         """
-        return MemoryNode(content=text_node.text, **text_node.metadata)
+        return MemoryNode(content=text_node.text, vector=text_node.embedding, **text_node.metadata)
