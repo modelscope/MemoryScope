@@ -14,7 +14,7 @@ class Logger(logging.Logger):
                  level: int = logging.INFO,
                  format_style: str = LOG_FORMAT,
                  date_format_style: str = DATE_FORMAT,
-                 to_stream: bool = True,
+                 to_stream: bool = False,
                  to_file: bool = True,
                  file_mode: str = "w",
                  file_type: str = "log",

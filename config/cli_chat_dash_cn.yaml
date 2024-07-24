@@ -2,25 +2,29 @@ global_config:
   language: cn
   max_workers: 5
 
+logger_config:
+  logger_name: memoryscope
+  logger_suffix: time
+
 memory_chat:
   cli_memory_chat:
     class: chat.cli_memory_chat
-    memory_service: chat_memory_service
+    memory_service: memory_scope_service
     generation_model: dashscope_generation
 
 memory_service:
-  chat_memory_service:
-    class: memory.service.chat_memory_service
+  memory_scope_service:
+    class: memory.service.memory_scope_service
     memory_operations:
       read_message:
         class: memory.operation.frontend_operation
         workflow: read_message
         description: "read short memory"
 
-      read_memory:
+      retrieve_memory:
         class: memory.operation.frontend_operation
         workflow: set_query,[extract_time|retrieve_obs_ins,semantic_rank],fuse_rerank
-        description: "read long-term memory"
+        description: "retrieve long-term memory"
 
       list_memory:
         class: memory.operation.frontend_operation
@@ -42,16 +46,16 @@ memory_service:
         workflow: add_memory
         description: "add a single observation"
 
-      write_memory:
-        class: memory.operation.write_memory_op
+      summary_observation_memory:
+        class: memory.operation.summary_observation_op
         workflow: info_filter,[get_observation|get_observation_with_time|load_today_memory],contra_repeat,store_memory
-        description: "write observation memory of the user"
+        description: "summary user's observation memory"
         interval_time: 1
 
-      summary_memory:
+      summary_insight_memory:
         class: memory.operation.backend_operation
         workflow: load_obs_and_insight,get_reflection_subject,update_insight,long_contra_repeat,store_memory
-        description: "summary observation memory of the user"
+        description: "summary user's insight memory"
         interval_time: 15
 
 worker:

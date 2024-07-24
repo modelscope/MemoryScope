@@ -3,10 +3,10 @@ from memory_scope.enumeration.message_role_enum import MessageRoleEnum
 from memory_scope.memory.operation.backend_operation import BackendOperation
 
 
-class WriteMemoryOp(BackendOperation):
+class SummaryObservationOp(BackendOperation):
 
     def __init__(self, **kwargs):
-        super(WriteMemoryOp, self).__init__(**kwargs)
+        super(SummaryObservationOp, self).__init__(**kwargs)
 
         self.message_lock = kwargs.get("message_lock", None)
         self.contextual_msg_min_count: int = kwargs.get("contextual_msg_min_count", 0)

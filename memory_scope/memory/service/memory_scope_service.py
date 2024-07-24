@@ -6,7 +6,7 @@ from memory_scope.scheme.message import Message
 from memory_scope.utils.tool_functions import init_instance_by_config
 
 
-class ChatMemoryService(BaseMemoryService):
+class MemoryScopeService(BaseMemoryService):
     def __init__(self,
                  history_msg_count: int = 100,
                  contextual_msg_max_count: int = 20,
