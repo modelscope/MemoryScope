@@ -28,9 +28,9 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                                                es_url=es_url,
                                                retrieval_strategy=_AsyncDenseVectorStrategy(hybrid=use_hybrid),
                                                **kwargs)
+
         # TODO The llamaIndex utilizes some deprecated functions, hence langchain logs warning messages. By
         #  adding the following lines of code, the display of deprecated information is suppressed.
-
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                         embed_model=self.embedding_model.model)
 
@@ -41,7 +41,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                           top_k: int = 3,
                           filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
         # if index is not created, return []
-        exists = self.es_store._store.client.indices.exists(index=self.index_name)
+        exists = self.es_store.client.indices.exists(index=self.index_name)
         if not exists:
             return []
 
@@ -51,30 +51,32 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         es_filter = _to_elasticsearch_filter(filter_dict)
         retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter, "fields": ['embedding']},
                                             similarity_top_k=top_k,
-                                            sparse_top_k=top_k, )
-        if query is None:
-            query = QueryBundle(query_str='**--**',
-                                embedding=self.dummy_query_vector())
+                                            sparse_top_k=top_k)
+        if not query:
+            query = QueryBundle(query_str='**--**', embedding=self.dummy_query_vector())
 
         text_nodes = retriever.retrieve(query)
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
     async def a_retrieve_memories(self,
-                                  query: str,
-                                  top_k: int,
+                                  query: Optional[str] = None,
+                                  top_k: int = 3,
                                   filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
-        self.logger.info(f"query={query} top_k={top_k} filter_dict={filter_dict}")
+        # if index is not created, return []
+        exists = self.es_store.client.indices.exists(index=self.index_name)
+        if not exists:
+            return []
 
         if filter_dict is None:
             filter_dict = {}
-        es_filter = _to_elasticsearch_filter(filter_dict)
-        retriever = self.index.as_retriever(
-            vector_store_kwargs={"es_filter": es_filter},
-            similarity_top_k=top_k)
 
-        if query is None:
-            query = QueryBundle(query_str='**--**',
-                                embedding=self.dummy_query_vector())
+        es_filter = _to_elasticsearch_filter(filter_dict)
+        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter, "fields": ['embedding']},
+                                            similarity_top_k=top_k,
+                                            sparse_top_k=top_k)
+
+        if not query:
+            query = QueryBundle(query_str='**--**', embedding=self.dummy_query_vector())
 
         text_nodes: List[NodeWithScore] = await retriever.aretrieve(query)
         return [self._text_node_2_memory_node(n) for n in text_nodes]
@@ -85,7 +87,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
             self.insert(node)
 
     def batch_update(self, nodes: List[MemoryNode], update_embedding: bool = True):
-        # TODO batch_update & update_embedding
+        # TODO batch_update
         for node in nodes:
             self.update(node, update_embedding=update_embedding)
 
@@ -100,12 +102,10 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
     def delete(self, node: MemoryNode):
         return self.es_store.delete(node.memory_id)
 
-    def delete_conditional(self, filter_dict: Dict = {}):
-        nodes = self.retrieve_memories(filter_dict=filter_dict, top_k=10000)
-        self.batch_delete(nodes)
-
     def update(self, node: MemoryNode, update_embedding: bool = True):
-        # TODO update without embedding?
+        if update_embedding:
+            node.vector = []
+
         self.delete(node)
         self.insert(node)
 

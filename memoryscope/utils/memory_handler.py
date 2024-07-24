@@ -78,6 +78,7 @@ class MemoryHandler(object):
         Args:
             key (str): The key mapping to memory nodes.
             nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.
+            log_repeat: if log_repeat=True, print log info
         """
         if nodes is None:
             nodes = []
@@ -102,7 +103,7 @@ class MemoryHandler(object):
         Fetch the memories by keys.
 
         Args:
-            key (str): The key mapping to memory nodes.
+            keys (str | List[str]): The key mapping to memory nodes.
         
         Returns:
             List[MemoryNode]: Memories mapped to the key.
@@ -157,7 +158,6 @@ class MemoryHandler(object):
         Args:
             keys (str): The memories.
             nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.
-        :
         """
         update_memories: Dict[str, MemoryNode] = {n.memory_id: n for n in self.get_memories(keys=keys)}
 
