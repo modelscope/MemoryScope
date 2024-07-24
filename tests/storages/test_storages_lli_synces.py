@@ -1,8 +1,8 @@
 import unittest
 
-from memory_scope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
-from memory_scope.scheme.memory_node import MemoryNode
-from memory_scope.storage.llama_index_es_memory_store import LlamaIndexEsMemoryStore
+from memoryscope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
+from memoryscope.scheme.memory_node import MemoryNode
+from memoryscope.storage.llama_index_es_memory_store import LlamaIndexEsMemoryStore
 
 
 class TestLlamaIndexElasticSearchStore(unittest.TestCase):

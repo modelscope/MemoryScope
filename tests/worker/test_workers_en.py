@@ -1,16 +1,16 @@
 import datetime
 import unittest
 
-from memory_scope.cli import MemoryScope
-from memory_scope.constants.common_constants import CHAT_MESSAGES, NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES, \
+from memoryscope.cli import MemoryScope
+from memoryscope.constants.common_constants import CHAT_MESSAGES, NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES, \
     MERGE_OBS_NODES, QUERY_WITH_TS, EXTRACT_TIME_DICT, NOT_REFLECTED_NODES, INSIGHT_NODES, NOT_UPDATED_NODES
-from memory_scope.enumeration.message_role_enum import MessageRoleEnum
-from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
-from memory_scope.scheme.memory_node import MemoryNode
-from memory_scope.scheme.message import Message
-from memory_scope.utils.global_context import G_CONTEXT
-from memory_scope.utils.logger import Logger
-from memory_scope.utils.tool_functions import init_instance_by_config
+from memoryscope.enumeration.message_role_enum import MessageRoleEnum
+from memoryscope.memory.worker.memory_base_worker import MemoryBaseWorker
+from memoryscope.scheme.memory_node import MemoryNode
+from memoryscope.scheme.message import Message
+from memoryscope.utils.global_context import G_CONTEXT
+from memoryscope.utils.logger import Logger
+from memoryscope.utils.tool_functions import init_instance_by_config
 
 
 class TestWorkersEn(unittest.TestCase):
