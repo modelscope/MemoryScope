@@ -149,5 +149,5 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         Returns:
             MemoryNode: The converted MemoryNode with text and metadata from the NodeWithScore.
         """
-        text_node.metadata["vector"] = text_node.embedding
+        text_node.metadata["vector"] = text_node.embedding if text_node.embedding else []
         return MemoryNode(content=text_node.text, **text_node.metadata)
