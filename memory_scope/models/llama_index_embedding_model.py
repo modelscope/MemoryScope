@@ -39,7 +39,6 @@ class LlamaIndexEmbeddingModel(BaseModel):
             model_response.details = "empty embeddings"
             model_response.status = False
             return model_response
-
         if len(embeddings) == 1:
             # return list[float]
             embeddings = embeddings[0]

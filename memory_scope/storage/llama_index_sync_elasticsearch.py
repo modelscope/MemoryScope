@@ -169,6 +169,7 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
                 query_body["rank"] = {"rrf": self.rrf}
             elif isinstance(self.rrf, bool) and self.rrf is True:
                 query_body["rank"] = {"rrf": {"window_size": top_k}}
+
         return query_body
 
     def es_query(
@@ -590,6 +591,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
                 Callable[[Dict, Union[VectorStoreQuery, None]], Dict]
             ] = None,
             es_filter: Optional[List[Dict]] = None,
+            fields: List[str] = [],
             **kwargs: Any,
     ) -> VectorStoreQueryResult:
         """
@@ -629,15 +631,15 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             num_candidates=num_candidates,  # query.similarity_top_k * 10,
             filter=filter,
             custom_query=custom_query,
+            fields=fields,
         )
-
         top_k_nodes = []
         top_k_ids = []
         top_k_scores = []
-        print("hits:", len(hits))
         for hit in hits:
             source = hit["_source"]
             metadata = source.get("metadata", None)
+            embedding = source.get("embedding", None)
             text = source.get(self.text_field, None)
             node_id = hit["_id"]
 
@@ -645,6 +647,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
                 # Attempt to parse metadata using the standard method
                 node = metadata_dict_to_node(metadata)
                 node.text = text
+                node.embedding = embedding
             except Exception:
                 # Legacy support for old metadata format
                 logger.warning(
@@ -662,6 +665,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
                     text=text,
                     metadata=metadata,
                     id_=node_id,
+                    embedding=embedding,
                     start_char_idx=start_char_idx,
                     end_char_idx=end_char_idx,
                     relationships=relationships,
@@ -682,5 +686,6 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         return VectorStoreQueryResult(
             nodes=top_k_nodes,
             ids=top_k_ids,
-            similarities=_to_llama_similarities(top_k_scores),
+            # similarities=_to_llama_similarities(top_k_scores),
+            similarities=top_k_scores
         )

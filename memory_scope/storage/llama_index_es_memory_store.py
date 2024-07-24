@@ -21,7 +21,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                  use_hybrid: bool = True,
                  emb_dims: int = 1536,
                  **kwargs):
-
+        self.index_name = index_name
         self.emb_dims = emb_dims
         self.embedding_model: BaseModel = embedding_model
         self.es_store = SyncElasticsearchStore(index_name=index_name,
@@ -32,21 +32,26 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         #  adding the following lines of code, the display of deprecated information is suppressed.
         
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
-                                                            embed_model=self.embedding_model.model)
+                                                        embed_model=self.embedding_model.model)
 
-        self.index.build_index_from_nodes([TextNode(text="text")])
         self.logger = Logger.get_logger()
 
     def retrieve_memories(self,
                           query: Optional[str] = None,
                           top_k: int = 3,
                           filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
+        # if index is not created, return []
+        exists = self.es_store._store.client.indices.exists(index=self.index_name)
+        if not exists:
+            return []
+        
         if filter_dict is None:
             filter_dict = {}
 
         es_filter = _to_elasticsearch_filter(filter_dict)
-        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter}, similarity_top_k=top_k,
-                                            sparse_top_k=top_k)
+        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter, "fields": ['embedding']}, 
+                                            similarity_top_k=top_k,
+                                            sparse_top_k=top_k, )
         if query is None:
             query = QueryBundle(query_str='**--**',
                                 embedding=self.dummy_query_vector())
@@ -124,11 +129,14 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
         Returns:
             TextNode: The converted TextNode with content and metadata from the MemoryNode.
-        """        
+        """ 
+        embedding = memory_node.vector
+        if not embedding:
+            embedding = None
         return TextNode(id_=memory_node.memory_id,
                         text=memory_node.content,
-                        embedding=memory_node.vector,
-                        metadata=memory_node.model_dump(exclude={"content"}))
+                        embedding=embedding,
+                        metadata=memory_node.model_dump(exclude={"content", "vector"}))
 
     @staticmethod
     def _text_node_2_memory_node(text_node: NodeWithScore) -> MemoryNode:
@@ -141,4 +149,8 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         Returns:
             MemoryNode: The converted MemoryNode with text and metadata from the NodeWithScore.
         """
-        return MemoryNode(content=text_node.text, vector=text_node.embedding, **text_node.metadata)
+        embedding = text_node.embedding
+        print("textnode embedding", embedding)
+        if not embedding:
+            embedding = []
+        return MemoryNode(content=text_node.text, vector=embedding, **text_node.metadata)
