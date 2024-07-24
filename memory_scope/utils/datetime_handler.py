@@ -27,7 +27,7 @@ class DatetimeHandler(object):
 
         Attributes:
             self._dt (datetime.datetime): The internal datetime representation of the input.
-            self._dt_info_dict (dict | None): A dictionary containing parsed datetime information, initialized as None.
+            self._dt_info_dict (dict | None): A dictionary containing parsed datetime information, defaults to None.
         """
         if isinstance(dt, str | int | float):
             if isinstance(dt, str):
@@ -65,7 +65,7 @@ class DatetimeHandler(object):
     def dt_info_dict(self):
         """
         Property method to get the dictionary containing parsed datetime information.
-        If not already parsed, it triggers the parsing process using `_parse_dt_info`.
+        If None, initialize using `_parse_dt_info`.
 
         Returns:
             dict: A dictionary with parsed datetime information.
@@ -77,7 +77,7 @@ class DatetimeHandler(object):
     @classmethod
     def extract_date_parts_cn(cls, input_string: str) -> dict:
         """
-        Extracts date components from a Chinese text string into a dictionary.
+        Extracts various components of a date (year, month, day, etc.) from an input string based on Chinese formats.
 
         This method identifies year, month, day, weekday, and hour components within the input
         string based on predefined patterns. It supports relative terms like '每' (every) and
@@ -125,7 +125,7 @@ class DatetimeHandler(object):
         text. It supports extraction of year, month name, day, 12-hour and 24-hour time formats, and weekdays.
 
         Args:
-            input_string (str): The string from which to extract date and time components.
+            input_string (str): The English text containing date and time information.
 
         Returns:
             dict: A dictionary containing the extracted date parts with default values of -1 where components are not
@@ -212,7 +212,7 @@ class DatetimeHandler(object):
         Extracts various date components from the input string based on the current language context.
 
         This method dynamically selects a language-specific function to parse the input string and extract
-        date parts such as year, month, day, etc. If the function for the current language context does not exist,
+        date parts such as year, month, day, etc. If the function for current language context does not exist,
         a warning is logged and an empty dictionary is returned.
 
         Args:
@@ -233,10 +233,10 @@ class DatetimeHandler(object):
         Check if the input query contains any datetime-related words based on the cn language context.
 
         Args:
-            query (str): The input string to check for datetime words.
+            query (str): The input string to check for datetime-related words.
 
         Returns:
-            bool: True if the query contains at least one datetime word, False otherwise.
+            bool: True if the query contains at least one datetime-related word, False otherwise.
         """
         contain_datetime = False
         # TODO use re
@@ -252,10 +252,10 @@ class DatetimeHandler(object):
         Check if the input query contains any datetime-related words based on the en language context.
 
         Args:
-            query (str): The input string to check for datetime words.
+            query (str): The input string to check for datetime-related words.
 
         Returns:
-            bool: True if the query contains at least one datetime word, False otherwise.
+            bool: True if the query contains at least one datetime-related word, False otherwise.
         """
         contain_datetime = False
         for datetime_word in DATATIME_WORD_LIST[G_CONTEXT.language]:
@@ -283,7 +283,7 @@ class DatetimeHandler(object):
             dt_format (str, optional): The datetime format string. Defaults to "%Y%m%d".
 
         Returns:
-            str: The formatted datetime string.
+            str: A formatted datetime string.
         """
         return self._dt.strftime(dt_format)
 
@@ -295,7 +295,7 @@ class DatetimeHandler(object):
             string_format (str): A format string where placeholders are keys from `dt_info_dict`.
 
         Returns:
-            str: The formatted string with datetime information inserted.
+            str: A formatted datetime string.
         """
         return string_format.format(**self.dt_info_dict)
 
@@ -305,6 +305,6 @@ class DatetimeHandler(object):
         Get the timestamp representation of the stored datetime.
 
         Returns:
-            int: The timestamp value of the datetime.
+            int: A timestamp value.
         """
         return int(self._dt.timestamp())

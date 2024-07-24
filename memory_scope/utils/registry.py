@@ -26,6 +26,16 @@ class Registry(object):
         self.module_dict: Dict[str, Any] = {}
 
     def register(self, module_name: str = None, module: Any = None):
+        """
+        Registers module in the registry in a single call. 
+
+        Args:
+            module_name (str): The name of module to be registered. 
+            modules (List[Any] | Dict[str, Any]): The module to be registered.
+
+        Raises:
+            NotImplementedError: If the input is already registered.
+        """
         assert module is not None
         if module_name is None:
             module_name = module.__name__
@@ -60,7 +70,7 @@ class Registry(object):
             module_name (str): The name of the module to retrieve.
 
         Returns:
-            The registered module corresponding to the given name.
+            A registered module corresponding to the given name.
 
         Raises:
             AssertionError: If the specified module is not found in the registry.

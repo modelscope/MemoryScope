@@ -52,7 +52,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
     @timer
     def retrieve_from_insight(self, query: str) -> List[MemoryNode]:
         """
-        Retrieves memories marked as insights from the database based on a query, filtered by user, target,
+        Retrieves memories marked as insights from the store based on a query, filtered by user, target,
         and set to active status.
 
         Args:
@@ -79,6 +79,18 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
 
     @timer
     def retrieve_expired_memory(self, query: str) -> List[MemoryNode]:
+        """
+        Retrieves expired memories marked as observation from the store based on a query, filtered by user, target,
+        and set to active status.
+
+        Args:
+            query (str): The search query to match against the memories.
+
+        Returns:
+            List[MemoryNode]: A list of MemoryNode objects that match the query criteria,
+                              limited by 'retrieve_expired_top_k'.
+                              Returns an empty list if 'retrieve_expired_top_k' is not set.
+        """
         if not self.retrieve_expired_top_k:
             return []
 

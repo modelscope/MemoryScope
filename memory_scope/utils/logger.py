@@ -9,6 +9,9 @@ LOGGER_DICT = {}
 
 
 class Logger(logging.Logger):
+    """
+    The `Logger` class handle the stream of information or errors in activities.
+    """
     def __init__(self,
                  name: str,
                  level: int = logging.INFO,
@@ -138,8 +141,8 @@ class Logger(logging.Logger):
             msg (str): The logged message, before formatting.
             args (tuple): The arguments to the log message.
             exc_info (tuple): Exception information or None.
-            func (function): The function where the logging call was made.
-            extra (dict): Additional information for the log record, can be None.
+            func (function): The function where the logging call was made. Defaults to None.
+            extra (dict): Additional information for the log record. Defaults to None.
             sinfo (str): Stack trace information or None.
 
         Returns:
@@ -165,7 +168,7 @@ class Logger(logging.Logger):
             **kwargs: Additional keyword arguments to configure the logger.
 
         Returns:
-        Logger: The requested or newly created logger instance.
+            Logger: The requested or newly created logger instance.
         """
         if name is None:
             if LOGGER_DICT:

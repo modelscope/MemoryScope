@@ -108,7 +108,7 @@ class PromptHandler(object):
             self._prompt_dict[key] = prompts.strip()
 
     @property
-    def prompt_dict(self):
+    def prompt_dict(self) -> dict:
         """
         Retrieves the internal dictionary containing all prompt messages.
 
@@ -117,7 +117,7 @@ class PromptHandler(object):
         """
         return self._prompt_dict
 
-    def __getitem__(self, key: str):
+    def __getitem__(self, key: str) -> str:
         """
         Enables accessing prompt messages using dictionary-like indexing.
 
@@ -139,7 +139,7 @@ class PromptHandler(object):
         """
         self._prompt_dict[key] = value
 
-    def __getattr__(self, key: str):
+    def __getattr__(self, key: str) -> str:
         """
         Overrides attribute access to provide prompt messages dynamically.
 

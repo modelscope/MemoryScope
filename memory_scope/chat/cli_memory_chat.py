@@ -43,7 +43,7 @@ class CliMemoryChat(BaseMemoryChat):
             memory_service (str | BaseMemoryService): The memory service to be used for storing conversation history.
             generation_model (str | BaseModel): The model responsible for generating AI responses.
             stream (bool, optional): Flag indicating whether responses should be streamed. Defaults to True.
-            human_name (str, optional): The name assigned to the human user. Defaults to a language-specific default.
+            human_name (str, optional): The name assigned to the human user. Defaults to a language-specific user.
             assistant_name (str, optional): The name of the AI assistant. Defaults to "AI".
             **kwargs: Additional keyword arguments for flexibility or future extensions.
 
@@ -98,15 +98,15 @@ class CliMemoryChat(BaseMemoryChat):
     def memory_service(self) -> BaseMemoryService:
         """
         Property to access the memory service. If the service is initially set as a string,
-        it will be looked up in the global context's memory service dictionary, initialized,
+        it will be looked up in the memory service dictionary of global context, initialized,
         and then returned as an instance of `BaseMemoryService`. Ensures the memory service
         is properly started before use.
 
         Returns:
-            BaseMemoryService: The active memory service instance.
+            BaseMemoryService: An active memory service instance.
 
         Raises:
-            ValueError: If the memory service string reference is not found in the global context's dictionary.
+            ValueError: If the declaration of memory service is not found in the memory service dictionary of global context.
         """
         if isinstance(self._memory_service, str):
             if self._memory_service not in G_CONTEXT.memory_service_dict:
@@ -123,10 +123,10 @@ class CliMemoryChat(BaseMemoryChat):
         context's model dictionary.
 
         Raises:
-            ValueError: If the model string is not found in the global context's model dictionary.
+            ValueError: If the declaration of generation model is not found in the model dictionary of global context .
 
         Returns:
-            BaseModel: The actual generation model instance.
+            BaseModel: An actual generation model instance.
         """
         if isinstance(self._generation_model, str):
             if self._generation_model not in G_CONTEXT.model_dict:
@@ -146,12 +146,12 @@ class CliMemoryChat(BaseMemoryChat):
                 Defaults to False.
 
         Returns:
-        - ModelResponse: In non-streaming mode, returns the complete AI response.
+        - ModelResponse: In non-streaming mode, returns a complete AI response.
         - ModelResponseGen: In streaming mode, returns a generator yielding AI response parts.
 
         Side Effects:
-            - Updates the conversation memory with the user's query and (optionally) the AI's response.
-            - Retrieves and includes historical messages and memory content in the conversation context.
+            - Updates the conversation memory with the query of user and (optionally) the response of AI.
+            - Retrieves and includes historical messages and memory content in the context of conversation.
         """
         new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name=self.human_name, content=query)
         self.memory_service.add_messages(new_message)
@@ -227,7 +227,7 @@ class CliMemoryChat(BaseMemoryChat):
             query (str): The user's input command string.
 
         Returns:
-        bool: Indicates whether to continue running the CLI after processing the command.
+            bool: Indicates whether to continue running the CLI after processing the command.
         """
         continue_run = True
         command, kwargs = self.parse_query_command(query)

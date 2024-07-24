@@ -7,6 +7,9 @@ from memory_scope.utils.datetime_handler import DatetimeHandler
 
 
 class FuseRerankWorker(MemoryBaseWorker):
+    """
+    Reranks the memory nodes by scores, types, and temporal relevance. Formats the top-K reranked nodes to print.
+    """
 
     def _parse_params(self, **kwargs):
         self.fuse_score_threshold: float = kwargs.get("fuse_score_threshold", 0.1)
@@ -16,6 +19,9 @@ class FuseRerankWorker(MemoryBaseWorker):
 
     @staticmethod
     def match_node_time(extract_time_dict: Dict[str, str], node: MemoryNode):
+        """
+        Determines whether the node is relevant.
+        """
         if extract_time_dict:
             match_event_flag = True
             for k, v in extract_time_dict.items():
