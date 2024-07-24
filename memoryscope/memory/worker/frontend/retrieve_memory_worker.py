@@ -43,8 +43,8 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             "store_status": StoreStatusEnum.VALID.value,
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
         }
-        # ⭐ Retrieve memories matching the query, filtered by the specified conditions, 
-        #     limited to a certain number, and sorted by relevance.
+        # Retrieve memories matching the query, filtered by the specified conditions,
+        # limited to a certain number, and sorted by relevance.
         return self.memory_store.retrieve_memories(query=query,
                                                    top_k=self.retrieve_obs_top_k,
                                                    filter_dict=filter_dict)

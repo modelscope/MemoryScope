@@ -12,6 +12,18 @@ class DummyMemoryStore(BaseMemoryStore):
     semantic retrieval. Actual storage operations are not implemented.
     """
 
+    def retrieve_memories(self,
+                          query: str = "",
+                          top_k: int = 3,
+                          filter_dict: Dict[str, List[str]] = None) -> List[MemoryNode]:
+        pass
+
+    async def a_retrieve_memories(self,
+                                  query: str = "",
+                                  top_k: int = 3,
+                                  filter_dict: Dict[str, List[str]] = None) -> List[MemoryNode]:
+        pass
+
     def __init__(self, embedding_model: BaseModel, **kwargs):
         """
         Initializes the DummyMemoryStore with an embedding model and additional keyword arguments.
@@ -22,12 +34,6 @@ class DummyMemoryStore(BaseMemoryStore):
         """
         self.embedding_model: BaseModel = embedding_model
         self.kwargs = kwargs
-
-    def retrieve_memories(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
-        pass
-
-    async def a_retrieve_memories(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
-        pass
 
     def batch_insert(self, nodes: List[MemoryNode]):
         pass

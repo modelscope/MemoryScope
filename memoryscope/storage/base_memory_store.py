@@ -11,7 +11,10 @@ class BaseMemoryStore(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def retrieve_memories(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
+    def retrieve_memories(self,
+                          query: str = "",
+                          top_k: int = 3,
+                          filter_dict: Dict[str, List[str]] = None) -> List[MemoryNode]:
         """
         Retrieves a list of MemoryNode objects that are most relevant to the query,
         considering a filter dictionary for additional constraints. The number of nodes returned
@@ -30,7 +33,10 @@ class BaseMemoryStore(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    async def a_retrieve_memories(self, query: str, top_k: int, filter_dict: Dict[str, List[str]]) -> List[MemoryNode]:
+    async def a_retrieve_memories(self,
+                                  query: str = "",
+                                  top_k: int = 3,
+                                  filter_dict: Dict[str, List[str]] = None) -> List[MemoryNode]:
         """
         Asynchronously retrieves a list of MemoryNode objects that best match the query,
         respecting a filter dictionary, with the result size capped at top_k.

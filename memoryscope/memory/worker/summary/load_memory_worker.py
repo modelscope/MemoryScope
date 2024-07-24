@@ -17,12 +17,9 @@ class LoadMemoryWorker(MemoryBaseWorker):
         self.retrieve_today_top_k: int = kwargs.get("retrieve_today_top_k", 0)
 
     @timer
-    def retrieve_not_reflected_memory(self, query: str):
+    def retrieve_not_reflected_memory(self):
         """
         Retrieves top-K not reflected memories based on the query and stores them in the memory handler.
-
-        Args:
-            query (str): The search query for retrieving memories.
         """
         if not self.retrieve_not_reflected_top_k:
             return
@@ -34,18 +31,14 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "obs_reflected": 0,
         }
-        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
-                                                                      top_k=self.retrieve_not_reflected_top_k,
+        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(top_k=self.retrieve_not_reflected_top_k,
                                                                       filter_dict=filter_dict)
         self.memory_handler.set_memories(NOT_REFLECTED_NODES, nodes)
 
     @timer
-    def retrieve_not_updated_memory(self, query: str):
+    def retrieve_not_updated_memory(self):
         """
         Retrieves top-K not updated memories based on the query and stores them in the memory handler.
-
-        Args:
-            query (str): The search query for retrieving memories.
         """
         if not self.retrieve_not_updated_top_k:
             return
@@ -57,8 +50,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "obs_updated": 0,
         }
-        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
-                                                                      top_k=self.retrieve_not_updated_top_k,
+        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(top_k=self.retrieve_not_updated_top_k,
                                                                       filter_dict=filter_dict)
         self.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
 
@@ -66,9 +58,6 @@ class LoadMemoryWorker(MemoryBaseWorker):
     def retrieve_insight_memory(self, query: str):
         """
         Retrieves top-K insight memories based on the query and stores them in the memory handler.
-
-        Args:
-            query (str): The search query for retrieving memories.
         """
         if not self.retrieve_insight_top_k:
             return
@@ -79,18 +68,16 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "store_status": StoreStatusEnum.VALID.value,
             "memory_type": MemoryTypeEnum.INSIGHT.value,
         }
-        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
-                                                                      top_k=self.retrieve_insight_top_k,
+        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(top_k=self.retrieve_insight_top_k,
                                                                       filter_dict=filter_dict)
         self.memory_handler.set_memories(INSIGHT_NODES, nodes)
 
     @timer
-    def retrieve_today_memory(self, query: str, dt: str):
+    def retrieve_today_memory(self, dt: str):
         """
         Retrieves top-K memories from today based on the query and stores them in the memory handler.
 
         Args:
-            query (str): The search query for retrieving memories.
             dt (str): The date string to filter today's memories.
         """
         if not self.retrieve_today_top_k:
@@ -103,8 +90,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
             "memory_type": [MemoryTypeEnum.OBSERVATION.value, MemoryTypeEnum.OBS_CUSTOMIZED.value],
             "dt": dt,
         }
-        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(query=query,
-                                                                      top_k=self.retrieve_today_top_k,
+        nodes: List[MemoryNode] = self.memory_store.retrieve_memories(top_k=self.retrieve_today_top_k,
                                                                       filter_dict=filter_dict)
 
         self.memory_handler.set_memories(TODAY_NODES, nodes)
@@ -120,12 +106,11 @@ class LoadMemoryWorker(MemoryBaseWorker):
         """
 
         # Placeholder query
-        query = "-"
         dt = DatetimeHandler().datetime_format()
-        self.submit_thread_task(self.retrieve_not_reflected_memory, query=query)
-        self.submit_thread_task(self.retrieve_not_updated_memory, query=query)
-        self.submit_thread_task(self.retrieve_insight_memory, query=query)
-        self.submit_thread_task(self.retrieve_today_memory, query=query, dt=dt)
+        self.submit_thread_task(self.retrieve_not_reflected_memory)
+        self.submit_thread_task(self.retrieve_not_updated_memory)
+        self.submit_thread_task(self.retrieve_insight_memory)
+        self.submit_thread_task(self.retrieve_today_memory, dt=dt)
 
         # Waits for all submitted tasks to complete
         for _ in self.gather_thread_result():

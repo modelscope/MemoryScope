@@ -37,7 +37,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         self.logger = Logger.get_logger()
 
     def retrieve_memories(self,
-                          query: Optional[str] = None,
+                          query: str = "",
                           top_k: int = 3,
                           filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
         # if index is not created, return []
@@ -59,7 +59,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
     async def a_retrieve_memories(self,
-                                  query: Optional[str] = None,
+                                  query: str = "",
                                   top_k: int = 3,
                                   filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
         # if index is not created, return []

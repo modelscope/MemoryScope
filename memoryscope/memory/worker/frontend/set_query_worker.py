@@ -21,7 +21,7 @@ class SetQueryWorker(MemoryBaseWorker):
         Otherwise, the content of the last message in `self.chat_messages` is used as the query,
         along with its creation timestamp.
         """
-        query = "_"  # Default query value
+        query = ""  # Default query value
         query_timestamp = int(datetime.datetime.now().timestamp())  # Current timestamp as default
 
         if "query" in self.chat_kwargs:

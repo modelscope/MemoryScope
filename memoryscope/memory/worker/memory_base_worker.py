@@ -194,7 +194,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self.get_context(MEMORY_HANDLER)
 
     @staticmethod
-    def get_language_value(languages: dict | list[dict]) -> Any | list[Any]:
+    def get_language_value(languages: dict | List[dict]) -> Any | List[Any]:
         """
         Retrieves the value(s) corresponding to the current language context.
 
