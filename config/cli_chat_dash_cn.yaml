@@ -82,7 +82,7 @@ worker:
     rank_model: dashscope_rank
   fuse_rerank:
     class: memory.worker.frontend.fuse_rerank_worker
-    fuse_score_threshold: 0.05
+    fuse_score_threshold: 0.01
     fuse_ratio_dict:
       conversation: 0.5
       observation: 1
@@ -103,60 +103,60 @@ worker:
     retrieve_ins_top_k: 100
     retrieve_expired_top_k: 100
   delete_memory:
-    class: memory.worker.summary.update_memory_worker
+    class: memory.worker.backend.update_memory_worker
     method: delete_memory
   delete_all:
-    class: memory.worker.summary.update_memory_worker
+    class: memory.worker.backend.update_memory_worker
     method: delete_all
   add_memory:
-    class: memory.worker.summary.update_memory_worker
+    class: memory.worker.backend.update_memory_worker
     method: from_query
   info_filter:
-    class: memory.worker.summary.info_filter_worker
+    class: memory.worker.backend.info_filter_worker
     generation_model: dashscope_generation
     generation_model_kwargs:
       top_k: 1
   load_today_memory:
-    class: memory.worker.summary.load_memory_worker
+    class: memory.worker.backend.load_memory_worker
     retrieve_today_top_k: 100
   get_observation:
-    class: memory.worker.summary.get_observation_worker
+    class: memory.worker.backend.get_observation_worker
     generation_model: dashscope_generation
     generation_model_kwargs:
       top_k: 1
   get_observation_with_time:
-    class: memory.worker.summary.get_observation_with_time_worker
+    class: memory.worker.backend.get_observation_with_time_worker
     generation_model: dashscope_generation
     generation_model_kwargs:
       top_k: 1
   contra_repeat:
-    class: memory.worker.summary.contra_repeat_worker
+    class: memory.worker.backend.contra_repeat_worker
     generation_model: dashscope_generation
     generation_model_kwargs:
       top_k: 1
   store_memory:
-    class: memory.worker.summary.update_memory_worker
+    class: memory.worker.backend.update_memory_worker
     method: from_memory_key
     memory_key: all
   load_obs_and_insight:
-    class: memory.worker.summary.load_memory_worker
+    class: memory.worker.backend.load_memory_worker
     retrieve_not_reflected_top_k: 100
     retrieve_not_updated_top_k: 100
     retrieve_insight_top_k: 100
   get_reflection_subject:
-    class: memory.worker.summary.get_reflection_subject_worker
+    class: memory.worker.backend.get_reflection_subject_worker
     generation_model: dashscope_generation
     reflect_obs_cnt_threshold: 10
     generation_model_kwargs:
       top_k: 1
   update_insight:
-    class: memory.worker.summary.update_insight_worker
+    class: memory.worker.backend.update_insight_worker
     generation_model: dashscope_generation
     generation_model_kwargs:
       top_k: 1
     rank_model: dashscope_rank
   long_contra_repeat:
-    class: memory.worker.summary.long_contra_repeat_worker
+    class: memory.worker.backend.long_contra_repeat_worker
     generation_model: dashscope_generation
     generation_model_kwargs:
       top_k: 1
@@ -175,6 +175,7 @@ models:
     class: models.llama_index_rank_model
     module_name: dashscope_rank
     model_name: gte-rerank
+    top_n: 10
   dummy_generation:
     class: models.dummy_generation_model
     module_name: dummy_generation
