@@ -14,23 +14,27 @@ class ResponseTextParser(object):
 
     pattern_v1 = re.compile(r"<(.*?)>")  # Regular expression pattern to match content within angle brackets
 
-    def __init__(self, response_text: str):
+    def __init__(self, response_text: str, logger_prefix: str = ""):
         """
         Initializes the `ResponseTextParser` instance with the provided response text and sets up a logger.
 
         Args:
             response_text (str): The raw response text that needs to be parsed and processed.
         """
-        self.response_text: str = response_text.strip()  # Strips leading and trailing whitespace from the response text
-        self.logger: Logger = Logger.get_logger()  # Initializes a logger instance for logging parsing activities
 
-    def parse_v1(self, prefix: str = "") -> List[str]:
+        # Strips leading and trailing whitespace from the response text
+        self.response_text: str = response_text.strip()
+
+        # The prefix of log. Defaults to "".
+        self.logger_prefix: str = logger_prefix
+
+        # Initializes a logger instance for logging parsing activities
+        self.logger: Logger = Logger.get_logger()
+
+    def parse_v1(self) -> List[List[str]]:
         """
         Extract specific patterns from the text which match content within angle brackets.
 
-        Args:
-            prefix (str): The prefix of log. Defaults to "".
-        
         Returns:
             Contents match the specific patterns.
         """
@@ -42,10 +46,10 @@ class ResponseTextParser(object):
             matches = [match.group(1) for match in self.pattern_v1.finditer(line)]
             if matches:
                 result.append(matches)
-        self.logger.info(f"{prefix} response_text={self.response_text} result={result}", stacklevel=2)
+        self.logger.info(f"{self.logger_prefix} response_text={self.response_text} result={result}", stacklevel=2)
         return result
 
-    def parse_v2(self, prefix: str = "") -> List[str]:
+    def parse_v2(self) -> List[str]:
         """
         Extract lines which contain NONE_WORD in Chinese or English.
 
@@ -61,5 +65,5 @@ class ResponseTextParser(object):
             if not line or line.lower() == NONE_WORD.get(G_CONTEXT.language):
                 continue
             result.append(line)
-        self.logger.info(f"{prefix} response_text={self.response_text} result={result}", stacklevel=2)
+        self.logger.info(f"{self.logger_prefix} response_text={self.response_text} result={result}", stacklevel=2)
         return result

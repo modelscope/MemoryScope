@@ -136,7 +136,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
         if not response.status or not response.message.content:
             return insight_node
 
-        insight_value_list = ResponseTextParser(response.message.content).parse_v1(f"update_{insight_node.key}")
+        insight_value_list = ResponseTextParser(response.message.content,
+                                                f"update_{insight_node.key}").parse_v1()
         if not insight_value_list:
             self.logger.warning(f"update_{insight_node.key} insight_value_list is empty!")
             return insight_node

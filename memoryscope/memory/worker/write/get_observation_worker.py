@@ -139,7 +139,7 @@ class GetObservationWorker(MemoryBaseWorker):
         response_text = response.message.content
 
         # Parses the generated text to extract observation indices, times, contents, and keywords
-        idx_obs_list = ResponseTextParser(response_text).parse_v1(self.__class__.__name__)
+        idx_obs_list = ResponseTextParser(response_text, self.__class__.__name__).parse_v1()
         if len(idx_obs_list) <= 0:
             self.logger.warning("idx_obs_list is empty!")
             return

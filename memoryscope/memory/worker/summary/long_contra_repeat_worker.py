@@ -49,7 +49,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
                                                              top_k=self.long_contra_repeat_top_k,
                                                              filter_dict=filter_dict)
         # Filter retrieved nodes based on the similarity threshold
-        return node, [n for n in retrieve_nodes if n.score_similar >= self.long_contra_repeat_threshold]
+        return node, [n for n in retrieve_nodes if n.score_recall >= self.long_contra_repeat_threshold]
 
     def _run(self):
         """
@@ -111,7 +111,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
             return
 
         # Parses the model's response text to identify updates for memory nodes
-        idx_obs_info_list = ResponseTextParser(response.message.content).parse_v1(self.__class__.__name__)
+        idx_obs_info_list = ResponseTextParser(response.message.content, self.__class__.__name__).parse_v1()
         if len(idx_obs_info_list) <= 0:
             self.logger.warning("idx_obs_info_list is empty!")
             return

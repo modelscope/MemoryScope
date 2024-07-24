@@ -101,7 +101,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
             return
 
         # Parse LLM response for new insight keys and update memory
-        new_insight_keys = ResponseTextParser(response.message.content).parse_v2(self.__class__.__name__)
+        new_insight_keys = ResponseTextParser(response.message.content, self.__class__.__name__).parse_v2()
         if new_insight_keys:
             for insight_key in new_insight_keys:
                 self.memory_handler.add_memories(INSIGHT_NODES, self.new_insight_node(insight_key))

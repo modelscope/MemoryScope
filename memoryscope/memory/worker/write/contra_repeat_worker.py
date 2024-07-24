@@ -80,7 +80,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
         response_text = response.message.content
 
         # parse text
-        idx_merge_obs_list = ResponseTextParser(response_text).parse_v1(self.__class__.__name__)
+        idx_merge_obs_list = ResponseTextParser(response_text, self.__class__.__name__).parse_v1()
         if len(idx_merge_obs_list) <= 0:
             self.logger.warning("idx_merge_obs_list is empty!")
             return
