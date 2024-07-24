@@ -12,6 +12,7 @@ class Logger(logging.Logger):
     """
     The `Logger` class handle the stream of information or errors in activities.
     """
+
     def __init__(self,
                  name: str,
                  level: int = logging.INFO,

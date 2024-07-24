@@ -18,7 +18,6 @@ from llama_index.core.bridge.pydantic import PrivateAttr
 from llama_index.core.schema import BaseNode, MetadataMode, TextNode
 from llama_index.core.vector_stores.types import (
     BasePydanticVectorStore,
-    MetadataFilters,
     VectorStoreQuery,
     VectorStoreQueryMode,
     VectorStoreQueryResult,
@@ -141,10 +140,10 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
         if query == "**--**":
             query_body = {
                 "query": {
-                        "bool": {
-                            "filter": filter,
-                        }
-                    },
+                    "bool": {
+                        "filter": filter,
+                    }
+                },
             }
         else:
             query_body = {
@@ -260,7 +259,6 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
             else:
                 result['bool'].update({"must": operand})  # Initialize 'must' clause if not present
     return result
-
 
 
 class SyncElasticsearchStore(BasePydanticVectorStore):
@@ -676,9 +674,9 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
                 isinstance(self.retrieval_strategy, AsyncDenseVectorStrategy)
                 and self.retrieval_strategy.hybrid
         ):
-            total_rank = sum(top_k_scores) 
+            total_rank = sum(top_k_scores)
             top_k_scores = [rank for rank in top_k_scores]
-            #top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
+            # top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
             # top_k_scores = [total_rank - rank / total_rank for rank in top_k_scores]
 
         return VectorStoreQueryResult(

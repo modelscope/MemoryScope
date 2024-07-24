@@ -7,6 +7,7 @@ class ReadMessageWorker(MemoryBaseWorker):
     """
     Fetches unmemorized chat messages.
     """
+
     def _run(self):
         """
         Executes the primary function to fetch unmemorized chat messages.

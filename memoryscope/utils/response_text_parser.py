@@ -1,5 +1,5 @@
-from typing import List
 import re
+from typing import List
 
 from memoryscope.constants.language_constants import NONE_WORD
 from memoryscope.utils.global_context import G_CONTEXT

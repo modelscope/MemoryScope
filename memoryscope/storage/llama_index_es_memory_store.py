@@ -1,6 +1,5 @@
-import warnings
 import random
-from typing import Dict, List, Any, Optional, cast
+from typing import Dict, List, Optional
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import TextNode, NodeWithScore, QueryBundle
@@ -8,7 +7,8 @@ from llama_index.core.schema import TextNode, NodeWithScore, QueryBundle
 from memoryscope.models.base_model import BaseModel
 from memoryscope.scheme.memory_node import MemoryNode
 from memoryscope.storage.base_memory_store import BaseMemoryStore
-from memoryscope.storage.llama_index_sync_elasticsearch import SyncElasticsearchStore, _AsyncDenseVectorStrategy, _to_elasticsearch_filter
+from memoryscope.storage.llama_index_sync_elasticsearch import SyncElasticsearchStore, _AsyncDenseVectorStrategy, \
+    _to_elasticsearch_filter
 from memoryscope.utils.logger import Logger
 
 
@@ -30,7 +30,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                                                **kwargs)
         # TODO The llamaIndex utilizes some deprecated functions, hence langchain logs warning messages. By
         #  adding the following lines of code, the display of deprecated information is suppressed.
-        
+
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                         embed_model=self.embedding_model.model)
 
@@ -44,18 +44,18 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         exists = self.es_store._store.client.indices.exists(index=self.index_name)
         if not exists:
             return []
-        
+
         if filter_dict is None:
             filter_dict = {}
 
         es_filter = _to_elasticsearch_filter(filter_dict)
-        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter, "fields": ['embedding']}, 
+        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter, "fields": ['embedding']},
                                             similarity_top_k=top_k,
                                             sparse_top_k=top_k, )
         if query is None:
             query = QueryBundle(query_str='**--**',
                                 embedding=self.dummy_query_vector())
-            
+
         text_nodes = retriever.retrieve(query)
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
@@ -71,11 +71,11 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         retriever = self.index.as_retriever(
             vector_store_kwargs={"es_filter": es_filter},
             similarity_top_k=top_k)
-        
+
         if query is None:
             query = QueryBundle(query_str='**--**',
                                 embedding=self.dummy_query_vector())
-            
+
         text_nodes: List[NodeWithScore] = await retriever.aretrieve(query)
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
@@ -114,11 +114,11 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         Closes the Elasticsearch store, releasing any resources associated with it.
         """
         self.es_store.close()
-    
-    def dummy_query_vector(self):   
+
+    def dummy_query_vector(self):
         random_floats = [random.uniform(0, 1) for _ in range(self.emb_dims)]
         return random_floats
-    
+
     @staticmethod
     def _memory_node_2_text_node(memory_node: MemoryNode) -> TextNode:
         """
@@ -129,7 +129,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
         Returns:
             TextNode: The converted TextNode with content and metadata from the MemoryNode.
-        """ 
+        """
         embedding = memory_node.vector
         if not embedding:
             embedding = None
