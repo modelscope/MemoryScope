@@ -55,7 +55,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
         self.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
 
     @timer
-    def retrieve_insight_memory(self, query: str):
+    def retrieve_insight_memory(self):
         """
         Retrieves top-K insight memories based on the query and stores them in the memory handler.
         """

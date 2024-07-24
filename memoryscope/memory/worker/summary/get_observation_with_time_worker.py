@@ -2,7 +2,7 @@ from typing import List
 
 from memoryscope.constants.common_constants import NEW_OBS_WITH_TIME_NODES
 from memoryscope.constants.language_constants import COLON_WORD
-from memoryscope.memory.worker.write.get_observation_worker import GetObservationWorker
+from memoryscope.memory.worker.summary.get_observation_worker import GetObservationWorker
 from memoryscope.scheme.message import Message
 from memoryscope.utils.datetime_handler import DatetimeHandler
 from memoryscope.utils.tool_functions import prompt_to_msg
