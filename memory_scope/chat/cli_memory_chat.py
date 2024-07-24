@@ -160,7 +160,7 @@ class CliMemoryChat(BaseMemoryChat):
 
         # Incorporate memory into the system prompt if available
         system_prompt = self.prompt_handler.system_prompt
-        memories: str = self.memory_service.read_memory()
+        memories: str = self.memory_service.retrieve_memory()
         if memories:
             memory_prompt = self.prompt_handler.memory_prompt
             system_prompt = "\n".join([x.strip() for x in [system_prompt, memory_prompt, memories]])

@@ -2,6 +2,10 @@ global_config:
   language: cn
   max_workers: 5
 
+logger_config:
+  logger_name: memoryscope
+  logger_suffix: time
+
 memory_chat:
   cli_memory_chat:
     class: chat.cli_memory_chat
@@ -43,15 +47,15 @@ memory_service:
         description: "add a single observation"
 
       summary_observation_memory:
-        class: memory.operation.write_memory_op
+        class: memory.operation.summary_observation_op
         workflow: info_filter,[get_observation|get_observation_with_time|load_today_memory],contra_repeat,store_memory
-        description: "write observation memory of the user"
+        description: "summary user's observation memory"
         interval_time: 1
 
       summary_insight_memory:
         class: memory.operation.backend_operation
         workflow: load_obs_and_insight,get_reflection_subject,update_insight,long_contra_repeat,store_memory
-        description: "summary observation memory of the user"
+        description: "summary user's insight memory"
         interval_time: 15
 
 worker:

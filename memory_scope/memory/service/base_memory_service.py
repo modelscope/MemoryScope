@@ -16,7 +16,7 @@ class BaseMemoryService(metaclass=ABCMeta):
 
     def __init__(self,
                  memory_operations: Dict[str, dict],
-                 read_memory_key: str = "read_memory",
+                 retrieve_memory_key: str = "retrieve_memory",
                  read_message_key: str = "read_message",
                  **kwargs):
         """
@@ -25,12 +25,12 @@ class BaseMemoryService(metaclass=ABCMeta):
 
         Args:
             memory_operations (Dict[str, dict]): A dictionary defining available memory operations.
-            read_memory_key (str): The key indicating a read memory operation. Defaults to "read_memory".
+            retrieve_memory_key (str): The key indicating a retrieve memory operation. Defaults to "retrieve_memory".
             read_message_key (str): The key for reading messages. Defaults to "read_message".
             **kwargs: Additional parameters to customize service behavior.
         """
         self.memory_operations: Dict[str, dict] = memory_operations
-        self.read_memory_key: str = read_memory_key
+        self.retrieve_memory_key: str = retrieve_memory_key
         self.read_message_key: str = read_message_key
 
         self._operation_dict: Dict[str, BaseOperation] = {}
@@ -73,16 +73,16 @@ class BaseMemoryService(metaclass=ABCMeta):
             self._op_description_dict = {k: v.description for k, v in self._operation_dict.items()}
         return self._op_description_dict
 
-    def read_memory(self):
+    def retrieve_memory(self):
         """
-        Executes the operation associated with reading memory.
-        Asserts that the operation for reading memory has been initialized.
+        Executes the operation associated with retrieved memory.
+        Asserts that the operation for retrieved memory has been initialized.
 
         Returns:
-            Any: The result of the read memory operation.
+            Any: The result of the retrieved memory operation.
         """
-        assert self.read_memory_key in self._operation_dict, f"op={self.read_memory_key} is not inited!"
-        return self.do_operation(self.read_memory_key)
+        assert self.retrieve_memory_key in self._operation_dict, f"op={self.retrieve_memory_key} is not inited!"
+        return self.do_operation(self.retrieve_memory_key)
 
     def read_message(self):
         """
