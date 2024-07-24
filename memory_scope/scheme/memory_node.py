@@ -25,11 +25,11 @@ class MemoryNode(BaseModel):
 
     value: str = Field("", description="memory value")
 
-    score_similar: float = Field(0, description="es similar score")
+    score_recall: float = Field(0, description="embedding similarity score used in recall stage")
 
-    score_rank: float = Field(0, description="rank model score")
+    score_rank: float = Field(0, description="rank model score used in rank stage")
 
-    score_rerank: float = Field(0, description="rerank score")
+    score_rerank: float = Field(0, description="rerank score used in rerank stage")
 
     memory_type: str = Field("", description="conversation / observation / insight...")
 
