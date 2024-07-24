@@ -4,8 +4,13 @@ from memory_scope.memory.worker.memory_base_worker import MemoryBaseWorker
 
 
 class ReadMessageWorker(MemoryBaseWorker):
-
+    """
+    Fetches unmemorized chat messages.
+    """
     def _run(self):
+        """
+        Executes the primary function to fetch unmemorized chat messages.
+        """
         chat_messages = [x for x in self.chat_messages if not x.memorized]
         if len(chat_messages) > 0 and chat_messages[-1].role == MessageRoleEnum.USER.value:
             chat_messages = chat_messages[:-1]

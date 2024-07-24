@@ -9,9 +9,18 @@ from memory_scope.utils.datetime_handler import DatetimeHandler
 
 
 class PrintMemoryWorker(MemoryBaseWorker):
+    """
+    Formats the memories to print.
+    """
     FILE_PATH: str = __file__
 
     def _run(self):
+        """
+        Executes the primary function, it involves:
+        1. Fetches the memories.
+        2. Formats them by 'print_template'.
+        3. Set the formatted string back into the worker's context
+        """
         # get long-term memory
         memory_node_list: List[MemoryNode] = self.memory_handler.get_memories(RETRIEVE_MEMORY_NODES)
         memory_node_list = sorted(memory_node_list, key=lambda x: x.timestamp, reverse=True)

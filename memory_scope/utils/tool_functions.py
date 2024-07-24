@@ -16,7 +16,17 @@ ALL_COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan", "light_grey",
               "light_yellow", "light_blue", "light_magenta", "light_cyan", "white"]
 
 
-def underscore_to_camelcase(name: str, is_first_title: bool = True):
+def underscore_to_camelcase(name: str, is_first_title: bool = True) -> str:
+    """
+    Converts a underscore_notation string to CamelCase.
+
+    Args:
+        name (str): The underscore_notation string to be converted.
+        is_first_title (bool): Title the first word or not. Defaults to True
+
+    Returns:
+        str: A CamelCase formatted string.
+    """
     name_split = name.split("_")
     if is_first_title:
         return "".join(x.title() for x in name_split)
@@ -24,7 +34,7 @@ def underscore_to_camelcase(name: str, is_first_title: bool = True):
         return name_split[0] + ''.join(x.title() for x in name_split[1:])
 
 
-def camelcase_to_underscore(name: str):
+def camelcase_to_underscore(name: str) -> str:
     """
     Converts a CamelCase string to underscore_notation.
 
@@ -32,7 +42,7 @@ def camelcase_to_underscore(name: str):
         name (str): The CamelCase formatted string to be converted.
 
     Returns:
-        str: The converted string in underscore_notation.
+        str: A converted string in underscore_notation.
     """
     return re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
 
@@ -61,7 +71,7 @@ def init_instance_by_config(config: dict,
         **kwargs: Additional keyword arguments to pass to the class constructor.
 
     Returns:
-        instance: An instance of the class initialized with the provided config and kwargs.
+        instance: An instance initialized with the provided config and kwargs.
     """
 
     config_copy = deepcopy(config)
@@ -99,7 +109,7 @@ def prompt_to_msg(system_prompt: str,
         few_shot (str): An example or demonstration input, often used for illustrating expected behavior.
         user_query (str): The actual user query or prompt to be processed.
         concat_system_prompt(bool): Concat system prompt again or not in the user message.
-            A simple method to improve the effectiveness for some LLMs.
+            A simple method to improve the effectiveness for some LLMs. Defaults to True.
 
     Returns:
         List[Message]: A list of Message objects, each representing a part of the conversation setup.
@@ -125,6 +135,17 @@ def prompt_to_msg(system_prompt: str,
 
 
 def char_logo(words: str, seed: int = time.time_ns(), color=None):
+    """
+    Render the context of logo with colors
+
+    Args:
+        words: The context of logo.
+        seed: The random seed which generates colors if there is no specific color. Defaults to the current timestamp.
+        color: The specific color. Defaults to None.
+
+    Returns:
+        A rendered logo
+    """
     font = pyfiglet.Figlet()
     rendered_text = font.renderText(words)
     colored_lines = []
@@ -143,22 +164,22 @@ def char_logo(words: str, seed: int = time.time_ns(), color=None):
     return colored_lines
 
 
-def md5_hash(input_string: str):
+def md5_hash(input_string: str) -> str:
     """
-    Computes the MD5 hash of a given input string.
+    Computes a MD5 hash of the given input string.
 
     Args:
         input_string (str): The string for which the MD5 hash needs to be computed.
 
     Returns:
-        str: The hexadecimal representation of the MD5 hash.
+        str: A hexadecimal MD5 hash representation.
     """
     m = hashlib.md5()
     m.update(input_string.encode('utf-8'))
     return m.hexdigest()
 
 
-def contains_keyword(text, keywords):
+def contains_keyword(text, keywords) -> bool:
     """
     Checks if the given text contains any of the specified keywords, ignoring case.
 

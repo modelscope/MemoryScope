@@ -10,6 +10,10 @@ from memory_scope.storage.base_monitor import BaseMonitor
 
 
 class GlobalContext(object):
+    """
+    The GlobalContext class archives all configs utilized by store, monitor, services and workers.
+    """
+
     def __init__(self):
         self.global_config: Dict[str, Any] = {}
         self.worker_config: Dict[str, Dict[str, Any]] = {}

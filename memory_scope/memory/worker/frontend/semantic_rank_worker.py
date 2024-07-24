@@ -16,13 +16,13 @@ class SemanticRankWorker(MemoryBaseWorker):
     def _run(self):
         """
         Executes the primary workflow of the SemanticRankWorker which includes:
-        - Retrieving query and timestamp from context.
-        - Fetching memory nodes.
-        - Removing duplicate nodes.
-        - Ranking nodes semantically.
-        - Assigning scores to nodes.
-        - Sorting nodes by score.
-        - Saving the ranked nodes back with logging.
+        - Retrieves query and timestamp from context.
+        - Fetches memory nodes.
+        - Removes duplicate nodes.
+        - Ranks nodes semantically.
+        - Assigns scores to nodes.
+        - Sorts nodes by score.
+        - Saves the ranked nodes back with logging.
         
         If no memory nodes are retrieved or if the ranking model fails, 
         appropriate warnings are logged.

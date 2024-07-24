@@ -9,8 +9,14 @@ from memory_scope.utils.logger import Logger
 
 
 class MemoryHandler(object):
+    """
+    The `MemoryHandler` class manages memory nodes with memory store.
+    """
 
     def __init__(self):
+        """
+        Initializes the MemoryHandler.
+        """
         self._memory_store: BaseMemoryStore | None = None
 
         # dict: memory_id -> MemoryNode
@@ -34,10 +40,21 @@ class MemoryHandler(object):
         return self._memory_store
 
     def clear(self):
+        """
+        Clear all memory nodes cached, reset the class instance.
+        """
         self._id_memory_dict.clear()
         self._key_id_dict.clear()
 
     def add_memories(self, key: str, nodes: MemoryNode | List[MemoryNode], log_repeat: bool = True):
+        """
+        Add the memories.
+
+        Args:
+            key (str): The key mapping to memory nodes.
+            nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.
+            log_repeat (bool): Log duplicated memory node or not.
+        """
         if key not in self._key_id_dict:
             return self.set_memories(key, nodes, log_repeat)
 
@@ -55,6 +72,13 @@ class MemoryHandler(object):
                                  f"store_status={node.store_status} action_status={node.action_status}")
 
     def set_memories(self, key: str, nodes: MemoryNode | List[MemoryNode], log_repeat: bool = True):
+        """
+        Add the memories into '_id_memory_dict' and '_key_id_dict'.
+
+        Args:
+            key (str): The key mapping to memory nodes.
+            nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.
+        """
         if nodes is None:
             nodes = []
         elif isinstance(nodes, MemoryNode):
@@ -74,6 +98,15 @@ class MemoryHandler(object):
         self._key_id_dict[key] = [n.memory_id for n in nodes]
 
     def get_memories(self, keys: str | List[str]) -> List[MemoryNode]:
+        """
+        Fetch the memories by keys.
+
+        Args:
+            key (str): The key mapping to memory nodes.
+        
+        Returns:
+            List[MemoryNode]: Memories mapped to the key.
+        """
         memories: Dict[str, MemoryNode] = {}
 
         if isinstance(keys, str):
@@ -93,6 +126,13 @@ class MemoryHandler(object):
         return list(memories.values())
 
     def delete_memories(self, nodes: MemoryNode | List[MemoryNode], key: str = None):
+        """
+        Delete the memories.
+
+        Args:
+            key (str): The key mapping to memory nodes.
+            nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be deleted.
+        """
         if isinstance(nodes, MemoryNode):
             nodes = [nodes]
 
@@ -111,6 +151,14 @@ class MemoryHandler(object):
                     id_list.remove(_id)
 
     def update_memories(self, keys: str = "", nodes: MemoryNode | List[MemoryNode] = None):
+        """
+        Update the memories.
+
+        Args:
+            keys (str): The memories.
+            nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.
+        :
+        """
         update_memories: Dict[str, MemoryNode] = {n.memory_id: n for n in self.get_memories(keys=keys)}
 
         if nodes is not None:

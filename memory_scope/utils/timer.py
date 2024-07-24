@@ -20,6 +20,18 @@ class Timer(object):
                  float_precision: int = 4,
                  **kwargs):
 
+        """
+        Initializes the `Timer` instance with the provided args and sets up a logger
+
+        Args:
+            name (str): The log name.
+            time_log_type (str): The log type. Defaults to 'End'.
+            use_ms (bool): Use 'ms' as the time scale or not. Defaults to True.
+            stack_level (int): The stack level of log. Defaults to 2.
+            float_precision (int): The precision of cost time. Defaults to 4.
+
+        """
+
         self.name: str = name
         self.time_log_type: TIME_LOG_TYPE = time_log_type
         self.use_ms: bool = use_ms
@@ -35,6 +47,9 @@ class Timer(object):
         self.logger = Logger.get_logger()
 
     def _set_cost(self):
+        """
+        Accumulate the cost time.
+        """
         self.t_end = time.time()
         self.cost = self.t_end - self.t_start
         if self.use_ms:
@@ -42,6 +57,9 @@ class Timer(object):
 
     @property
     def cost_str(self):
+        """
+        Represent the cost time into a formatted string.
+        """
         self._set_cost()
         if self.use_ms:
             return f"cost={self.cost:.4f}ms"
@@ -49,12 +67,18 @@ class Timer(object):
             return f"cost={self.cost:.4f}s"
 
     def __enter__(self, *args, **kwargs):
+        """
+        Begin timing.
+        """
         self.t_start = time.time()
         if self.time_log_type == "wrap":
             self.logger.info(f"----- {self.name}.begin -----")
         return self
 
     def __exit__(self, *args, **kwargs):
+        """
+        End timing and print the formatted log.
+        """
         if self.time_log_type == "none":
             return
 
