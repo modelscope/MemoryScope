@@ -1,5 +1,5 @@
-from memory_scope.cli import MemoryScope
-from memory_scope.scheme.message import Message
+from memoryscope.cli import MemoryScope
+from memoryscope.scheme.message import Message
 
 ms = MemoryScope().load_config("config/demo_config_no_stream.yaml")
 memory_service = ms.default_service

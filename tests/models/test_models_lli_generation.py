@@ -5,9 +5,9 @@ sys.path.append(".")  # noqa: E402
 import unittest
 import time
 import asyncio
-from memory_scope.scheme.message import Message
-from memory_scope.models.llama_index_generation_model import LlamaIndexGenerationModel
-from memory_scope.utils.logger import Logger
+from memoryscope.scheme.message import Message
+from memoryscope.models.llama_index_generation_model import LlamaIndexGenerationModel
+from memoryscope.utils.logger import Logger
 
 
 class TestLLILLM(unittest.TestCase):
