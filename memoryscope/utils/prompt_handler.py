@@ -1,19 +1,25 @@
 import json
 import os.path
+from pathlib import Path
 from typing import Dict
 
 import yaml
 
-from memoryscope.utils.global_context import G_CONTEXT
+from memoryscope.enumeration.language_enum import LanguageEnum
 
 
 class PromptHandler(object):
     """
     The `PromptHandler` class manages prompt messages by loading them from YAML or JSON files and dictionaries, 
-    supporting language selection based on a global context, and providing dictionary-like access to the prompt messages.
+    supporting language selection based on a context, and providing dictionary-like access to the prompt messages.
     """
 
-    def __init__(self, class_path: str, prompt_file: str = "", prompt_dict: dict = None, **kwargs):
+    def __init__(self,
+                 class_path: str,
+                 prompt_file: str = "",
+                 prompt_dict: dict = None,
+                 language_enum: LanguageEnum = LanguageEnum.EN,
+                 **kwargs):
         """
         Initializes the PromptHandler with paths to prompt sources and additional keyword arguments.
 
@@ -21,30 +27,32 @@ class PromptHandler(object):
             class_path (str): The path to the class where prompts are utilized.
             prompt_file (str, optional): The path to an external file containing prompts. Defaults to "".
             prompt_dict (dict, optional): A dictionary directly containing prompt definitions. Defaults to None.
+            language_enum (LanguageEnum): context language.
             **kwargs: Additional keyword arguments that might be used in prompt handling.
         """
-        self._class_path: str = class_path
-        self._prompt_dict: Dict[str, str] = {}
+        class_path: Path = Path(class_path)
+        self._class_dir: Path = class_path.parent
+        self._class_name: str = class_path.stem
+        self._language_enum: LanguageEnum = language_enum
         self.kwargs = kwargs
 
-        file_path = self._class_path.strip(".py")
+        self._prompt_dict: Dict[str, str] = {}
 
-        self.add_prompt_file(file_path)
-
+        self.add_prompt_file((self._class_dir / self._class_name).__str__(), raise_exception=False)
         if prompt_file:
-            self.add_prompt_file(prompt_file)
-
+            self.add_prompt_file((self._class_dir / prompt_file).__str__())
         if prompt_dict:
             self.add_prompt_dict(prompt_dict)
 
     @staticmethod
-    def file_path_completion(file_path: str) -> str:
+    def file_path_completion(file_path: str, raise_exception: bool = True) -> str:
         """
         Attempts to complete the given file path by appending either a `.yaml` or `.json` extension 
         based on the existence of the respective file. If neither exists, an exception is raised.
 
         Args:
             file_path (str): The base path of the file to be completed.
+            raise_exception (bool): If the file cannot be found, report an error.
 
         Returns:
             str: The completed file path with the appropriate extension.
@@ -61,9 +69,10 @@ class PromptHandler(object):
         if os.path.exists(f"{file_path}.json"):
             return f"{file_path}.json"
 
-        raise RuntimeError(f"{file_path}/yaml/json is not exists!")
+        if raise_exception:
+            raise RuntimeError(f"{file_path}/yaml/json is not exists!")
 
-    def add_prompt_file(self, file_path: str):
+    def add_prompt_file(self, file_path: str, raise_exception: bool = True):
         """
         Adds prompt messages from a YAML or JSON file to the internal dictionary.
 
@@ -72,8 +81,11 @@ class PromptHandler(object):
 
         Args:
             file_path (str): The path to the YAML or JSON file containing the prompts.
+            raise_exception (bool): If the file cannot be found, report an error.
         """
-        file_path = self.file_path_completion(file_path)
+        file_path = self.file_path_completion(file_path, raise_exception=raise_exception)
+        if not file_path:
+            return
 
         prompt_dict = {}
 
@@ -102,9 +114,9 @@ class PromptHandler(object):
             RuntimeError: If a prompt message for the current language is not found.
         """
         for key, language_dict in prompt_dict.items():
-            prompts = language_dict.get(G_CONTEXT.language)
+            prompts = language_dict.get(self._language_enum.value)
             if not prompts:
-                raise RuntimeError(f"{key}.prompt.{G_CONTEXT.language} is empty!")
+                raise RuntimeError(f"{key}.prompt.{self._language_enum.value} is empty!")
             self._prompt_dict[key] = prompts.strip()
 
     @property

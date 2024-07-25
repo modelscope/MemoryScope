@@ -8,50 +8,42 @@ from memoryscope.chat.base_memory_chat import BaseMemoryChat
 from memoryscope.constants.language_constants import DEFAULT_HUMAN_NAME
 from memoryscope.enumeration.message_role_enum import MessageRoleEnum
 from memoryscope.memory.service.base_memory_service import BaseMemoryService
-from memoryscope.memoryscope_context import MemoryscopeContext
 from memoryscope.models.base_model import BaseModel
 from memoryscope.scheme.message import Message
 from memoryscope.scheme.model_response import ModelResponse, ModelResponseGen
+from memoryscope.utils.global_context import G_CONTEXT
+from memoryscope.utils.logger import Logger
 from memoryscope.utils.prompt_handler import PromptHandler
 from memoryscope.utils.tool_functions import char_logo
 
 
-class CliMemoryChat(BaseMemoryChat):
-    """
-    Command-line interface for chatting with an AI that integrates memory functionality.
-    Allows users to interact, manage chat history, adjust streaming settings, and view commands' help.
-    """
-    USER_COMMANDS = {
-        "exit": "Exit the CLI.",
-        "clear": "Clear the command history.",
-        "help": "Display available CLI commands and their descriptions.",
-    }
+class ApiMemoryChat(BaseMemoryChat):
 
     def __init__(self,
                  memory_service: str,
                  generation_model: str,
-                 context: MemoryscopeContext,
-                 human_name: str = None,
-                 assistant_name: str = None,
+                 stream: bool = True,
+                 human_name: str = DEFAULT_HUMAN_NAME[G_CONTEXT.language],
+                 assistant_name: str = "AI",
                  **kwargs):
-
-        super().__init__(**kwargs)
 
         self._memory_service: BaseMemoryService | str = memory_service
         self._generation_model: BaseModel | str = generation_model
-        self.context: MemoryscopeContext = context
         self.generation_model_kwargs: dict = kwargs.pop("generation_model_kwargs", {})
 
+        self.stream: bool = stream
         self.human_name: str = human_name
-        if not self.human_name:
-            self.human_name = DEFAULT_HUMAN_NAME[self.context.language]
-
         self.assistant_name: str = assistant_name
-        if not self.assistant_name:
-            self.assistant_name = "AI"
+        self.kwargs: dict = kwargs
 
         self._logo = char_logo("MemoryScope")
         self._prompt_handler: PromptHandler | None = None
+        G_CONTEXT.meta_data.update({
+            "human_name": human_name,
+            "assistant_name": assistant_name,
+        })
+
+        self.logger = Logger.get_logger()
 
     @property
     def prompt_handler(self) -> PromptHandler:
@@ -65,7 +57,7 @@ class CliMemoryChat(BaseMemoryChat):
             PromptHandler: An instance of the PromptHandler configured for this CLI session.
         """
         if self._prompt_handler is None:
-            self._prompt_handler = PromptHandler(__file__, prompt_file="memory_chat_prompt", **self.kwargs)
+            self._prompt_handler = PromptHandler(__file__, **self.kwargs)
         return self._prompt_handler
 
     def print_logo(self):
@@ -82,7 +74,7 @@ class CliMemoryChat(BaseMemoryChat):
     def memory_service(self) -> BaseMemoryService:
         """
         Property to access the memory service. If the service is initially set as a string,
-        it will be looked up in the memory service dictionary of context, initialized,
+        it will be looked up in the memory service dictionary of global context, initialized,
         and then returned as an instance of `BaseMemoryService`. Ensures the memory service
         is properly started before use.
 
@@ -90,15 +82,13 @@ class CliMemoryChat(BaseMemoryChat):
             BaseMemoryService: An active memory service instance.
 
         Raises:
-            ValueError: If the declaration of memory service is not found in the memory service dictionary of context.
+            ValueError: If the declaration of memory service is not found in the memory service dictionary of global context.
         """
         if isinstance(self._memory_service, str):
-            if self._memory_service not in self.context.memory_service_dict:
-                raise ValueError(f"Missing declaration of memory_service in context: {self._memory_service}")
-
-            self._memory_service: BaseMemoryService = self.context.memory_service_dict[self._memory_service]
-            # init service & update kwargs
-            self._memory_service.init_service(human_name=self.human_name, assistant_name=self.assistant_name)
+            if self._memory_service not in G_CONTEXT.memory_service_conf_dict:
+                raise ValueError("Missing declaration of memory_service in yaml configuration: " + self._memory_service)
+            self._memory_service = G_CONTEXT.memory_service_conf_dict[self._memory_service]
+            self._memory_service.init_service()
             self._memory_service.start_backend_service()
         return self._memory_service
 
@@ -109,21 +99,37 @@ class CliMemoryChat(BaseMemoryChat):
         context's model dictionary.
 
         Raises:
-            ValueError: If the declaration of generation model is not found in the model dictionary of context .
+            ValueError: If the declaration of generation model is not found in the model dictionary of global context .
 
         Returns:
             BaseModel: An actual generation model instance.
         """
         if isinstance(self._generation_model, str):
-            if self._generation_model not in self.context.model_dict:
+            if self._generation_model not in G_CONTEXT.model_conf_dict:
                 raise ValueError(f"Missing declaration of generation model in yaml config: {self._generation_model}")
-            self._generation_model = self.context.model_dict[self._generation_model]
+            self._generation_model = G_CONTEXT.model_conf_dict[self._generation_model]
         return self._generation_model
 
-    def chat_with_memory(self, query: str, role_name: str = "") -> ModelResponse | ModelResponseGen:
-        if not role_name:
-            role_name = self.human_name
-        new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name=role_name, content=query)
+    def chat_with_memory(self, query: str, remember_response: bool = False) -> ModelResponse | ModelResponseGen:
+        """
+        Engages in a conversation with the AI model, utilizing conversation memory.
+        The function sends the user's query, incorporates conversation history and memory,
+        and optionally remembers the AI's response based on the user's preference.
+
+        Args:
+            query (str): The user's input or query for the AI.
+            remember_response (bool, optional): Flag indicating whether to save the AI's response to memory.
+                Defaults to False.
+
+        Returns:
+        - ModelResponse: In non-streaming mode, returns a complete AI response.
+        - ModelResponseGen: In streaming mode, returns a generator yielding AI response parts.
+
+        Side Effects:
+            - Updates the conversation memory with the query of user and (optionally) the response of AI.
+            - Retrieves and includes historical messages and memory content in the context of conversation.
+        """
+        new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name=self.human_name, content=query)
         self.memory_service.add_messages(new_message)
 
         messages: List[Message] = []
@@ -146,9 +152,16 @@ class CliMemoryChat(BaseMemoryChat):
         self.logger.info(f"messages={messages}")
 
         # Invoke the Language Model with the constructed message context, respecting streaming setting
-        return self.generation_model.call(messages=messages,
-                                          stream=self.generation_stream,
-                                          **self.generation_model_kwargs)
+        generated = self.generation_model.call(messages=messages, stream=self.stream, **self.generation_model_kwargs)
+
+        # In non-streaming interactions, explicitly save the AI's reply to memory if instructed
+        if remember_response:
+            assert not self.stream  # Ensure we're not in streaming mode when remembering responses
+            generated.message.role_name = self.assistant_name
+            self.memory_service.add_messages(generated.message)
+
+        # Return the AI's response directly or as a generator based on the streaming mode
+        return generated
 
     @staticmethod
     def parse_query_command(query: str):
@@ -212,6 +225,10 @@ class CliMemoryChat(BaseMemoryChat):
                 questionary.print(text=f" /{cmd}:", style="bold")
                 questionary.print(text=f"  {desc}")
 
+        elif command == "stream":
+            self.stream = not self.stream
+            questionary.print(f"set stream: {self.stream}")
+
         elif command in self.memory_service.op_description_dict:
             refresh_time = kwargs.pop("refresh_time", "")
             if refresh_time and refresh_time.isdigit():
@@ -273,13 +290,14 @@ class CliMemoryChat(BaseMemoryChat):
                 questionary.print("> ", end="", style="fg:yellow")
                 questionary.print(f"{self.assistant_name}: ", end="", style="bold")
 
-                # Fetch and display AI's response
+                # Fetch and display AI's response, with support for streaming
                 self.memory_service.start_backend_service()
-                if self.generation_stream:
+                if self.stream:
                     model_response = None
                     for model_response in self.chat_with_memory(query=query):
                         questionary.print(model_response.delta, end="")
                     questionary.print("")
+
                 else:
                     model_response = self.chat_with_memory(query=query)
                     questionary.print(model_response.message.content)

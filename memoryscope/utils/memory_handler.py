@@ -36,7 +36,7 @@ class MemoryHandler(object):
             BaseMemoryStore: The memory store instance associated with this worker.
         """
         if self._memory_store is None:
-            self._memory_store = G_CONTEXT.memory_store
+            self._memory_store = G_CONTEXT.memory_store_conf
         return self._memory_store
 
     def clear(self):

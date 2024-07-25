@@ -47,10 +47,7 @@ def camelcase_to_underscore(name: str) -> str:
     return re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
 
 
-def init_instance_by_config(config: dict,
-                            default_class_path: str = "memoryscope",
-                            suffix_name: str = "",
-                            **kwargs):
+def init_instance_by_config(config: dict, default_class_dir: str = "memoryscope", **kwargs):
     """
     Initialize an instance of a class specified in the configuration dictionary.
 
@@ -62,12 +59,9 @@ def init_instance_by_config(config: dict,
     Args:
         config (dict): A dictionary containing the configuration, including 
                        the 'class' key that specifies the class's module path.
-        default_class_path (str, optional): The default module path prefix 
+        default_class_dir (str, optional): The default module path prefix 
                                             to use if not explicitly defined in 
                                             'config'. Defaults to "memory_scope".
-        suffix_name (str, optional): A string to append to the class name, 
-                                     ensuring the final class name ends with it.
-                                     Defaults to "".
         **kwargs: Additional keyword arguments to pass to the class constructor.
 
     Returns:
@@ -80,21 +74,22 @@ def init_instance_by_config(config: dict,
         raise RuntimeError("empty class path!")
     user_defined: bool = config_copy.pop("user_defined", False)
 
-    class_name_split = origin_class_path.split(".")
-    class_name: str = class_name_split[-1]
-    if suffix_name and not class_name.lower().endswith(suffix_name.lower()):
-        class_name = f"{class_name}_{suffix_name}"
-        class_name_split[-1] = class_name
+    class_path_list = []
+    if not user_defined and default_class_dir and not origin_class_path.startswith(default_class_dir):
+        class_path_list.append(default_class_dir)
 
-    class_paths = []
-    if not user_defined and default_class_path and not origin_class_path.startswith(default_class_path):
-        class_paths.append(default_class_path)
-    class_paths.extend(class_name_split)
-    module = import_module(".".join(class_paths))
+    class_path_split = origin_class_path.split(".")
+    class_file_name: str = class_path_split[-1]
 
-    cls_name = underscore_to_camelcase(class_name)
+    class_name = underscore_to_camelcase(class_file_name)
+    if class_name == class_file_name:
+        class_path_list.extend(class_path_split[-1:])
+    else:
+        class_path_list.extend(class_path_split)
+
+    module = import_module(".".join(class_path_list))
     config_copy.update(kwargs)
-    return getattr(module, cls_name)(**config_copy)
+    return getattr(module, class_name)(**config_copy)
 
 
 def prompt_to_msg(system_prompt: str,

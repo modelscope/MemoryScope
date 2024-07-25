@@ -1,45 +1,39 @@
-import threading
 from abc import ABCMeta, abstractmethod
 from typing import List, Dict
 
 from memoryscope.memory.operation.base_operation import BaseOperation
+from memoryscope.memoryscope_context import MemoryscopeContext
 from memoryscope.scheme.message import Message
 from memoryscope.utils.logger import Logger
 
 
 class BaseMemoryService(metaclass=ABCMeta):
     """
-    An abstract base class for managing memory operations within a multi-threaded context.
+    An abstract base class for managing memory operations within a multithreaded context.
     It sets up the infrastructure for operation handling, message storage, and synchronization,
     along with logging capabilities and customizable configurations.
     """
 
-    def __init__(self,
-                 memory_operations: Dict[str, dict],
-                 retrieve_memory_key: str = "retrieve_memory",
-                 read_message_key: str = "read_message",
-                 **kwargs):
+    def __init__(self, memory_operations: Dict[str, dict], context: MemoryscopeContext, **kwargs):
         """
         Initializes the BaseMemoryService with operation definitions, keys for memory access,
         and additional keyword arguments for flexibility.
 
         Args:
             memory_operations (Dict[str, dict]): A dictionary defining available memory operations.
-            retrieve_memory_key (str): The key indicating a retrieve memory operation. Defaults to "retrieve_memory".
-            read_message_key (str): The key for reading messages. Defaults to "read_message".
             **kwargs: Additional parameters to customize service behavior.
         """
-        self.memory_operations: Dict[str, dict] = memory_operations
-        self.retrieve_memory_key: str = retrieve_memory_key
-        self.read_message_key: str = read_message_key
+        self.memory_operations_conf: Dict[str, dict] = memory_operations
+        self.context: MemoryscopeContext = context
 
         self._operation_dict: Dict[str, BaseOperation] = {}
         self._op_description_dict: Dict[str, str] = {}
-        self.chat_messages: List[Message] = []
-        self.message_lock = threading.Lock()
 
         self.logger = Logger.get_logger()
         self.kwargs = kwargs
+
+    def update_kwargs(self, **kwargs):
+        pass
 
     @abstractmethod
     def add_messages(self, messages: List[Message] | Message):

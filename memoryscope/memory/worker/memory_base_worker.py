@@ -87,7 +87,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseModel: The embedding model used for converting text into vector representations.
         """
         if isinstance(self._embedding_model, str):
-            self._embedding_model = G_CONTEXT.model_dict[self._embedding_model]
+            self._embedding_model = G_CONTEXT.model_conf_dict[self._embedding_model]
             # ⭐ Retrieve the actual model instance when the attribute is a string reference
         return self._embedding_model
 
@@ -101,7 +101,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseModel: The model used for text generation.
         """
         if isinstance(self._generation_model, str):
-            self._generation_model = G_CONTEXT.model_dict[self._generation_model]
+            self._generation_model = G_CONTEXT.model_conf_dict[self._generation_model]
             # ⭐ Retrieve the model instance if currently a string reference
         return self._generation_model
 
@@ -115,7 +115,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseModel: The rank model instance used for ranking tasks.
         """
         if isinstance(self._rank_model, str):
-            self._rank_model = G_CONTEXT.model_dict[self._rank_model]  # Fetch model instance if string reference
+            self._rank_model = G_CONTEXT.model_conf_dict[self._rank_model]  # Fetch model instance if string reference
         return self._rank_model
 
     @property
@@ -128,7 +128,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseMemoryStore: The memory store instance used for inserting, updating, retrieving and deleting operations.
         """
         if self._memory_store is None:
-            self._memory_store = G_CONTEXT.memory_store
+            self._memory_store = G_CONTEXT.memory_store_conf
         return self._memory_store
 
     @property
@@ -141,7 +141,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseMonitor: The monitoring component instance.
         """
         if self._monitor is None:
-            self._monitor = G_CONTEXT.monitor
+            self._monitor = G_CONTEXT.monitor_conf
         return self._monitor
 
     @property

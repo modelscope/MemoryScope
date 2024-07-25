@@ -28,6 +28,9 @@ class MemoryScopeService(BaseMemoryService):
         self.contextual_msg_min_count: int = contextual_msg_min_count
         assert history_msg_count >= contextual_msg_max_count >= contextual_msg_min_count
 
+        self.chat_messages: List[Message] = []
+        self.message_lock = threading.Lock()
+
     def add_messages(self, messages: List[Message] | Message):
         """
         Adds a single message or a list of messages to the chat history, ensuring the message list
