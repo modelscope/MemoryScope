@@ -25,15 +25,11 @@ class BaseMemoryService(metaclass=ABCMeta):
         """
         self.memory_operations_conf: Dict[str, dict] = memory_operations
         self.context: MemoryscopeContext = context
+        self.kwargs = kwargs
 
         self._operation_dict: Dict[str, BaseOperation] = {}
         self._op_description_dict: Dict[str, str] = {}
-
         self.logger = Logger.get_logger()
-        self.kwargs = kwargs
-
-    def update_kwargs(self, **kwargs):
-        pass
 
     @abstractmethod
     def add_messages(self, messages: List[Message] | Message):

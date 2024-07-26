@@ -1,11 +1,11 @@
 import time
 from typing import List
 
+
 from memoryscope.constants.common_constants import CHAT_KWARGS, RESULT, CHAT_MESSAGES
 from memoryscope.memory.operation.base_operation import BaseOperation, OPERATION_TYPE
 from memoryscope.memory.operation.base_workflow import BaseWorkflow
 from memoryscope.scheme.message import Message
-from memoryscope.utils.global_context import G_CONTEXT
 from memoryscope.utils.logger import Logger
 
 
@@ -30,7 +30,7 @@ class BackendOperation(BaseWorkflow, BaseOperation):
 
         self._operation_status_run: bool = False
         self._loop_switch: bool = False
-        self._run_thread = None
+        self._backend_task = None
 
         self.logger = Logger.get_logger()
 
@@ -114,10 +114,12 @@ class BackendOperation(BaseWorkflow, BaseOperation):
         """
         if not self._loop_switch:
             self._loop_switch = True
-            self._run_thread = G_CONTEXT.thread_pool.submit(self._loop_operation)
+            self._backend_task = G_CONTEXT.thread_pool.submit(self._loop_operation)
 
-    def stop_operation_backend(self):
+    def stop_operation_backend(self, wait_task_end: bool = False):
         """
         Stops the background operation loop by setting the _loop_switch to False.
         """
         self._loop_switch = False
+        if wait_task_end and self._backend_task:
+            self._backend_task.result()

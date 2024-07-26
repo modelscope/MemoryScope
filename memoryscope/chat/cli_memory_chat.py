@@ -25,6 +25,7 @@ class CliMemoryChat(BaseMemoryChat):
         "exit": "Exit the CLI.",
         "clear": "Clear the command history.",
         "help": "Display available CLI commands and their descriptions.",
+        "stream": "Toggle between getting streamed responses from the model."
     }
 
     def __init__(self,
@@ -121,10 +122,27 @@ class CliMemoryChat(BaseMemoryChat):
         return self._generation_model
 
     def chat_with_memory(self, query: str, role_name: str = "") -> ModelResponse | ModelResponseGen:
+        """
+        Engages in a conversation with the AI model, utilizing conversation memory.
+        The function sends the user's query, incorporates conversation history and memory,
+        and optionally remembers the AI's response based on the user's preference.
+
+        Args:
+            query (str): The user's input or query for the AI.
+            role_name (str, optional): The user's name, default value is human_name.
+
+        Returns:
+        - ModelResponse: In non-streaming mode, returns a complete AI response.
+        - ModelResponseGen: In streaming mode, returns a generator yielding AI response parts.
+
+        Side Effects:
+            - Updates the conversation memory with the query of user and (optionally) the response of AI.
+            - Retrieves and includes historical messages and memory content in the context of conversation.
+        """
         if not role_name:
             role_name = self.human_name
         new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name=role_name, content=query)
-        self.memory_service.add_messages(new_message)
+        self.add_messages(new_message)
 
         messages: List[Message] = []
 
@@ -147,7 +165,7 @@ class CliMemoryChat(BaseMemoryChat):
 
         # Invoke the Language Model with the constructed message context, respecting streaming setting
         return self.generation_model.call(messages=messages,
-                                          stream=self.generation_stream,
+                                          stream=self.stream,
                                           **self.generation_model_kwargs)
 
     @staticmethod
@@ -212,6 +230,10 @@ class CliMemoryChat(BaseMemoryChat):
                 questionary.print(text=f" /{cmd}:", style="bold")
                 questionary.print(text=f"  {desc}")
 
+        elif command == "stream":
+            self.stream = not self.stream
+            questionary.print(f"set stream: {self.stream}")
+
         elif command in self.memory_service.op_description_dict:
             refresh_time = kwargs.pop("refresh_time", "")
             if refresh_time and refresh_time.isdigit():
@@ -275,7 +297,7 @@ class CliMemoryChat(BaseMemoryChat):
 
                 # Fetch and display AI's response
                 self.memory_service.start_backend_service()
-                if self.generation_stream:
+                if self.stream:
                     model_response = None
                     for model_response in self.chat_with_memory(query=query):
                         questionary.print(model_response.delta, end="")
@@ -286,7 +308,7 @@ class CliMemoryChat(BaseMemoryChat):
 
                 # Append AI's response to the conversation memory
                 model_response.message.role_name = self.assistant_name
-                self.memory_service.add_messages(model_response.message)
+                self.add_messages(model_response.message)
 
             except KeyboardInterrupt:
                 # Handle user interruption and confirm exit

@@ -12,8 +12,8 @@ class BaseMemoryChat(metaclass=ABCMeta):
     It outlines the method to initiate a chat session leveraging memory data, which concrete subclasses must implement.
     """
 
-    def __init__(self, generation_stream: bool = True, **kwargs):
-        self.generation_stream: bool = generation_stream
+    def __init__(self, stream: bool = True, **kwargs):
+        self.stream: bool = stream
         self.kwargs: dict = kwargs
         self.logger = Logger.get_logger()
 
@@ -32,9 +32,6 @@ class BaseMemoryChat(metaclass=ABCMeta):
             subclass.
         """
 
-    def add_message(self, messages: List[Message] | Message):
-        self.memory_service.add_messages(messages)
-
     @property
     def memory_service(self) -> BaseMemoryService:
         """
@@ -44,6 +41,12 @@ class BaseMemoryChat(metaclass=ABCMeta):
             NotImplementedError: This method should be implemented in a subclass.
         """
         raise NotImplementedError
+
+    def add_messages(self, messages: List[Message] | Message):
+        self.memory_service.add_messages(messages)
+
+    def do_memory_operation(self, op_name: str, **kwargs):
+        return self.memory_service.do_operation(op_name=op_name, **kwargs)
 
     def run(self):
         """
