@@ -7,7 +7,7 @@ from llama_index.core.schema import TextNode, NodeWithScore, QueryBundle
 from memoryscope.models.base_model import BaseModel
 from memoryscope.scheme.memory_node import MemoryNode
 from memoryscope.storage.base_memory_store import BaseMemoryStore
-from memoryscope.storage.llama_index_sync_elasticsearch import SyncElasticsearchStore, _AsyncDenseVectorStrategy, \
+from memoryscope.storage.llama_index_sync_elasticsearch import SyncElasticsearchStore, ESCombinedRetrieveStrategy, \
     _to_elasticsearch_filter
 from memoryscope.utils.logger import Logger
 
@@ -18,18 +18,16 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                  embedding_model: BaseModel,
                  index_name: str,
                  es_url: str,
-                 use_hybrid: bool = True,
-                 emb_dims: int = 1536,
+                 retrieve_mode: str = "dense",
+                 hybrid_alpha: float = None, 
                  **kwargs):
+        self.emb_dims = None
         self.index_name = index_name
-        self.emb_dims = emb_dims
         self.embedding_model: BaseModel = embedding_model
         self.es_store = SyncElasticsearchStore(index_name=index_name,
                                                es_url=es_url,
-                                               retrieval_strategy=_AsyncDenseVectorStrategy(hybrid=use_hybrid,
-                                                                                            alpha=0.5), # weights of vector similarity,
-                                                                                                        # while the weights of BM25 is 1-alpha.
-                                                                                                        # when alpha=None, then rrf fusion is uesd.
+                                               retrieval_strategy=ESCombinedRetrieveStrategy(retrieve_mode=retrieve_mode,
+                                                                                             hybrid_alpha=hybrid_alpha), 
                                                **kwargs)
 
         # TODO The llamaIndex utilizes some deprecated functions, hence langchain logs warning messages. By
@@ -40,7 +38,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         self.logger = Logger.get_logger()
 
     def retrieve_memories(self,
-                          query: str = "",
+                          query: str = "**--**",
                           top_k: int = 3,
                           filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
         # if index is not created, return []
@@ -55,10 +53,13 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter, "fields": ['embedding']},
                                             similarity_top_k=top_k,
                                             sparse_top_k=top_k)
-        if not query:
+        if not query and self.emb_dims:
             query = QueryBundle(query_str='**--**', embedding=self.dummy_query_vector())
 
         text_nodes = retriever.retrieve(query)
+        if text_nodes and text_nodes[0].embedding:
+            self.emb_dims = len(text_nodes[0].embedding)
+
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
     async def a_retrieve_memories(self,
@@ -82,6 +83,10 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
             query = QueryBundle(query_str='**--**', embedding=self.dummy_query_vector())
 
         text_nodes: List[NodeWithScore] = await retriever.aretrieve(query)
+
+        if text_nodes and text_nodes[0].embedding:
+            self.emb_dims = len(text_nodes[0].embedding)
+
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
     def batch_insert(self, nodes: List[MemoryNode]):
