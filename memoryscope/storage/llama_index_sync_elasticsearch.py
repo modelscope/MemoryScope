@@ -132,6 +132,21 @@ def _mode_must_match_retrieval_strategy(
 
 
 class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
+
+    
+    def __init__(
+        self,
+        *,
+        distance: DistanceMetric = DistanceMetric.COSINE,
+        model_id: Optional[str] = None,
+        hybrid: bool = False,
+        rrf: Union[bool, Dict[str, Any]] = True,
+        text_field: Optional[str] = "text_field",
+        alpha: Optional[float] = None,
+    ):
+        super().__init__(distance=distance, model_id=model_id, hybrid=hybrid, rrf=rrf, text_field=text_field)
+        self.alpha = alpha
+
     def _hybrid(self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int) -> Dict[str, Any]:
         # Add a query to the knn query.
         # RRF is used to even the score from the knn query and text query
@@ -155,18 +170,19 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
                                 "match": {
                                     self.text_field: {
                                         "query": query,
+                                        "boost": (1 - self.alpha) if self.alpha is not None else 1.0,
                                     }
-                                }
+                                },
                             }
                         ],
                         "filter": filter,
-                    }
+                    },
                 },
             }
 
-            if isinstance(self.rrf, Dict):
+            if self.alpha is None and isinstance(self.rrf, Dict):
                 query_body["rank"] = {"rrf": self.rrf}
-            elif isinstance(self.rrf, bool) and self.rrf is True:
+            elif self.alpha is None and isinstance(self.rrf, bool) and self.rrf is True:
                 query_body["rank"] = {"rrf": {"window_size": top_k}}
 
         return query_body
@@ -190,6 +206,7 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
             "field": vector_field,
             "k": k,
             "num_candidates": num_candidates,
+            "boost": self.alpha if self.alpha is not None else 1.0,
         }
 
         if query_vector is not None:
@@ -676,6 +693,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         ):
             total_rank = sum(top_k_scores)
             top_k_scores = [rank for rank in top_k_scores]
+            print("top_k_scores:", top_k_scores)
             # top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
             # top_k_scores = [total_rank - rank / total_rank for rank in top_k_scores]
 
