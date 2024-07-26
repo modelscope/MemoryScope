@@ -22,14 +22,25 @@ class SetQueryWorker(MemoryBaseWorker):
         along with its creation timestamp.
         """
         query = ""  # Default query value
-        query_timestamp = int(datetime.datetime.now().timestamp())  # Current timestamp as default
+        timestamp = int(datetime.datetime.now().timestamp())  # Current timestamp as default
 
         if "query" in self.chat_kwargs:
-            # Check if a specific 'query' has been provided via chat kwargs
+            # set query if exists
             query = self.chat_kwargs["query"]
             if not query:
                 query = ""
             query = query.strip()
+
+            # set ts if exists
+            _timestamp = self.chat_kwargs.get("timestamp")
+            if _timestamp and isinstance(_timestamp, int):
+                timestamp = _timestamp
+
+            # check role_name
+            role_name = self.chat_kwargs.get("role_name")
+            if role_name:
+                assert role_name == self.target_name, \
+                    f"role_name={role_name} is not supported in human/assistant memory workflow!"
 
         elif self.chat_messages:
             # If no explicit query is given, use the content of the latest chat message
@@ -37,7 +48,13 @@ class SetQueryWorker(MemoryBaseWorker):
             if chat_messages:
                 message = chat_messages[-1]
                 query = message.content
-                query_timestamp = message.time_created
+                timestamp = message.time_created
+
+                # check role_name
+                role_name = message.role_name
+                if role_name:
+                    assert role_name == self.target_name, \
+                        f"role_name={role_name} is not supported in human/assistant memory workflow!"
 
         # Store the determined query and its timestamp in the context
-        self.set_context(QUERY_WITH_TS, (query, query_timestamp))
+        self.set_context(QUERY_WITH_TS, (query, timestamp))

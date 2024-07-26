@@ -18,19 +18,27 @@ class BaseMemoryChat(metaclass=ABCMeta):
         self.logger = Logger.get_logger()
 
     @abstractmethod
-    def chat_with_memory(self, query: str, role_name: str = ""):
+    def get_new_message(self, query: str, role_name: str = "") -> Message:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_system_message_with_memory(self, memories: str) -> Message:
+        raise NotImplementedError
+
+    @abstractmethod
+    def chat_with_memory(self,
+                         query: str,
+                         role_name: str = "",
+                         remember_response: bool = True):
         """
         Initiates a chat interaction using the memory service, with the provided query as input.
 
         Args:
             query (str): The user's query or message to start the chat.
             role_name (str): The role's name.
-
-        Returns:
-            This method should return the chat response generated after processing the query
-            with the associated memory context. The actual return type and content are defined by the implementing
-            subclass.
+            remember_response (bool): whether update memory service.
         """
+        raise NotImplementedError
 
     @property
     def memory_service(self) -> BaseMemoryService:
@@ -44,6 +52,9 @@ class BaseMemoryChat(metaclass=ABCMeta):
 
     def add_messages(self, messages: List[Message] | Message):
         self.memory_service.add_messages(messages)
+
+    def start_backend_service(self):
+        self.memory_service.start_backend_service()
 
     def do_memory_operation(self, op_name: str, **kwargs):
         return self.memory_service.do_operation(op_name=op_name, **kwargs)

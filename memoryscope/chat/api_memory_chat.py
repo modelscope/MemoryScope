@@ -74,7 +74,6 @@ class ApiMemoryChat(BaseMemoryChat):
             self._memory_service: BaseMemoryService = self.context.memory_service_dict[self._memory_service]
             # init service & update kwargs
             self._memory_service.init_service(human_name=self.human_name, assistant_name=self.assistant_name)
-            self._memory_service.start_backend_service()
         return self._memory_service
 
     @property
@@ -95,62 +94,68 @@ class ApiMemoryChat(BaseMemoryChat):
             self._generation_model = self.context.model_dict[self._generation_model]
         return self._generation_model
 
-    def chat_with_memory(self, query: str, role_name: str = "") -> ModelResponse | ModelResponseGen:
-        """
-        Engages in a conversation with the AI model, utilizing conversation memory.
-        The function sends the user's query, incorporates conversation history and memory,
-        and optionally remembers the AI's response based on the user's preference.
-
-        Args:
-            query (str): The user's input or query for the AI.
-            role_name (str, optional): The user's name, default value is human_name.
-
-        Returns:
-        - ModelResponse: In non-streaming mode, returns a complete AI response.
-        - ModelResponseGen: In streaming mode, returns a generator yielding AI response parts.
-
-        Side Effects:
-            - Updates the conversation memory with the query of user and (optionally) the response of AI.
-            - Retrieves and includes historical messages and memory content in the context of conversation.
-        """
+    def get_new_message(self, query: str, role_name: str = "") -> Message:
         if not role_name:
             role_name = self.human_name
-        new_message: Message = Message(role=MessageRoleEnum.USER.value, role_name=role_name, content=query)
-        self.add_messages(new_message)
+        return Message(role=MessageRoleEnum.USER.value, role_name=role_name, content=query)
 
-        messages: List[Message] = []
-
+    def get_system_message_with_memory(self, memories: str) -> Message:
         # Incorporate memory into the system prompt if available
         system_prompt = self.prompt_handler.system_prompt
-        memories: str = self.memory_service.retrieve_memory()
         if memories:
             memory_prompt = self.prompt_handler.memory_prompt
             system_prompt = "\n".join([x.strip() for x in [system_prompt, memory_prompt, memories]])
-        messages.append(Message(role=MessageRoleEnum.SYSTEM, content=system_prompt))
+        return Message(role=MessageRoleEnum.SYSTEM, content=system_prompt)
+
+    def chat_with_memory(self,
+                         query: str,
+                         role_name: str = "",
+                         remember_response: bool = True):
+
+        chat_messages: List[Message] = []
+
+        new_message: Message = self.get_new_message(query=query, role_name=role_name)
+
+        # To retrieve memory, prepare the query timestamp and role name by adding new_message.
+        memories: str = self.memory_service.retrieve_memory(query=new_message.content,
+                                                            role_name=new_message.role_name,
+                                                            timestamp=new_message.time_created)
+
+        # format system_message with memories
+        system_message: Message = self.get_system_message_with_memory(memories=memories)
+        chat_messages.append(system_message)
 
         # Include past conversation history in the message list
         history_messages = self.memory_service.read_message()
         if history_messages:
-            messages.extend(history_messages)
+            chat_messages.extend(history_messages)
 
         # Append the current user's message to the conversation context
-        messages.append(new_message)
-        self.logger.info(f"messages={messages}")
+        chat_messages.append(new_message)
+        self.logger.info(f"chat_messages={chat_messages}")
 
-        result = self.generation_model.call(messages=messages, stream=self.stream, **self.generation_model_kwargs)
+        resp = self.generation_model.call(messages=chat_messages, stream=self.stream, **self.generation_model_kwargs)
 
         if self.stream:
-            assert isinstance(result, ModelResponseGen)
+            assert isinstance(resp, ModelResponseGen)
             model_response: ModelResponse | None = None
-            for model_response in result:
+            for model_response in resp:
                 yield model_response
 
-            if model_response and model_response.message:
-                self.add_messages(model_response.message)
+            if remember_response:
+                if model_response and model_response.message:
+                    model_response.message.role_name = self.assistant_name
+                    self.memory_service.add_messages([new_message, model_response.message])
+                else:
+                    self.logger.info("model_response or model_response.message is empty!")
 
         else:
-            assert isinstance(result, ModelResponse)
-            model_response: ModelResponse = result
-            if model_response and model_response.message:
-                self.add_messages(model_response.message)
+            assert isinstance(resp, ModelResponse)
+            model_response: ModelResponse = resp
+            if remember_response:
+                if model_response and model_response.message:
+                    model_response.message.role_name = self.assistant_name
+                    self.memory_service.add_messages([new_message, model_response.message])
+                else:
+                    self.logger.info("model_response or model_response.message is empty!")
             return model_response

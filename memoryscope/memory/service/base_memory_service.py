@@ -31,25 +31,6 @@ class BaseMemoryService(metaclass=ABCMeta):
         self._op_description_dict: Dict[str, str] = {}
         self.logger = Logger.get_logger()
 
-    @abstractmethod
-    def add_messages(self, messages: List[Message] | Message):
-        raise NotImplementedError
-
-    @abstractmethod
-    def do_operation(self, op_name: str, **kwargs):
-        """
-        Abstract method defining the interface for executing a specific operation by its name.
-        This method must be implemented by subclasses to provide the actual operation logic.
-
-        Args:
-            op_name (str): The name identifying the operation to be performed.
-            **kwargs: Additional keyword arguments required for the operation execution.
-
-        Raises:
-            NotImplementedError: This exception is raised when the method is not overridden in a subclass.
-        """
-        raise NotImplementedError
-
     @property
     def op_description_dict(self) -> Dict[str, str]:
         """
@@ -63,27 +44,9 @@ class BaseMemoryService(metaclass=ABCMeta):
             self._op_description_dict = {k: v.description for k, v in self._operation_dict.items()}
         return self._op_description_dict
 
-    def retrieve_memory(self):
-        """
-        Executes the operation associated with retrieved memory.
-        Asserts that the operation for retrieved memory has been initialized.
-
-        Returns:
-            Any: The result of the retrieved memory operation.
-        """
-        assert self.retrieve_memory_key in self._operation_dict, f"op={self.retrieve_memory_key} is not inited!"
-        return self.do_operation(self.retrieve_memory_key)
-
-    def read_message(self):
-        """
-        Executes the operation associated with reading messages.
-        Asserts that the operation for reading messages has been initialized.
-
-        Returns:
-            Any: The result of the read message operation.
-        """
-        assert self.read_message_key in self._operation_dict, f"op={self.read_message_key} is not inited!"
-        return self.do_operation(self.read_message_key)
+    @abstractmethod
+    def add_messages(self, messages: List[Message] | Message):
+        raise NotImplementedError
 
     @abstractmethod
     def init_service(self, **kwargs):
@@ -94,3 +57,27 @@ class BaseMemoryService(metaclass=ABCMeta):
 
     def stop_backend_service(self):
         pass
+
+    def do_operation(self, op_name: str, **kwargs):
+        """
+        Executes a specific operation by its name with provided keyword arguments.
+
+        Args:
+            op_name (str): The name of the operation to execute.
+            **kwargs: Keyword arguments for the operation's execution.
+
+        Returns:
+            The result of the operation execution, if any. Otherwise, None.
+
+        Raises:
+            Warning: If the operation name is not initialized in `_operation_dict`.
+        """
+        if op_name not in self._operation_dict:
+            self.logger.warning(f"op_name={op_name} is not inited!")
+            return
+        return self._operation_dict[op_name].run_operation(**kwargs)
+
+    def __getattr__(self, name: str):
+        return lambda **kwargs: self.do_operation(name, **kwargs)
+
+
