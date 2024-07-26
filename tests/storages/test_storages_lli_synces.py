@@ -20,7 +20,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             "index_name": "0708_8",
             "es_url": "http://localhost:9200",
             "embedding_model": emb,
-            "use_hybrid": True
+            "retrieve_mode": "dense",
 
         }
         self.es_store = LlamaIndexEsMemoryStore(**config)
@@ -152,13 +152,6 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             ),
         ]
 
-    def test_retrieve(self):
-        filter_dict = {
-            "timestamp": 12,
-            # "memory_id": "bbb456",
-            # "score_rank": 0,
-        }
-
         for node in self.data:
             self.es_store.insert(node)
 
@@ -171,36 +164,27 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             meta_data={"5": "5"},
             timestamp=13
         ))
+    
+    def test_retrieve(self):
+        filter_dict = {
+            "timestamp": 12,
+            # "memory_id": "bbb456",
+            # "score_rank": 0,
+        }
+
+        
         res = self.es_store.retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15)
         print(len(res))
         print(res)
 
-        self.es_store.update(MemoryNode(
-            content="test update",
-            memory_type="profile",
-            user_id="6",
-            status="invalid",
-            memory_id="ggg567",
-            timestamp=13,
-
-        ))
-        res = self.es_store.retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15)
+    def test_retrieve_wo_query(self,):
+        filter_dict = {
+            "memory_id": "bbb456",
+        }
+        res = self.es_store.retrieve_memories(filter_dict=filter_dict, top_k=15)
         print(len(res))
         print(res)
 
-        self.es_store.delete(MemoryNode(
-            content="test update",
-            memory_type="profile",
-            user_id="6",
-            status="invalid",
-            memory_id="ggg567",
-            timestamp=13,
-        ))
-        import asyncio
-        res = asyncio.run(self.es_store.a_retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15))
-        # res = self.es_store.async_retrieve(query="hacker", filter_dict=filter_dict, top_k=10)
-        print(len(res))
-        print(res)
 
     def tearDown(self):
         self.es_store.close()
