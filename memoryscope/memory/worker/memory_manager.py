@@ -2,21 +2,20 @@ from typing import Dict, List
 
 from memoryscope.enumeration.action_status_enum import ActionStatusEnum
 from memoryscope.enumeration.store_status_enum import StoreStatusEnum
+from memoryscope.memoryscope_context import MemoryscopeContext
 from memoryscope.scheme.memory_node import MemoryNode
 from memoryscope.storage.base_memory_store import BaseMemoryStore
-from memoryscope.utils.global_context import G_CONTEXT
 from memoryscope.utils.logger import Logger
 
 
-class MemoryHandler(object):
+class MemoryManager(object):
     """
     The `MemoryHandler` class manages memory nodes with memory store.
     """
 
-    def __init__(self):
-        """
-        Initializes the MemoryHandler.
-        """
+    def __init__(self, memoryscope_context: MemoryscopeContext):
+        self.memoryscope_context: MemoryscopeContext = memoryscope_context
+
         self._memory_store: BaseMemoryStore | None = None
 
         # dict: memory_id -> MemoryNode
@@ -36,7 +35,7 @@ class MemoryHandler(object):
             BaseMemoryStore: The memory store instance associated with this worker.
         """
         if self._memory_store is None:
-            self._memory_store = G_CONTEXT.memory_store_conf
+            self._memory_store = self.memoryscope_context.memory_store
         return self._memory_store
 
     def clear(self):

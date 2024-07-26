@@ -39,17 +39,15 @@ class FrontendOperation(BaseWorkflow, BaseOperation):
         Returns:
             Any: The result obtained from executing the workflow.
         """
-        self.context.clear()
 
-        # Include the most recent messages in the operation context
-        self.context[CHAT_MESSAGES] = self.chat_messages
-
-        # Add additional arguments to the context
-        kwargs.update(**self.kwargs)
-        self.context[CHAT_KWARGS] = kwargs
+        # prepare kwargs
+        workflow_kwargs = {
+            CHAT_MESSAGES: self.chat_messages,
+            CHAT_KWARGS: {**kwargs, **self.kwargs},
+        }
 
         # Execute the workflow with the prepared context
-        self.run_workflow()
+        self.run_workflow(**workflow_kwargs)
 
         # Retrieve the result from the context after workflow execution
         return self.context.get(RESULT)

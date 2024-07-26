@@ -33,7 +33,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
         }
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(top_k=self.retrieve_not_reflected_top_k,
                                                                       filter_dict=filter_dict)
-        self.memory_handler.set_memories(NOT_REFLECTED_NODES, nodes)
+        self.memory_manager.set_memories(NOT_REFLECTED_NODES, nodes)
 
     @timer
     def retrieve_not_updated_memory(self):
@@ -52,7 +52,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
         }
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(top_k=self.retrieve_not_updated_top_k,
                                                                       filter_dict=filter_dict)
-        self.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
+        self.memory_manager.set_memories(NOT_UPDATED_NODES, nodes)
 
     @timer
     def retrieve_insight_memory(self):
@@ -70,7 +70,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
         }
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(top_k=self.retrieve_insight_top_k,
                                                                       filter_dict=filter_dict)
-        self.memory_handler.set_memories(INSIGHT_NODES, nodes)
+        self.memory_manager.set_memories(INSIGHT_NODES, nodes)
 
     @timer
     def retrieve_today_memory(self, dt: str):
@@ -93,7 +93,7 @@ class LoadMemoryWorker(MemoryBaseWorker):
         nodes: List[MemoryNode] = self.memory_store.retrieve_memories(top_k=self.retrieve_today_top_k,
                                                                       filter_dict=filter_dict)
 
-        self.memory_handler.set_memories(TODAY_NODES, nodes)
+        self.memory_manager.set_memories(TODAY_NODES, nodes)
 
     def _run(self):
         """

@@ -42,11 +42,11 @@ class GetObservationWorker(MemoryBaseWorker):
             MemoryTypeEnum.CONVERSATION.value: message.content,
             TIME_INFER: time_infer,
             "keywords": keywords,
-            **{k: str(v) for k, v in dt_handler.dt_info_dict.items()},
+            **{k: str(v) for k, v in dt_handler.get_dt_info_dict(self.language).items()},
         }
 
         if time_infer:
-            dt_info_dict = DatetimeHandler.extract_date_parts(input_string=time_infer)
+            dt_info_dict = DatetimeHandler.extract_date_parts(input_string=time_infer, language=self.language)
             meta_data.update({f"event_{k}": str(v) for k, v in dt_info_dict.items()})
             obs_content = (f"{obs_content} ({self.get_language_value(TIME_INFER_WORD)}"
                            f"{self.get_language_value(COLON_WORD)} {time_infer})")
@@ -68,7 +68,7 @@ class GetObservationWorker(MemoryBaseWorker):
         """
         filter_messages = []
         for msg in self.chat_messages:
-            if not DatetimeHandler.has_time_word(query=msg.content):
+            if not DatetimeHandler.has_time_word(query=msg.content, language=self.language):
                 filter_messages.append(msg)
 
         self.logger.info(f"after filter_messages.size from {len(self.chat_messages)} to {len(filter_messages)}")
@@ -184,4 +184,4 @@ class GetObservationWorker(MemoryBaseWorker):
                                                       keywords=keywords))
 
         # Stores the extracted and structured observations in the conversation memory
-        self.memory_handler.set_memories(self.OBS_STORE_KEY, new_obs_nodes)
+        self.memory_manager.set_memories(self.OBS_STORE_KEY, new_obs_nodes)

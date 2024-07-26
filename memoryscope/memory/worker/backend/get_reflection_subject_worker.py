@@ -36,7 +36,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
         """
         dt_handler = DatetimeHandler()
         # Prepare metadata with current datetime info
-        meta_data = {k: str(v) for k, v in dt_handler.dt_info_dict.items()}
+        meta_data = {k: str(v) for k, v in dt_handler.get_dt_info_dict.items()}
 
         return MemoryNode(user_name=self.user_name,
                           target_name=self.target_name,
@@ -58,8 +58,8 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
         - Parsing the model's responses for new insight keys.
         - Creating new insight nodes and updating the memory status accordingly.
         """
-        not_reflected_nodes: List[MemoryNode] = self.memory_handler.get_memories(NOT_REFLECTED_NODES)
-        insight_nodes: List[MemoryNode] = self.memory_handler.get_memories(INSIGHT_NODES)
+        not_reflected_nodes: List[MemoryNode] = self.memory_manager.get_memories(NOT_REFLECTED_NODES)
+        insight_nodes: List[MemoryNode] = self.memory_manager.get_memories(INSIGHT_NODES)
 
         # Count unaudited nodes
         not_reflected_count = len(not_reflected_nodes)
@@ -104,7 +104,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
         new_insight_keys = ResponseTextParser(response.message.content, self.__class__.__name__).parse_v2()
         if new_insight_keys:
             for insight_key in new_insight_keys:
-                self.memory_handler.add_memories(INSIGHT_NODES, self.new_insight_node(insight_key))
+                self.memory_manager.add_memories(INSIGHT_NODES, self.new_insight_node(insight_key))
 
         # Mark unaudited nodes as reflected
         for node in not_reflected_nodes:

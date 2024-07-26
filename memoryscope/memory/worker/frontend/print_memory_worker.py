@@ -22,7 +22,7 @@ class PrintMemoryWorker(MemoryBaseWorker):
         3. Set the formatted string back into the worker's context
         """
         # get long-term memory
-        memory_node_list: List[MemoryNode] = self.memory_handler.get_memories(RETRIEVE_MEMORY_NODES)
+        memory_node_list: List[MemoryNode] = self.memory_manager.get_memories(RETRIEVE_MEMORY_NODES)
         memory_node_list = sorted(memory_node_list, key=lambda x: x.timestamp, reverse=True)
 
         observation_memory_list: List[str] = []

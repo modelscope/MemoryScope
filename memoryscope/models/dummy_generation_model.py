@@ -20,9 +20,6 @@ class DummyGenerationModel(BaseModel):
     m_type: ModelEnum = ModelEnum.GENERATION_MODEL
 
     class DummyModel:
-        """
-        An inner class representing the dummy model placeholder.
-        """
         pass
 
     MODEL_REGISTRY.register("dummy_generation", DummyModel)
@@ -79,12 +76,12 @@ class DummyGenerationModel(BaseModel):
                 for delta in call_result:
                     model_response.message.content += delta
                     model_response.delta = delta
-                    time.sleep(0.1)  # ⭐ Introduce a delay to simulate streaming
+                    time.sleep(0.1)
                     yield model_response
 
             return gen()
         else:
-            model_response.message.content = "".join(call_result)  # ⭐ Concatenate results for non-streaming
+            model_response.message.content = "".join(call_result)
             return model_response
 
     def _call(self, stream: bool = False, **kwargs) -> ModelResponse | ModelResponseGen:

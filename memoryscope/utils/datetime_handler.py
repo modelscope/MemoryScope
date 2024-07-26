@@ -1,8 +1,9 @@
 import datetime
 import re
+from typing import List
 
 from memoryscope.constants.language_constants import WEEKDAYS, DATATIME_WORD_LIST, MONTH_DICT
-from memoryscope.utils.global_context import G_CONTEXT
+from memoryscope.enumeration.language_enum import LanguageEnum
 from memoryscope.utils.logger import Logger
 
 
@@ -40,7 +41,7 @@ class DatetimeHandler(object):
 
         self._dt_info_dict: dict | None = None
 
-    def _parse_dt_info(self):
+    def _parse_dt_info(self, language: LanguageEnum):
         """
         Parses the datetime object (_dt) into a dictionary containing detailed date and time components,
         including language-specific weekday representation.
@@ -52,17 +53,16 @@ class DatetimeHandler(object):
         """
         return {
             "year": self._dt.year,
-            "month": MONTH_DICT[G_CONTEXT.language][self._dt.month - 1],
+            "month": MONTH_DICT[language][self._dt.month - 1],
             "day": self._dt.day,
             "hour": self._dt.hour,
             "minute": self._dt.minute,
             "second": self._dt.second,
             "week": self._dt.isocalendar().week,
-            "weekday": WEEKDAYS[G_CONTEXT.language][self._dt.isocalendar().weekday - 1],
+            "weekday": WEEKDAYS[language][self._dt.isocalendar().weekday - 1],
         }
 
-    @property
-    def dt_info_dict(self):
+    def get_dt_info_dict(self, language: LanguageEnum):
         """
         Property method to get the dictionary containing parsed datetime information.
         If None, initialize using `_parse_dt_info`.
@@ -71,7 +71,7 @@ class DatetimeHandler(object):
             dict: A dictionary with parsed datetime information.
         """
         if self._dt_info_dict is None:
-            self._dt_info_dict = self._parse_dt_info()
+            self._dt_info_dict = self._parse_dt_info(language=language)
         return self._dt_info_dict
 
     @classmethod
@@ -207,7 +207,7 @@ class DatetimeHandler(object):
         return date_info
 
     @classmethod
-    def extract_date_parts(cls, input_string: str) -> dict:
+    def extract_date_parts(cls, input_string: str, language: LanguageEnum) -> dict:
         """
         Extracts various date components from the input string based on the current language context.
 
@@ -217,48 +217,51 @@ class DatetimeHandler(object):
 
         Args:
             input_string (str): The string containing date information to be parsed.
+            language (str): current language.
 
         Returns:
             dict: A dictionary containing extracted date components, or an empty dictionary if parsing fails.
         """
-        func_name = f"extract_date_parts_{G_CONTEXT.language.value}"
+        func_name = f"extract_date_parts_{language}"
         if not hasattr(cls, func_name):
-            cls.logger.warning(f"language={G_CONTEXT.language.value} needs to complete extract_date_parts func!")
+            cls.logger.warning(f"language={language} needs to complete extract_date_parts func!")
             return {}
         return getattr(cls, func_name)(input_string=input_string)
 
     @classmethod
-    def has_time_word_cn(cls, query: str) -> bool:
+    def has_time_word_cn(cls, query: str, datetime_word_list: List[str]) -> bool:
         """
         Check if the input query contains any datetime-related words based on the cn language context.
 
         Args:
             query (str): The input string to check for datetime-related words.
+            datetime_word_list (list[str]): datetime keywords
 
         Returns:
             bool: True if the query contains at least one datetime-related word, False otherwise.
         """
         contain_datetime = False
         # TODO use re
-        for datetime_word in DATATIME_WORD_LIST[G_CONTEXT.language]:
+        for datetime_word in datetime_word_list:
             if datetime_word in query:
                 contain_datetime = True
                 break
         return contain_datetime
 
     @classmethod
-    def has_time_word_en(cls, query: str) -> bool:
+    def has_time_word_en(cls, query: str, datetime_word_list: List[str]) -> bool:
         """
         Check if the input query contains any datetime-related words based on the en language context.
 
         Args:
             query (str): The input string to check for datetime-related words.
+            datetime_word_list (list[str]): datetime keywords
 
         Returns:
             bool: True if the query contains at least one datetime-related word, False otherwise.
         """
         contain_datetime = False
-        for datetime_word in DATATIME_WORD_LIST[G_CONTEXT.language]:
+        for datetime_word in datetime_word_list:
             datetime_word = datetime_word.lower()
             # TODO fix strip
             if datetime_word in [x.strip().lower().strip(",").strip(".").strip("?").strip(":")
@@ -268,12 +271,18 @@ class DatetimeHandler(object):
         return contain_datetime
 
     @classmethod
-    def has_time_word(cls, query: str) -> bool:
-        func_name = f"has_time_word_{G_CONTEXT.language.value}"
+    def has_time_word(cls, query: str, language: LanguageEnum) -> bool:
+        func_name = f"has_time_word_{language}"
         if not hasattr(cls, func_name):
-            cls.logger.warning(f"language={G_CONTEXT.language.value} needs to complete has_time_word func!")
+            cls.logger.warning(f"language={language} needs to complete has_time_word function!")
             return False
-        return getattr(cls, func_name)(query=query)
+
+        if language not in DATATIME_WORD_LIST:
+            cls.logger.warning(f"language={language} is missing in DATATIME_WORD_LIST!")
+            return False
+
+        datetime_word_list = DATATIME_WORD_LIST[language]
+        return getattr(cls, func_name)(query=query, datetime_word_list=datetime_word_list)
 
     def datetime_format(self, dt_format: str = "%Y%m%d") -> str:
         """
@@ -287,7 +296,7 @@ class DatetimeHandler(object):
         """
         return self._dt.strftime(dt_format)
 
-    def string_format(self, string_format: str) -> str:
+    def string_format(self, string_format: str, language: LanguageEnum) -> str:
         """
         Format the datetime information stored in the instance using a custom string format.
 
@@ -297,7 +306,7 @@ class DatetimeHandler(object):
         Returns:
             str: A formatted datetime string.
         """
-        return string_format.format(**self.dt_info_dict)
+        return string_format.format(**self.get_dt_info_dict(language=language))
 
     @property
     def timestamp(self) -> int:

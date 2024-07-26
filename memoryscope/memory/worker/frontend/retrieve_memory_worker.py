@@ -139,4 +139,4 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
             self.logger.info(f"recall_stage: content={node.content} score={node.score_rerank} type={node.memory_type} "
                              f"store_status={node.store_status} action_status={node.action_status}")
 
-            self.memory_handler.set_memories(RETRIEVE_MEMORY_NODES, memory_node_list)
+            self.memory_manager.set_memories(RETRIEVE_MEMORY_NODES, memory_node_list)

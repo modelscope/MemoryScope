@@ -76,7 +76,7 @@ class MemoryScopeService(BaseMemoryService):
             name=name,
             chat_messages=self.chat_messages,
             message_lock=self.message_lock,
-            context=self.context,
+            memoryscope_context=self.context,
             contextual_msg_max_count=self.contextual_msg_max_count,
             contextual_msg_min_count=self.contextual_msg_min_count)
 

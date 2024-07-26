@@ -46,7 +46,7 @@ class UpdateMemoryWorker(MemoryBaseWorker):
         if not self.memory_key:
             return
 
-        return self.memory_handler.get_memories(keys=self.memory_key)
+        return self.memory_manager.get_memories(keys=self.memory_key)
 
     def delete_all(self):
         """
@@ -55,7 +55,7 @@ class UpdateMemoryWorker(MemoryBaseWorker):
         Returns:
             List[MemoryNode]: A list of all MemoryNode objects marked for deletion.
         """
-        nodes: List[MemoryNode] = self.memory_handler.get_memories(keys="all")
+        nodes: List[MemoryNode] = self.memory_manager.get_memories(keys="all")
         for node in nodes:
             node.action_status = ActionStatusEnum.DELETE.value
         self.logger.info(f"delete_all.size={len(nodes)}")
@@ -74,7 +74,7 @@ class UpdateMemoryWorker(MemoryBaseWorker):
                 return
 
             i = 0
-            nodes: List[MemoryNode] = self.memory_handler.get_memories(keys="all")
+            nodes: List[MemoryNode] = self.memory_manager.get_memories(keys="all")
             for node in nodes:
                 if node.content == query:
                     i += 1
@@ -88,7 +88,7 @@ class UpdateMemoryWorker(MemoryBaseWorker):
                 return
 
             i = 0
-            nodes: List[MemoryNode] = self.memory_handler.get_memories(keys="all")
+            nodes: List[MemoryNode] = self.memory_manager.get_memories(keys="all")
             for node in nodes:
                 if node.memory_id == memory_id:
                     i += 1
@@ -109,4 +109,4 @@ class UpdateMemoryWorker(MemoryBaseWorker):
         if not hasattr(self, method):
             self.logger.info(f"method={method} is missing!")
             return
-        self.memory_handler.update_memories(nodes=getattr(self, method)())
+        self.memory_manager.update_memories(nodes=getattr(self, method)())

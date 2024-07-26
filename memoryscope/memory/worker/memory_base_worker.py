@@ -1,14 +1,16 @@
 from abc import ABCMeta
 from typing import List, Dict, Any
 
-from memoryscope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS, MEMORY_HANDLER
+from memoryscope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS, MEMORYSCOPE_CONTEXT, \
+    WORKFLOW_NAME, MEMORY_MANAGER
+from memoryscope.enumeration.language_enum import LanguageEnum
 from memoryscope.memory.worker.base_worker import BaseWorker
+from memoryscope.memory.worker.memory_manager import MemoryManager
+from memoryscope.memoryscope_context import MemoryscopeContext
 from memoryscope.models.base_model import BaseModel
 from memoryscope.scheme.message import Message
 from memoryscope.storage.base_memory_store import BaseMemoryStore
 from memoryscope.storage.base_monitor import BaseMonitor
-from memoryscope.utils.global_context import G_CONTEXT
-from memoryscope.utils.memory_handler import MemoryHandler
 from memoryscope.utils.prompt_handler import PromptHandler
 
 
@@ -78,6 +80,18 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self.get_context(CHAT_KWARGS)
 
     @property
+    def workflow_name(self) -> str:
+        return self.get_context(WORKFLOW_NAME)
+
+    @property
+    def memoryscope_context(self) -> MemoryscopeContext:
+        return self.get_context(MEMORYSCOPE_CONTEXT)
+
+    @property
+    def language(self) -> LanguageEnum:
+        return self.memoryscope_context.language
+
+    @property
     def embedding_model(self) -> BaseModel:
         """
         Property to get the embedding model. If the model is currently stored as a string,
@@ -87,8 +101,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseModel: The embedding model used for converting text into vector representations.
         """
         if isinstance(self._embedding_model, str):
-            self._embedding_model = G_CONTEXT.model_conf_dict[self._embedding_model]
-            # ⭐ Retrieve the actual model instance when the attribute is a string reference
+            self._embedding_model = self.memoryscope_context.model_dict[self._embedding_model]
         return self._embedding_model
 
     @property
@@ -101,8 +114,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseModel: The model used for text generation.
         """
         if isinstance(self._generation_model, str):
-            self._generation_model = G_CONTEXT.model_conf_dict[self._generation_model]
-            # ⭐ Retrieve the model instance if currently a string reference
+            self._generation_model = self.memoryscope_context.model_dict[self._generation_model]
         return self._generation_model
 
     @property
@@ -115,7 +127,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseModel: The rank model instance used for ranking tasks.
         """
         if isinstance(self._rank_model, str):
-            self._rank_model = G_CONTEXT.model_conf_dict[self._rank_model]  # Fetch model instance if string reference
+            self._rank_model = self.memoryscope_context.model_dict[self._rank_model]
         return self._rank_model
 
     @property
@@ -128,7 +140,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseMemoryStore: The memory store instance used for inserting, updating, retrieving and deleting operations.
         """
         if self._memory_store is None:
-            self._memory_store = G_CONTEXT.memory_store_conf
+            self._memory_store = self.memoryscope_context.memory_store
         return self._memory_store
 
     @property
@@ -141,7 +153,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             BaseMonitor: The monitoring component instance.
         """
         if self._monitor is None:
-            self._monitor = G_CONTEXT.monitor_conf
+            self._monitor = self.memoryscope_context.monitor
         return self._monitor
 
     @property
@@ -154,7 +166,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             str: The name of the assistant.
         """
         if self._user_name is None:
-            self._user_name = G_CONTEXT.meta_data["assistant_name"]
+            self._user_name = self.memoryscope_context.meta_data["assistant_name"]
         return self._user_name
 
     @property
@@ -166,7 +178,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             str: The readable name of the human.
         """
         if self._target_name is None:
-            self._target_name = G_CONTEXT.meta_data["human_name"]
+            self._target_name = self.memoryscope_context.meta_data["human_name"]
         return self._target_name
 
     @property
@@ -182,19 +194,18 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self._prompt_handler
 
     @property
-    def memory_handler(self) -> MemoryHandler:
+    def memory_manager(self) -> MemoryManager:
         """
         Lazily initializes and returns the MemoryHandler instance.
 
         Returns:
             MemoryHandler: An instance of MemoryHandler.
         """
-        if not self.has_content(MEMORY_HANDLER):
-            self.set_context(MEMORY_HANDLER, MemoryHandler())  # Initialize the memory handler if not present
-        return self.get_context(MEMORY_HANDLER)
+        if not self.has_content(MEMORY_MANAGER):
+            self.set_context(MEMORY_MANAGER, MemoryManager(self.memoryscope_context))
+        return self.get_context(MEMORY_MANAGER)
 
-    @staticmethod
-    def get_language_value(languages: dict | List[dict]) -> Any | List[Any]:
+    def get_language_value(self, languages: dict | List[dict]) -> Any | List[Any]:
         """
         Retrieves the value(s) corresponding to the current language context.
 
@@ -205,5 +216,5 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             Any | list[Any]: The value or list of values matching the current language setting.
         """
         if isinstance(languages, list):
-            return [x[G_CONTEXT.language] for x in languages]
-        return languages[G_CONTEXT.language]
+            return [x[self.language] for x in languages]
+        return languages[self.language]

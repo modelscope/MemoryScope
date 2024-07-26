@@ -140,7 +140,7 @@ class TestWorkersCn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(NEW_OBS_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -172,7 +172,7 @@ class TestWorkersCn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(NEW_OBS_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -202,7 +202,7 @@ class TestWorkersCn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(NEW_OBS_WITH_TIME_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_WITH_TIME_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -224,30 +224,30 @@ class TestWorkersCn(unittest.TestCase):
             MemoryNode(user_name="AI", target_name="用户", content="用户在阿里巴巴工作"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result1 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="用户在京东工作"),
             MemoryNode(user_name="AI", target_name="用户", content="用户在美团干活"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result2 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="用户在京东工作或有工作经验。"),
             MemoryNode(user_name="AI", target_name="用户", content="用户跳槽至openai工作。"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result3 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="我喜欢吃西瓜"),
@@ -257,10 +257,10 @@ class TestWorkersCn(unittest.TestCase):
             MemoryNode(user_name="AI", target_name="用户", content="我爱吃苹果和香蕉"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result4 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         worker.logger.info(f"result1={result1}")
         worker.logger.info(f"result2={result2}")
@@ -293,11 +293,11 @@ class TestWorkersCn(unittest.TestCase):
             MemoryNode(content="用户想知道维持广泛社交关系的方法。"),
         ]
 
-        worker.memory_handler.set_memories(NOT_REFLECTED_NODES, nodes)
-        worker.memory_handler.set_memories(INSIGHT_NODES, [])
+        worker.memory_manager.set_memories(NOT_REFLECTED_NODES, nodes)
+        worker.memory_manager.set_memories(INSIGHT_NODES, [])
         worker.run()
 
-        result = [node.key for node in worker.memory_handler.get_memories(INSIGHT_NODES)]
+        result = [node.key for node in worker.memory_manager.get_memories(INSIGHT_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.get_reflection={result}")
         return worker
@@ -320,10 +320,10 @@ class TestWorkersCn(unittest.TestCase):
         nodes = [
             MemoryNode(content="用户喜欢打王者荣耀"),
         ]
-        worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
+        worker.memory_manager.set_memories(NOT_UPDATED_NODES, nodes)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(INSIGHT_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(INSIGHT_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.update_insight={result}")
 
@@ -345,10 +345,10 @@ class TestWorkersCn(unittest.TestCase):
             MemoryNode(content="用户在北京工作，感到压力大，寻求放松方式。"),
             MemoryNode(content="用户在上海工作。"),
         ]
-        worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
+        worker.memory_manager.set_memories(NOT_UPDATED_NODES, nodes)
         worker.unit_test_flag = True
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.long_contra_repeat={result}")

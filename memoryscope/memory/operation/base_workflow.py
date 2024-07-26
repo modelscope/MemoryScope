@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from itertools import zip_longest
 from typing import Dict, Any, List
 
-from memoryscope.constants.common_constants import WORKFLOW_NAME
+from memoryscope.constants.common_constants import WORKFLOW_NAME, MEMORYSCOPE_CONTEXT
 from memoryscope.memory.worker.base_worker import BaseWorker
 from memoryscope.memoryscope_context import MemoryscopeContext
 from memoryscope.utils.logger import Logger
@@ -22,6 +22,7 @@ class BaseWorkflow(object):
 
         self.name: str = name
         self.memoryscope_context: MemoryscopeContext = memoryscope_context
+        self.thread_pool: ThreadPoolExecutor = self.memoryscope_context.thread_pool
         self.workflow: str = workflow
         self.kwargs = kwargs
 
@@ -133,12 +134,11 @@ class BaseWorkflow(object):
 
             self.worker_dict[name] = init_instance_by_config(
                 config=self.memoryscope_context.worker_conf_dict[name],
-                suffix_name="worker",
                 name=name,
                 is_multi_thread=is_backend or self.worker_dict[name],
                 context=self.context,
                 context_lock=self.context_lock,
-                thread_pool=self.memoryscope_context.thread_pool,
+                thread_pool=self.thread_pool,
                 **kwargs)
 
     def _run_sub_workflow(self, worker_list: List[str]) -> bool:
@@ -150,7 +150,7 @@ class BaseWorkflow(object):
                 return False
         return True
 
-    def run_workflow(self):
+    def run_workflow(self, **kwargs):
         """
         Executes the workflow by orchestrating the steps defined in `self.workflow_worker_list`.
         This method supports both sequential and parallel execution of sub-workflows based on the structure
@@ -159,9 +159,18 @@ class BaseWorkflow(object):
         If a workflow part consists of a single item, it is executed sequentially. For parts with multiple items,
         they are submitted for parallel execution using a thread pool. The workflow will stop if any sub-workflow
         returns False.
+
+        Args:
+            **kwargs: Additional keyword arguments to be passed to context.
         """
         with Timer(f"workflow.{self.name}", time_log_type="wrap"):
-            self.context[WORKFLOW_NAME] = self.name
+            self.context.clear()
+
+            self.context.update({
+                WORKFLOW_NAME: self.name,
+                MEMORYSCOPE_CONTEXT: self.memoryscope_context,
+                **kwargs,
+            })
 
             # Iterate over each part of the workflow
             for workflow_part in self.workflow_worker_list:
@@ -174,7 +183,7 @@ class BaseWorkflow(object):
                     t_list = []
                     # Submit tasks to the thread pool
                     for sub_workflow in workflow_part:
-                        t_list.append(G_CONTEXT.thread_pool.submit(self._run_sub_workflow, sub_workflow))
+                        t_list.append(self.thread_pool.submit(self._run_sub_workflow, sub_workflow))
 
                     # Check results; if any task returns False, stop the workflow
                     flag = True

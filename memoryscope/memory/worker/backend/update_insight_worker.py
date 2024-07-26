@@ -95,7 +95,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
         content = f"{key}{self.get_language_value(COLON_WORD)} {insight_value}"
         insight_node.content = content
         insight_node.value = insight_value
-        insight_node.meta_data.update({k: str(v) for k, v in dt_handler.dt_info_dict.items()})
+        insight_node.meta_data.update({k: str(v) for k, v in dt_handler.get_dt_info_dict.items()})
         insight_node.timestamp = dt_handler.timestamp
         insight_node.dt = dt_handler.datetime_format()
         if insight_node.action_status == ActionStatusEnum.NONE.value:
@@ -175,9 +175,9 @@ class UpdateInsightWorker(MemoryBaseWorker):
         6. Gather the results of all update tasks.
         7. Mark processed nodes as updated in memory.
         """
-        insight_nodes: List[MemoryNode] = self.memory_handler.get_memories(INSIGHT_NODES)
-        not_updated_nodes: List[MemoryNode] = self.memory_handler.get_memories(NOT_UPDATED_NODES)
-        not_reflected_nodes: List[MemoryNode] = self.memory_handler.get_memories(keys=[NOT_REFLECTED_NODES,
+        insight_nodes: List[MemoryNode] = self.memory_manager.get_memories(INSIGHT_NODES)
+        not_updated_nodes: List[MemoryNode] = self.memory_manager.get_memories(NOT_UPDATED_NODES)
+        not_reflected_nodes: List[MemoryNode] = self.memory_manager.get_memories(keys=[NOT_REFLECTED_NODES,
                                                                                        NOT_UPDATED_NODES])
 
         if not insight_nodes:
@@ -216,7 +216,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         # delete empty nodes
         empty_nodes = [n for n in insight_nodes if not n.content.strip()]
-        self.memory_handler.delete_memories(empty_nodes)
+        self.memory_manager.delete_memories(empty_nodes)
 
         for node in not_updated_nodes:
             node.obs_updated = 1

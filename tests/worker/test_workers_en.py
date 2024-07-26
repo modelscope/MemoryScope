@@ -150,7 +150,7 @@ class TestWorkersEn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(NEW_OBS_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -193,7 +193,7 @@ class TestWorkersEn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(NEW_OBS_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -226,7 +226,7 @@ class TestWorkersEn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(NEW_OBS_WITH_TIME_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_WITH_TIME_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -248,30 +248,30 @@ class TestWorkersEn(unittest.TestCase):
             MemoryNode(user_name="AI", target_name="用户", content="User works at Alibaba"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result1 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="User works at JD.com"),
             MemoryNode(user_name="AI", target_name="用户", content="Users working in Meituan"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result2 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="User works at JD.com"),
             MemoryNode(user_name="AI", target_name="用户", content="User is working in Meituan"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result3 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="I like to eat watermelon"),
@@ -279,10 +279,10 @@ class TestWorkersEn(unittest.TestCase):
             MemoryNode(user_name="AI", target_name="用户", content="I don't like watermelon"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result4 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         worker.logger.info(f"result1={result1}")
         worker.logger.info(f"result2={result2}")
@@ -316,11 +316,11 @@ class TestWorkersEn(unittest.TestCase):
             MemoryNode(content="Users want to know how to maintain extensive social relationships."),
         ]
 
-        worker.memory_handler.set_memories(NOT_REFLECTED_NODES, nodes)
-        worker.memory_handler.set_memories(INSIGHT_NODES, [])
+        worker.memory_manager.set_memories(NOT_REFLECTED_NODES, nodes)
+        worker.memory_manager.set_memories(INSIGHT_NODES, [])
         worker.run()
 
-        result = [node.key for node in worker.memory_handler.get_memories(INSIGHT_NODES)]
+        result = [node.key for node in worker.memory_manager.get_memories(INSIGHT_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.get_reflection={result}")
         return worker
@@ -343,10 +343,10 @@ class TestWorkersEn(unittest.TestCase):
         nodes = [
             MemoryNode(content="Users like to play King of Glory"),
         ]
-        worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
+        worker.memory_manager.set_memories(NOT_UPDATED_NODES, nodes)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(INSIGHT_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(INSIGHT_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.update_insight={result}")
 
@@ -368,10 +368,10 @@ class TestWorkersEn(unittest.TestCase):
             MemoryNode(content="The user works in Beijing, feels stressed, and is looking for ways to relax."),
             MemoryNode(content="User works in Shanghai."),
         ]
-        worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
+        worker.memory_manager.set_memories(NOT_UPDATED_NODES, nodes)
         worker.unit_test_flag = True
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.long_contra_repeat={result}")

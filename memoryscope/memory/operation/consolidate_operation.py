@@ -3,10 +3,10 @@ from memoryscope.enumeration.message_role_enum import MessageRoleEnum
 from memoryscope.memory.operation.backend_operation import BackendOperation
 
 
-class SummaryObservationOp(BackendOperation):
+class ConsolidateOperation(BackendOperation):
 
     def __init__(self, **kwargs):
-        super(SummaryObservationOp, self).__init__(**kwargs)
+        super(ConsolidateOperation, self).__init__(**kwargs)
 
         self.message_lock = kwargs.get("message_lock", None)
         self.contextual_msg_min_count: int = kwargs.get("contextual_msg_min_count", 0)
@@ -43,17 +43,14 @@ class SummaryObservationOp(BackendOperation):
                              f"contextual_msg_min_count({self.contextual_msg_min_count}), skip.")
             return
 
-        self.context.clear()
-
-        # Add additional arguments to the context
-        kwargs.update(**self.kwargs)
-        self.context[CHAT_KWARGS] = kwargs
-
-        # Include the most recent messages in the operation context
-        self.context[CHAT_MESSAGES] = chat_messages
+        # prepare kwargs
+        workflow_kwargs = {
+            CHAT_MESSAGES: chat_messages,
+            CHAT_KWARGS: {**kwargs, **self.kwargs},
+        }
 
         # Execute the workflow with the prepared context
-        self.run_workflow()
+        self.run_workflow(**workflow_kwargs)
 
         # Retrieve the result from the context after workflow execution
         result = self.context.get(RESULT)

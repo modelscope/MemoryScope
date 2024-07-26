@@ -1,7 +1,6 @@
 import time
 from typing import List
 
-
 from memoryscope.constants.common_constants import CHAT_KWARGS, RESULT, CHAT_MESSAGES
 from memoryscope.memory.operation.base_operation import BaseOperation, OPERATION_TYPE
 from memoryscope.memory.operation.base_workflow import BaseWorkflow
@@ -54,17 +53,14 @@ class BackendOperation(BaseWorkflow, BaseOperation):
         Returns:
             Any: The result obtained after executing the workflow.
         """
-        self.context.clear()
-
-        # Add additional arguments to the context
-        kwargs.update(**self.kwargs)
-        self.context[CHAT_KWARGS] = kwargs
-
-        # Include the most recent messages in the operation context
-        self.context[CHAT_MESSAGES] = self.chat_messages
+        # prepare kwargs
+        workflow_kwargs = {
+            CHAT_MESSAGES: self.chat_messages,
+            CHAT_KWARGS: {**kwargs, **self.kwargs},
+        }
 
         # Execute the workflow with the prepared context
-        self.run_workflow()
+        self.run_workflow(**workflow_kwargs)
 
         # Retrieve the result from the context after workflow execution
         return self.context.get(RESULT)
@@ -114,8 +110,8 @@ class BackendOperation(BaseWorkflow, BaseOperation):
         """
         if not self._loop_switch:
             self._loop_switch = True
-            self._backend_task = G_CONTEXT.thread_pool.submit(self._loop_operation)
-            self.logger.info(f"start operation={operation.name}...")
+            self._backend_task = self.thread_pool.submit(self._loop_operation)
+            self.logger.info(f"start operation={self.name}...")
 
     def stop_operation_backend(self, wait_task_end: bool = False):
         """
@@ -128,5 +124,3 @@ class BackendOperation(BaseWorkflow, BaseOperation):
                 self.logger.info(f"stop operation={self.name}...")
             else:
                 self.logger.info(f"send stop signal to operation={self.name}...")
-
-

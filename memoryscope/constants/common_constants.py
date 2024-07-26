@@ -5,11 +5,13 @@
 
 WORKFLOW_NAME = "workflow_name"
 
+MEMORYSCOPE_CONTEXT = "memoryscope_context"
+
 RESULT = "result"
 
 CHAT_MESSAGES = "chat_messages"
 
-MEMORY_HANDLER = "memory_handler"
+MEMORY_MANAGER = "memory_manager"
 
 CHAT_KWARGS = "chat_kwargs"
 
