@@ -26,7 +26,10 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         self.embedding_model: BaseModel = embedding_model
         self.es_store = SyncElasticsearchStore(index_name=index_name,
                                                es_url=es_url,
-                                               retrieval_strategy=_AsyncDenseVectorStrategy(hybrid=use_hybrid),
+                                               retrieval_strategy=_AsyncDenseVectorStrategy(hybrid=use_hybrid,
+                                                                                            alpha=0.5), # weights of vector similarity,
+                                                                                                        # while the weights of BM25 is 1-alpha.
+                                                                                                        # when alpha=None, then rrf fusion is uesd.
                                                **kwargs)
 
         # TODO The llamaIndex utilizes some deprecated functions, hence langchain logs warning messages. By

@@ -35,12 +35,13 @@ class LlamaIndexRankModel(BaseModel):
             documents = [documents]
         assert query and documents and all(documents), \
             f"query or documents is empty! query={query}, documents={len(documents)}"
-
+        assert len(documents) < 500, \
+            f"The input documents of Dashscope rerank model should not larger than 500!"
         # Using -1.0 as dummy scores
         nodes = [NodeWithScore(node=Node(text=doc), score=-1.0) for doc in documents]
 
         model_response.meta_data.update({
-            "data": {"nodes": nodes, "query_str": query},
+            "data": {"nodes": nodes, "query_str": query, "top_n": len(documents)},
             "documents_map": {doc: idx for idx, doc in enumerate(documents)},
         })
 
@@ -76,6 +77,8 @@ class LlamaIndexRankModel(BaseModel):
         Returns:
             ModelResponse: A response object encapsulating the ranked nodes.
         """
+        self.model.top_n = model_response.meta_data["data"]["top_n"]
+        model_response.meta_data["data"].pop("top_n")
         model_response.raw = self.model.postprocess_nodes(**model_response.meta_data["data"])
 
     async def _async_call(self, **kwargs) -> ModelResponse:
