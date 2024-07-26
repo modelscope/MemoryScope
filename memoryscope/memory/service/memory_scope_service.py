@@ -1,3 +1,4 @@
+import threading
 from typing import List
 
 from memoryscope.memory.operation.base_operation import BaseOperation
@@ -11,6 +12,8 @@ class MemoryScopeService(BaseMemoryService):
                  history_msg_count: int = 100,
                  contextual_msg_max_count: int = 20,
                  contextual_msg_min_count: int = 0,
+                 human_name: str = None,
+                 assistant_name: str = None,
                  **kwargs):
         """
         init function.
@@ -20,13 +23,19 @@ class MemoryScopeService(BaseMemoryService):
                     it will not be included in the context to prevent token overflow.
             contextual_msg_min_count (int): The minimum context length in a conversation. If it is shorter than this
                     length, no conversation summary will be made and no long-term memory will be generated.
-            kwargs (dict): other kwargs
+            human_name (str): human name.
+            assistant_name (str): assistant name.
+            kwargs (dict): other kwargs.
         """
         super().__init__(**kwargs)
         self.history_msg_count: int = history_msg_count
         self.contextual_msg_max_count: int = contextual_msg_max_count
         self.contextual_msg_min_count: int = contextual_msg_min_count
         assert history_msg_count >= contextual_msg_max_count >= contextual_msg_min_count
+        if human_name:
+            self.context.meta_data["human_name"] = human_name
+        if assistant_name:
+            self.context.meta_data["assistant_name"] = assistant_name
 
         self.chat_messages: List[Message] = []
         self.message_lock = threading.Lock()
@@ -57,43 +66,28 @@ class MemoryScopeService(BaseMemoryService):
                 for _ in range(gap_size):
                     self.chat_messages.pop(0)
 
-    def do_operation(self, op_name: str, **kwargs):
-        """
-        Executes a specific operation by its name with provided keyword arguments.
-
-        Args:
-            op_name (str): The name of the operation to execute.
-            **kwargs: Keyword arguments for the operation's execution.
-
-        Returns:
-            The result of the operation execution, if any. Otherwise, None.
-
-        Raises:
-            Warning: If the operation name is not initialized in `_operation_dict`.
-        """
-        if op_name not in self._operation_dict:
-            self.logger.warning(f"op_name={op_name} is not inited!")  # Warn if operation not initialized
+    def register_operation(self, name: str, operation_config: dict, **kwargs):
+        if name in self._operation_dict:
+            self.logger.warning(f"op_name={name} is registered before!")
             return
-        return self._operation_dict[op_name].run_operation(**kwargs)  # Execute the operation
+
+        operation: BaseOperation = init_instance_by_config(
+            config=operation_config,
+            name=name,
+            chat_messages=self.chat_messages,
+            message_lock=self.message_lock,
+            context=self.context,
+            contextual_msg_max_count=self.contextual_msg_max_count,
+            contextual_msg_min_count=self.contextual_msg_min_count)
+
+        # Initialize workflow for each operation
+        operation.init_workflow(**kwargs)
+        self._operation_dict[name] = operation
+        self.logger.info(f"service={self.__class__.__name__} init operation={name}")
 
     def init_service(self, **kwargs):
-        for name, operation_config in self.memory_operations.items():
-            if name in self._operation_dict:
-                self.logger.warning(f"memory operation={name} is repeated!")
-                continue
-
-            # ⭐ Initialize operation instance by its config
-            operation: BaseOperation = init_instance_by_config(
-                config=operation_config,
-                name=name,
-                chat_messages=self.chat_messages,
-                message_lock=self.message_lock,
-                contextual_msg_max_count=self.contextual_msg_max_count,
-                contextual_msg_min_count=self.contextual_msg_min_count)
-            operation.init_workflow(**kwargs)  # Initialize workflow for each operation
-
-            self._operation_dict[name] = operation
-            self.logger.info(f"service={self.__class__.__name__} init operation={name}")
+        for name, operation_config in self.memory_operations_conf.items():
+            self.register_operation(name, operation_config, **kwargs)
 
     def start_backend_service(self):
         """
@@ -101,16 +95,12 @@ class MemoryScopeService(BaseMemoryService):
         """
         for _, operation in self._operation_dict.items():
             if operation.operation_type == "backend":
-                # Run backend operations
                 operation.run_operation_backend()
-                self.logger.info(f"start operation={operation.name}...")
 
-    def stop_backend_service(self):
+    def stop_backend_service(self, wait_service_end: bool = False):
         """
         Stops all backend operations that are currently running.
         """
         for _, operation in self._operation_dict.items():
             if operation.operation_type == "backend":
-                # Stop backend operations
-                operation.stop_operation_backend()
-                self.logger.info(f"stop operation={operation.name}...")
+                operation.stop_operation_backend(wait_task_end=wait_service_end)

@@ -25,3 +25,5 @@ class MemoryscopeContext(object):
     model_dict: dict = field(default_factory=lambda: {}, metadata={"help": "name -> model"})
 
     worker_conf_dict: dict = field(default_factory=lambda: {}, metadata={"help": "name -> worker_conf"})
+
+    meta_data: dict = field(default_factory=lambda: {})

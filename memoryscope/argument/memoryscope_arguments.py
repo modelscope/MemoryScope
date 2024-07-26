@@ -55,7 +55,7 @@ class MemoryscopeArguments(object):
 
     es_url: str = field(default="http://localhost:9200")
 
-    # TODO at xianzhe
-    retrieve_type: str = field(default="dense", metadata={"help": "es_retrieve_type: dense, sparse, hybrid"})
+    retrieve_mode: str = field(default="dense", metadata={
+        "help": "retrieve_mode: dense, sparse(not implemented), hybrid(not implemented)"})
 
     hybrid_alpha: float | None = field(default=1.0, metadata={"help": ""})

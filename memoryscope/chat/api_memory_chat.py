@@ -31,10 +31,12 @@ class ApiMemoryChat(BaseMemoryChat):
         self.human_name: str = human_name
         if not self.human_name:
             self.human_name = DEFAULT_HUMAN_NAME[self.context.language]
+        self.context.meta_data["human_name"] = self.human_name
 
         self.assistant_name: str = assistant_name
         if not self.assistant_name:
             self.assistant_name = "AI"
+        self.context.meta_data["assistant_name"] = self.assistant_name
 
         self._prompt_handler: PromptHandler | None = None
 
@@ -73,7 +75,7 @@ class ApiMemoryChat(BaseMemoryChat):
 
             self._memory_service: BaseMemoryService = self.context.memory_service_dict[self._memory_service]
             # init service & update kwargs
-            self._memory_service.init_service(human_name=self.human_name, assistant_name=self.assistant_name)
+            self._memory_service.init_service()
         return self._memory_service
 
     @property

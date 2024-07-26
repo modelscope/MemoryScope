@@ -46,10 +46,12 @@ class CliMemoryChat(BaseMemoryChat):
         self.human_name: str = human_name
         if not self.human_name:
             self.human_name = DEFAULT_HUMAN_NAME[self.context.language]
+        self.context.meta_data["human_name"] = self.human_name
 
         self.assistant_name: str = assistant_name
         if not self.assistant_name:
             self.assistant_name = "AI"
+        self.context.meta_data["assistant_name"] = self.assistant_name
 
         self._logo = char_logo("MemoryScope")
         self._prompt_handler: PromptHandler | None = None
@@ -99,7 +101,7 @@ class CliMemoryChat(BaseMemoryChat):
 
             self._memory_service: BaseMemoryService = self.context.memory_service_dict[self._memory_service]
             # init service & update kwargs
-            self._memory_service.init_service(human_name=self.human_name, assistant_name=self.assistant_name)
+            self._memory_service.init_service()
         return self._memory_service
 
     @property
@@ -257,7 +259,7 @@ class CliMemoryChat(BaseMemoryChat):
                 refresh_time = int(refresh_time)
                 self.memory_service.stop_backend_service()
                 while True:
-                    result = self.memory_service.do_operation(op_name=command, **kwargs)
+                    result = self.memory_service.do_operation(name=command, **kwargs)
                     os.system("clear")
                     self.print_logo()
                     if result:
@@ -269,7 +271,7 @@ class CliMemoryChat(BaseMemoryChat):
                     time.sleep(refresh_time)
 
             else:
-                result = self.memory_service.do_operation(op_name=command, **kwargs)
+                result = self.memory_service.do_operation(name=command, **kwargs)
                 if result:
                     if isinstance(result, list):
                         result = "\n".join([str(x) for x in result])

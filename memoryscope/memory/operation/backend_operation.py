@@ -115,11 +115,18 @@ class BackendOperation(BaseWorkflow, BaseOperation):
         if not self._loop_switch:
             self._loop_switch = True
             self._backend_task = G_CONTEXT.thread_pool.submit(self._loop_operation)
+            self.logger.info(f"start operation={operation.name}...")
 
     def stop_operation_backend(self, wait_task_end: bool = False):
         """
         Stops the background operation loop by setting the _loop_switch to False.
         """
         self._loop_switch = False
-        if wait_task_end and self._backend_task:
-            self._backend_task.result()
+        if self._backend_task:
+            if wait_task_end:
+                self._backend_task.result()
+                self.logger.info(f"stop operation={self.name}...")
+            else:
+                self.logger.info(f"send stop signal to operation={self.name}...")
+
+

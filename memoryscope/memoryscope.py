@@ -111,7 +111,7 @@ class MemoryScope(object):
             "embedding_model": "embedding_model",
             "index_name": arguments.es_index_name,
             "es_url": arguments.es_url,
-            "retrieve_type": arguments.retrieve_type,
+            "retrieve_mode": arguments.retrieve_mode,
             "hybrid_alpha": arguments.hybrid_alpha,
         }
 

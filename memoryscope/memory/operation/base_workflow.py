@@ -6,7 +6,7 @@ from typing import Dict, Any, List
 
 from memoryscope.constants.common_constants import WORKFLOW_NAME
 from memoryscope.memory.worker.base_worker import BaseWorker
-from memoryscope.utils.global_context import G_CONTEXT
+from memoryscope.memoryscope_context import MemoryscopeContext
 from memoryscope.utils.logger import Logger
 from memoryscope.utils.timer import Timer
 from memoryscope.utils.tool_functions import init_instance_by_config
@@ -16,13 +16,13 @@ class BaseWorkflow(object):
 
     def __init__(self,
                  name: str,
+                 memoryscope_context: MemoryscopeContext,
                  workflow: str = "",
-                 thread_pool: ThreadPoolExecutor = G_CONTEXT.thread_pool,
                  **kwargs):
 
         self.name: str = name
+        self.memoryscope_context: MemoryscopeContext = memoryscope_context
         self.workflow: str = workflow
-        self.thread_pool: ThreadPoolExecutor = thread_pool
         self.kwargs = kwargs
 
         self.workflow_worker_list: List[List[List[str]]] = []
@@ -128,17 +128,17 @@ class BaseWorkflow(object):
             This method modifies `self.worker_dict` in-place, replacing the keys with actual worker instances.
         """
         for name in list(self.worker_dict.keys()):
-            if name not in G_CONTEXT.worker_config:
-                raise RuntimeError(f"worker={name} is not exists in worker_config!")
+            if name not in self.memoryscope_context.worker_conf_dict:
+                raise RuntimeError(f"worker={name} is not exists in worker config!")
 
             self.worker_dict[name] = init_instance_by_config(
-                config=G_CONTEXT.worker_config[name],
+                config=self.memoryscope_context.worker_conf_dict[name],
                 suffix_name="worker",
                 name=name,
                 is_multi_thread=is_backend or self.worker_dict[name],
                 context=self.context,
                 context_lock=self.context_lock,
-                thread_pool=G_CONTEXT.thread_pool,
+                thread_pool=self.memoryscope_context.thread_pool,
                 **kwargs)
 
     def _run_sub_workflow(self, worker_list: List[str]) -> bool:

@@ -58,7 +58,7 @@ class BaseOperation(metaclass=ABCMeta):
         """
         pass
 
-    def stop_operation_backend(self):
+    def stop_operation_backend(self, wait_task_end: bool = False):
         """
         Placeholder method to stop any ongoing backend operations.
         Should be implemented in subclasses where backend operations are managed.

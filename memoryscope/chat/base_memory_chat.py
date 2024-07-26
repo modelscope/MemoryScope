@@ -56,8 +56,8 @@ class BaseMemoryChat(metaclass=ABCMeta):
     def start_backend_service(self):
         self.memory_service.start_backend_service()
 
-    def do_memory_operation(self, op_name: str, **kwargs):
-        return self.memory_service.do_operation(op_name=op_name, **kwargs)
+    def do_memory_operation(self, operation_name: str, **kwargs):
+        return self.memory_service.do_operation(name=operation_name, **kwargs)
 
     def run(self):
         """

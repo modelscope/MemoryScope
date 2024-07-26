@@ -28,24 +28,23 @@ class BaseMemoryService(metaclass=ABCMeta):
         self.kwargs = kwargs
 
         self._operation_dict: Dict[str, BaseOperation] = {}
-        self._op_description_dict: Dict[str, str] = {}
         self.logger = Logger.get_logger()
 
     @property
     def op_description_dict(self) -> Dict[str, str]:
         """
         Property to retrieve a dictionary mapping operation keys to their descriptions.
-        Lazily initializes the dictionary on first access.
-
         Returns:
             Dict[str, str]: A dictionary where keys are operation identifiers and values are their descriptions.
         """
-        if not self._op_description_dict:
-            self._op_description_dict = {k: v.description for k, v in self._operation_dict.items()}
-        return self._op_description_dict
+        return {k: v.description for k, v in self._operation_dict.items()}
 
     @abstractmethod
     def add_messages(self, messages: List[Message] | Message):
+        raise NotImplementedError
+
+    @abstractmethod
+    def register_operation(self, name: str, operation_config: dict, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
@@ -58,12 +57,12 @@ class BaseMemoryService(metaclass=ABCMeta):
     def stop_backend_service(self):
         pass
 
-    def do_operation(self, op_name: str, **kwargs):
+    def do_operation(self, name: str, **kwargs):
         """
         Executes a specific operation by its name with provided keyword arguments.
 
         Args:
-            op_name (str): The name of the operation to execute.
+            name (str): The name of the operation to execute.
             **kwargs: Keyword arguments for the operation's execution.
 
         Returns:
@@ -72,12 +71,11 @@ class BaseMemoryService(metaclass=ABCMeta):
         Raises:
             Warning: If the operation name is not initialized in `_operation_dict`.
         """
-        if op_name not in self._operation_dict:
-            self.logger.warning(f"op_name={op_name} is not inited!")
+        if name not in self._operation_dict:
+            self.logger.warning(f"operation={name} is not registered!")
             return
-        return self._operation_dict[op_name].run_operation(**kwargs)
+        return self._operation_dict[name].run_operation(**kwargs)
 
     def __getattr__(self, name: str):
-        return lambda **kwargs: self.do_operation(name, **kwargs)
-
-
+        assert name in self._operation_dict, f"operation={name} is not registered!"
+        return lambda **kwargs: self.do_operation(name=name, **kwargs)
