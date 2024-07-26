@@ -131,7 +131,7 @@ def _mode_must_match_retrieval_strategy(
         raise ValueError(f"to enable hybrid mode, it must be set in retrieval strategy")
 
 
-class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
+class ESCombinedRetrieveStrategy(AsyncDenseVectorStrategy):
 
     
     def __init__(
@@ -139,13 +139,21 @@ class _AsyncDenseVectorStrategy(AsyncDenseVectorStrategy):
         *,
         distance: DistanceMetric = DistanceMetric.COSINE,
         model_id: Optional[str] = None,
-        hybrid: bool = False,
+        retrieve_mode: str = "dense",
         rrf: Union[bool, Dict[str, Any]] = True,
         text_field: Optional[str] = "text_field",
-        alpha: Optional[float] = None,
-    ):
-        super().__init__(distance=distance, model_id=model_id, hybrid=hybrid, rrf=rrf, text_field=text_field)
-        self.alpha = alpha
+        hybrid_alpha: Optional[float] = None,
+    ):  
+        if retrieve_mode == "dense":
+            self.alpha = 1.0
+        elif retrieve_mode == "sparse":
+            # self.alpha = 0.0
+            raise NotImplementedError
+        elif retrieve_mode == "hybrid":
+            # self.alpha = hybrid_alpha
+            raise NotImplementedError
+            
+        super().__init__(distance=distance, model_id=model_id, hybrid=True, rrf=rrf, text_field=text_field)
 
     def _hybrid(self, query: str, knn: Dict[str, Any], filter: List[Dict[str, Any]], top_k: int) -> Dict[str, Any]:
         # Add a query to the knn query.
@@ -637,6 +645,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         else:
             filter = es_filter or []
         num_candidates = query.similarity_top_k * 10 if query.similarity_top_k <= 1000 else query.similarity_top_k
+
         hits = self._store.search(
             query=query.query_str,
             query_vector=query.query_embedding,
@@ -693,7 +702,6 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         ):
             total_rank = sum(top_k_scores)
             top_k_scores = [rank for rank in top_k_scores]
-            print("top_k_scores:", top_k_scores)
             # top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
             # top_k_scores = [total_rank - rank / total_rank for rank in top_k_scores]
 
