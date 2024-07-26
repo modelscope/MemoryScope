@@ -144,7 +144,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         return TextNode(id_=memory_node.memory_id,
                         text=memory_node.content,
                         embedding=embedding,
-                        metadata=memory_node.model_dump(exclude={"content", "vector"}))
+                        metadata=memory_node.model_dump(exclude={"content", "vector", "score_recall", "score_rank", "score_rerank"}))
 
     @staticmethod
     def _text_node_2_memory_node(text_node: NodeWithScore) -> MemoryNode:
@@ -158,4 +158,5 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
             MemoryNode: The converted MemoryNode with text and metadata from the NodeWithScore.
         """
         text_node.metadata["vector"] = text_node.embedding if text_node.embedding else []
+        text_node.metadata["score_recall"] = text_node.score
         return MemoryNode(content=text_node.text, **text_node.metadata)

@@ -702,7 +702,6 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         ):
             total_rank = sum(top_k_scores)
             top_k_scores = [rank for rank in top_k_scores]
-            print("top_k_scores:", top_k_scores)
             # top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
             # top_k_scores = [total_rank - rank / total_rank for rank in top_k_scores]
 
