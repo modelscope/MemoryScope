@@ -267,7 +267,7 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
                             }
                     }
                 )
-            result['bool'].update({"should": operands})  # ⭐ Add 'should' clause for OR logic
+            result['bool'].update({"should": operands})  # тнР Add 'should' clause for OR logic
             result['bool'].update({"minimum_should_match": 1})  # Ensure at least one 'should' match
         else:
             key_str = f"metadata.{key}.keyword" if isinstance(value, str) else f"metadata.{key}"
