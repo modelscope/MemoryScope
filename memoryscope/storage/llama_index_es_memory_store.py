@@ -27,8 +27,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         retrieval_strategy = ESCombinedRetrieveStrategy(retrieve_mode=retrieve_mode, hybrid_alpha=hybrid_alpha)
         self.es_store = SyncElasticsearchStore(index_name=index_name,
                                                es_url=es_url,
-                                               retrieval_strategy=ESCombinedRetrieveStrategy(retrieve_mode=retrieve_mode,
-                                                                                             hybrid_alpha=hybrid_alpha), 
+                                               retrieval_strategy=retrieval_strategy,
                                                **kwargs)
 
         # TODO The llamaIndex utilizes some deprecated functions, hence langchain logs warning messages. By
