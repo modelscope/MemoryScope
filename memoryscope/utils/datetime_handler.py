@@ -302,6 +302,7 @@ class DatetimeHandler(object):
 
         Args:
             string_format (str): A format string where placeholders are keys from `dt_info_dict`.
+            language (str): current language.
 
         Returns:
             str: A formatted datetime string.

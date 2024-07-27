@@ -26,7 +26,7 @@ class Timer(object):
         Args:
             name (str): The log name.
             time_log_type (str): The log type. Defaults to 'End'.
-            use_ms (bool): Use 'ms' as the time scale or not. Defaults to True.
+            use_ms (bool): Use 'ms' as the timescale or not. Defaults to True.
             stack_level (int): The stack level of log. Defaults to 2.
             float_precision (int): The precision of cost time. Defaults to 4.
 

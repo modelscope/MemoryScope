@@ -26,7 +26,7 @@ class Logger(logging.Logger):
                  max_bytes: int = 1024 * 1024 * 1024,
                  backup_count: int = 10):
         """
-        Initializes the Logger instance, setting up handlers for console and/or file logging based on provided parameters.
+        Initializes the Logger instance, setting up handlers for console and file logging based on provided parameters.
 
         Args:
             name (str): Identifier for the logger.

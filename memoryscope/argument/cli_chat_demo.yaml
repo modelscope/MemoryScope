@@ -3,6 +3,7 @@ global_config:
   thread_pool_max_workers: 5
   logger_name: memoryscope
   logger_name_time_suffix: %Y%m%d_%H%M%S
+  use_dummy_ranker: true
 
 memory_chat:
   cli_memory_chat:

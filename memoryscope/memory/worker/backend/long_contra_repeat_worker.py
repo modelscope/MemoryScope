@@ -111,7 +111,8 @@ class LongContraRepeatWorker(MemoryBaseWorker):
             return
 
         # Parses the model's response text to identify updates for memory nodes
-        idx_obs_info_list = ResponseTextParser(response.message.content, self.__class__.__name__).parse_v1()
+        idx_obs_info_list = ResponseTextParser(response.message.content, self.language,
+                                               self.__class__.__name__).parse_v1()
         if len(idx_obs_info_list) <= 0:
             self.logger.warning("idx_obs_info_list is empty!")
             return

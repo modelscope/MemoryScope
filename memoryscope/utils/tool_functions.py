@@ -6,6 +6,7 @@ from copy import deepcopy
 from importlib import import_module
 from typing import List
 
+import numpy as np
 import pyfiglet
 from termcolor import colored
 
@@ -18,7 +19,7 @@ ALL_COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan", "light_grey",
 
 def underscore_to_camelcase(name: str, is_first_title: bool = True) -> str:
     """
-    Converts a underscore_notation string to CamelCase.
+    Converts an underscore_notation string to CamelCase.
 
     Args:
         name (str): The underscore_notation string to be converted.
@@ -188,3 +189,21 @@ def contains_keyword(text, keywords) -> bool:
     escaped_keywords = map(re.escape, keywords)
     pattern = re.compile('|'.join(escaped_keywords), re.IGNORECASE)
     return pattern.search(text) is not None
+
+
+def cosine_similarity(query: List[float], documents: List[List[float]]):
+    query = np.array(query)
+    documents = np.array(documents)
+
+    query_norm = np.linalg.norm(query)
+    if query_norm == 0:
+        raise ValueError("Query vector norm is zero, which will result in a division by zero")
+
+    documents_norm = np.linalg.norm(documents, axis=1)
+    if np.any(documents_norm == 0):
+        raise ValueError("One of the document vectors has zero norm, which will result in a division by zero")
+
+    dot_product = np.dot(documents, query)
+
+    cosine_similarities = dot_product / (query_norm * documents_norm)
+    return cosine_similarities.tolist()

@@ -1,5 +1,5 @@
 import random
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import TextNode, NodeWithScore, QueryBundle
@@ -24,10 +24,10 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         self.emb_dims = None
         self.index_name = index_name
         self.embedding_model: BaseModel = embedding_model
+        retrieval_strategy = ESCombinedRetrieveStrategy(retrieve_mode=retrieve_mode, hybrid_alpha=hybrid_alpha)
         self.es_store = SyncElasticsearchStore(index_name=index_name,
                                                es_url=es_url,
-                                               retrieval_strategy=ESCombinedRetrieveStrategy(retrieve_mode=retrieve_mode,
-                                                                                             hybrid_alpha=hybrid_alpha), 
+                                               retrieval_strategy=retrieval_strategy,
                                                **kwargs)
 
         # TODO The llamaIndex utilizes some deprecated functions, hence langchain logs warning messages. By
@@ -144,7 +144,11 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         return TextNode(id_=memory_node.memory_id,
                         text=memory_node.content,
                         embedding=embedding,
-                        metadata=memory_node.model_dump(exclude={"content", "vector", "score_recall", "score_rank", "score_rerank"}))
+                        metadata=memory_node.model_dump(exclude={"content",
+                                                                 "vector",
+                                                                 "score_recall",
+                                                                 "score_rank",
+                                                                 "score_rerank"}))
 
     @staticmethod
     def _text_node_2_memory_node(text_node: NodeWithScore) -> MemoryNode:

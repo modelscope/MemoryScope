@@ -33,13 +33,14 @@ class ExtractTimeWorker(MemoryBaseWorker):
         query, query_timestamp = self.get_context(QUERY_WITH_TS)
 
         # Identify if the query contains datetime keywords
-        contain_datetime = DatetimeHandler.has_time_word(query)
+        contain_datetime = DatetimeHandler.has_time_word(query, self.language)
         if not contain_datetime:
             self.logger.info(f"contain_datetime={contain_datetime}")
             return
 
         # Prepare the prompt with necessary contextual details
-        query_time_str = DatetimeHandler(dt=query_timestamp).string_format(self.prompt_handler.time_string_format)
+        query_time_str = DatetimeHandler(dt=query_timestamp).string_format(self.prompt_handler.time_string_format,
+                                                                           self.language)
         system_prompt = self.prompt_handler.extract_time_system
         few_shot = self.prompt_handler.extract_time_few_shot
         user_query = self.prompt_handler.extract_time_user_query.format(query=query, query_time_str=query_time_str)

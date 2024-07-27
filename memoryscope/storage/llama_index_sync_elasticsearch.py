@@ -133,7 +133,6 @@ def _mode_must_match_retrieval_strategy(
 
 class ESCombinedRetrieveStrategy(AsyncDenseVectorStrategy):
 
-    
     def __init__(
         self,
         *,
@@ -613,7 +612,6 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             ] = None,
             es_filter: Optional[List[Dict]] = None,
             fields: List[str] = [],
-            **kwargs: Any,
     ) -> VectorStoreQueryResult:
         """
         Asynchronously queries the Elasticsearch index for the top k most similar nodes 
@@ -626,6 +624,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
                 A custom function to modify the Elasticsearch query body. Defaults to None.
             es_filter (List[Dict], optional): Additional filters to apply during the query. 
                 If filters are present in the query, these filters will not be used. Defaults to None.
+            fields (List[str], optional): .
 
         Returns:
             VectorStoreQueryResult: The result of the query, including nodes, their IDs, 
@@ -700,7 +699,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
                 isinstance(self.retrieval_strategy, AsyncDenseVectorStrategy)
                 and self.retrieval_strategy.hybrid
         ):
-            total_rank = sum(top_k_scores)
+            # total_rank = sum(top_k_scores)
             top_k_scores = [rank for rank in top_k_scores]
             # top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
             # top_k_scores = [total_rank - rank / total_rank for rank in top_k_scores]

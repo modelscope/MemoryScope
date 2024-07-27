@@ -36,7 +36,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
         """
         dt_handler = DatetimeHandler()
         # Prepare metadata with current datetime info
-        meta_data = {k: str(v) for k, v in dt_handler.get_dt_info_dict.items()}
+        meta_data = {k: str(v) for k, v in dt_handler.get_dt_info_dict(self.language).items()}
 
         return MemoryNode(user_name=self.user_name,
                           target_name=self.target_name,
@@ -101,7 +101,8 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
             return
 
         # Parse LLM response for new insight keys and update memory
-        new_insight_keys = ResponseTextParser(response.message.content, self.__class__.__name__).parse_v2()
+        new_insight_keys = ResponseTextParser(response.message.content, self.language,
+                                              self.__class__.__name__).parse_v2()
         if new_insight_keys:
             for insight_key in new_insight_keys:
                 self.memory_manager.add_memories(INSIGHT_NODES, self.new_insight_node(insight_key))

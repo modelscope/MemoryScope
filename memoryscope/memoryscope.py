@@ -52,6 +52,7 @@ class MemoryScope(object):
             "thread_pool_max_workers": arguments.thread_pool_max_workers,
             "logger_name": arguments.logger_name,
             "logger_name_time_suffix": arguments.logger_name_time_suffix,
+            "use_dummy_ranker": arguments.use_dummy_ranker,
         }
 
         # prepare memory chat
@@ -151,6 +152,7 @@ class MemoryScope(object):
         # set global config
         self.context.language = LanguageEnum(self.global_conf["language"])
         self.context.thread_pool = ThreadPoolExecutor(max_workers=self.global_conf["max_workers"])
+        self.context.meta_data["use_dummy_ranker"] = self.global_conf["use_dummy_ranker"]
 
         # init memory_chat
         if self.memory_chat_conf_dict:
@@ -181,8 +183,9 @@ class MemoryScope(object):
         self.context.worker_config = self.worker_conf_dict
 
     def close(self):
+        # wait service to stop
         for _, service in self.context.memory_service_dict.items():
-            service.stop_backend_service()
+            service.stop_backend_service(wait_service_end=True)
         self.context.memory_store.close()
         self.context.thread_pool.shutdown()
 

@@ -34,6 +34,13 @@ class SemanticRankWorker(MemoryBaseWorker):
             self.logger.warning("Retrieve memory nodes is empty!")
             return
 
+        use_dummy_ranker: bool = self.memoryscope_context.meta_data["use_dummy_ranker"]
+        if use_dummy_ranker:
+            for node in memory_node_list:
+                node.score_rank = node.score_recall
+            self.logger.warning("use score_recall instead of score_rank!")
+            return
+
         # drop repeated
         memory_node_dict: Dict[str, MemoryNode] = {n.content.strip(): n for n in memory_node_list if n.content.strip()}
         memory_node_list = list(memory_node_dict.values())

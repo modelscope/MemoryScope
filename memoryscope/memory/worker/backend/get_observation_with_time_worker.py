@@ -26,7 +26,7 @@ class GetObservationWithTimeWorker(GetObservationWorker):
         filter_messages = []
         for msg in self.chat_messages:
             # Checks if the message content has any time reference words
-            if DatetimeHandler.has_time_word(query=msg.content):
+            if DatetimeHandler.has_time_word(query=msg.content, language=self.language):
                 filter_messages.append(msg)
         return filter_messages
 
@@ -49,7 +49,7 @@ class GetObservationWithTimeWorker(GetObservationWorker):
         for i, msg in enumerate(filter_messages):
             # Create a DatetimeHandler instance for each message's timestamp and format it
             dt_handler = DatetimeHandler(dt=msg.time_created)
-            dt = dt_handler.string_format(self.prompt_handler.time_string_format)
+            dt = dt_handler.string_format(string_format=self.prompt_handler.time_string_format, language=self.language)
             # Append formatted timestamp-query pairs to the user_query_list
             user_query_list.append(f"{i + 1} {dt} {self.target_name}{self.get_language_value(COLON_WORD)}{msg.content}")
 

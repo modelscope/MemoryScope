@@ -54,7 +54,7 @@ class BaseMemoryService(metaclass=ABCMeta):
     def start_backend_service(self):
         pass
 
-    def stop_backend_service(self):
+    def stop_backend_service(self, wait_service_end: bool = False):
         pass
 
     def do_operation(self, name: str, **kwargs):

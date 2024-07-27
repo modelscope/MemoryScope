@@ -12,7 +12,8 @@ class Registry(object):
 
     Attributes:
         name (str): The name of the registry.
-        module_dict (Dict[str, Any]): A dictionary holding registered modules where keys are module names and values are the modules themselves.
+        module_dict (Dict[str, Any]): A dictionary holding registered modules where keys are module names and values are
+         the modules themselves.
     """
 
     def __init__(self, name: str):
@@ -31,7 +32,7 @@ class Registry(object):
 
         Args:
             module_name (str): The name of module to be registered. 
-            modules (List[Any] | Dict[str, Any]): The module to be registered.
+            module (List[Any] | Dict[str, Any]): The module to be registered.
 
         Raises:
             NotImplementedError: If the input is already registered.
@@ -46,7 +47,8 @@ class Registry(object):
 
     def batch_register(self, modules: List[Any] | Dict[str, Any]):
         """
-        Registers multiple modules in the registry in a single call. Accepts either a list of modules or a dictionary mapping names to modules.
+        Registers multiple modules in the registry in a single call. Accepts either a list of modules or a dictionary
+            mapping names to modules.
 
         Args:
             modules (List[Any] | Dict[str, Any]): A list of modules or a dictionary mapping module names to the modules.

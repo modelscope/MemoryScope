@@ -8,7 +8,7 @@ from memoryscope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.scheme.memory_node import MemoryNode
 from memoryscope.utils.datetime_handler import DatetimeHandler
 from memoryscope.utils.response_text_parser import ResponseTextParser
-from memoryscope.utils.tool_functions import prompt_to_msg
+from memoryscope.utils.tool_functions import prompt_to_msg, cosine_similarity
 
 
 class UpdateInsightWorker(MemoryBaseWorker):
@@ -27,13 +27,15 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
     def filter_obs_nodes(self,
                          insight_node: MemoryNode,
-                         obs_nodes: List[MemoryNode]) -> (MemoryNode, List[MemoryNode], float):
+                         obs_nodes: List[MemoryNode],
+                         use_dummy_ranker: bool) -> (MemoryNode, List[MemoryNode], float):
         """
         Filters observed nodes based on their relevance to a given insight node using a ranking model.
 
         Args:
             insight_node (MemoryNode): The insight node used as the basis for filtering.
             obs_nodes (List[MemoryNode]): A list of observed nodes to be filtered.
+            use_dummy_ranker (bool): Global parameters, whether to use rank model or not.
 
         Returns:
             tuple: A tuple containing:
@@ -53,24 +55,47 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.warning("obs_nodes is empty!")
             return insight_node, filtered_nodes, max_score
 
-        # Call the ranking model to get scores for each observed node's content against the insight key
-        documents = [x.content for x in obs_nodes]
-        self.logger.debug(f"update.insight.rank key={insight_node.key} \n docs={'|'.join(documents)}")
-        response = self.rank_model.call(query=insight_node.key, documents=documents)
-        if not response.status:
-            return insight_node, filtered_nodes, max_score
+        if use_dummy_ranker:
+            key_vector: List[float] = self.embedding_model.call(text=insight_node.key).embedding_results
+            if not key_vector:
+                self.logger.warning(f"embedding call {insight_node.key} failed!")
+                return insight_node, filtered_nodes, max_score
 
-        # Iterate over the ranked scores to filter nodes
-        for index, score in response.rank_scores.items():
-            node = obs_nodes[index]
-            # Determine if the node should be kept based on the threshold
-            keep_flag = score >= self.update_insight_threshold
-            if keep_flag:
-                filtered_nodes.append(node)
-                max_score = max(max_score, score)
-            # Log information about each node's processing
-            self.logger.info(f"insight_key={insight_node.key} content={node.content} "
-                             f"score={score} keep_flag={keep_flag}")
+            insight_node.key_vector = key_vector
+            documents_vector = [x.vector for x in obs_nodes]
+            score_recall_list = cosine_similarity(key_vector, documents_vector)
+            assert len(score_recall_list) == len(obs_nodes), \
+                f"size is not as excepted. {len(score_recall_list)} v.s. {len(obs_nodes)}"
+
+            for score, node in zip(score_recall_list, obs_nodes):
+                keep_flag = score >= self.update_insight_threshold
+                if keep_flag:
+                    filtered_nodes.append(node)
+                    max_score = max(max_score, score)
+
+                # Log information about each node's processing
+                self.logger.info(f"insight_key={insight_node.key} content={node.content} "
+                                 f"score={score} keep_flag={keep_flag}")
+
+        else:
+            # Call the ranking model to get scores for each observed node's content against the insight key
+            documents = [x.content for x in obs_nodes]
+            self.logger.debug(f"update.insight.rank key={insight_node.key} \n docs={'|'.join(documents)}")
+            response = self.rank_model.call(query=insight_node.key, documents=documents)
+            if not response.status:
+                return insight_node, filtered_nodes, max_score
+
+            # Iterate over the ranked scores to filter nodes
+            for index, score in response.rank_scores.items():
+                node = obs_nodes[index]
+                # Determine if the node should be kept based on the threshold
+                keep_flag = score >= self.update_insight_threshold
+                if keep_flag:
+                    filtered_nodes.append(node)
+                    max_score = max(max_score, score)
+                # Log information about each node's processing
+                self.logger.info(f"insight_key={insight_node.key} content={node.content} "
+                                 f"score={score} keep_flag={keep_flag}")
 
         # Warn if no nodes were filtered
         if not filtered_nodes:
@@ -95,7 +120,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
         content = f"{key}{self.get_language_value(COLON_WORD)} {insight_value}"
         insight_node.content = content
         insight_node.value = insight_value
-        insight_node.meta_data.update({k: str(v) for k, v in dt_handler.get_dt_info_dict.items()})
+        insight_node.meta_data.update({k: str(v) for k, v in dt_handler.get_dt_info_dict(self.language).items()})
         insight_node.timestamp = dt_handler.timestamp
         insight_node.dt = dt_handler.datetime_format()
         if insight_node.action_status == ActionStatusEnum.NONE.value:
@@ -136,7 +161,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
         if not response.status or not response.message.content:
             return insight_node
 
-        insight_value_list = ResponseTextParser(response.message.content,
+        insight_value_list = ResponseTextParser(response.message.content, self.language,
                                                 f"update_{insight_node.key}").parse_v1()
         if not insight_value_list:
             self.logger.warning(f"update_{insight_node.key} insight_value_list is empty!")
@@ -184,17 +209,21 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.warning("insight_nodes is empty, stopping processing.")
             return
 
+        use_dummy_ranker: bool = self.memoryscope_context.meta_data["use_dummy_ranker"]
+
         # Process active insight nodes with corresponding not updated nodes
         for node in insight_nodes:
             time.sleep(1)
             if node.action_status == ActionStatusEnum.NEW.value:
                 self.submit_thread_task(fn=self.filter_obs_nodes,
                                         insight_node=node,
-                                        obs_nodes=not_reflected_nodes)
+                                        obs_nodes=not_reflected_nodes,
+                                        use_dummy_ranker=use_dummy_ranker)
             else:
                 self.submit_thread_task(fn=self.filter_obs_nodes,
                                         insight_node=node,
-                                        obs_nodes=not_updated_nodes)
+                                        obs_nodes=not_updated_nodes,
+                                        use_dummy_ranker=use_dummy_ranker)
 
         # select top n
         result_list = []
@@ -221,7 +250,3 @@ class UpdateInsightWorker(MemoryBaseWorker):
         for node in not_updated_nodes:
             node.obs_updated = 1
             node.action_status = ActionStatusEnum.MODIFIED
-
-        # for node in not_reflected_nodes:
-        #     node.obs_updated = 1
-        #     node.action_status = ActionStatusEnum.MODIFIED

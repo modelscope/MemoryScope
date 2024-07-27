@@ -12,7 +12,6 @@ class BaseOperation(metaclass=ABCMeta):
         operation_type (OPERATION_TYPE): Specifies the type of operation, defaulting to "frontend".
         name (str): The name of the operation.
         description (str): A description of the operation.
-        kwargs (dict): Additional keyword arguments for operation configuration.
     """
 
     operation_type: OPERATION_TYPE = "frontend"

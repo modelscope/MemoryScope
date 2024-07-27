@@ -45,6 +45,10 @@ class MemoryscopeArguments(object):
 
     embedding_params: dict = field(default_factory=lambda: {})
 
+    use_dummy_ranker: bool = field(default=True, metadata={
+        "help": "If a semantic ranking model is not available, MemoryScope will use cosine similarity scoring as a "
+                "substitute. However, the ranking effectiveness will be somewhat compromised."})
+
     rank_backend: str = field(default="dashscope_rank", metadata={"help": "global rank backend: dashscope_rank, etc."})
 
     rank_model: str = field(default="gte-rerank", metadata={"help": "global rank model: gte-rerank, etc."})
@@ -58,4 +62,5 @@ class MemoryscopeArguments(object):
     retrieve_mode: str = field(default="dense", metadata={
         "help": "retrieve_mode: dense, sparse(not implemented), hybrid(not implemented)"})
 
-    hybrid_alpha: float | None = field(default=1.0, metadata={"help": ""})
+    hybrid_alpha: float | None = field(default=1.0, metadata={
+        "help": "fuse alpha params used in hybrid mode(not implemented)"})
