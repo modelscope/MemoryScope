@@ -16,9 +16,9 @@ class PromptHandler(object):
 
     def __init__(self,
                  class_path: str,
+                 language: LanguageEnum | str,
                  prompt_file: str = "",
                  prompt_dict: dict = None,
-                 language_enum: LanguageEnum = LanguageEnum.EN,
                  **kwargs):
         """
         Initializes the PromptHandler with paths to prompt sources and additional keyword arguments.
@@ -27,13 +27,13 @@ class PromptHandler(object):
             class_path (str): The path to the class where prompts are utilized.
             prompt_file (str, optional): The path to an external file containing prompts. Defaults to "".
             prompt_dict (dict, optional): A dictionary directly containing prompt definitions. Defaults to None.
-            language_enum (LanguageEnum): context language.
+            language (LanguageEnum, str): context language.
             **kwargs: Additional keyword arguments that might be used in prompt handling.
         """
         class_path: Path = Path(class_path)
         self._class_dir: Path = class_path.parent
         self._class_name: str = class_path.stem
-        self._language_enum: LanguageEnum = language_enum
+        self._language_enum: LanguageEnum = LanguageEnum(language)
         self.kwargs = kwargs
 
         self._prompt_dict: Dict[str, str] = {}

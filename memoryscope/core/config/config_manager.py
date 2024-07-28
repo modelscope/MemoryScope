@@ -65,14 +65,9 @@ class ConfigManager(object):
 
     @staticmethod
     def update_memory_chat_by_arguments(config: dict, arguments: Arguments):
-        if arguments.memory_chat_type == "cli_chat":
-            memory_chat_class = "chat.cli_memory_chat"
-        elif arguments.memory_chat_type == "api_chat":
-            memory_chat_class = "chat.api_memory_chat"
-        else:
-            raise NotImplementedError(f"known memory_chat_type={arguments.memory_chat_type}")
+        memory_chat_class_split = config["class"].split(".")
         config.update({
-            "class": memory_chat_class,
+            "class": ".".join(memory_chat_class_split[:-1] + [arguments.memory_chat_class]),
             "human_name": DEFAULT_HUMAN_NAME[LanguageEnum(arguments.language)],
             "assistant_name": "AI",
         })
@@ -154,7 +149,7 @@ class ConfigManager(object):
     def clear_node_all(self, node: str):
         self.config[node].clear()
 
-    def dump_config(self, file_type: Literal["json", "yaml"], to_stream: bool = True, file_path: Optional[str] = None):
+    def dump_config(self, file_type: Literal["json", "yaml"] = "yaml", file_path: Optional[str] = None) -> str:
         if file_type == "json":
             content = json.dumps(self.config, indent=2, ensure_ascii=False)
         elif file_type == "yaml":
@@ -162,9 +157,8 @@ class ConfigManager(object):
         else:
             raise NotImplementedError
 
-        if to_stream:
-            print(content)
-
-        if file_type:
+        if file_path:
             with open(file_path, "w") as f:
                 f.write(content)
+
+        return content

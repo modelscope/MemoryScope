@@ -82,6 +82,8 @@ class MemoryScope(ConfigManager):
         if self.context.monitor:
             self.context.monitor.close()
 
+        self.logger.close()
+
     def __enter__(self):
         self.init_context_by_config()
 

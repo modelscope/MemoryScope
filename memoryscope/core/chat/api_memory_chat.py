@@ -53,7 +53,10 @@ class ApiMemoryChat(BaseMemoryChat):
             PromptHandler: An instance of the PromptHandler configured for this CLI session.
         """
         if self._prompt_handler is None:
-            self._prompt_handler = PromptHandler(__file__, prompt_file="memory_chat_prompt", **self.kwargs)
+            self._prompt_handler = PromptHandler(__file__,
+                                                 language=self.context.language,
+                                                 prompt_file="memory_chat_prompt",
+                                                 **self.kwargs)
         return self._prompt_handler
 
     @property

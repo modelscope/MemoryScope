@@ -190,7 +190,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             PromptHandler: An instance of PromptHandler initialized with specific file path and keyword arguments.
         """
         if self._prompt_handler is None:
-            self._prompt_handler = PromptHandler(self.FILE_PATH, **self.kwargs)
+            self._prompt_handler = PromptHandler(self.FILE_PATH, language=self.language, **self.kwargs)
         return self._prompt_handler
 
     @property

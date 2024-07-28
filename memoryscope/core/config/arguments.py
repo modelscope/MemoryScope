@@ -12,8 +12,8 @@ class Arguments(object):
 
     logger_name_time_suffix: str = field(default="%Y%m%d_%H%M%S")
 
-    memory_chat_type: str = field(default="cli_chat", metadata={
-        "help": "cli_chat(Command-line interaction), api_chat(API interface interaction), etc."})
+    memory_chat_class: str = field(default="cli_memory_chat", metadata={
+        "help": "cli_memory_chat(Command-line interaction), api_memory_chat(API interface interaction), etc."})
 
     consolidate_memory_interval_time: int = field(default=1, metadata={
         "help": "If you feel that the token consumption is relatively high, please increase the time interval."})
