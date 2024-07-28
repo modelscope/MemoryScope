@@ -35,7 +35,6 @@ class BaseMemoryChat(metaclass=ABCMeta):
                          add_messages: bool = True,
                          remember_response: bool = True,
                          **kwargs):
-
         raise NotImplementedError
 
     def run(self):

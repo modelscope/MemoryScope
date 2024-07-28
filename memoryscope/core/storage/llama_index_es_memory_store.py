@@ -21,7 +21,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                  index_name: str,
                  es_url: str,
                  retrieve_mode: str = "dense",
-                 hybrid_alpha: float = None, 
+                 hybrid_alpha: float = None,
                  **kwargs):
         self.emb_dims = None
         self.index_name = index_name
