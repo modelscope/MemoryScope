@@ -1,11 +1,9 @@
-import datetime
 from concurrent.futures import ThreadPoolExecutor
 
 from memoryscope.core.chat.base_memory_chat import BaseMemoryChat
 from memoryscope.core.config.config_manager import ConfigManager
 from memoryscope.core.memoryscope_context import MemoryscopeContext
 from memoryscope.core.service.base_memory_service import BaseMemoryService
-from memoryscope.core.utils.logger import Logger
 from memoryscope.core.utils.tool_functions import init_instance_by_config
 from memoryscope.enumeration.language_enum import LanguageEnum
 from memoryscope.enumeration.model_enum import ModelEnum
@@ -15,20 +13,8 @@ class MemoryScope(ConfigManager):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        self.logger = self._init_logger()
-
         self.context: MemoryscopeContext = MemoryscopeContext()
         self.init_context_by_config()
-
-    def _init_logger(self) -> Logger:
-        global_config = self.config["global"]
-        logger_name = global_config["logger_name"]
-        logger_name_time_suffix = global_config["logger_name_time_suffix"]
-        if logger_name_time_suffix:
-            suffix = datetime.datetime.now().strftime(logger_name_time_suffix)
-            logger_name = f"{logger_name}_{suffix}"
-        return Logger.get_logger(logger_name, to_stream=False)
 
     def init_context_by_config(self):
         # set global config
@@ -86,6 +72,7 @@ class MemoryScope(ConfigManager):
 
     def __enter__(self):
         self.init_context_by_config()
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()

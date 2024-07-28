@@ -1,5 +1,6 @@
 import json
 from dataclasses import fields
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, Literal
 
@@ -7,6 +8,7 @@ import yaml
 
 from memoryscope.constants.language_constants import DEFAULT_HUMAN_NAME
 from memoryscope.core.config.arguments import Arguments
+from memoryscope.core.utils.logger import Logger
 from memoryscope.enumeration.language_enum import LanguageEnum
 
 
@@ -23,20 +25,40 @@ class ConfigManager(object):
 
         if config:
             self.config = config
+            self.logger = self._init_logger()
+            self.logger.info("init by config mode:")
 
         elif config_path:
             self.read_config(config_path)
+            self.logger = self._init_logger()
+            self.logger.info("init by config_path mode:")
 
         else:
             self.read_demo_config(demo_config_name)
+            if arguments:
+                self.update_config_by_arguments(arguments)
+                self.logger = self._init_logger()
+                self.logger.info(f"init by arguments mode: {arguments.__dict__}")
 
-        if arguments:
-            self.update_config_by_arguments(arguments)
+            elif kwargs:
+                kwargs = {k: v for k, v in kwargs.items() if k in [x.name for x in fields(Arguments)]}
+                arguments = Arguments(**kwargs)
+                self.update_config_by_arguments(arguments)
+                self.logger = self._init_logger()
+                self.logger.info(f"init by kwargs mode: {kwargs}")
 
-        elif kwargs:
-            key_list = [x.name for x in fields(Arguments)]
-            arguments = Arguments(**{k: v for k, v in kwargs.items() if k in key_list})
-            self.update_config_by_arguments(arguments)
+            else:
+                raise RuntimeError("can not init config manager without kwargs!")
+        self.logger.info(self.dump_config())
+
+    def _init_logger(self) -> Logger:
+        global_config = self.config["global"]
+        logger_name = global_config["logger_name"]
+        logger_name_time_suffix = global_config["logger_name_time_suffix"]
+        if logger_name_time_suffix:
+            suffix = datetime.now().strftime(logger_name_time_suffix)
+            logger_name = f"{logger_name}_{suffix}"
+        return Logger.get_logger(logger_name, to_stream=global_config["logger_to_screen"])
 
     def read_config(self, config_path: str):
         if config_path.endswith(".yaml"):
@@ -60,16 +82,19 @@ class ConfigManager(object):
             "thread_pool_max_workers": arguments.thread_pool_max_workers,
             "logger_name": arguments.logger_name,
             "logger_name_time_suffix": arguments.logger_name_time_suffix,
+            "logger_to_screen": arguments.logger_to_screen,
             "use_dummy_ranker": arguments.use_dummy_ranker,
         })
 
     @staticmethod
     def update_memory_chat_by_arguments(config: dict, arguments: Arguments):
         memory_chat_class_split = config["class"].split(".")
+        stream = arguments.memory_chat_class in ["cli_memory_chat", ]
         config.update({
             "class": ".".join(memory_chat_class_split[:-1] + [arguments.memory_chat_class]),
             "human_name": DEFAULT_HUMAN_NAME[LanguageEnum(arguments.language)],
             "assistant_name": "AI",
+            "stream": stream,
         })
 
     @staticmethod

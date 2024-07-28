@@ -105,7 +105,8 @@ class Logger(logging.Logger):
         by the handlers are freed properly.
         """
         for handler in self.handlers:
-            handler.close()  # ⭐ Close each handler to release resources
+            # Close each handler to release resources
+            handler.close()
 
     def clear(self):
         """

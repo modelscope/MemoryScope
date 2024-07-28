@@ -12,6 +12,8 @@ class Arguments(object):
 
     logger_name_time_suffix: str = field(default="%Y%m%d_%H%M%S")
 
+    logger_to_screen: bool = field(default=False, metadata={"help": "If false, it does not print to the screen."})
+
     memory_chat_class: str = field(default="cli_memory_chat", metadata={
         "help": "cli_memory_chat(Command-line interaction), api_memory_chat(API interface interaction), etc."})
 

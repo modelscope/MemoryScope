@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import Optional
 
 from memoryscope.core.service.base_memory_service import BaseMemoryService
 from memoryscope.core.utils.logger import Logger
@@ -10,8 +11,7 @@ class BaseMemoryChat(metaclass=ABCMeta):
     It outlines the method to initiate a chat session leveraging memory data, which concrete subclasses must implement.
     """
 
-    def __init__(self, stream: bool = True, **kwargs):
-        self.stream: bool = stream
+    def __init__(self, **kwargs):
         self.kwargs: dict = kwargs
         self.logger = Logger.get_logger()
 
@@ -28,16 +28,14 @@ class BaseMemoryChat(metaclass=ABCMeta):
     @abstractmethod
     def chat_with_memory(self,
                          query: str,
-                         role_name: str = "",
-                         remember_response: bool = True):
-        """
-        Initiates a chat interaction using the memory service, with the provided query as input.
+                         role_name: Optional[str] = None,
+                         system_prompt: Optional[str] = None,
+                         memory_prompt: Optional[str] = None,
+                         extra_memories: Optional[str] = None,
+                         add_messages: bool = True,
+                         remember_response: bool = True,
+                         **kwargs):
 
-        Args:
-            query (str): The user's query or message to start the chat.
-            role_name (str): The role's name.
-            remember_response (bool): whether update memory service.
-        """
         raise NotImplementedError
 
     def run(self):

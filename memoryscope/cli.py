@@ -8,7 +8,9 @@ from memoryscope.core.memoryscope import MemoryScope
 
 
 def cli_job(**kwargs):
-    MemoryScope(**kwargs).default_memory_chat.run()
+    with MemoryScope(**kwargs) as ms:
+        memory_chat = ms.default_memory_chat
+        memory_chat.run()
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ from memoryscope.core.service.base_memory_service import BaseMemoryService
 from memoryscope.core.utils.prompt_handler import PromptHandler
 from memoryscope.enumeration.message_role_enum import MessageRoleEnum
 from memoryscope.scheme.message import Message
-from memoryscope.scheme.model_response import ModelResponse
+from memoryscope.scheme.model_response import ModelResponse, ModelResponseGen
 
 
 class ApiMemoryChat(BaseMemoryChat):
@@ -18,6 +18,7 @@ class ApiMemoryChat(BaseMemoryChat):
                  memory_service: str,
                  generation_model: str,
                  context: MemoryscopeContext,
+                 stream: bool = False,
                  human_name: str = None,
                  assistant_name: str = None,
                  **kwargs):
@@ -27,6 +28,7 @@ class ApiMemoryChat(BaseMemoryChat):
         self._memory_service: BaseMemoryService | str = memory_service
         self._generation_model: BaseModel | str = generation_model
         self.context: MemoryscopeContext = context
+        self.stream: bool = stream
         self.generation_model_kwargs: dict = kwargs.pop("generation_model_kwargs", {})
 
         self.human_name: str = human_name
@@ -100,13 +102,31 @@ class ApiMemoryChat(BaseMemoryChat):
             self._generation_model = self.context.model_dict[self._generation_model]
         return self._generation_model
 
+    def iter_response(self,
+                      remember_response: bool,
+                      resp: ModelResponseGen,
+                      memories: str,
+                      query_message: Message) -> ModelResponseGen:
+
+        model_response: ModelResponse | None = None
+        for model_response in resp:
+            yield model_response
+
+        if remember_response:
+            if model_response and model_response.message:
+                model_response.message.role_name = self.assistant_name
+                model_response.meta_data[MEMORIES] = memories
+                self.memory_service.add_messages([query_message, model_response.message])
+            else:
+                self.logger.warning("model_response or model_response.message is empty!")
+
     def chat_with_memory(self,
                          query: str,
                          role_name: Optional[str] = None,
                          system_prompt: Optional[str] = None,
                          memory_prompt: Optional[str] = None,
                          extra_memories: Optional[str] = None,
-                         add_not_memorized_messages: bool = True,
+                         add_messages: bool = True,
                          remember_response: bool = True,
                          **kwargs):
         """
@@ -118,7 +138,7 @@ class ApiMemoryChat(BaseMemoryChat):
             system_prompt (str, optional): System prompt. Defaults to the system_prompt in "memory_chat_prompt.yaml".
             memory_prompt (str, optional): Memory prompt. Defaults to the memory_prompt in "memory_chat_prompt.yaml".
             extra_memories (str, optional): Manually added user memory in this function.
-            add_not_memorized_messages (bool, optional): whether add not memorized messages to LLM.
+            add_messages (bool, optional): whether add not memorized messages to LLM.
             remember_response (bool, optional): Flag indicating whether to save the AI's response to memory.
                 Defaults to False.
         Returns:
@@ -161,7 +181,7 @@ class ApiMemoryChat(BaseMemoryChat):
         chat_messages.append(system_message)
 
         # Include past conversation history in the message list
-        if add_not_memorized_messages:
+        if add_messages:
             history_messages = self.memory_service.read_message()
             if history_messages:
                 chat_messages.extend(history_messages)
@@ -171,19 +191,8 @@ class ApiMemoryChat(BaseMemoryChat):
         self.logger.info(f"chat_messages={chat_messages}")
 
         resp = self.generation_model.call(messages=chat_messages, stream=self.stream, **self.generation_model_kwargs)
-
         if self.stream:
-            model_response: ModelResponse | None = None
-            for model_response in resp:
-                yield model_response
-
-            if remember_response:
-                if model_response and model_response.message:
-                    model_response.message.role_name = self.assistant_name
-                    model_response.meta_data[MEMORIES] = memories
-                    self.memory_service.add_messages([query_message, model_response.message])
-                else:
-                    self.logger.warning("model_response or model_response.message is empty!")
+            return self.iter_response(remember_response, resp, memories, query_message)
 
         else:
             model_response: ModelResponse = resp
