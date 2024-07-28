@@ -37,7 +37,6 @@ class MemoryScopeService(BaseMemoryService):
         if assistant_name:
             self.context.meta_data["assistant_name"] = assistant_name
 
-        self.chat_messages: List[Message] = []
         self.message_lock = threading.Lock()
 
     def add_messages(self, messages: List[Message] | Message):
@@ -89,13 +88,17 @@ class MemoryScopeService(BaseMemoryService):
         for name, operation_config in self.memory_operations_conf.items():
             self.register_operation(name, operation_config, **kwargs)
 
-    def start_backend_service(self):
+    def start_backend_service(self, name: str = None):
         """
         Start all backend operations.
         """
-        for _, operation in self._operation_dict.items():
-            if operation.operation_type == "backend":
-                operation.run_operation_backend()
+        for op_name, operation in self._operation_dict.items():
+            if name:
+                if op_name == name:
+                    operation.start_operation_backend()
+            else:
+                if operation.operation_type == "backend":
+                    operation.start_operation_backend()
 
     def stop_backend_service(self, wait_service_end: bool = False):
         """

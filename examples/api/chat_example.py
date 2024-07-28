@@ -54,7 +54,7 @@ def chat_example4():
         memory_chat.memory_service.consolidate_memory()
 
         response = memory_chat.chat_with_memory(query="你知道我的乐器爱好是什么？",
-                                                add_messages=False)
+                                                history_message_strategy=None)
         print("回答2：\n" + response.message.content)
         print("记忆2：\n" + response.meta_data["memories"])
 

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Literal
 
 from memoryscope.constants.common_constants import MEMORIES
 from memoryscope.constants.language_constants import DEFAULT_HUMAN_NAME
@@ -126,7 +126,7 @@ class ApiMemoryChat(BaseMemoryChat):
                          system_prompt: Optional[str] = None,
                          memory_prompt: Optional[str] = None,
                          extra_memories: Optional[str] = None,
-                         add_messages: bool = True,
+                         history_message_strategy: Literal["auto", None] | int = "auto",
                          remember_response: bool = True,
                          **kwargs):
         """
@@ -138,7 +138,11 @@ class ApiMemoryChat(BaseMemoryChat):
             system_prompt (str, optional): System prompt. Defaults to the system_prompt in "memory_chat_prompt.yaml".
             memory_prompt (str, optional): Memory prompt. Defaults to the memory_prompt in "memory_chat_prompt.yaml".
             extra_memories (str, optional): Manually added user memory in this function.
-            add_messages (bool, optional): whether add not memorized messages to LLM.
+            history_message_strategy ("auto", None, int):
+                - If it is set to "auto"， the history messages in the conversation will retain those that have not
+                    yet been summarized. Default to "auto".
+                - If it is set to None， no conversation history will be saved.
+                - If it is set to an integer value "n", the most recent "n" messages will be retained.
             remember_response (bool, optional): Flag indicating whether to save the AI's response to memory.
                 Defaults to False.
         Returns:
@@ -181,8 +185,15 @@ class ApiMemoryChat(BaseMemoryChat):
         chat_messages.append(system_message)
 
         # Include past conversation history in the message list
-        if add_messages:
-            history_messages = self.memory_service.read_message()
+        if history_message_strategy:
+            history_messages = []
+
+            if history_message_strategy == "auto":
+                history_messages = self.memory_service.read_message()
+
+            elif isinstance(history_message_strategy, int):
+                history_messages = self.memory_service.chat_messages[-history_message_strategy:]
+
             if history_messages:
                 chat_messages.extend(history_messages)
 

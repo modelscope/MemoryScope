@@ -28,6 +28,7 @@ class BaseMemoryService(metaclass=ABCMeta):
         self.kwargs = kwargs
 
         self._operation_dict: Dict[str, BaseOperation] = {}
+        self.chat_messages: List[Message] = []
         self.logger = Logger.get_logger()
 
     @property
@@ -51,7 +52,7 @@ class BaseMemoryService(metaclass=ABCMeta):
     def init_service(self, **kwargs):
         raise NotImplementedError
 
-    def start_backend_service(self):
+    def start_backend_service(self, name: str = None):
         pass
 
     def stop_backend_service(self, wait_service_end: bool = False):

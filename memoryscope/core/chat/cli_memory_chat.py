@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Optional
+from typing import Optional, Literal
 
 import questionary
 
@@ -40,7 +40,7 @@ class CliMemoryChat(ApiMemoryChat):
                          system_prompt: Optional[str] = None,
                          memory_prompt: Optional[str] = None,
                          extra_memories: Optional[str] = None,
-                         add_messages: bool = True,
+                         history_message_strategy: Literal["auto", None] | int = "auto",
                          remember_response: bool = True,
                          **kwargs):
         resp = super().chat_with_memory(query=query,
@@ -48,7 +48,7 @@ class CliMemoryChat(ApiMemoryChat):
                                         system_prompt=system_prompt,
                                         memory_prompt=memory_prompt,
                                         extra_memories=extra_memories,
-                                        add_messages=add_messages,
+                                        history_message_strategy=history_message_strategy,
                                         remember_response=remember_response,
                                         **kwargs)
 

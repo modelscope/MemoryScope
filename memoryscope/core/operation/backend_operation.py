@@ -103,7 +103,7 @@ class BackendOperation(BaseWorkflow, BaseOperation):
             if self._loop_switch:
                 self.run_operation()
 
-    def run_operation_backend(self):
+    def start_operation_backend(self):
         """
         Initiates the background operation loop if it's not already running.
         Sets the _loop_switch to True and submits the _loop_operation to a thread from the global thread pool.

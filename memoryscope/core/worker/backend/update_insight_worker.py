@@ -56,14 +56,15 @@ class UpdateInsightWorker(MemoryBaseWorker):
             return insight_node, filtered_nodes, max_score
 
         if use_dummy_ranker:
-            key_vector: List[float] = self.embedding_model.call(text=insight_node.key).embedding_results
-            if not key_vector:
-                self.logger.warning(f"embedding call {insight_node.key} failed!")
-                return insight_node, filtered_nodes, max_score
+            if not insight_node.key_vector:
+                key_vector: List[float] = self.embedding_model.call(text=insight_node.key).embedding_results
+                if not key_vector:
+                    self.logger.warning(f"embedding call {insight_node.key} failed!")
+                    return insight_node, filtered_nodes, max_score
 
-            insight_node.key_vector = key_vector
-            documents_vector = [x.vector for x in obs_nodes]
-            score_recall_list = cosine_similarity(key_vector, documents_vector)
+                insight_node.key_vector = key_vector
+
+            score_recall_list = cosine_similarity(insight_node.key_vector, [x.vector for x in obs_nodes])
             assert len(score_recall_list) == len(obs_nodes), \
                 f"size is not as excepted. {len(score_recall_list)} v.s. {len(obs_nodes)}"
 
