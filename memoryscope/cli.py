@@ -1,17 +1,15 @@
 import sys
 
-from memoryscope.chat.base_memory_chat import BaseMemoryChat
-from memoryscope.memoryscope import MemoryScope
-
 sys.path.append(".")  # noqa: E402
 
 import fire
 
+from memoryscope.core.memoryscope import MemoryScope
 
-def cli_job(config_path: str):
-    ms = MemoryScope(config_path=config_path)
-    memory_chat: BaseMemoryChat = ms.default_memory_chat
-    memory_chat.run()
+
+def cli_job(**kwargs):
+    kwargs["memory_chat_type"] = "cli_chat"
+    MemoryScope(**kwargs).default_memory_chat.run()
 
 
 if __name__ == "__main__":

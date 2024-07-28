@@ -21,7 +21,7 @@ class TestWorkersCn(unittest.TestCase):
         self.logger: Logger = Logger.get_logger(f"test_worker_{datetime_suffix}", to_stream=True)
 
         ms = MemoryScope()
-        ms.load_config("config/demo_config_cn.yaml")
+        ms.read_config("config/demo_config_cn.yaml")
         ms.init_global_content_by_config()
 
     def tearDown(self):

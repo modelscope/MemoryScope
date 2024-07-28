@@ -9,6 +9,8 @@ MEMORYSCOPE_CONTEXT = "memoryscope_context"
 
 RESULT = "result"
 
+MEMORIES = "memories"
+
 CHAT_MESSAGES = "chat_messages"
 
 MEMORY_MANAGER = "memory_manager"

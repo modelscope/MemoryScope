@@ -1,7 +1,7 @@
 from memoryscope.cli import MemoryScope
 from memoryscope.scheme.message import Message
 
-ms = MemoryScope().load_config("config/demo_config_no_stream.yaml")
+ms = MemoryScope().read_config("config/demo_config_no_stream.yaml")
 memory_service = ms.default_service
 memory_chat = ms.default_chat_handle
 

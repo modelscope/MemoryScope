@@ -164,7 +164,7 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             meta_data={"5": "5"},
             timestamp=13
         ))
-    
+
     def test_retrieve(self):
         filter_dict = {
             "timestamp": 12,
@@ -172,19 +172,17 @@ class TestLlamaIndexElasticSearchStore(unittest.TestCase):
             # "score_rank": 0,
         }
 
-        
         res = self.es_store.retrieve_memories(query="hacker", filter_dict=filter_dict, top_k=15)
         print(len(res))
         print(res)
 
-    def test_retrieve_wo_query(self,):
+    def test_retrieve_wo_query(self, ):
         filter_dict = {
             "memory_id": "bbb456",
         }
         res = self.es_store.retrieve_memories(filter_dict=filter_dict, top_k=15)
         print(len(res))
         print(res)
-
 
     def tearDown(self):
         self.es_store.close()
