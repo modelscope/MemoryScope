@@ -110,24 +110,14 @@ def prompt_to_msg(system_prompt: str,
     Returns:
         List[Message]: A list of Message objects, each representing a part of the conversation setup.
     """
-    if concat_system_prompt:
-        user_message = Message(
-            role=MessageRoleEnum.USER.value,
-            content="\n".join(
-                [x.strip() for x in [few_shot, system_prompt, user_query]]
-            ),
-        )
-    else:
-        user_message = Message(
-            role=MessageRoleEnum.USER.value,
-            content="\n".join([x.strip() for x in [few_shot, user_query]]),
-        )
 
-    return [
-        Message(role=MessageRoleEnum.SYSTEM.value, content=system_prompt.strip()),  # System message
-        user_message
-        # User message combining few shot, system prompt, and user query
-    ]
+    system_message = Message(role=MessageRoleEnum.SYSTEM.value, content=system_prompt.strip())
+    if concat_system_prompt:
+        user_content_list = [system_prompt, few_shot, user_query]
+    else:
+        user_content_list = [few_shot, user_query]
+    user_message = Message(role=MessageRoleEnum.USER.value, content="\n".join([x.strip() for x in user_content_list]))
+    return [system_message, user_message]
 
 
 def char_logo(words: str, seed: int = time.time_ns(), color=None):

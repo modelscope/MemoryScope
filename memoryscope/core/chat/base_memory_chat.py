@@ -58,6 +58,12 @@ class BaseMemoryChat(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
+    def start_backend_service(self):
+        self.memory_service.start_backend_service()
+
+    def run_service_operation(self, name: str, **kwargs):
+        return self.memory_service.run_operation(name, **kwargs)
+
     def run(self):
         """
         Abstract method to run the chat system.

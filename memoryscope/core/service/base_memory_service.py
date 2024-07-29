@@ -58,7 +58,7 @@ class BaseMemoryService(metaclass=ABCMeta):
     def stop_backend_service(self, wait_service_end: bool = False):
         pass
 
-    def do_operation(self, name: str, **kwargs):
+    def run_operation(self, name: str, **kwargs):
         """
         Executes a specific operation by its name with provided keyword arguments.
 
@@ -79,4 +79,4 @@ class BaseMemoryService(metaclass=ABCMeta):
 
     def __getattr__(self, name: str):
         assert name in self._operation_dict, f"operation={name} is not registered!"
-        return lambda **kwargs: self.do_operation(name=name, **kwargs)
+        return lambda **kwargs: self.run_operation(name=name, **kwargs)

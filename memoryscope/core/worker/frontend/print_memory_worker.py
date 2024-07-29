@@ -51,7 +51,7 @@ class PrintMemoryWorker(MemoryBaseWorker):
             elif MemoryTypeEnum(node.memory_type) in [MemoryTypeEnum.OBSERVATION, MemoryTypeEnum.OBS_CUSTOMIZED]:
                 j += 1
                 observation_memory_list.append(f"{dt}] {j}. {node.content} "
-                                               f"status({node.obs_reflected},{node.obs_updated})")
+                                               f"[status({node.obs_reflected},{node.obs_updated})")
 
             elif MemoryTypeEnum(node.memory_type) is MemoryTypeEnum.INSIGHT:
                 k += 1

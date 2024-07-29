@@ -1,6 +1,8 @@
 python memoryscope/cli.py \
   -language="cn" \
   -memory_chat_class="cli_memory_chat" \
+  -human_name="锦鲤" \
+  -assistant_name="AI" \
   -generation_backend="dashscope_generation" \
   -generation_model="qwen-max" \
   -embedding_backend="dashscope_embedding" \

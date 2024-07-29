@@ -1,7 +1,7 @@
 from typing import List, Optional, Literal
 
 from memoryscope.constants.common_constants import MEMORIES
-from memoryscope.constants.language_constants import DEFAULT_HUMAN_NAME
+from memoryscope.constants.language_constants import DEFAULT_HUMAN_NAME, USER_NAME_EXPRESSION
 from memoryscope.core.chat.base_memory_chat import BaseMemoryChat
 from memoryscope.core.memoryscope_context import MemoryscopeContext
 from memoryscope.core.models.base_model import BaseModel
@@ -175,6 +175,9 @@ class ApiMemoryChat(BaseMemoryChat):
                 system_prompt_list.append(memory_prompt)
             else:
                 system_prompt_list.append(self.prompt_handler.memory_prompt)
+
+            if self.human_name != DEFAULT_HUMAN_NAME[self.context.language]:
+                system_prompt_list.append(USER_NAME_EXPRESSION[self.context.language].format(name=self.human_name))
             system_prompt_list.append(memories)
 
         if extra_memories:

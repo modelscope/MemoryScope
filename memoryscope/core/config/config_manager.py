@@ -6,10 +6,8 @@ from typing import Optional, Literal
 
 import yaml
 
-from memoryscope.constants.language_constants import DEFAULT_HUMAN_NAME
 from memoryscope.core.config.arguments import Arguments
 from memoryscope.core.utils.logger import Logger
-from memoryscope.enumeration.language_enum import LanguageEnum
 
 
 class ConfigManager(object):
@@ -92,16 +90,16 @@ class ConfigManager(object):
         stream = arguments.memory_chat_class in ["cli_memory_chat", ]
         config.update({
             "class": ".".join(memory_chat_class_split[:-1] + [arguments.memory_chat_class]),
-            "human_name": DEFAULT_HUMAN_NAME[LanguageEnum(arguments.language)],
-            "assistant_name": "AI",
+            "human_name": arguments.human_name if arguments.human_name else "",
+            "assistant_name": arguments.assistant_name if arguments.assistant_name else "",
             "stream": stream,
         })
 
     @staticmethod
     def update_memory_service_by_arguments(config: dict, arguments: Arguments):
         config.update({
-            "human_name": DEFAULT_HUMAN_NAME[LanguageEnum(arguments.language)],
-            "assistant_name": "AI",
+            "human_name": arguments.human_name if arguments.human_name else "",
+            "assistant_name": arguments.assistant_name if arguments.assistant_name else "",
         })
         config["memory_operations"]["consolidate_memory"]["interval_time"] = \
             arguments.consolidate_memory_interval_time

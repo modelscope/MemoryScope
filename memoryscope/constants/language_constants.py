@@ -208,3 +208,8 @@ TIME_INFER_WORD = {
     LanguageEnum.CN: "推断时间",
     LanguageEnum.EN: "Inference time"
 }
+
+USER_NAME_EXPRESSION = {
+    LanguageEnum.CN: "用户姓名是{name}。",
+    LanguageEnum.EN: "User's name is {name}."
+}

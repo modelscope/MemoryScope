@@ -4,7 +4,6 @@ from memoryscope.constants.common_constants import NEW_OBS_NODES, TIME_INFER
 from memoryscope.constants.language_constants import REPEATED_WORD, NONE_WORD, COLON_WORD, TIME_INFER_WORD
 from memoryscope.core.utils.datetime_handler import DatetimeHandler
 from memoryscope.core.utils.response_text_parser import ResponseTextParser
-from memoryscope.core.utils.tool_functions import prompt_to_msg
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.enumeration.action_status_enum import ActionStatusEnum
 from memoryscope.enumeration.memory_type_enum import MemoryTypeEnum
@@ -102,7 +101,7 @@ class GetObservationWorker(MemoryBaseWorker):
                                                                            user_name=self.target_name)
 
         # Combine system prompt, few-shot, and user query into a single message for obtaining observations
-        obtain_obs_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        obtain_obs_message = self.prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
 
         # Log the constructed observation message
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")

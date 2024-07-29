@@ -3,7 +3,6 @@ from typing import List, Dict
 from memoryscope.constants.common_constants import NOT_UPDATED_NODES, MERGE_OBS_NODES
 from memoryscope.constants.language_constants import NONE_WORD, CONTAINED_WORD, CONTRADICTORY_WORD
 from memoryscope.core.utils.response_text_parser import ResponseTextParser
-from memoryscope.core.utils.tool_functions import prompt_to_msg
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.enumeration.action_status_enum import ActionStatusEnum
 from memoryscope.enumeration.memory_type_enum import MemoryTypeEnum
@@ -98,9 +97,9 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         few_shot = self.prompt_handler.long_contra_repeat_few_shot.format(user_name=self.target_name)
         user_query = self.prompt_handler.long_contra_repeat_user_query.format(user_query="\n".join(user_query_list))
 
-        long_contra_repeat_message = prompt_to_msg(system_prompt=system_prompt,
-                                                   few_shot=few_shot,
-                                                   user_query=user_query)
+        long_contra_repeat_message = self.prompt_to_msg(system_prompt=system_prompt,
+                                                        few_shot=few_shot,
+                                                        user_query=user_query)
         self.logger.info(f"long_contra_repeat_message={long_contra_repeat_message}")
 
         # Invokes the language model for processing the constructed prompt

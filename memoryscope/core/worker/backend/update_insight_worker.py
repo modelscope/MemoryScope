@@ -5,7 +5,7 @@ from memoryscope.constants.common_constants import INSIGHT_NODES, NOT_UPDATED_NO
 from memoryscope.constants.language_constants import COLON_WORD, NONE_WORD, REPEATED_WORD
 from memoryscope.core.utils.datetime_handler import DatetimeHandler
 from memoryscope.core.utils.response_text_parser import ResponseTextParser
-from memoryscope.core.utils.tool_functions import prompt_to_msg, cosine_similarity
+from memoryscope.core.utils.tool_functions import cosine_similarity
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.enumeration.action_status_enum import ActionStatusEnum
 from memoryscope.scheme.memory_node import MemoryNode
@@ -152,7 +152,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
             insight_key=insight_node.key,
             insight_key_value=insight_node.key + self.get_language_value(COLON_WORD) + insight_node.value)
         # Construct the message for LLM interaction
-        update_insight_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        update_insight_message = self.prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot,
+                                                    user_query=user_query)
         self.logger.info(f"Generated insight update message: {update_insight_message}")
 
         # Call the Language Model for insight update

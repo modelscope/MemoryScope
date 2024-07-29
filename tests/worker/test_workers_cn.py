@@ -19,6 +19,8 @@ class TestWorkersCn(unittest.TestCase):
     def setUp(self):
         arguments = Arguments(
             language="cn",
+            human_name="用户",
+            assistant_name="AI",
             memory_chat_class="api_memory_chat",
             generation_backend="dashscope_generation",
             generation_model="qwen-max",

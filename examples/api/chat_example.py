@@ -6,6 +6,8 @@ from memoryscope import MemoryScope, Arguments
 
 arguments = Arguments(
     language="cn",
+    human_name="用户",
+    assistant_name="AI",
     logger_to_screen=False,
     memory_chat_class="api_memory_chat",
     generation_backend="dashscope_generation",
@@ -48,11 +50,12 @@ def chat_example3():
 def chat_example4():
     with MemoryScope(arguments=arguments) as ms:
         memory_chat = ms.default_memory_chat
+        memory_chat.start_backend_service()
 
         response = memory_chat.chat_with_memory(query="我的爱好是弹琴。")
         print("回答1：\n" + response.message.content)
-        memory_chat.memory_service.consolidate_memory()
 
+        memory_chat.run_service_operation("consolidate_memory")
         response = memory_chat.chat_with_memory(query="你知道我的乐器爱好是什么？",
                                                 history_message_strategy=None)
         print("回答2：\n" + response.message.content)

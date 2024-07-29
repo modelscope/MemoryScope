@@ -3,7 +3,6 @@ from typing import List
 from memoryscope.constants.common_constants import NEW_OBS_WITH_TIME_NODES
 from memoryscope.constants.language_constants import COLON_WORD
 from memoryscope.core.utils.datetime_handler import DatetimeHandler
-from memoryscope.core.utils.tool_functions import prompt_to_msg
 from memoryscope.core.worker.backend.get_observation_worker import GetObservationWorker
 from memoryscope.scheme.message import Message
 
@@ -66,7 +65,7 @@ class GetObservationWithTimeWorker(GetObservationWorker):
             user_name=self.target_name)
 
         # Assemble the final message for observation retrieval
-        obtain_obs_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        obtain_obs_message = self.prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
 
         # Log the constructed message for debugging purposes
         self.logger.info(f"obtain_obs_message={obtain_obs_message}")
