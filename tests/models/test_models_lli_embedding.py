@@ -5,8 +5,8 @@ sys.path.append(".")  # noqa: E402
 import asyncio
 import unittest
 
-from memoryscope.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
-from memoryscope.utils.logger import Logger
+from memoryscope.core.models.llama_index_embedding_model import LlamaIndexEmbeddingModel
+from memoryscope.core.utils.logger import Logger
 
 
 class TestLLIEmbedding(unittest.TestCase):

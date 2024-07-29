@@ -1,7 +1,7 @@
 import asyncio
 import unittest
 
-from memoryscope.models.llama_index_rank_model import LlamaIndexRankModel
+from memoryscope.core.models.llama_index_rank_model import LlamaIndexRankModel
 
 
 class TestLLIReRank(unittest.TestCase):

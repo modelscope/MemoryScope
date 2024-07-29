@@ -1,3 +1,5 @@
-""" Version of MemoryScope."""
+from memoryscope.core.config.arguments import Arguments
+from memoryscope.core.memoryscope import MemoryScope
 
-__version__ = "0.1.0-alpha.1"
+""" Version of MemoryScope."""
+__version__ = "0.1.0"

@@ -23,6 +23,8 @@ class MemoryNode(BaseModel):
 
     key: str = Field("", description="memory key")
 
+    key_vector: List[float] = Field([], description="memory key embedding result")
+
     value: str = Field("", description="memory value")
 
     score_recall: float = Field(0, description="embedding similarity score used in recall stage")
@@ -37,7 +39,7 @@ class MemoryNode(BaseModel):
 
     store_status: str = Field("valid", description="store_status: valid / expired")
 
-    vector: List[float] = Field([], description="content embedding result, return empty")
+    vector: List[float] = Field([], description="content embedding result")
 
     timestamp: int = Field(default_factory=lambda: int(datetime.datetime.now().timestamp()),
                            description="timestamp of the memory node")

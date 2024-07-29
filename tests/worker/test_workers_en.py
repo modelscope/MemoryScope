@@ -1,44 +1,51 @@
 import datetime
 import unittest
 
-from memoryscope.cli import MemoryScope
 from memoryscope.constants.common_constants import CHAT_MESSAGES, NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES, \
-    MERGE_OBS_NODES, QUERY_WITH_TS, EXTRACT_TIME_DICT, NOT_REFLECTED_NODES, INSIGHT_NODES, NOT_UPDATED_NODES
+    MERGE_OBS_NODES, QUERY_WITH_TS, EXTRACT_TIME_DICT, NOT_REFLECTED_NODES, INSIGHT_NODES, NOT_UPDATED_NODES, \
+    MEMORYSCOPE_CONTEXT
+from memoryscope.core.config.arguments import Arguments
+from memoryscope.core.memoryscope import MemoryScope
+from memoryscope.core.utils.tool_functions import init_instance_by_config
+from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.enumeration.message_role_enum import MessageRoleEnum
-from memoryscope.memory.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.scheme.memory_node import MemoryNode
 from memoryscope.scheme.message import Message
-from memoryscope.utils.global_context import G_CONTEXT
-from memoryscope.utils.logger import Logger
-from memoryscope.utils.tool_functions import init_instance_by_config
 
 
 class TestWorkersEn(unittest.TestCase):
     """Tests for LLIEmbedding"""
 
     def setUp(self):
-        datetime_suffix = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.logger: Logger = Logger.get_logger(f"test_worker_{datetime_suffix}", to_stream=True)
-
-        ms = MemoryScope()
-        ms.load_config("config/demo_config_en.yaml")
-        ms.init_global_content_by_config()
+        arguments = Arguments(
+            language="en",
+            memory_chat_class="api_memory_chat",
+            generation_backend="dashscope_generation",
+            generation_model="qwen-max",
+            embedding_backend="dashscope_embedding",
+            embedding_model="text-embedding-v2",
+            use_dummy_ranker=False,
+            rank_backend="dashscope_rank",
+            rank_model="gte-rerank",
+        )
+        self.ms = MemoryScope(arguments=arguments)
+        config = self.ms.dump_config()
+        self.ms.logger.info(f"config=\n{config}")
 
     def tearDown(self):
-        self.logger.close()
+        self.ms.close()
 
     @unittest.skip
     def test_extract_time(self):
         name = "extract_time"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context},
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         query = "I will be on a business trip to Shanghai tomorrow."
         query_timestamp = int(datetime.datetime.now().timestamp())
@@ -53,13 +60,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "info_filter"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context},
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value, content="I love to eat Sichuan cuisine."),
@@ -80,13 +86,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "info_filter"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context},
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value, content="Do you know where the freshest seafood is in Beijing?"),
@@ -129,13 +134,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "get_observation"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context},
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         # FIXME Does the appearance of 'am' indicate the presence of a time keyword?
         chat_messages = [
@@ -150,7 +154,7 @@ class TestWorkersEn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(NEW_OBS_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -159,13 +163,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "get_observation"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context},
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value,
@@ -193,7 +196,7 @@ class TestWorkersEn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(NEW_OBS_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -202,13 +205,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "get_observation_with_time"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context},
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value,
@@ -226,7 +228,7 @@ class TestWorkersEn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(NEW_OBS_WITH_TIME_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_WITH_TIME_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -235,43 +237,42 @@ class TestWorkersEn(unittest.TestCase):
         name = "contra_repeat"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context},
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="User is working in Meituan"),
             MemoryNode(user_name="AI", target_name="用户", content="User works at Alibaba"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result1 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="User works at JD.com"),
             MemoryNode(user_name="AI", target_name="用户", content="Users working in Meituan"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result2 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="User works at JD.com"),
             MemoryNode(user_name="AI", target_name="用户", content="User is working in Meituan"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result3 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="I like to eat watermelon"),
@@ -279,10 +280,10 @@ class TestWorkersEn(unittest.TestCase):
             MemoryNode(user_name="AI", target_name="用户", content="I don't like watermelon"),
         ]
 
-        worker.memory_handler.set_memories(NEW_OBS_NODES, nodes)
+        worker.memory_manager.set_memories(NEW_OBS_NODES, nodes)
         worker.run()
         result4 = "\n".join([" ".join([node.content, node.store_status, node.action_status])
-                             for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)])
+                             for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)])
 
         worker.logger.info(f"result1={result1}")
         worker.logger.info(f"result2={result2}")
@@ -294,13 +295,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "get_reflection_subject"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context},
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         nodes = [
             MemoryNode(content="Users are interested in strategy games and looking for new challenges."),
@@ -316,37 +316,36 @@ class TestWorkersEn(unittest.TestCase):
             MemoryNode(content="Users want to know how to maintain extensive social relationships."),
         ]
 
-        worker.memory_handler.set_memories(NOT_REFLECTED_NODES, nodes)
-        worker.memory_handler.set_memories(INSIGHT_NODES, [])
+        worker.memory_manager.set_memories(NOT_REFLECTED_NODES, nodes)
+        worker.memory_manager.set_memories(INSIGHT_NODES, [])
         worker.run()
 
-        result = [node.key for node in worker.memory_handler.get_memories(INSIGHT_NODES)]
+        result = [node.key for node in worker.memory_manager.get_memories(INSIGHT_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.get_reflection={result}")
         return worker
 
     @unittest.skip
     def test_update_insight_worker(self):
-        reflection_worker = self.test_get_reflection_subject.__wrapped__(self)
+        reflection_worker: MemoryBaseWorker = self.test_get_reflection_subject.__wrapped__(self)
 
         name = "update_insight"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
             context=reflection_worker.context,
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         nodes = [
             MemoryNode(content="Users like to play King of Glory"),
         ]
-        worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
+        worker.memory_manager.set_memories(NOT_UPDATED_NODES, nodes)
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(INSIGHT_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(INSIGHT_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.update_insight={result}")
 
@@ -355,23 +354,22 @@ class TestWorkersEn(unittest.TestCase):
         name = "long_contra_repeat"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=G_CONTEXT.worker_config[name],
-            suffix_name="worker",
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context},
             context_lock=None,
-            thread_pool=G_CONTEXT.thread_pool)
+            thread_pool=self.ms.context.thread_pool)
 
         nodes = [
             MemoryNode(content="Users are interested in strategy games and looking for new challenges."),
             MemoryNode(content="The user works in Beijing, feels stressed, and is looking for ways to relax."),
             MemoryNode(content="User works in Shanghai."),
         ]
-        worker.memory_handler.set_memories(NOT_UPDATED_NODES, nodes)
+        worker.memory_manager.set_memories(NOT_UPDATED_NODES, nodes)
         worker.unit_test_flag = True
         worker.run()
 
-        result = [node.content for node in worker.memory_handler.get_memories(MERGE_OBS_NODES)]
+        result = [node.content for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.long_contra_repeat={result}")
