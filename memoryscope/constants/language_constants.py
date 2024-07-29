@@ -1,6 +1,6 @@
 from memoryscope.enumeration.language_enum import LanguageEnum
 
-# This dictionary maps languages to lists of words related to datetime expressions. 
+# This dictionary maps languages to lists of words related to datetime expressions.
 # It aids in recognizing and processing datetime mentions in text, enhancing the system's ability to understand
 # temporal context across different languages.
 DATATIME_WORD_LIST = {

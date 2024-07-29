@@ -12,9 +12,9 @@ from memoryscope.scheme.model_response import ModelResponse, ModelResponseGen
 
 class DummyGenerationModel(BaseModel):
     """
-    The `DummyGenerationModel` class serves as a placeholder model for generating responses. 
-    It processes input prompts or sequences of messages, adapting them into a structure compatible 
-    with chat interfaces. It also facilitates the generation of mock (dummy) responses for testing, 
+    The `DummyGenerationModel` class serves as a placeholder model for generating responses.
+    It processes input prompts or sequences of messages, adapting them into a structure compatible
+    with chat interfaces. It also facilitates the generation of mock (dummy) responses for testing,
     supporting both immediate and streamed output.
     """
     m_type: ModelEnum = ModelEnum.GENERATION_MODEL

@@ -98,10 +98,10 @@ class LoadMemoryWorker(MemoryBaseWorker):
     def _run(self):
         """
         Initiates multithread tasks to retrieve various types of memory data including
-        not reflected, not updated, insights, and data from today. After submitting all tasks, 
+        not reflected, not updated, insights, and data from today. After submitting all tasks,
         it waits for their completion by calling `gather_thread_result`.
-        
-        This method serves as the controller for data retrieval operations, enhancing efficiency 
+
+        This method serves as the controller for data retrieval operations, enhancing efficiency
         by handling tasks concurrently.
         """
 

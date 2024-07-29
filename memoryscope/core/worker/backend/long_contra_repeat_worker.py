@@ -34,7 +34,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
             node (MemoryNode): The reference node used to find similar content in memory.
 
         Returns:
-            Tuple[MemoryNode, List[MemoryNode]]: A tuple containing the original node and a list of similar nodes 
+            Tuple[MemoryNode, List[MemoryNode]]: A tuple containing the original node and a list of similar nodes
             that passed the similarity threshold.
         """
         filter_dict = {

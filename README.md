@@ -5,7 +5,7 @@ English | [**中文**](./README_ZH.md)
 
 # 🚀 Installation
 
-## (1) Docker-Compose (Recommanded)
+## (1) Docker-Compose (Recommended)
 1. Clone the project and edit the config.
 
     ```
@@ -31,12 +31,12 @@ English | [**中文**](./README_ZH.md)
     nano config/demo_config_cn.yaml
     ```
 
-2. Build the `Dockerfile` with command: 
+2. Build the `Dockerfile` with command:
     ```
     sudo docker build --network=host -t memoryscope .
     ```
 
-3. Run `ElasticSearch` Container with command: 
+3. Run `ElasticSearch` Container with command:
     ```
     docker run -p 9200:9200 \
         -e "discovery.type=single-node" \
@@ -45,17 +45,17 @@ English | [**中文**](./README_ZH.md)
         docker.elastic.co/elasticsearch/elasticsearch:8.13.2
     ```
 
-4. Launch the built image with command: 
+4. Launch the built image with command:
     ```
     sudo docker run -it --rm --net=host memoryscope
     ```
-   
+
 # 💡 Contribute
 
 Contributions are always encouraged!
 
 We highly recommend install pre-commit hooks in this repo before committing pull requests.
-These hooks are small house-keeping scripts executed every time you make a git commit, 
+These hooks are small house-keeping scripts executed every time you make a git commit,
 which will take care of the formatting and linting automatically.
 ```shell
 poetry install --with dev

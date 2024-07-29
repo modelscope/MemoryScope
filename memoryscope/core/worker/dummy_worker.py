@@ -9,7 +9,7 @@ class DummyWorker(MemoryBaseWorker):
         """
         Executes the dummy worker's run logic by logging workflow entry, capturing the current timestamp,
         file path, and setting the result context with details about the workflow execution.
-        
+
         This method utilizes the BaseWorker's capabilities to interact with the workflow context.
         """
         workflow_name = self.get_context(WORKFLOW_NAME)

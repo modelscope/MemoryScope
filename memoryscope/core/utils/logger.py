@@ -88,7 +88,7 @@ class Logger(logging.Logger):
 
     def _add_stream_handler(self):
         """
-        Adds a stream handler to the logger for console output. The handler is configured 
+        Adds a stream handler to the logger for console output. The handler is configured
         with the logger's formatter and set to use UTF-8 encoding.
         """
         stream_handler = logging.StreamHandler()
@@ -162,7 +162,7 @@ class Logger(logging.Logger):
         Retrieves or creates a logger instance with the specified name and configurations.
 
         If no name is provided, it defaults to the first registered logger's name or 'default' if none exist.
-        This method ensures that only one logger instance exists per name by reusing existing instances 
+        This method ensures that only one logger instance exists per name by reusing existing instances
         stored in `LOGGER_DICT`.
 
         Args:

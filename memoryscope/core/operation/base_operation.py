@@ -7,7 +7,7 @@ OPERATION_TYPE = Literal["frontend", "backend"]
 class BaseOperation(metaclass=ABCMeta):
     """
     An abstract base class representing an operation that can be categorized as either frontend or backend.
-    
+
     Attributes:
         operation_type (OPERATION_TYPE): Specifies the type of operation, defaulting to "frontend".
         name (str): The name of the operation.
@@ -39,7 +39,7 @@ class BaseOperation(metaclass=ABCMeta):
     @abstractmethod
     def run_operation(self, **kwargs):
         """
-        Abstract method to define the operation to be run. 
+        Abstract method to define the operation to be run.
         Subclasses must implement this method.
 
         Args:

@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append(".")  # noqa: E402
+sys.path.append(".")  # pylint: disable=E402
 
 import unittest
 import time

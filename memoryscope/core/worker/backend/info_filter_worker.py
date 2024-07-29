@@ -9,9 +9,9 @@ from memoryscope.scheme.message import Message
 
 class InfoFilterWorker(MemoryBaseWorker):
     """
-    This worker filters and modifies the chat message history (`self.chat_messages`) by retaining only the messages 
-    that include significant information. It then constructs a prompt from these filtered messages, utilizes an AI 
-    model to process this prompt, parses the AI's generated response to allocate scores, and ultimately retains 
+    This worker filters and modifies the chat message history (`self.chat_messages`) by retaining only the messages
+    that include significant information. It then constructs a prompt from these filtered messages, utilizes an AI
+    model to process this prompt, parses the AI's generated response to allocate scores, and ultimately retains
     messages in `self.chat_messages` based on these assigned scores.
     """
     FILE_PATH: str = __file__
@@ -26,7 +26,7 @@ class InfoFilterWorker(MemoryBaseWorker):
         Filters user messages in the chat, generates a prompt incorporating these messages,
         utilizes an LLM to rate the information score for each message,
         and updates `self.chat_messages` to only include messages with designated scores.
-        
+
         This method executes the following steps:
         1. Filters out non-user messages and truncates long messages.
         2. Constructs a prompt with user messages for LLM input.

@@ -51,7 +51,7 @@ class FuseRerankWorker(MemoryBaseWorker):
     def _run(self):
         """
         Executes the reranking process on memory nodes considering their scores, types, and temporal relevance.
-        
+
         This method performs the following steps:
         1. Retrieves extraction time data and a list of ranked memory nodes from the worker's context.
         2. Reranks nodes based on a combination of their original rank score, type,

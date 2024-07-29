@@ -36,7 +36,7 @@ get_observation_with_time_few_shot:
     2 2022年5月2日周二17点 {user_name}：公元1400年至1550年中国历史大事表。
     3 2022年5月3日周二18点 {user_name}：能给我整理一张如何使用大模型的技巧列表吗，要求内容尽量精简。
     4 2022年7月3日周四12点 {user_name}：上上个月我办了游泳卡。
-    
+
     思考：从第1句可以得知张三是{user_name}的同事，这是关于{user_name}的人际关系的重要信息。其余信息重要性不足。{user_name}信息不涉及时间。
     信息：<1> <> <张三是{user_name}的同事。> <张三, 同事>
     思考：第2句是{user_name}提出的要求，没有明确提及{user_name}个人信息。
@@ -45,8 +45,8 @@ get_observation_with_time_few_shot:
     信息：<3> <> <无> <>
     思考：从第4句可以得出{user_name}上上个月办了游泳卡。{user_name}信息涉及时间，结合对话时间为2022年7月，推断{user_name}在2022年5月{user_name}办了游泳卡。
     信息：<4> <2022年5月> <{user_name}在2022年5月办了游泳卡。> <游泳卡>
-    
-    
+
+
     示例2：
     {user_name}句子：
     1 2020年1月4日周日10点 {user_name}：我花5000元买了100股海天味业。
@@ -54,7 +54,7 @@ get_observation_with_time_few_shot:
     3 2020年1月4日周日10点 {user_name}：我花50000元买了100股阿里巴巴股票。
     4 2021年6月2日周四23点 {user_name}：谢啦。我中午在公司附近吃，帮我推荐一家阿里巴巴徐汇滨江园区附近的餐厅吧。
     5 2021年7月9日周六11点 {user_name}：两个坏消息，我打羽毛球把拍子打断线了。。。然后我去我朋友家撸猫，结果我猫毛过敏，今天疯狂打喷嚏。。。
-    
+
     思考：从第1句可以得知{user_name}购买了海天味业股票，购买数量为100股，购买金额为5000元，这是关于{user_name}的投资决策的重要信息。{user_name}信息不涉及时间。
     信息：<1> <> <{user_name}购买了海天味业股票，购买数量为100股，购买金额为5000元。> <海天味业, 股票>
     思考：从第2句可以得知{user_name}与妻子的结婚纪念日是明天，这是关于{user_name}重要纪念日的信息。其余信息重要性不足。{user_name}信息涉及时间，结合对话时间为2023年4月27日，
@@ -66,8 +66,8 @@ get_observation_with_time_few_shot:
     信息：<4> <> <{user_name}在阿里巴巴徐汇滨江园区工作。> <阿里巴巴, 徐汇滨江园区, 工作>
     思考：从第5句可以得知{user_name}前天打羽毛球时把球拍打断了线，但这不是重要的信息。还可以得知{user_name}对猫毛过敏，这是关于{user_name}的健康的重要信息。{user_name}信息不涉及时间。
     信息：<5> <> <{user_name}对猫毛过敏。> <猫毛, 过敏>
-    
-    
+
+
     示例3：
     {user_name}句子：
     1 2023年6月30日周五15点 {user_name}：上个月我和家人一起去杭州旅游，景色很不错。
@@ -75,7 +75,7 @@ get_observation_with_time_few_shot:
     3 2020年7月3日周四11点 {user_name}：提醒我下周一去体检。
     4 2023年5月21日周六14点 {user_name}：有人说兴趣是最好的老师，也建议兴趣和职业联系起来，但我发现喜欢打篮球的人很多，但靠打篮球成职业的稀少，赚钱的更少，此外，怎么分辨兴趣和喜欢
     5 2018年3月6日周四19点 {user_name}：李增杰:这个是星座蛙设，但是我是处女座的，我妈感觉因为我的不正常，我妈不让我看了\n雌猴摸了摸李增杰的头，这样啊\n雌猴打开了哔哩哔哩看了看\n雌猴:要不换个设吧，我听你未来的你说，有一个叫难忘的朱古力232这个人，他弄的设是Windows设\n这是剧本1，剧本2未完待续
-    
+
     思考：从第1句可以得知{user_name}和家人上个月去杭州旅游了，这是关于{user_name}的经历的重要信息。其余信息重要性不足。{user_name}信息涉及时间，结合对话时间为2023年6月推断{user_name}和家人2023年5月去杭州旅游了。
     信息：<1> <2023年5月> <{user_name}和家人2023年5月去杭州旅游了。> <家人, 杭州, 旅游>
     思考：从第2句可以得知{user_name}的生日是昨天，这是关于{user_name}重要纪念日的信息。其余信息重要性不足。{user_name}信息涉及时间，结合对话时间为2023年7月2日，
@@ -95,7 +95,7 @@ get_observation_with_time_few_shot:
     2 May 2, 2022, Tuesday, at 17 {user_name}: Chronology of major events in Chinese history from 1400 to 1550 AD.
     3 May 3, 2022, Tuesday, at 18 {user_name}: Can you compile a list of tips on how to use large models for me, and try to keep the content concise?
     4 July 3, 2022, Thursday, at 12 {user_name}: I got a swimming pass two months ago.
-    
+
     Thought: From the first sentence, it can be inferred that Jason is {user_name}'s colleague, which is important information about {user_name}'s interpersonal relationships. The remaining information is of insufficient importance. {user_name}'s information does not involve time.
     Information: <1> <> <Zhang San is {user_name}'s colleague> <Zhang San, colleague>
     Thought: The second sentence is a request made by {user_name}, with no clear mention of {user_name}'s personal information.
@@ -104,7 +104,7 @@ get_observation_with_time_few_shot:
     Information: <3> <> <none> <>
     Thought: From the fourth sentence, it can be inferred that {user_name} got a swimming pass two months ago. {user_name}'s information involves time. Combining it with the conversation time of July 2022, it can be inferred that {user_name} got the swimming pass in May 2022.
     Information: <4> <May 2022> <{user_name} got a swimming pass in May 2022> <swimming pass>
-    
+
     Example 2:
     {user_name} sentences:
     1 January 4, 2020, Sunday, at 10 {user_name}: I spent $5000 to buy 100 shares of General Motors.
@@ -112,7 +112,7 @@ get_observation_with_time_few_shot:
     3 January 4, 2020, Sunday, at 10 {user_name}: I spent $50000 to buy 100 shares of Alibaba.
     4 June 2, 2021, Thursday, at 23 {user_name}: Thanks. I'm having lunch near the company at noon; can you recommend a restaurant near Alibaba Xuhui Riverside Campus for me?
     5 July 9, 2021, Saturday, at 11 {user_name}: Two pieces of bad news: I broke my badminton racket while playing... Then I went to my friend's house to pet the cat and ended up having an allergic reaction to the cat fur, sneezing like crazy today...
-    
+
     Thought: From the first sentence, it can be inferred that {user_name} bought 100 shares of General Motors stock for $5000. This is important information about {user_name}'s investment decision. {user_name}'s information does not involve time.
     Information: <1> <> <{user_name} bought 100 shares of General Motors stock for $5000> <General Motors, stock>
     Thought: From the second sentence, it can be inferred that {user_name}'s wedding anniversary with his wife is tomorrow, which is important information about {user_name}'s significant dates. The remaining information is of insufficient importance. {user_name}'s information involves time. Combining it with the conversation date of April 27, 2023, and knowing that the anniversary is a recurring date, it can be inferred that {user_name}'s wedding anniversary is on April 28th each year.
@@ -123,8 +123,8 @@ get_observation_with_time_few_shot:
     Information: <4> <> <{user_name} works at Alibaba Xuhui Riverside Campus> <Alibaba, Xuhui Riverside Campus, job>
     Thought: From the fifth sentence, it can be inferred that {user_name} broke their badminton racket the other day while playing, but this is not important information. It can also be inferred that {user_name} is allergic to cat fur, which is important information about {user_name}'s health. {user_name}'s information does not involve time.
     Information: <5> <> <{user_name} is allergic to cat fur> <cat fur, allergy>
-    
-    
+
+
     Example 3:
     {user_name} sentences:
     1 June 30, 2023, Friday, at 15 {user_name}: Last month, my family and I went to San Jose for a trip. The scenery was very nice.

@@ -22,7 +22,7 @@ update_insight_few_shot:
     已有信息：{user_name}所在地区: 杭州
     思考：从第一句句子可以得出{user_name}在成都。第二句句子没有直接透露{user_name}所在地信息，但与第一句句子{user_name}在成都的信息吻合。这与已有信息（{user_name}在杭州）矛盾，输出更新的信息。
     {user_name}的资料：<成都>
-    
+
     示例2:
     {user_name}最近养好了肠胃。
     {user_name}关注中医养生。
@@ -30,7 +30,7 @@ update_insight_few_shot:
     已有信息：{user_name}健康状况: 肠胃不好，高血压
     思考：从第一句句子可以得出{user_name}最近养好了肠胃，与已有信息矛盾，以新信息为准。第二句句子与{user_name}健康状况无关。整合已有信息和新信息得到{user_name}健康状况是肠胃健康，高血压。
     {user_name}的资料：<肠胃健康，高血压>
-    
+
     示例3:
     {user_name}刚刚毕业，第一份工作是银行前台。
     {user_name}的理想工作是职业游戏选手。
@@ -38,14 +38,14 @@ update_insight_few_shot:
     已有信息：{user_name}职业：在招商银行工作
     思考：整合已有信息和第一句句子的信息可以得出{user_name}的现在的职业是招商银行前台。第二句句子说明了{user_name}的理想工作但并不是现在的职业。
     {user_name}的资料：<招商银行前台>
-    
+
     示例4:
     {user_name}大学期间接触过优化算法的研究。
     类别：{user_name}学习专业
     已有信息：{user_name}学习专业：与人工智能相关
     思考：从句子可以得出{user_name}大学学习的专业与优化算法相关，这与已有信息（{user_name}学习专业与人工智能相关）不矛盾，整合可以得出{user_name}大学学习的专业与人工智能和优化算法相关。
     {user_name}的资料：<与人工智能和优化算法相关>
-    
+
     示例5:
     {user_name}单身。
     {user_name}受到一名18岁男生的追求，但不想接受又不想伤害他。
@@ -64,7 +64,7 @@ update_insight_few_shot:
     已有信息：{user_name}生日：1987年7月15日。
     思考：第一句句子中提及生日，但并不是用户的生日，无法得出用户生日信息。从第二句句子可以得出用户生日在7月15日，与已有信息不矛盾，整合可以得出用户生日是1987年7月15日。
     {user_name}的资料：<1987年7月15日>
-    
+
     示例7:
     今天{user_name}和同学去打球了。
     明天{user_name}和女朋友一起去杭州旅游。
@@ -90,7 +90,7 @@ update_insight_few_shot:
     Existing information: {user_name}'s health status: Stomach issues, high blood pressure
     Thought: From the first sentence, it can be inferred that {user_name} recently recovered from stomach issues, which contradicts the existing information. Therefore, the new information should take precedence. The second sentence is not related to {user_name}'s health status. Integrating the existing information and the new information, we get that {user_name}'s health status is healthy stomach and high blood pressure.
     {user_name}'s profile: <Healthy stomach, high blood pressure>
-    
+
     Example 3:
     {user_name} just graduated, and their first job is as a bank receptionist.
     {user_name}'s dream job is to be a professional gamer.
@@ -124,7 +124,7 @@ update_insight_few_shot:
     Existing Information: {user_name}'s Birthday: July 15, 1987.
     Thoughts: The first sentence mentions a birthday, but it is not the user's birthday, so it does not provide information about the user's birthday. From the second sentence, we know that the user's birthday is on July 15th, which is consistent with the existing information. We can conclude that the user's birthday is July 15, 1987.
     {user_name}'s profile: <July 15, 1987>
-    
+
     Example 7:
     Today, {user_name} played basketball with classmates.
     Tomorrow, {user_name} is going to Hangzhou with his girlfriend.

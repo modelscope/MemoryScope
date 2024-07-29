@@ -4,7 +4,7 @@ from enum import Enum
 class ActionStatusEnum(str, Enum):
     """
     Enumeration representing various statuses of a memory node.
-    
+
     Each status reflects a different state of the node in terms of its lifecycle or content:
     - NEW: Indicates a newly created node.
     - MODIFIED: Signifies that the node has been altered.

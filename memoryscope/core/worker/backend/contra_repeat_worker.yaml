@@ -28,7 +28,7 @@ contra_repeat_few_shot:
     5 陈伟业是{user_name}的领导，是银行分行行长
     6 {user_name}喜欢吃西瓜
     7 {user_name}喜欢吃苹果
-    
+
     思考：第1句不会存在与前面序号句子的矛盾或者完全重复。
     判断：<1> <无>
     思考：第2句中所有信息都被前面序号中第1句的信息完全包含。
@@ -43,7 +43,7 @@ contra_repeat_few_shot:
     判断：<6> <无>
     思考：第7句也表达了{user_name}的水果偏好，喜欢吃桃子，和前面序号中的第6句不冲突，喜好可以同时存在。
     判断：<7> <无>
-    
+
     示例2
     句子：
     1 {user_name}的孩子成绩不太好。
@@ -52,7 +52,7 @@ contra_repeat_few_shot:
     4 {user_name}的父亲生日在2024年5月1日。
     5 {user_name}很喜欢和同班同学打篮球。
     6 {user_name}喜欢打篮球。
-    
+
     思考：第1句不会存在与前面序号句子的矛盾或者完全重复。
     判断：<1> <无>
     思考：第2句与前面序号句子既不矛盾也不重复。
@@ -76,7 +76,7 @@ contra_repeat_few_shot:
     5 Charles is {user_name}'s supervisor and the branch manager of a bank.
     5 {user_name} loves playing basketball with classmates.
     6 {user_name} likes playing basketball.
-    
+
     Thought: The first sentence does not have any contradictions or complete repetitions with the previously numbered sentences.
     Judgment: <1> <None>
     Thought: All information in the second sentence is completely contained within the information of the first sentence.
@@ -91,7 +91,7 @@ contra_repeat_few_shot:
     Judgment: <6> <None>
     Thought: Sentence 7 also expresses {user_name}'s fruit preference, liking to eat apples; it does not conflict with sentence 6, and both preferences can coexist.
     Judgment: <7> <None>
-    
+
     Example 2
     Sentences:
     1 {user_name}'s child does not perform well academically.
@@ -100,7 +100,7 @@ contra_repeat_few_shot:
     4 {user_name}'s father's birthday is on May 1, 2024.
     5 {user_name} loves playing basketball with classmates.
     6 {user_name} likes playing basketball.
-    
+
     Thought: The first sentence does not have any contradictions or complete repetitions with the previously numbered sentences.
     Judgment: <1> <None>
     Thought: The second sentence neither contradicts nor repeats any of the previously numbered sentences.
@@ -123,4 +123,4 @@ contra_repeat_user_query:
 
   en: |
     Sentences:
-    {user_query} 
+    {user_query}

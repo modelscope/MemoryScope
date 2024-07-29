@@ -103,7 +103,7 @@ class MemoryManager(object):
 
         Args:
             keys (str | List[str]): The key mapping to memory nodes.
-        
+
         Returns:
             List[MemoryNode]: Memories mapped to the key.
         """
@@ -150,7 +150,7 @@ class MemoryManager(object):
                 if _id in id_list:
                     id_list.remove(_id)
 
-    def update_memories(self, keys: str = "", nodes: MemoryNode | List[MemoryNode] = None):
+    def update_memories(self, keys: str = "", nodes: MemoryNode | List[MemoryNode] = None) -> dict:
         """
         Update the memories.
 
@@ -166,9 +166,9 @@ class MemoryManager(object):
             update_memories.update({n.memory_id: n for n in nodes})
 
         # Save collected nodes to memory store
-        self._update_memories(list(update_memories.values()))
+        return self._update_memories(list(update_memories.values()))
 
-    def _update_memories(self, nodes: List[MemoryNode]):
+    def _update_memories(self, nodes: List[MemoryNode]) -> dict:
         """
         Updates the memories based on their status:
         - New: Embeds and inserts the memory node.
@@ -180,9 +180,11 @@ class MemoryManager(object):
         Args:
             nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.
         """
-        if not nodes:
-            return
 
+        if not nodes:
+            return {}
+
+        update_info_dict = {}
         for node in nodes:
             # Non-deleted expired memory nodes need to be changed to a modified state.
             if node.store_status == StoreStatusEnum.EXPIRED.value and node.action_status != ActionStatusEnum.DELETE:
@@ -194,6 +196,7 @@ class MemoryManager(object):
             for n in new_memories:
                 n.action_status = ActionStatusEnum.NONE.value
             self.memory_store.batch_insert(new_memories)
+            update_info_dict[ActionStatusEnum.NEW.value] = new_memories
 
         # emb & update new memories
         c_modified_memories = [n for n in nodes if n.action_status == ActionStatusEnum.CONTENT_MODIFIED]
@@ -201,6 +204,7 @@ class MemoryManager(object):
             for n in c_modified_memories:
                 n.action_status = ActionStatusEnum.NONE.value
             self.memory_store.batch_update(c_modified_memories, update_embedding=True)
+            update_info_dict[ActionStatusEnum.CONTENT_MODIFIED.value] = c_modified_memories
 
         # update new memories
         modified_memories = [n for n in nodes if n.action_status == ActionStatusEnum.MODIFIED]
@@ -208,8 +212,12 @@ class MemoryManager(object):
             for n in modified_memories:
                 n.action_status = ActionStatusEnum.NONE.value
             self.memory_store.batch_update(modified_memories, update_embedding=False)
+            update_info_dict[ActionStatusEnum.MODIFIED.value] = modified_memories
 
         # set memories expired
         delete_memories = [n for n in nodes if n.action_status == ActionStatusEnum.DELETE]
         if delete_memories:
             self.memory_store.batch_delete(delete_memories)
+            update_info_dict[ActionStatusEnum.DELETE.value] = delete_memories
+
+        return update_info_dict

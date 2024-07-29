@@ -39,7 +39,7 @@ class CliMemoryChat(ApiMemoryChat):
                          role_name: Optional[str] = None,
                          system_prompt: Optional[str] = None,
                          memory_prompt: Optional[str] = None,
-                         extra_memories: Optional[str] = None,
+                         temporary_memories: Optional[str] = None,
                          history_message_strategy: Literal["auto", None] | int = "auto",
                          remember_response: bool = True,
                          **kwargs):
@@ -47,7 +47,7 @@ class CliMemoryChat(ApiMemoryChat):
                                         role_name=role_name,
                                         system_prompt=system_prompt,
                                         memory_prompt=memory_prompt,
-                                        extra_memories=extra_memories,
+                                        temporary_memories=temporary_memories,
                                         history_message_strategy=history_message_strategy,
                                         remember_response=remember_response,
                                         **kwargs)
@@ -132,7 +132,10 @@ class CliMemoryChat(ApiMemoryChat):
                 self.memory_service.stop_backend_service()
                 while True:
                     result = self.memory_service.run_operation(name=command, **kwargs)
-                    os.system("clear")
+                    if os.name == 'nt':
+                        os.system('cls')
+                    else:
+                        os.system('clear')
                     self.print_logo()
                     if result:
                         if isinstance(result, list):
@@ -161,7 +164,7 @@ class CliMemoryChat(ApiMemoryChat):
         Runs the CLI chat loop, which handles user input, processes commands,
         communicates with the AI model, manages conversation memory, and controls
         the chat session including streaming responses, command execution, and error handling.
-        
+
         The loop continues until the user explicitly chooses to exit.
         """
         self.print_logo()

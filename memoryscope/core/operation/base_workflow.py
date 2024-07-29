@@ -48,7 +48,7 @@ class BaseWorkflow(object):
             List[List[List[str]]]: A nested list representing the execution plan, including parallel groups and tasks.
         """
         # Regular expression to match components of the workflow, handling both plain items and grouped items.
-        pattern = r'(\[[^\]]*\]|[^,]+)'
+        pattern = r"(\[[^\]]*\]|[^,]+)"
         # Find all matches in the workflow string based on the pattern.
         workflow_split = re.findall(pattern, self.workflow)
 
@@ -85,11 +85,11 @@ class BaseWorkflow(object):
 
     def _print_workflow(self):
         """
-        Prints the workflow stages in a structured format. Each stage of the workflow 
-        is detailed with its constituent parts, either single elements or grouped 
+        Prints the workflow stages in a structured format. Each stage of the workflow
+        is detailed with its constituent parts, either single elements or grouped
         elements separated by ' | '.
 
-        The method iterates over the workflow parts, handling both singular steps 
+        The method iterates over the workflow parts, handling both singular steps
         and parallel steps (where elements are zipped together).
         """
         self.logger.info(f"----- workflow.{self.name}.print.begin -----")
@@ -155,7 +155,7 @@ class BaseWorkflow(object):
         Executes the workflow by orchestrating the steps defined in `self.workflow_worker_list`.
         This method supports both sequential and parallel execution of sub-workflows based on the structure
         of `self.workflow_worker_list`.
-        
+
         If a workflow part consists of a single item, it is executed sequentially. For parts with multiple items,
         they are submitted for parallel execution using a thread pool. The workflow will stop if any sub-workflow
         returns False.

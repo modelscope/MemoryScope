@@ -16,7 +16,7 @@ arguments = Arguments(
     embedding_model="text-embedding-v2",
     use_dummy_ranker=False,
     rank_backend="dashscope_rank",
-    rank_model="gte-rerank",
+    rank_model="gte-rerank"
 )
 
 
@@ -43,27 +43,43 @@ def chat_example3():
 
         response = memory_chat.chat_with_memory(
             query="你知道我消灭了几个星系吗？",
-            extra_memories="用户是一只哥斯拉，这是真是的，不是虚构的。\n前天用户消灭了星系0x4be？\n大前天用户消灭了星系0x5be？")
+            temporary_memories="用户是一只哥斯拉，这是真是的，不是虚构的。\n前天用户消灭了星系0x4be？\n大前天用户消灭了星系0x5be？")
         print("回答：\n" + response.message.content)
 
 
 def chat_example4():
     with MemoryScope(arguments=arguments) as ms:
         memory_chat = ms.default_memory_chat
-        memory_chat.start_backend_service()
+        result = memory_chat.run_service_operation("delete_all")
 
         response = memory_chat.chat_with_memory(query="我的爱好是弹琴。")
         print("回答1：\n" + response.message.content)
 
-        memory_chat.run_service_operation("consolidate_memory")
+        # memory_chat.start_backend_service()
+        result = memory_chat.run_service_operation("consolidate_memory")
+        print("记忆更新变化：\n" + result)
+
         response = memory_chat.chat_with_memory(query="你知道我的乐器爱好是什么？",
                                                 history_message_strategy=None)
+
         print("回答2：\n" + response.message.content)
         print("记忆2：\n" + response.meta_data["memories"])
 
 
+def chat_example5():
+    with MemoryScope(arguments=arguments) as ms:
+        memory_service = ms.default_memory_service
+        memory_service.init_service()
+
+        result = memory_service.list_memory()
+        result = memory_service.retrieve_memory()
+        result = memory_service.consolidate_memory()
+        print(result)
+
+
 if __name__ == "__main__":
-    chat_example1()
+    # chat_example1()
     # chat_example2()
     # chat_example3()
-    # chat_example4()
+    chat_example4()
+    # chat_example5()

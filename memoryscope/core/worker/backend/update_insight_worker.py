@@ -14,8 +14,8 @@ from memoryscope.scheme.memory_node import MemoryNode
 class UpdateInsightWorker(MemoryBaseWorker):
     """
     This class is responsible for updating insight value in a memory system. It filters insight nodes
-    based on their association with observed nodes, utilizes a ranking model to prioritize them, 
-    generates refreshed insights via an LLM, and manages node statuses and content updates, 
+    based on their association with observed nodes, utilizes a ranking model to prioritize them,
+    generates refreshed insights via an LLM, and manages node statuses and content updates,
     incorporating features for concurrent execution and logging.
     """
     FILE_PATH: str = __file__
@@ -188,9 +188,9 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
     def _run(self):
         """
-        Executes the main routine of the UpdateInsightWorker. This involves filtering and updating insight nodes 
-        based on their association with observed nodes. It processes nodes in batches, selects the top nodes 
-        according to a scoring mechanism, and then initiates tasks to update these insights using an LLM. Finally, 
+        Executes the main routine of the UpdateInsightWorker. This involves filtering and updating insight nodes
+        based on their association with observed nodes. It processes nodes in batches, selects the top nodes
+        according to a scoring mechanism, and then initiates tasks to update these insights using an LLM. Finally,
         it updates the status of processed nodes and gathers the results from all threads.
 
         Steps include:

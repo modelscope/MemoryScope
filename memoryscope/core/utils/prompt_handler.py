@@ -10,7 +10,7 @@ from memoryscope.enumeration.language_enum import LanguageEnum
 
 class PromptHandler(object):
     """
-    The `PromptHandler` class manages prompt messages by loading them from YAML or JSON files and dictionaries, 
+    The `PromptHandler` class manages prompt messages by loading them from YAML or JSON files and dictionaries,
     supporting language selection based on a context, and providing dictionary-like access to the prompt messages.
     """
 
@@ -47,7 +47,7 @@ class PromptHandler(object):
     @staticmethod
     def file_path_completion(file_path: str, raise_exception: bool = True) -> str:
         """
-        Attempts to complete the given file path by appending either a `.yaml` or `.json` extension 
+        Attempts to complete the given file path by appending either a `.yaml` or `.json` extension
         based on the existence of the respective file. If neither exists, an exception is raised.
 
         Args:

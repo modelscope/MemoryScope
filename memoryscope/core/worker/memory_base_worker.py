@@ -34,7 +34,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
                 wrt. the semantic similarities.
             **kwargs: Additional keyword arguments passed to the parent class initializer.
 
-        The constructor also initializes key attributes related to memory store, monitoring, 
+        The constructor also initializes key attributes related to memory store, monitoring,
         user and target identification, and a prompt handler, setting them up for later use.
         """
         super(MemoryBaseWorker, self).__init__(**kwargs)
@@ -122,7 +122,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
     @property
     def rank_model(self) -> BaseModel:
         """
-        Property to access the rank model. If the stored rank model is a string, it fetches the actual model instance 
+        Property to access the rank model. If the stored rank model is a string, it fetches the actual model instance
         from the global context's model dictionary before returning it.
 
         Returns:

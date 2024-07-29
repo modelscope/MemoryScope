@@ -30,7 +30,7 @@ class FrontendOperation(BaseWorkflow, BaseOperation):
 
     def run_operation(self, **kwargs):
         """
-        Executes the main operation of reading recent chat messages, initializing workflow, 
+        Executes the main operation of reading recent chat messages, initializing workflow,
         and returning the result of the workflow execution.
 
         Args:

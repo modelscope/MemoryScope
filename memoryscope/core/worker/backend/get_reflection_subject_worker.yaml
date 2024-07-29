@@ -33,8 +33,8 @@ get_reflection_subject_few_shot:
     过敏源
     技术方向
     工作岗位
-    
-    
+
+
     示例2
     信息：
     {user_name}想要了解如何使用torchvision库来可视化深度学习任务的进度信息。
@@ -59,7 +59,7 @@ get_reflection_subject_few_shot:
     游戏偏好
     运动计划
     技术方向
-    
+
     示例3
     信息：
     {user_name}寻求推荐一个相关课程或网址以进行学习。
@@ -75,7 +75,7 @@ get_reflection_subject_few_shot:
     已有{user_name}属性：
     新增{user_name}属性：
     朋友关系
-    
+
     示例4
     信息：
     {user_name}在寻求有关推拿按摩手法的教程或相关网站推荐。
@@ -111,7 +111,7 @@ get_reflection_subject_few_shot:
     Allergens
     Technical direction
     Job position
-    
+
     Example 2
     Information:
     {user_name} wants to learn how to use the torchvision library to visualize progress information for deep learning tasks.
@@ -136,7 +136,7 @@ get_reflection_subject_few_shot:
     Game preferences
     Exercise plan
     Technical direction
-    
+
     Example 3
     Information:
     {user_name} is seeking a recommendation for a related course or website for learning.
@@ -152,7 +152,7 @@ get_reflection_subject_few_shot:
     Existing {user_name} attributes:
     New {user_name} attributes:
     Friend relationships
-    
+
     Example 4
     Information:
     {user_name} is seeking tutorials or website recommendations for massage techniques.

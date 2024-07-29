@@ -28,10 +28,10 @@ class Registry(object):
 
     def register(self, module_name: str = None, module: Any = None):
         """
-        Registers module in the registry in a single call. 
+        Registers module in the registry in a single call.
 
         Args:
-            module_name (str): The name of module to be registered. 
+            module_name (str): The name of module to be registered.
             module (List[Any] | Dict[str, Any]): The module to be registered.
 
         Raises:

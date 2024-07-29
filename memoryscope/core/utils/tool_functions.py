@@ -52,16 +52,16 @@ def init_instance_by_config(config: dict, default_class_dir: str = "memoryscope"
     """
     Initialize an instance of a class specified in the configuration dictionary.
 
-    This function dynamically imports a class from a module path, allowing for 
-    user-defined classes or default paths. It supports adding a suffix to the 
-    class name, merging additional keyword arguments with the config, and handling 
+    This function dynamically imports a class from a module path, allowing for
+    user-defined classes or default paths. It supports adding a suffix to the
+    class name, merging additional keyword arguments with the config, and handling
     nested module paths.
 
     Args:
-        config (dict): A dictionary containing the configuration, including 
+        config (dict): A dictionary containing the configuration, including
                        the 'class' key that specifies the class's module path.
-        default_class_dir (str, optional): The default module path prefix 
-                                            to use if not explicitly defined in 
+        default_class_dir (str, optional): The default module path prefix
+                                            to use if not explicitly defined in
                                             'config'. Defaults to "memory_scope".
         **kwargs: Additional keyword arguments to pass to the class constructor.
 

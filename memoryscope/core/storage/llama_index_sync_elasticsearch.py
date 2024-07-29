@@ -240,14 +240,14 @@ def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str
     """
     Converts standard Llama-index filters into a format compatible with Elasticsearch.
 
-    This function transforms dictionary-based filters, where each key represents a field and 
-    the value is a list of strings, into an Elasticsearch query structure. It supports both 
-    list values (interpreted as 'should' clauses for OR logic) and single values (interpreted 
+    This function transforms dictionary-based filters, where each key represents a field and
+    the value is a list of strings, into an Elasticsearch query structure. It supports both
+    list values (interpreted as 'should' clauses for OR logic) and single values (interpreted
     as 'must' clauses for AND logic).
 
     Args:
-        standard_filters (Dict[str, List[str]]): A dictionary containing filter criteria, 
-            where keys are field names and values are lists of strings or single string values 
+        standard_filters (Dict[str, List[str]]): A dictionary containing filter criteria,
+            where keys are field names and values are lists of strings or single string values
             representing filter values.
 
     Returns:
@@ -457,8 +457,8 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
 
         Args:
             nodes (List[BaseNode]): A list of node objects, each encapsulating an embedding.
-            create_index_if_not_exists (bool, optional): 
-                A flag indicating whether to create the Elasticsearch index if it's not present. 
+            create_index_if_not_exists (bool, optional):
+                A flag indicating whether to create the Elasticsearch index if it's not present.
                 Defaults to True.
 
         Returns:
@@ -467,7 +467,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         Raises:
             ImportError: If the 'elasticsearch[async]' Python package is not installed.
             BulkIndexError: If there is a failure during the asynchronous bulk indexing with AsyncElasticsearch.
-        
+
         Note:
             This method delegates the actual operation to the `sync_add` method.
         """
@@ -482,16 +482,16 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
     ) -> List[str]:
         """
         Asynchronously adds a list of nodes, each containing an embedding, to the Elasticsearch index.
-        
-        This method processes each node to extract its ID, embedding, text content, and metadata, 
-        preparing them for batch insertion into the index. It ensures the index is created if not present 
+
+        This method processes each node to extract its ID, embedding, text content, and metadata,
+        preparing them for batch insertion into the index. It ensures the index is created if not present
         and respects the dimensionality of the embeddings for consistency.
 
         Args:
             nodes (List[BaseNode]): A list of node objects, each encapsulating an embedding.
-            create_index_if_not_exists (bool, optional): A flag indicating whether to create the Elasticsearch 
+            create_index_if_not_exists (bool, optional): A flag indicating whether to create the Elasticsearch
                                                           index if it does not already exist. Defaults to True.
-            **add_kwargs (Any): Additional keyword arguments passed to the underlying add_texts method 
+            **add_kwargs (Any): Additional keyword arguments passed to the underlying add_texts method
                                 for customization during the indexing process.
 
         Returns:
@@ -533,21 +533,21 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
     def delete(self, ref_doc_id: str, **delete_kwargs: Any) -> None:
         """
         Deletes a node from the Elasticsearch index using the provided reference document ID.
-        
+
         Optionally, extra keyword arguments can be supplied to customize the deletion behavior,
         which are passed directly to Elasticsearch's `delete_by_query` operation.
-        
+
         Args:
             ref_doc_id (str): The unique identifier of the node/document to be deleted.
-            delete_kwargs (Any): Additional keyword arguments for Elasticsearch's 
-                                 `delete_by_query`. These might include query filters, 
+            delete_kwargs (Any): Additional keyword arguments for Elasticsearch's
+                                 `delete_by_query`. These might include query filters,
                                  timeouts, or other operational configurations.
-            
+
         Raises:
             Exception: If the deletion operation via Elasticsearch's `delete_by_query` fails.
-            
+
         Note:
-            This method internally calls a synchronous delete method (`sync_delete`) 
+            This method internally calls a synchronous delete method (`sync_delete`)
             to execute the deletion operation against Elasticsearch.
         """
         return self.sync_delete(ref_doc_id, **delete_kwargs)
@@ -558,13 +558,13 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
 
         Args:
             ref_doc_id (str): The unique identifier of the node/document to be deleted.
-            delete_kwargs (Any): Optional keyword arguments to be passed 
-                                 to the delete_by_query operation of AsyncElasticsearch, 
+            delete_kwargs (Any): Optional keyword arguments to be passed
+                                 to the delete_by_query operation of AsyncElasticsearch,
                                  allowing for additional customization of the deletion process.
 
         Raises:
             Exception: If the deletion operation via AsyncElasticsearch's delete_by_query fails.
-        
+
         Note:
             The function directly uses '_id' field to match the document for deletion instead of 'metadata.ref_doc_id',
             ensuring targeted removal based on the document's unique identifier within Elasticsearch.
@@ -583,17 +583,17 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             **kwargs: Any,
     ) -> VectorStoreQueryResult:
         """
-        Executes a query against the Elasticsearch index to retrieve the top k most similar nodes 
-        based on the input query embedding. Supports customization of the query process and 
+        Executes a query against the Elasticsearch index to retrieve the top k most similar nodes
+        based on the input query embedding. Supports customization of the query process and
         application of Elasticsearch filters.
 
         Args:
             query (VectorStoreQuery): The query containing the embedding and other parameters.
-            custom_query (Callable[[Dict, Union[VectorStoreQuery, None]], Dict], optional): 
-                An optional custom function to modify the Elasticsearch query body, allowing for 
+            custom_query (Callable[[Dict, Union[VectorStoreQuery, None]], Dict], optional):
+                An optional custom function to modify the Elasticsearch query body, allowing for
                 additional query parameters or logic. Defaults to None.
-            es_filter (Optional[List[Dict]], optional): An optional Elasticsearch filter list to 
-                apply to the query. If a filter is directly included in the `query`, this argument 
+            es_filter (Optional[List[Dict]], optional): An optional Elasticsearch filter list to
+                apply to the query. If a filter is directly included in the `query`, this argument
                 will not be used. Defaults to None.
             **kwargs (Any): Additional keyword arguments that might be used in the query process.
 
@@ -616,20 +616,20 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             fields: List[str] = [],
     ) -> VectorStoreQueryResult:
         """
-        Asynchronously queries the Elasticsearch index for the top k most similar nodes 
-        based on the provided query embedding. Supports custom query modifications 
+        Asynchronously queries the Elasticsearch index for the top k most similar nodes
+        based on the provided query embedding. Supports custom query modifications
         and application of Elasticsearch filters.
 
         Args:
             query (VectorStoreQuery): The query containing the embedding and other details.
-            custom_query (Callable[[Dict, Union[VectorStoreQuery, None]], Dict], optional): 
+            custom_query (Callable[[Dict, Union[VectorStoreQuery, None]], Dict], optional):
                 A custom function to modify the Elasticsearch query body. Defaults to None.
-            es_filter (List[Dict], optional): Additional filters to apply during the query. 
+            es_filter (List[Dict], optional): Additional filters to apply during the query.
                 If filters are present in the query, these filters will not be used. Defaults to None.
             fields (List[str], optional): .
 
         Returns:
-            VectorStoreQueryResult: The result of the query, including nodes, their IDs, 
+            VectorStoreQueryResult: The result of the query, including nodes, their IDs,
                                     and similarity scores.
 
         Raises:
@@ -701,7 +701,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
                 isinstance(self.retrieval_strategy, AsyncDenseVectorStrategy)
                 and self.retrieval_strategy.hybrid
         ):
-            total_rank = sum(top_k_scores)
+            # total_rank = sum(top_k_scores)
             top_k_scores = [rank for rank in top_k_scores]
             # top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]
             # top_k_scores = [total_rank - rank / total_rank for rank in top_k_scores]

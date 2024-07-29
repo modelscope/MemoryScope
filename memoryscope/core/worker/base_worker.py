@@ -71,7 +71,7 @@ class BaseWorker(metaclass=ABCMeta):
             RuntimeError: If called in multithread mode.
         """
         if self.is_multi_thread:
-            raise RuntimeError(f"async_task is not allowed in multi_thread condition")
+            raise RuntimeError("async_task is not allowed in multi_thread condition")
 
         self.async_task_list.append((fn, args, kwargs))
 
@@ -95,7 +95,7 @@ class BaseWorker(metaclass=ABCMeta):
             RuntimeError: If called in multithread mode.
         """
         if self.is_multi_thread:
-            raise RuntimeError(f"async_task is not allowed in multi_thread condition")
+            raise RuntimeError("async_task is not allowed in multi_thread condition")
 
         results = asyncio.run(self._async_gather())
         self.async_task_list.clear()

@@ -24,14 +24,14 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
     @timer
     def retrieve_from_observation(self, query: str) -> List[MemoryNode]:
         """
-        Retrieves memory nodes from observation based on a query, considering active memories 
+        Retrieves memory nodes from observation based on a query, considering active memories
         with specific types. If the retrieval limit is not set, an empty list is returned.
 
         Args:
             query (str): The query string used to filter and rank the memory nodes.
 
         Returns:
-            List[MemoryNode]: A list of MemoryNode objects that match the query criteria, 
+            List[MemoryNode]: A list of MemoryNode objects that match the query criteria,
                              sorted by their relevance. Returns an empty list if no retrieval limit is configured.
         """
         if not self.retrieve_obs_top_k:
@@ -107,7 +107,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
     def _run(self):
         """
         Executes the main retrieval for memories. It fetches the query from the context, initiates concurrent tasks
-        to retrieve memories from observations, insights, and expired sources, collects the results, sorts them by 
+        to retrieve memories from observations, insights, and expired sources, collects the results, sorts them by
         similarity score, logs the details, and finally sets the retrieved memory nodes.
 
         The method follows these steps:

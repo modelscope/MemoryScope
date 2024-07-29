@@ -45,7 +45,7 @@ class MemoryScopeService(BaseMemoryService):
         remains sorted by creation time and does not exceed the maximum history message count.
 
         Args:
-            messages (List[Message] | Message): A single message instance or a list of message instances 
+            messages (List[Message] | Message): A single message instance or a list of message instances
             to be added to the chat history.
         """
         # If a single message is provided, convert it into a list for uniform processing

@@ -36,7 +36,7 @@ class LlamaIndexRankModel(BaseModel):
         assert query and documents and all(documents), \
             f"query or documents is empty! query={query}, documents={len(documents)}"
         assert len(documents) < 500, \
-            f"The input documents of Dashscope rerank model should not larger than 500!"
+            "The input documents of Dashscope rerank model should not larger than 500!"
         # Using -1.0 as dummy scores
         nodes = [NodeWithScore(node=Node(text=doc), score=-1.0) for doc in documents]
 

@@ -31,7 +31,7 @@ class BaseMemoryChat(metaclass=ABCMeta):
                          role_name: Optional[str] = None,
                          system_prompt: Optional[str] = None,
                          memory_prompt: Optional[str] = None,
-                         extra_memories: Optional[str] = None,
+                         temporary_memories: Optional[str] = None,
                          history_message_strategy: Literal["auto", None] | int = "auto",
                          remember_response: bool = True,
                          **kwargs):
@@ -39,11 +39,12 @@ class BaseMemoryChat(metaclass=ABCMeta):
         The core function that carries out conversation with memory accepts user queries through query and returns the
         conversation results through model_response. The retrieved memories are stored in the memories within meta_data.
         Args:
-            query (str, optional): User's query, includes the user's question.
+            query (str): User's query, includes the user's question.
             role_name (str, optional): User's role name.
             system_prompt (str, optional): System prompt. Defaults to the system_prompt in "memory_chat_prompt.yaml".
-            memory_prompt (str, optional): Memory prompt. Defaults to the memory_prompt in "memory_chat_prompt.yaml".
-            extra_memories (str, optional): Manually added user memory in this function.
+            memory_prompt (str, optional): Memory prompt, It takes effect when there is a memory and will be placed in
+                front of the retrieved memory. Defaults to the memory_prompt in "memory_chat_prompt.yaml".
+            temporary_memories (str, optional): Manually added user memory in this function.
             history_message_strategy ("auto", None, int):
                 - If it is set to "auto"， the history messages in the conversation will retain those that have not
                     yet been summarized. Default to "auto".

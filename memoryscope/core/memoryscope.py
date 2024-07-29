@@ -90,5 +90,11 @@ class MemoryScope(ConfigManager):
         return list(self.memory_chat_dict.values())[0]
 
     @property
-    def default_service(self) -> BaseMemoryService:
+    def default_memory_service(self) -> BaseMemoryService:
         return list(self.memory_service_dict.values())[0]
+
+    @classmethod
+    def cli_memory_chat(cls, **kwargs):
+        with cls(**kwargs) as ms:
+            memory_chat = ms.default_memory_chat
+            memory_chat.run()

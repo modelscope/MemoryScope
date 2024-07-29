@@ -10,7 +10,7 @@ info_filter_system:
 
   en: |
     Task: Score the information about {user_name} contained in the given batch of {batch_size} sentences, with scores of 0, 1, 2, or 3.
-    Note: 
+    Note:
     0 indicates no user information is included.
     1 indicates only hypothetical information about the user or fictitious content such as novels or scripts created by the user.
     2 indicates general information about the user, timely information, or information that requires inference.
@@ -32,21 +32,21 @@ info_filter_few_shot:
     4 {user_name}：我今天心情不好，可以安慰我一下吗？
     5 {user_name}：能给我整理一张如何使用大模型的技巧列表吗，要求内容尽量精简。
     6 {user_name}：记一下，明天下午3点提醒我去拿一下文件。
-    
+
     思考：从第1句可以确定推断出张三是{user_name}同事这一重要信息。
     结果：<1> <3>
     思考：第2句不包含{user_name}信息。
     结果：<2> <0>
     思考：第3句不包含{user_name}信息。
-    结果：<3> <0> 
+    结果：<3> <0>
     思考：从第4句可以得知{user_name}今天心情不好，是时效性信息。
-    结果：<4> <2> 
+    结果：<4> <2>
     思考：从第5句可以猜测{user_name}对大模型感兴趣，是不确定的信息。
-    结果：<5> <2> 
+    结果：<5> <2>
     思考：第6句是{user_name}要求记录的信息。
-    结果：<6> <3> 
-    
-    
+    结果：<6> <3>
+
+
     示例2
     句子：
     1 {user_name}：我刚刚入职了阿里巴巴。
@@ -56,23 +56,23 @@ info_filter_few_shot:
     5 {user_name}：假如我要和一个女人准备要孩子，我作为男人，怎么保护女人和孩子以及怎么备孕确保精子质量高对后代好
     6 {user_name}：我和你一起出去玩，你会感觉开心吗？
     7 {user_name}：林浅，一位对未来充满好奇的年轻女孩，偶然间发现了这家能寄信给未来的邮局。出于对逝去祖父的怀念，她决定写下一封信，寄给五年后的自己，希望能收到祖父生前未说完的故事。五年期限将至，当她几乎忘记这段往事时，一封泛黄的回信悄然降临，不仅带来了祖父未完的冒险故事，还藏着一段关于勇气、爱与自我发现的深刻启示。续写成3000字小说。
-    
+
     思考：从第1句可以确定得出{user_name}工作单位是阿里巴巴这一重要信息。
     结果：<1> <3>
     思考：从第2句可以猜测{user_name}近期露天睡觉，是不确定的信息。
     结果：<2> <2>
     思考：第3句不包含{user_name}信息。
-    结果：<3> <0> 
+    结果：<3> <0>
     思考：第4句不包含{user_name}信息。
-    结果：<4> <0> 
+    结果：<4> <0>
     思考：第5句虽然有假设成分，但可以确定推断出{user_name}是男性这一重要信息。
-    结果：<5> <3> 
+    结果：<5> <3>
     思考：第6句是{user_name}假设的信息。
     结果：<6> <1>
     思考：第7句是{user_name}虚构的内容。
     结果：<7> <1>
-    
-    
+
+
     示例3
     句子：
     1 {user_name}：你的妈妈患有焦虑症，怎么安慰和开导她？
@@ -81,19 +81,19 @@ info_filter_few_shot:
     4 {user_name}：篮球明星有哪些？
     5 {user_name}：李增杰:这个是星座蛙设，但是我是处女座的，我妈感觉因为我的不正常，我妈不让我看了\n雌猴摸了摸李增杰的头，这样啊\n雌猴打开了哔哩哔哩看了看\n雌猴:要不换个设吧，我听你未来的你说，有一个叫难忘的朱古力232这个人，他弄的设是Windows设\n这是剧本1，剧本2未完待续
     6 {user_name}：我想知道昨天我们聊了什么？
-    
+
     思考：第1句是{user_name}假设的信息。
     结果：<1> <1>
     思考：第2句信息不明，可能是{user_name}假设的信息。
     结果：<2> <1>
     思考：从第3句可以确定得出{user_name}喜欢打篮球，身体好这两个重要信息。
-    结果：<3> <3> 
+    结果：<3> <3>
     思考：第4句不包含{user_name}信息。
-    结果：<4> <0> 
+    结果：<4> <0>
     思考：第5句是{user_name}虚构的内容。
-    结果：<5> <1> 
+    结果：<5> <1>
     思考：第6句是{user_name}的疑问句，没有包含信息。
-    结果：<6> <0> 
+    结果：<6> <0>
 
   en: |
     Example 1
@@ -104,7 +104,7 @@ info_filter_few_shot:
     4 {user_name}: I'm feeling down today. Can you comfort me a bit?
     5 {user_name}: Can you compile a list of tips on how to use large models for me, and try to keep the content concise?
     6 {user_name}: Note this down: remind me tomorrow at 3 PM to pick up the documents.
-    
+
     Thought: From the first sentence, it can be inferred that Zhang San is a colleague of {user_name}, which is important information.
     Result: <1> <3>
     Thought: The second sentence does not contain information about {user_name}.
@@ -117,7 +117,7 @@ info_filter_few_shot:
     Result: <5> <2>
     Thought: The sixth sentence contains information that {user_name} requested to be recorded.
     Result: <6> <3>
-    
+
     Example 2
     Sentences:
     1 {user_name}: I've just joined Google.
@@ -127,7 +127,7 @@ info_filter_few_shot:
     5 {user_name}: If I am planning to have a child with a woman, as a man, how can I protect the woman and the baby and how can I prepare to ensure high sperm quality for the benefit of the offspring?
     6 {user_name}: If we go out to play together, would you feel happy?
     7 {user_name}: Rose, a young girl full of curiosity about the future, accidentally discovered this post office that can send letters to the future. Out of nostalgia for her late grandfather, she decided to write a letter to herself five years in the future, hoping to receive the unfinished stories of her grandfather. As the five-year deadline approached, when she had almost forgotten about this event, a yellowed reply quietly arrived, bringing not only her grandfather's unfinished adventure story but also a profound revelation about courage, love, and self-discovery. Continue writing this into a 3000-word novel.
-    
+
     Thought: From the first sentence, it can be determined that {user_name} works at Alibaba, which is important information.
     Result: <1> <3>
     Thought: The second sentence suggests that {user_name} might has been sleeping outdoors recently, which is uncertain information.
@@ -142,7 +142,7 @@ info_filter_few_shot:
     Result: <6> <1>
     Thought: The seventh sentence contains only fictitious content from {user_name}.
     Result: <7> <1>
-    
+
     Example 3
     Sentences:
     1 {user_name}: Your mother is suffering from anxiety. How can you comfort and guide her?

@@ -6,6 +6,7 @@ from memoryscope.core.chat.base_memory_chat import BaseMemoryChat
 from memoryscope.core.memoryscope_context import MemoryscopeContext
 from memoryscope.core.models.base_model import BaseModel
 from memoryscope.core.service.base_memory_service import BaseMemoryService
+from memoryscope.core.utils.datetime_handler import DatetimeHandler
 from memoryscope.core.utils.prompt_handler import PromptHandler
 from memoryscope.enumeration.message_role_enum import MessageRoleEnum
 from memoryscope.scheme.message import Message
@@ -125,31 +126,11 @@ class ApiMemoryChat(BaseMemoryChat):
                          role_name: Optional[str] = None,
                          system_prompt: Optional[str] = None,
                          memory_prompt: Optional[str] = None,
-                         extra_memories: Optional[str] = None,
+                         temporary_memories: Optional[str] = None,
                          history_message_strategy: Literal["auto", None] | int = "auto",
                          remember_response: bool = True,
                          **kwargs):
-        """
-        The core function that carries out conversation with memory accepts user queries through query and returns the
-        conversation results through model_response. The retrieved memories are stored in the memories within meta_data.
-        Args:
-            query (str, optional): User's query, includes the user's question.
-            role_name (str, optional): User's role name.
-            system_prompt (str, optional): System prompt. Defaults to the system_prompt in "memory_chat_prompt.yaml".
-            memory_prompt (str, optional): Memory prompt. Defaults to the memory_prompt in "memory_chat_prompt.yaml".
-            extra_memories (str, optional): Manually added user memory in this function.
-            history_message_strategy ("auto", None, int):
-                - If it is set to "auto"， the history messages in the conversation will retain those that have not
-                    yet been summarized. Default to "auto".
-                - If it is set to None， no conversation history will be saved.
-                - If it is set to an integer value "n", the most recent "n" messages will be retained.
-            remember_response (bool, optional): Flag indicating whether to save the AI's response to memory.
-                Defaults to False.
-        Returns:
-            - ModelResponse: In non-streaming mode, returns a complete AI response.
-            - ModelResponseGen: In streaming mode, returns a generator yielding AI response parts.
-            - Memories: To obtain the memory by invoking the method of model_response.meta_data[MEMORIES]
-        """
+
         chat_messages: List[Message] = []
 
         # prepare query message
@@ -167,7 +148,10 @@ class ApiMemoryChat(BaseMemoryChat):
         if system_prompt:
             system_prompt_list.append(system_prompt)
         else:
-            system_prompt_list.append(self.prompt_handler.system_prompt)
+            dt_handler = DatetimeHandler()
+            date_time = dt_handler.datetime_format("%Y-%m-%d %H:%M:%S")
+            weekday = dt_handler.get_dt_info_dict(self.context.language)["weekday"]
+            system_prompt_list.append(self.prompt_handler.system_prompt.format(date_time=date_time, weekday=weekday))
 
         if memories:
             # add memory prompt
@@ -180,8 +164,8 @@ class ApiMemoryChat(BaseMemoryChat):
                 system_prompt_list.append(USER_NAME_EXPRESSION[self.context.language].format(name=self.human_name))
             system_prompt_list.append(memories)
 
-        if extra_memories:
-            system_prompt_list.extend(extra_memories)
+        if temporary_memories:
+            system_prompt_list.extend(temporary_memories)
 
         system_prompt_join = "\n".join([x.strip() for x in system_prompt_list])
         system_message = Message(role=MessageRoleEnum.SYSTEM, content=system_prompt_join)

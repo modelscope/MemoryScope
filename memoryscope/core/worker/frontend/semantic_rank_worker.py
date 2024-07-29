@@ -7,9 +7,9 @@ from memoryscope.scheme.memory_node import MemoryNode
 
 class SemanticRankWorker(MemoryBaseWorker):
     """
-    The `SemanticRankWorker` class processes queries by retrieving memory nodes, 
-    removing duplicates, ranking them based on semantic relevance using a model, 
-    assigning scores, sorting the nodes, and storing the ranked nodes back, 
+    The `SemanticRankWorker` class processes queries by retrieving memory nodes,
+    removing duplicates, ranking them based on semantic relevance using a model,
+    assigning scores, sorting the nodes, and storing the ranked nodes back,
     while logging relevant information.
     """
 
@@ -23,8 +23,8 @@ class SemanticRankWorker(MemoryBaseWorker):
         - Assigns scores to nodes.
         - Sorts nodes by score.
         - Saves the ranked nodes back with logging.
-        
-        If no memory nodes are retrieved or if the ranking model fails, 
+
+        If no memory nodes are retrieved or if the ranking model fails,
         appropriate warnings are logged.
         """
         # query

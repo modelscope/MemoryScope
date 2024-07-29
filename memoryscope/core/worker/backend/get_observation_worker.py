@@ -36,7 +36,7 @@ class GetObservationWorker(MemoryBaseWorker):
         """
         dt_handler = DatetimeHandler(dt=message.time_created)
 
-        # buidl meta data
+        # build meta data
         meta_data = {
             MemoryTypeEnum.CONVERSATION.value: message.content,
             TIME_INFER: time_infer,
@@ -111,7 +111,7 @@ class GetObservationWorker(MemoryBaseWorker):
 
     def _run(self):
         """
-        Processes chat messages to extract observations, inferring timestamps and content relevance, 
+        Processes chat messages to extract observations, inferring timestamps and content relevance,
         and stores the extracted information as MemoryNode objects within the conversation memory.
 
         Steps:

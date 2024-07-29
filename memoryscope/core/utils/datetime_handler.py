@@ -10,7 +10,7 @@ from memoryscope.enumeration.language_enum import LanguageEnum
 class DatetimeHandler(object):
     """
     Handles operations related to datetime such as parsing, extraction, and formatting,
-    with support for both Chinese and English contexts including weekday names and 
+    with support for both Chinese and English contexts including weekday names and
     specialized text parsing for date components.
     """
 
@@ -22,7 +22,7 @@ class DatetimeHandler(object):
         of a timestamp. If no argument is provided, the current time is used.
 
         Args:
-            dt (datetime.datetime | str | int | float, optional): 
+            dt (datetime.datetime | str | int | float, optional):
                 The datetime to be handled. Can be a datetime object, a timestamp string, or a numeric timestamp.
                 Defaults to None, which sets the instance to the current datetime.
 
@@ -47,7 +47,7 @@ class DatetimeHandler(object):
         including language-specific weekday representation.
 
         Returns:
-            dict: A dictionary with keys representing date and time parts such as 'year', 'month', 
+            dict: A dictionary with keys representing date and time parts such as 'year', 'month',
                   'day', 'hour', 'minute', 'second', 'week', and 'weekday' with respective values.
                   The 'weekday' value is translated based on the current language context.
         """

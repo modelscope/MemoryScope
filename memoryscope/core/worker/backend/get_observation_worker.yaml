@@ -40,7 +40,7 @@ get_observation_few_shot:
     信息：<5> <> <{user_name}购买了海天味业股票，购买数量为100股，购买金额为5000元。> <海天味业, 股票>
     思考：第6句含有的信息与第1句相似，可以得知{user_name}购买了阿里巴巴股票。
     信息：<6> <> <{user_name}购买了阿里巴巴股票，购买数量为100股，购买金额为50000元。> <阿里巴巴, 股票>
-    
+
     示例2：
     {user_name}句子：
     1 {user_name}：帮我写一段给同事张三女儿三岁生日的祝福语。
@@ -58,7 +58,7 @@ get_observation_few_shot:
     信息：<4> <> <无> <>
     思考：从第5句可以得知{user_name}在阿里巴巴徐汇滨江园区工作，这是关于{user_name}的工作地点的重要信息。
     信息：<5> <> <{user_name}在阿里巴巴徐汇滨江园区工作。> <阿里巴巴, 徐汇滨江园区, 工作>
-    
+
     示例3：
     {user_name}句子：
     1 {user_name}：我想买辆新能源汽车，有什么推荐吗？
@@ -79,7 +79,7 @@ get_observation_few_shot:
     信息：<5> <> <{user_name}购买了海天味业股票，购买数量为100股，购买金额为5000元。> <海天味业, 股票>
     思考：第6句是{user_name}创作的剧本内容，无法提取{user_name}个人信息。
     信息：<6> <> <无> <>
-    
+
     示例4：
     {user_name}句子：
     1 {user_name}：李子好酸啊，我不太喜欢吃。
@@ -108,11 +108,11 @@ get_observation_few_shot:
     Information: <3> <> <Repeat> <>
     Thought: From the fourth sentence, it can be inferred that {user_name} is a recent graduate, which is important information about {user_name}'s background. The remaining information is of insufficient importance.
     Information: <4> <> <{user_name} is a recent graduate> <recent graduate, student>
-    Thought: It can be inferred that {user_name} bought 100 shares of General Motors stock for $5000. This is important information about {user_name}'s investment decision. 
+    Thought: It can be inferred that {user_name} bought 100 shares of General Motors stock for $5000. This is important information about {user_name}'s investment decision.
     Information: <5> <> <{user_name} bought 100 shares of General Motors stock for $5000> <General Motors, stock>
     Thought: The information of the sentence is similar to, but not a repetition of the sentence before. It can be deduced that {user_name} purchased Alibaba stock.
     Information: <6> <> <{user_name} purchased 100 shares of Alibaba stock for 50,000 RMB.> <Alibaba, stock>
-    
+
     Example 2:
     {user_name} sentences:
     1 {user_name}: Please help me write a birthday greeting for my colleague Jason's daughter who is turning three.
@@ -130,7 +130,7 @@ get_observation_few_shot:
     Information: <4> <> <None> <>
     Thought: From the fifth sentence, it can be inferred that {user_name} works at Alibaba Xuhui Riverside Campus, which is important information about {user_name}'s workplace.
     Information: <5> <> <{user_name} works at Alibaba Xuhui Riverside Campus> <Alibaba, Xuhui Riverside Campus, work>
-    
+
     Example 3:
     {user_name} sentences:
     1 {user_name}: I want to buy a new energy vehicle. Any recommendations?
@@ -161,4 +161,4 @@ get_observation_user_query:
   en: |
     {user_name} sentences：
     {user_query}
-    
+

@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Dict
 
+from memoryscope.constants.common_constants import RESULT
 from memoryscope.core.utils.datetime_handler import DatetimeHandler
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.enumeration.action_status_enum import ActionStatusEnum
@@ -109,4 +110,12 @@ class UpdateMemoryWorker(MemoryBaseWorker):
         if not hasattr(self, method):
             self.logger.info(f"method={method} is missing!")
             return
-        self.memory_manager.update_memories(nodes=getattr(self, method)())
+
+        updated_nodes: Dict[str, List[MemoryNode]] = self.memory_manager.update_memories(nodes=getattr(self, method)())
+        line = []
+        i = 0
+        for action, nodes in updated_nodes.items():
+            for node in nodes:
+                i += 1
+                line.append(f"{i} {action} {node.content}")
+        self.set_context(RESULT, "\n".join(line))
