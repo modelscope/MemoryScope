@@ -3,7 +3,6 @@ from typing import List
 from memoryscope.constants.common_constants import NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES, MERGE_OBS_NODES, TODAY_NODES
 from memoryscope.constants.language_constants import NONE_WORD, CONTRADICTORY_WORD, CONTAINED_WORD
 from memoryscope.core.utils.response_text_parser import ResponseTextParser
-from memoryscope.core.utils.tool_functions import prompt_to_msg
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.enumeration.store_status_enum import StoreStatusEnum
 from memoryscope.scheme.memory_node import MemoryNode
@@ -68,7 +67,8 @@ class ContraRepeatWorker(MemoryBaseWorker):
                                                                         user_name=self.target_name)
         few_shot = self.prompt_handler.contra_repeat_few_shot.format(user_name=self.target_name)
         user_query = self.prompt_handler.contra_repeat_user_query.format(user_query="\n".join(user_query_list))
-        contra_repeat_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        contra_repeat_message = self.prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot,
+                                                   user_query=user_query)
         self.logger.info(f"contra_repeat_message={contra_repeat_message}")
 
         # call LLM

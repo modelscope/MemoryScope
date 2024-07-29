@@ -11,6 +11,9 @@ memory_chat:
     class: core.chat.cli_memory_chat
     memory_service: memoryscope_service
     generation_model: generation_model
+    stream: true
+    human_name: user
+    assistant_name: AI
 
 memory_service:
   memoryscope_service:
@@ -29,7 +32,7 @@ memory_service:
       list_memory:
         class: core.operation.frontend_operation
         workflow: set_query,retrieve_top_memory,print_memory
-        description: "read all long-term memory of the user"
+        description: "read all long-term memory of the user, use `refresh_time=5` to refresh screen."
 
       delete_memory:
         class: core.operation.frontend_operation
@@ -49,13 +52,13 @@ memory_service:
       consolidate_memory:
         class: core.operation.consolidate_memory_op
         workflow: info_filter,[get_observation|get_observation_with_time|load_today_memory],contra_repeat,store_memory
-        description: "summary user's observation memory"
+        description: "summary user's observation memory, run backend."
         interval_time: 1
 
       reflect_and_reconsolidate:
         class: core.operation.backend_operation
         workflow: load_obs_and_insight,get_reflection_subject,update_insight,long_contra_repeat,store_memory
-        description: "summary user's insight memory"
+        description: "summary user's insight memory, run backend."
         interval_time: 15
 
 worker:

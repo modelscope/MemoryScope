@@ -4,7 +4,6 @@ from typing import Dict
 from memoryscope.constants.common_constants import QUERY_WITH_TS, EXTRACT_TIME_DICT
 from memoryscope.constants.language_constants import DATATIME_KEY_MAP
 from memoryscope.core.utils.datetime_handler import DatetimeHandler
-from memoryscope.core.utils.tool_functions import prompt_to_msg
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 
 
@@ -44,7 +43,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
         system_prompt = self.prompt_handler.extract_time_system
         few_shot = self.prompt_handler.extract_time_few_shot
         user_query = self.prompt_handler.extract_time_user_query.format(query=query, query_time_str=query_time_str)
-        extract_time_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        extract_time_message = self.prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"extract_time_message={extract_time_message}")
 
         # Invoke the LLM to generate a response

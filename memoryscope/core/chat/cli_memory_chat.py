@@ -131,7 +131,7 @@ class CliMemoryChat(ApiMemoryChat):
                 refresh_time = int(refresh_time)
                 self.memory_service.stop_backend_service()
                 while True:
-                    result = self.memory_service.do_operation(name=command, **kwargs)
+                    result = self.memory_service.run_operation(name=command, **kwargs)
                     os.system("clear")
                     self.print_logo()
                     if result:
@@ -143,7 +143,7 @@ class CliMemoryChat(ApiMemoryChat):
                     time.sleep(refresh_time)
 
             else:
-                result = self.memory_service.do_operation(name=command, **kwargs)
+                result = self.memory_service.run_operation(name=command, **kwargs)
                 if result:
                     if isinstance(result, list):
                         result = "\n".join([str(x) for x in result])
@@ -187,7 +187,7 @@ class CliMemoryChat(ApiMemoryChat):
                 questionary.print(f"{self.assistant_name}: ", end="", style="bold")
 
                 # Fetch and display AI's response
-                self.memory_service.start_backend_service()
+                self.start_backend_service()
                 self.chat_with_memory(query=query)
 
             except KeyboardInterrupt:

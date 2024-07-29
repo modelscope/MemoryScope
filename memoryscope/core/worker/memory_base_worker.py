@@ -3,6 +3,7 @@ from typing import List, Dict, Any
 
 from memoryscope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS, MEMORYSCOPE_CONTEXT, \
     WORKFLOW_NAME, MEMORY_MANAGER
+from memoryscope.constants.language_constants import DEFAULT_HUMAN_NAME, USER_NAME_EXPRESSION
 from memoryscope.core.memoryscope_context import MemoryscopeContext
 from memoryscope.core.models.base_model import BaseModel
 from memoryscope.core.storage.base_memory_store import BaseMemoryStore
@@ -11,6 +12,7 @@ from memoryscope.core.utils.prompt_handler import PromptHandler
 from memoryscope.core.worker.base_worker import BaseWorker
 from memoryscope.core.worker.memory_manager import MemoryManager
 from memoryscope.enumeration.language_enum import LanguageEnum
+from memoryscope.enumeration.message_role_enum import MessageRoleEnum
 from memoryscope.scheme.message import Message
 
 
@@ -218,3 +220,35 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         if isinstance(languages, list):
             return [x[self.language] for x in languages]
         return languages[self.language]
+
+    def prompt_to_msg(self,
+                      system_prompt: str,
+                      few_shot: str,
+                      user_query: str,
+                      concat_system_prompt: bool = True) -> List[Message]:
+        """
+        Converts input strings into a structured list of message objects suitable for AI interactions.
+
+        Args:
+            system_prompt (str): The system-level instruction or context.
+            few_shot (str): An example or demonstration input, often used for illustrating expected behavior.
+            user_query (str): The actual user query or prompt to be processed.
+            concat_system_prompt(bool): Concat system prompt again or not in the user message.
+                A simple method to improve the effectiveness for some LLMs. Defaults to True.
+
+        Returns:
+            List[Message]: A list of Message objects, each representing a part of the conversation setup.
+        """
+        system_content = ""
+        if self.target_name != DEFAULT_HUMAN_NAME[self.language]:
+            system_content += USER_NAME_EXPRESSION[self.language].format(name=self.target_name)
+        system_content += system_prompt.strip()
+        system_message = Message(role=MessageRoleEnum.SYSTEM.value, content=system_content)
+
+        if concat_system_prompt:
+            user_content_list = [system_content, few_shot, user_query]
+        else:
+            user_content_list = [few_shot, user_query]
+        user_message = Message(role=MessageRoleEnum.USER.value,
+                               content="\n".join([x.strip() for x in user_content_list]))
+        return [system_message, user_message]

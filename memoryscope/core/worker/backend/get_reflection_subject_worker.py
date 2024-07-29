@@ -4,7 +4,6 @@ from memoryscope.constants.common_constants import NOT_REFLECTED_NODES, INSIGHT_
 from memoryscope.constants.language_constants import COMMA_WORD
 from memoryscope.core.utils.datetime_handler import DatetimeHandler
 from memoryscope.core.utils.response_text_parser import ResponseTextParser
-from memoryscope.core.utils.tool_functions import prompt_to_msg
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.enumeration.action_status_enum import ActionStatusEnum
 from memoryscope.enumeration.memory_type_enum import MemoryTypeEnum
@@ -90,7 +89,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
             user_query="\n".join(user_query_list))
 
         # Construct and log reflection message
-        reflect_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        reflect_message = self.prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"reflect_message={reflect_message}")
 
         # Invoke Language Model for new insights

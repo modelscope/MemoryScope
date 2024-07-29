@@ -39,8 +39,8 @@ class SetQueryWorker(MemoryBaseWorker):
             # check role_name
             role_name = self.chat_kwargs.get("role_name")
             if role_name:
-                assert role_name == self.target_name, \
-                    f"role_name={role_name} is not supported in human/assistant memory workflow!"
+                assert role_name == self.target_name, (f"role_name={role_name} <> target_name={self.target_name} "
+                                                       f"is not supported in human/assistant memory workflow!")
 
         elif self.chat_messages:
             # If no explicit query is given, use the content of the latest chat message

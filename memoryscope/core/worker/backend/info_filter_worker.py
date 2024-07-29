@@ -2,7 +2,6 @@ from typing import List
 
 from memoryscope.constants.language_constants import COLON_WORD
 from memoryscope.core.utils.response_text_parser import ResponseTextParser
-from memoryscope.core.utils.tool_functions import prompt_to_msg
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 from memoryscope.enumeration.message_role_enum import MessageRoleEnum
 from memoryscope.scheme.message import Message
@@ -63,7 +62,7 @@ class InfoFilterWorker(MemoryBaseWorker):
                                                                       user_name=self.target_name)
         few_shot = self.prompt_handler.info_filter_few_shot.format(user_name=self.target_name)
         user_query = self.prompt_handler.info_filter_user_query.format(user_query="\n".join(user_query_list))
-        info_filter_message = prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        info_filter_message = self.prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
         self.logger.info(f"info_filter_message={info_filter_message}")
 
         # call llm
