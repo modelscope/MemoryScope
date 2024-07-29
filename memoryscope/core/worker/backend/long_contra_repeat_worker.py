@@ -98,8 +98,8 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         user_query = self.prompt_handler.long_contra_repeat_user_query.format(user_query="\n".join(user_query_list))
 
         long_contra_repeat_message = self.prompt_to_msg(system_prompt=system_prompt,
-                                                   few_shot=few_shot,
-                                                   user_query=user_query)
+                                                        few_shot=few_shot,
+                                                        user_query=user_query)
         self.logger.info(f"long_contra_repeat_message={long_contra_repeat_message}")
 
         # Invokes the language model for processing the constructed prompt
