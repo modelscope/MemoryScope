@@ -2,7 +2,7 @@ from abc import ABCMeta
 from typing import List, Dict, Any
 
 from memoryscope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS, MEMORYSCOPE_CONTEXT, \
-    WORKFLOW_NAME, MEMORY_MANAGER
+    WORKFLOW_NAME, MEMORY_MANAGER, USER_NAME, TARGET_NAME, CHAT_MESSAGES_SCATTER
 from memoryscope.constants.language_constants import DEFAULT_HUMAN_NAME, USER_NAME_EXPRESSION
 from memoryscope.core.memoryscope_context import MemoryscopeContext
 from memoryscope.core.models.base_model import BaseModel
@@ -45,10 +45,17 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
 
         self._memory_store: BaseMemoryStore | None = None
         self._monitor: BaseMonitor | None = None
-
-        self._user_name: str | None = None
-        self._target_name: str | None = None
         self._prompt_handler: PromptHandler | None = None
+
+    @property
+    def chat_messages_origin(self) -> List[List[Message]]:
+        """
+        Property to get the chat messages.
+
+        Returns:
+            List[Message]: List of chat messages.
+        """
+        return self.get_context(CHAT_MESSAGES)
 
     @property
     def chat_messages(self) -> List[Message]:
@@ -58,15 +65,30 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         Returns:
             List[Message]: List of chat messages.
         """
-        return self.get_context(CHAT_MESSAGES)
+        result = self.get_context(CHAT_MESSAGES_SCATTER)
+
+        if not result:
+            if isinstance(self.chat_messages_origin[0], list):
+                chat_messages: List[Message] = []
+                for messages in self.chat_messages_origin:
+                    if messages:
+                        chat_messages.extend(messages)
+                chat_messages.sort(key=lambda _: _.time_created)
+                self.set_context(CHAT_MESSAGES_SCATTER, chat_messages)
+
+            else:
+                assert isinstance(self.chat_messages_origin[0], Message)
+                self.set_context(CHAT_MESSAGES_SCATTER, self.chat_messages_origin)
+
+        return self.get_context(CHAT_MESSAGES_SCATTER)
 
     @chat_messages.setter
-    def chat_messages(self, value):
+    def chat_messages(self, value: List[Message]):
         """
         Set the chat messages with the new value.
         """
 
-        self.set_context(CHAT_MESSAGES, value)
+        self.set_context(CHAT_MESSAGES_SCATTER, value)
 
     @property
     def chat_kwargs(self) -> Dict[str, Any]:
@@ -80,6 +102,14 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             Dict[str, str]: A dictionary containing the chat keyword arguments.
         """
         return self.get_context(CHAT_KWARGS)
+
+    @property
+    def user_name(self) -> str:
+        return self.get_context(USER_NAME)
+
+    @property
+    def target_name(self) -> str:
+        return self.get_context(TARGET_NAME)
 
     @property
     def workflow_name(self) -> str:
@@ -157,31 +187,6 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         if self._monitor is None:
             self._monitor = self.memoryscope_context.monitor
         return self._monitor
-
-    @property
-    def user_name(self) -> str:
-        """
-        Property to get the username from the meta_data of the global context.
-        If not set initially, it retrieves the 'assistant_name' as the username.
-
-        Returns:
-            str: The name of the assistant.
-        """
-        if self._user_name is None:
-            self._user_name = self.memoryscope_context.meta_data["assistant_name"]
-        return self._user_name
-
-    @property
-    def target_name(self) -> str:
-        """
-        Retrieves the target name, initializing it from meta_data if not set.
-
-        Returns:
-            str: The readable name of the human.
-        """
-        if self._target_name is None:
-            self._target_name = self.memoryscope_context.meta_data["human_name"]
-        return self._target_name
 
     @property
     def prompt_handler(self) -> PromptHandler:

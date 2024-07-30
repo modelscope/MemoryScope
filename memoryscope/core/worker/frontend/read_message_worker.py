@@ -1,6 +1,8 @@
+from typing import List
+
 from memoryscope.constants.common_constants import RESULT
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
-from memoryscope.enumeration.message_role_enum import MessageRoleEnum
+from memoryscope.scheme.message import Message
 
 
 class ReadMessageWorker(MemoryBaseWorker):
@@ -12,11 +14,27 @@ class ReadMessageWorker(MemoryBaseWorker):
         """
         Executes the primary function to fetch unmemorized chat messages.
         """
-        chat_messages = [x for x in self.chat_messages if not x.memorized]
-        if len(chat_messages) > 0 and chat_messages[-1].role == MessageRoleEnum.USER.value:
-            chat_messages = chat_messages[:-1]
+        chat_messages_not_memorized: List[List[Message]] = []
+        for messages in self.chat_messages_origin:
+            if not messages:
+                continue
+
+            if messages[0].memorized:
+                continue
+
+            contain_flag = False
+
+            for msg in messages:
+                if msg.role_name == self.target_name:
+                    contain_flag = True
+                    break
+
+            if contain_flag:
+                chat_messages_not_memorized.append(messages)
 
         contextual_msg_max_count: int = self.chat_kwargs["contextual_msg_max_count"]
-        chat_messages = chat_messages[-contextual_msg_max_count:]
-
-        self.set_context(RESULT, chat_messages)
+        chat_message_scatter = []
+        for messages in chat_messages_not_memorized[-contextual_msg_max_count:]:
+            chat_message_scatter.extend(messages)
+        chat_message_scatter.sort(key=lambda _: _.time_created)
+        self.set_context(RESULT, chat_message_scatter)

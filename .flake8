@@ -1,5 +1,5 @@
 [flake8]
-exclude = tests/models/test_models_lli_embedding.py,tests/*,examples/*,memoryscope/core/storage/llama_index_sync_elasticsearch.py
+exclude = tests/*,examples/*,memoryscope/core/storage/llama_index_sync_elasticsearch.py
 max-line-length = 120
 inline-quotes = "
 avoid-escape = no

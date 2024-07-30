@@ -20,8 +20,6 @@ class ApiMemoryChat(BaseMemoryChat):
                  generation_model: str,
                  context: MemoryscopeContext,
                  stream: bool = False,
-                 human_name: str = None,
-                 assistant_name: str = None,
                  **kwargs):
 
         super().__init__(**kwargs)
@@ -31,16 +29,6 @@ class ApiMemoryChat(BaseMemoryChat):
         self.context: MemoryscopeContext = context
         self.stream: bool = stream
         self.generation_model_kwargs: dict = kwargs.pop("generation_model_kwargs", {})
-
-        self.human_name: str = human_name
-        if not self.human_name:
-            self.human_name = DEFAULT_HUMAN_NAME[self.context.language]
-        self.context.meta_data["human_name"] = self.human_name
-
-        self.assistant_name: str = assistant_name
-        if not self.assistant_name:
-            self.assistant_name = "AI"
-        self.context.meta_data["assistant_name"] = self.assistant_name
 
         self._prompt_handler: PromptHandler | None = None
 
@@ -86,6 +74,14 @@ class ApiMemoryChat(BaseMemoryChat):
         return self._memory_service
 
     @property
+    def human_name(self):
+        return self.memory_service.human_name
+
+    @property
+    def assistant_name(self):
+        return self.memory_service.assistant_name
+
+    @property
     def generation_model(self) -> BaseModel:
         """
         Property to get the generation model. If the model is set as a string, it will be resolved from the global
@@ -117,7 +113,7 @@ class ApiMemoryChat(BaseMemoryChat):
             if model_response and model_response.message:
                 model_response.message.role_name = self.assistant_name
                 model_response.meta_data[MEMORIES] = memories
-                self.memory_service.add_messages([query_message, model_response.message])
+                self.memory_service.add_messages_pair([query_message, model_response.message])
             else:
                 self.logger.warning("model_response or model_response.message is empty!")
 
@@ -179,9 +175,10 @@ class ApiMemoryChat(BaseMemoryChat):
                 history_messages = self.memory_service.read_message()
 
             elif isinstance(history_message_strategy, int):
-                history_messages = self.memory_service.chat_messages[-history_message_strategy:]
+                history_messages = self.memory_service.get_chat_messages_scatter(history_message_strategy)
 
             if history_messages:
+                assert isinstance(history_messages[0], Message)
                 chat_messages.extend(history_messages)
 
         # Append the current user's message to the conversation context
@@ -198,7 +195,7 @@ class ApiMemoryChat(BaseMemoryChat):
                 if model_response and model_response.message:
                     model_response.message.role_name = self.assistant_name
                     model_response.meta_data[MEMORIES] = memories
-                    self.memory_service.add_messages([query_message, model_response.message])
+                    self.memory_service.add_messages_pair([query_message, model_response.message])
                 else:
                     self.logger.warning("model_response or model_response.message is empty!")
             return model_response

@@ -1,1 +1,1 @@
-python memoryscope/cli.py --config_path=memoryscope/core/config/demo_config.yaml
+memoryscope --config_path=memoryscope/core/config/demo_config.yaml

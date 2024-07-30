@@ -59,7 +59,7 @@ class MemoryScope(ConfigManager):
     def close(self):
         # wait service to stop
         for _, service in self.context.memory_service_dict.items():
-            service.stop_backend_service(wait_service_end=True)
+            service.stop_backend_service(wait_service=True)
 
         self.context.thread_pool.shutdown()
 

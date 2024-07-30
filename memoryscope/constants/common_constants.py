@@ -13,9 +13,15 @@ MEMORIES = "memories"
 
 CHAT_MESSAGES = "chat_messages"
 
-MEMORY_MANAGER = "memory_manager"
+CHAT_MESSAGES_SCATTER = "chat_messages_scatter"
 
 CHAT_KWARGS = "chat_kwargs"
+
+USER_NAME = "user_name"
+
+TARGET_NAME = "target_name"
+
+MEMORY_MANAGER = "memory_manager"
 
 QUERY_WITH_TS = "query_with_ts"
 

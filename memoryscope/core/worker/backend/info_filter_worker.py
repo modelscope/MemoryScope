@@ -3,7 +3,6 @@ from typing import List
 from memoryscope.constants.language_constants import COLON_WORD
 from memoryscope.core.utils.response_text_parser import ResponseTextParser
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
-from memoryscope.enumeration.message_role_enum import MessageRoleEnum
 from memoryscope.scheme.message import Message
 
 
@@ -40,8 +39,8 @@ class InfoFilterWorker(MemoryBaseWorker):
             if msg.memorized:
                 continue
 
-            # TODO: add memory for assistant
-            if msg.role != MessageRoleEnum.USER.value:
+            # TODO: add memory for all messages
+            if msg.role_name != self.target_name:
                 continue
 
             if len(msg.content) >= self.info_filter_msg_max_size:

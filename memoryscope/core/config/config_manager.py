@@ -87,11 +87,11 @@ class ConfigManager(object):
     @staticmethod
     def update_memory_chat_by_arguments(config: dict, arguments: Arguments):
         memory_chat_class_split = config["class"].split(".")
-        stream = arguments.memory_chat_class in ["cli_memory_chat", ]
+        stream = arguments.chat_stream
+        if stream is None:
+            stream = arguments.memory_chat_class in ["cli_memory_chat", ]
         config.update({
             "class": ".".join(memory_chat_class_split[:-1] + [arguments.memory_chat_class]),
-            "human_name": arguments.human_name if arguments.human_name else "",
-            "assistant_name": arguments.assistant_name if arguments.assistant_name else "",
             "stream": stream,
         })
 

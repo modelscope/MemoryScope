@@ -17,6 +17,8 @@ class Arguments(object):
     memory_chat_class: str = field(default="cli_memory_chat", metadata={
         "help": "cli_memory_chat(Command-line interaction), api_memory_chat(API interface interaction), etc."})
 
+    chat_stream: bool | None = field(default=None)
+
     human_name: str = field(default="user")
 
     assistant_name: str = field(default="AI")

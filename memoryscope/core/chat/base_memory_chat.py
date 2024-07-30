@@ -49,7 +49,7 @@ class BaseMemoryChat(metaclass=ABCMeta):
                 - If it is set to "auto"， the history messages in the conversation will retain those that have not
                     yet been summarized. Default to "auto".
                 - If it is set to None， no conversation history will be saved.
-                - If it is set to an integer value "n", the most recent "n" messages will be retained.
+                - If it is set to an integer value "n", recent "n" message-pair[user, assistant] will be retained.
             remember_response (bool, optional): Flag indicating whether to save the AI's response to memory.
                 Defaults to False.
         Returns:
@@ -59,11 +59,11 @@ class BaseMemoryChat(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    def start_backend_service(self):
-        self.memory_service.start_backend_service()
+    def start_backend_service(self, **kwargs):
+        self.memory_service.start_backend_service(**kwargs)
 
-    def run_service_operation(self, name: str, **kwargs):
-        return self.memory_service.run_operation(name, **kwargs)
+    def run_service_operation(self, name: str, role_name: Optional[str] = None, **kwargs):
+        return self.memory_service.run_operation(name, role_name=role_name, **kwargs)
 
     def run(self):
         """

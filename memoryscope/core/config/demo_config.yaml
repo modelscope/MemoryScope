@@ -12,12 +12,12 @@ memory_chat:
     memory_service: memoryscope_service
     generation_model: generation_model
     stream: true
-    human_name: user
-    assistant_name: AI
 
 memory_service:
   memoryscope_service:
     class: core.service.memory_scope_service
+    human_name: user
+    assistant_name: AI
     memory_operations:
       read_message:
         class: core.operation.frontend_operation

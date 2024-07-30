@@ -2,7 +2,6 @@ import datetime
 
 from memoryscope.constants.common_constants import QUERY_WITH_TS
 from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
-from memoryscope.enumeration.message_role_enum import MessageRoleEnum
 
 
 class SetQueryWorker(MemoryBaseWorker):
@@ -35,26 +34,6 @@ class SetQueryWorker(MemoryBaseWorker):
             _timestamp = self.chat_kwargs.get("timestamp")
             if _timestamp and isinstance(_timestamp, int):
                 timestamp = _timestamp
-
-            # check role_name
-            role_name = self.chat_kwargs.get("role_name")
-            if role_name:
-                assert role_name == self.target_name, (f"role_name={role_name} <> target_name={self.target_name} "
-                                                       f"is not supported in human/assistant memory workflow!")
-
-        elif self.chat_messages:
-            # If no explicit query is given, use the content of the latest chat message
-            chat_messages = [msg for msg in self.chat_messages if msg.role == MessageRoleEnum.USER.value]
-            if chat_messages:
-                message = chat_messages[-1]
-                query = message.content
-                timestamp = message.time_created
-
-                # check role_name
-                role_name = message.role_name
-                if role_name:
-                    assert role_name == self.target_name, \
-                        f"role_name={role_name} is not supported in human/assistant memory workflow!"
 
         # Store the determined query and its timestamp in the context
         self.set_context(QUERY_WITH_TS, (query, timestamp))
