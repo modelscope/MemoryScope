@@ -10,7 +10,7 @@ skip = "./examples,*.csv,*.html,*.json,*.jsonl,*.pdf,*.txt,*.ipynb"
 
 [tool.poetry]
 name = "memoryscope"
-version = "0.1.0.2"
+version = "0.1.0.3"
 description = "MemoryScope for LLM Agentic Application."
 authors = ["Your Name <you@example.com>"]
 license = "MIT"

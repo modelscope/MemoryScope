@@ -47,7 +47,7 @@ class ConfigManager(object):
 
             else:
                 raise RuntimeError("can not init config manager without kwargs!")
-        self.logger.info(self.dump_config())
+        self.logger.info("\n" + self.dump_config())
 
     def _init_logger(self) -> Logger:
         global_config = self.config["global"]
