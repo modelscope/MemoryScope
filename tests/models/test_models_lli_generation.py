@@ -15,12 +15,9 @@ class TestLLILLM(unittest.TestCase):
 
     def setUp(self):
         config = {
-            "module_name": "dashscope_generation",
-            "model_name": "qwen-max",
+            "module_name": "openai_generation",
+            "model_name": "gpt-3.5-turbo",
             "clazz": "models.llama_index_generation_model",
-            "max_tokens": 2000,
-            "top_k": 1,
-            "seed": 1234,
         }
         self.llm = LlamaIndexGenerationModel(**config)
         self.logger = Logger.get_logger()

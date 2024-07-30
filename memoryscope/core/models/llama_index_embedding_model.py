@@ -1,6 +1,7 @@
 from typing import List
 
 from llama_index.embeddings.dashscope import DashScopeEmbedding
+from llama_index.embeddings.openai import OpenAIEmbedding
 
 from memoryscope.core.models.base_model import BaseModel, MODEL_REGISTRY
 from memoryscope.enumeration.model_enum import ModelEnum
@@ -26,6 +27,7 @@ class LlamaIndexEmbeddingModel(BaseModel):
         MODEL_REGISTRY.register(model_name, model_class)
 
     MODEL_REGISTRY.register("dashscope_embedding", DashScopeEmbedding)
+    MODEL_REGISTRY.register("openai_embedding", OpenAIEmbedding)
 
     def before_call(self, model_response: ModelResponse, **kwargs):
         text: str | List[str] = kwargs.pop("text", "")

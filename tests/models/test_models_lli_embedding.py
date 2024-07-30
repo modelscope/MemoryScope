@@ -14,12 +14,11 @@ class TestLLIEmbedding(unittest.TestCase):
 
     def setUp(self):
         config = {
-            "module_name": "dashscope_embedding",
-            "model_name": "text-embedding-v2",
+            "module_name": "openai_embedding",
+            "model_name": "text-embedding-3-large",
             "clazz": "models.base_embedding_model"
         }
         self.emb = LlamaIndexEmbeddingModel(**config)
-        print()
         self.logger = Logger.get_logger()
 
     def test_single_embedding(self):

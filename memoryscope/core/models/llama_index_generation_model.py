@@ -2,6 +2,7 @@ from typing import List
 
 from llama_index.core.base.llms.types import ChatMessage, ChatResponse, CompletionResponse
 from llama_index.llms.dashscope import DashScope
+from llama_index.llms.openai import OpenAI
 
 from memoryscope.core.models.base_model import BaseModel, MODEL_REGISTRY
 from memoryscope.enumeration.message_role_enum import MessageRoleEnum
@@ -22,7 +23,8 @@ class LlamaIndexGenerationModel(BaseModel):
     m_type: ModelEnum = ModelEnum.GENERATION_MODEL
 
     MODEL_REGISTRY.register("dashscope_generation", DashScope)
-
+    MODEL_REGISTRY.register("openai_generation", OpenAI)
+    
     def before_call(self, model_response: ModelResponse, **kwargs):
         """
         Prepares the input data before making a call to the language model.
@@ -80,7 +82,7 @@ class LlamaIndexGenerationModel(BaseModel):
 
     def _call(self, model_response: ModelResponse, stream: bool = False, **kwargs):
         data = model_response.meta_data["data"]
-
+        data.pop("stream") # special case for OpenAI model, is this necessary?
         if "prompt" in data:
             if stream:
                 model_response.raw = self.model.stream_complete(**data)
