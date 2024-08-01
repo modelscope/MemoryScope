@@ -1,3 +1,5 @@
+import sys
+sys.path.append(".")
 from memoryscope import MemoryScope, Arguments
 
 arguments = Arguments(
@@ -7,13 +9,12 @@ arguments = Arguments(
     logger_to_screen=False,
     memory_chat_class="api_memory_chat",
     generation_backend="dashscope_generation",
-    generation_model="qwen-max",
+    generation_model="qwen2-72b-instruct",
     embedding_backend="dashscope_embedding",
     embedding_model="text-embedding-v2",
-    use_dummy_ranker=False,
     rank_backend="dashscope_rank",
-    rank_model="gte-rerank"
-)
+    rank_model="gte-rerank",
+    enable_ranker=False)
 
 
 def chat_example1():
@@ -49,7 +50,7 @@ def chat_example4():
         response = memory_chat.chat_with_memory(query="我的爱好是弹琴。")
         print("回答1：\n" + response.message.content)
         result = memory_chat.run_service_operation("consolidate_memory")
-        print("记忆更新变化：\n" + result)
+        print(result)
 
         response = memory_chat.chat_with_memory(query="你知道我的乐器爱好是什么？", history_message_strategy=None)
         print("回答2：\n" + response.message.content)
@@ -81,7 +82,7 @@ def chat_example6():
         response = memory_chat.chat_with_memory(query="我的爱好是弹琴。", role_name="浩然")
         print("回答1：\n" + response.message.content)
         result = memory_chat.run_service_operation("consolidate_memory", role_name="浩然")
-        print("记忆更新变化：\n" + result)
+        print(result)
         response = memory_chat.chat_with_memory(query="你知道我的乐器爱好是什么？", role_name="浩然",
                                                 history_message_strategy=None)
         print("回答2：\n" + response.message.content)
@@ -91,7 +92,7 @@ def chat_example6():
         response = memory_chat.chat_with_memory(query="我的爱好是打羽毛球。", role_name="锦鲤")
         print("回答1：\n" + response.message.content)
         result = memory_chat.run_service_operation("consolidate_memory", role_name="锦鲤")
-        print("记忆更新变化：\n" + result)
+        print(result)
         response = memory_chat.chat_with_memory(query="你知道我的运动爱好是什么？", role_name="锦鲤",
                                                 history_message_strategy=None)
         print("回答2：\n" + response.message.content)
@@ -102,6 +103,6 @@ if __name__ == "__main__":
     # chat_example1()
     # chat_example2()
     # chat_example3()
-    # chat_example4()
+    chat_example4()
     # chat_example5()
-    chat_example6()
+    # chat_example6()

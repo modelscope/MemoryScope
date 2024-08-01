@@ -15,7 +15,7 @@ class FuseRerankWorker(MemoryBaseWorker):
         self.fuse_score_threshold: float = kwargs.get("fuse_score_threshold", 0.1)
         self.fuse_ratio_dict: Dict[str, float] = kwargs.get("fuse_ratio_dict", {})
         self.fuse_time_ratio: float = kwargs.get("fuse_time_ratio", 2.0)
-        self.fuse_rerank_top_k: int = kwargs.get("fuse_rerank_top_k", 10)
+        self.output_memory_max_count: int = self.memoryscope_context.meta_data["output_memory_max_count"]
 
     @staticmethod
     def match_node_time(extract_time_dict: Dict[str, str], node: MemoryNode):
@@ -93,15 +93,17 @@ class FuseRerankWorker(MemoryBaseWorker):
         memories: List[str] = []
         reranked_memory_nodes = sorted(reranked_memory_nodes,
                                        key=lambda x: x.score_rerank,
-                                       reverse=True)[: self.fuse_rerank_top_k]
-        for i, node in enumerate(reranked_memory_nodes):
+                                       reverse=True)[: self.output_memory_max_count]
+        for node in reranked_memory_nodes:
             # Log reranking details including flags for event and message matches
             self.logger.info(f"Rerank Stage: Content={node.content}, Score={node.score_rerank}, "
                              f"Event Flag={node.meta_data['match_event_flag']}, "
                              f"Message Flag={node.meta_data['match_msg_flag']}")
 
-            time_str = DatetimeHandler(node.timestamp).datetime_format("%Y%m%d-%H:%M:%S")
-            memories.append(f"{i} {time_str} {node.content}")
+            dt_handler = DatetimeHandler(node.timestamp)
+            datetime = dt_handler.datetime_format("%Y-%m-%d %H:%M:%S")
+            weekday = dt_handler.get_dt_info_dict(self.language)["weekday"]
+            memories.append(f"[{datetime} {weekday}] {node.content}")
 
         # Set the final list of formatted memories back into the worker's context
         self.set_context(RESULT, "\n".join(memories))

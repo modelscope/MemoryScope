@@ -4,7 +4,9 @@ global:
   logger_name: memoryscope
   logger_name_time_suffix: "%Y%m%d_%H%M%S"
   logger_to_screen: false
-  use_dummy_ranker: false
+  enable_ranker: false
+  enable_today_contra_repeat: true
+  enable_long_contra_repeat: false
 
 memory_chat:
   cli_memory_chat:
@@ -90,7 +92,6 @@ worker:
       obs_customized: 1.2
       insight: 2.0
     fuse_time_ratio: 2.0
-    fuse_rerank_top_k: 20
   retrieve_top_memory:
     class: core.worker.frontend.retrieve_memory_worker
     retrieve_obs_top_k: 100
@@ -144,29 +145,27 @@ worker:
     class: core.worker.backend.update_insight_worker
     generation_model: generation_model
     rank_model: rank_model
+    update_insight_threshold: 0.5
   long_contra_repeat:
     class: core.worker.backend.long_contra_repeat_worker
     generation_model: generation_model
+    long_contra_repeat_threshold: 0.5
 
 model:
   generation_model:
     class: core.models.llama_index_generation_model
-    module_name: dashscope_generation
-    model_name: qwen-max
+    module_name: openai_generation
+    model_name: gpt-4o-mini
     max_tokens: 2000
   embedding_model:
     class: core.models.llama_index_embedding_model
-    module_name: dashscope_embedding
-    model_name: text-embedding-v2
+    module_name: openai_embedding
+    model_name: text-embedding-3-small
   rank_model:
     class: core.models.llama_index_rank_model
     module_name: dashscope_rank
     model_name: gte-rerank
     top_n: 500
-  dummy_generation:
-    class: core.models.dummy_generation_model
-    module_name: dummy_generation
-    model_name: dummy_generation_model
 
 memory_store:
   class: core.storage.llama_index_es_memory_store

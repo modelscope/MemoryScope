@@ -21,7 +21,17 @@ class MemoryScope(ConfigManager):
         global_conf = self.config["global"]
         self.context.language = LanguageEnum(global_conf["language"])
         self.context.thread_pool = ThreadPoolExecutor(max_workers=global_conf["thread_pool_max_workers"])
-        self.context.meta_data["use_dummy_ranker"] = global_conf["use_dummy_ranker"]
+        self.context.meta_data.update({
+            "enable_ranker": global_conf["enable_ranker"],
+            "enable_today_contra_repeat": global_conf["enable_today_contra_repeat"],
+            "enable_long_contra_repeat": global_conf["enable_long_contra_repeat"],
+            "output_memory_max_count": global_conf["output_memory_max_count"],
+        })
+
+        if not global_conf["enable_ranker"]:
+            self.logger.warning("If a semantic ranking model is not available, MemoryScope will use cosine similarity "
+                                "scoring as a substitute. However, the ranking effectiveness will be somewhat "
+                                "compromised.")
 
         # init memory_chat
         memory_chat_conf_dict = self.config["memory_chat"]

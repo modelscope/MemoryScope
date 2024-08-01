@@ -26,7 +26,6 @@ class TestWorkersEn(unittest.TestCase):
             generation_model="qwen-max",
             embedding_backend="dashscope_embedding",
             embedding_model="text-embedding-v2",
-            use_dummy_ranker=False,
             rank_backend="dashscope_rank",
             rank_model="gte-rerank",
         )
@@ -79,7 +78,7 @@ class TestWorkersEn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [msg.content for msg in worker.chat_messages]
+        result = [msg.content for msg in worker.chat_messages_scatter]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 
@@ -127,7 +126,7 @@ class TestWorkersEn(unittest.TestCase):
         worker.set_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
-        result = [msg.content for msg in worker.chat_messages]
+        result = [msg.content for msg in worker.chat_messages_scatter]
         result = "\n".join(result)
         worker.logger.info(f"result={result}")
 

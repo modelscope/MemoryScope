@@ -66,11 +66,11 @@ class GetObservationWorker(MemoryBaseWorker):
             List[Message]: A list of filtered messages that mention time.
         """
         filter_messages = []
-        for msg in self.chat_messages:
+        for msg in self.chat_messages_scatter:
             if not DatetimeHandler.has_time_word(query=msg.content, language=self.language):
                 filter_messages.append(msg)
 
-        self.logger.info(f"after filter_messages.size from {len(self.chat_messages)} to {len(filter_messages)}")
+        self.logger.info(f"after filter_messages.size from {len(self.chat_messages_scatter)} to {len(filter_messages)}")
         return filter_messages
 
     def build_message(self, filter_messages: List[Message]) -> List[Message]:
@@ -101,13 +101,15 @@ class GetObservationWorker(MemoryBaseWorker):
                                                                            user_name=self.target_name)
 
         # Combine system prompt, few-shot, and user query into a single message for obtaining observations
-        obtain_obs_message = self.prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        get_observation_message = self.prompt_to_msg(system_prompt=system_prompt,
+                                                     few_shot=few_shot,
+                                                     user_query=user_query)
 
         # Log the constructed observation message
-        self.logger.info(f"obtain_obs_message={obtain_obs_message}")
+        self.logger.info(f"get_observation_message={get_observation_message}")
 
         # Return the processed message(s) for further steps in the observation workflow
-        return obtain_obs_message
+        return get_observation_message
 
     def _run(self):
         """

@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from itertools import zip_longest
 from typing import Dict, Any, List
 
-from memoryscope.constants.common_constants import WORKFLOW_NAME, MEMORYSCOPE_CONTEXT
+from memoryscope.constants.common_constants import WORKFLOW_NAME
 from memoryscope.core.memoryscope_context import MemoryscopeContext
 from memoryscope.core.utils.logger import Logger
 from memoryscope.core.utils.timer import Timer
@@ -137,6 +137,7 @@ class BaseWorkflow(object):
                 name=name,
                 is_multi_thread=is_backend or self.worker_dict[name],
                 context=self.context,
+                memoryscope_context=self.memoryscope_context,
                 context_lock=self.context_lock,
                 thread_pool=self.thread_pool,
                 **kwargs)
@@ -166,11 +167,7 @@ class BaseWorkflow(object):
         with Timer(f"workflow.{self.name}", time_log_type="wrap"):
             self.context.clear()
 
-            self.context.update({
-                WORKFLOW_NAME: self.name,
-                MEMORYSCOPE_CONTEXT: self.memoryscope_context,
-                **kwargs,
-            })
+            self.context.update({WORKFLOW_NAME: self.name, **kwargs})
 
             # Iterate over each part of the workflow
             for workflow_part in self.workflow_worker_list:

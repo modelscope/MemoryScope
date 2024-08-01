@@ -81,7 +81,10 @@ class ConfigManager(object):
             "logger_name": arguments.logger_name,
             "logger_name_time_suffix": arguments.logger_name_time_suffix,
             "logger_to_screen": arguments.logger_to_screen,
-            "use_dummy_ranker": arguments.use_dummy_ranker,
+            "enable_ranker": arguments.enable_ranker,
+            "enable_today_contra_repeat": arguments.enable_today_contra_repeat,
+            "enable_long_contra_repeat": arguments.enable_long_contra_repeat,
+            "output_memory_max_count": arguments.output_memory_max_count,
         })
 
     @staticmethod
@@ -101,10 +104,13 @@ class ConfigManager(object):
             "human_name": arguments.human_name if arguments.human_name else "",
             "assistant_name": arguments.assistant_name if arguments.assistant_name else "",
         })
-        config["memory_operations"]["consolidate_memory"]["interval_time"] = \
-            arguments.consolidate_memory_interval_time
-        config["memory_operations"]["reflect_and_reconsolidate"]["interval_time"] = \
-            arguments.reflect_and_reconsolidate_interval_time
+        if arguments.consolidate_memory_interval_time is not None:
+            config["memory_operations"]["consolidate_memory"]["interval_time"] = \
+                arguments.consolidate_memory_interval_time
+
+        if arguments.reflect_and_reconsolidate_interval_time is not None:
+            config["memory_operations"]["reflect_and_reconsolidate"]["interval_time"] = \
+                arguments.reflect_and_reconsolidate_interval_time
 
     @staticmethod
     def update_worker_by_arguments(config: dict, arguments: Arguments):

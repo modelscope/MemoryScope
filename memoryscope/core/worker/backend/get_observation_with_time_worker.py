@@ -23,7 +23,7 @@ class GetObservationWithTimeWorker(GetObservationWorker):
             List[Message]: A list of filtered messages that mention time.
         """
         filter_messages = []
-        for msg in self.chat_messages:
+        for msg in self.chat_messages_scatter:
             # Checks if the message content has any time reference words
             if DatetimeHandler.has_time_word(query=msg.content, language=self.language):
                 filter_messages.append(msg)
@@ -65,10 +65,12 @@ class GetObservationWithTimeWorker(GetObservationWorker):
             user_name=self.target_name)
 
         # Assemble the final message for observation retrieval
-        obtain_obs_message = self.prompt_to_msg(system_prompt=system_prompt, few_shot=few_shot, user_query=user_query)
+        get_observation_message_wt = self.prompt_to_msg(system_prompt=system_prompt,
+                                                        few_shot=few_shot,
+                                                        user_query=user_query)
 
         # Log the constructed message for debugging purposes
-        self.logger.info(f"obtain_obs_message={obtain_obs_message}")
+        self.logger.info(f"get_observation_message_wt={get_observation_message_wt}")
 
         # Return the newly created message
-        return obtain_obs_message
+        return get_observation_message_wt

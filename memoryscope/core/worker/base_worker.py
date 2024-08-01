@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict
 
+from memoryscope.core.memoryscope_context import MemoryscopeContext
 from memoryscope.core.utils.logger import Logger
 from memoryscope.core.utils.timer import Timer
 
@@ -16,6 +17,7 @@ class BaseWorker(metaclass=ABCMeta):
     def __init__(self,
                  name: str,
                  context: Dict[str, Any],
+                 memoryscope_context: MemoryscopeContext,
                  context_lock=None,
                  raise_exception: bool = True,
                  is_multi_thread: bool = False,
@@ -36,6 +38,7 @@ class BaseWorker(metaclass=ABCMeta):
 
         self.name: str = name
         self.context: Dict[str, Any] = context
+        self.memoryscope_context: MemoryscopeContext = memoryscope_context
         self.context_lock = context_lock
         self.raise_exception: bool = raise_exception
         self.is_multi_thread: bool = is_multi_thread

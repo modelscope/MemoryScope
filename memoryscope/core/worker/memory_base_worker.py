@@ -1,10 +1,9 @@
 from abc import ABCMeta
 from typing import List, Dict, Any
 
-from memoryscope.constants.common_constants import CHAT_MESSAGES, CHAT_KWARGS, MEMORYSCOPE_CONTEXT, \
-    WORKFLOW_NAME, MEMORY_MANAGER, USER_NAME, TARGET_NAME, CHAT_MESSAGES_SCATTER
+from memoryscope.constants.common_constants import (CHAT_MESSAGES, CHAT_KWARGS, WORKFLOW_NAME, MEMORY_MANAGER,
+                                                    USER_NAME, TARGET_NAME, CHAT_MESSAGES_SCATTER)
 from memoryscope.constants.language_constants import DEFAULT_HUMAN_NAME, USER_NAME_EXPRESSION
-from memoryscope.core.memoryscope_context import MemoryscopeContext
 from memoryscope.core.models.base_model import BaseModel
 from memoryscope.core.storage.base_memory_store import BaseMemoryStore
 from memoryscope.core.storage.base_monitor import BaseMonitor
@@ -48,7 +47,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         self._prompt_handler: PromptHandler | None = None
 
     @property
-    def chat_messages_origin(self) -> List[List[Message]]:
+    def chat_messages(self) -> List[List[Message]]:
         """
         Property to get the chat messages.
 
@@ -58,7 +57,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         return self.get_context(CHAT_MESSAGES)
 
     @property
-    def chat_messages(self) -> List[Message]:
+    def chat_messages_scatter(self) -> List[Message]:
         """
         Property to get the chat messages.
 
@@ -68,22 +67,22 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         result = self.get_context(CHAT_MESSAGES_SCATTER)
 
         if not result:
-            if isinstance(self.chat_messages_origin[0], list):
+            if isinstance(self.chat_messages[0], list):
                 chat_messages: List[Message] = []
-                for messages in self.chat_messages_origin:
+                for messages in self.chat_messages:
                     if messages:
                         chat_messages.extend(messages)
                 chat_messages.sort(key=lambda _: _.time_created)
                 self.set_context(CHAT_MESSAGES_SCATTER, chat_messages)
 
             else:
-                assert isinstance(self.chat_messages_origin[0], Message)
-                self.set_context(CHAT_MESSAGES_SCATTER, self.chat_messages_origin)
+                assert isinstance(self.chat_messages[0], Message)
+                self.set_context(CHAT_MESSAGES_SCATTER, self.chat_messages)
 
         return self.get_context(CHAT_MESSAGES_SCATTER)
 
-    @chat_messages.setter
-    def chat_messages(self, value: List[Message]):
+    @chat_messages_scatter.setter
+    def chat_messages_scatter(self, value: List[Message]):
         """
         Set the chat messages with the new value.
         """
@@ -114,10 +113,6 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
     @property
     def workflow_name(self) -> str:
         return self.get_context(WORKFLOW_NAME)
-
-    @property
-    def memoryscope_context(self) -> MemoryscopeContext:
-        return self.get_context(MEMORYSCOPE_CONTEXT)
 
     @property
     def language(self) -> LanguageEnum:

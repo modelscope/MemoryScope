@@ -26,6 +26,7 @@ class ContraRepeatWorker(MemoryBaseWorker):
         self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
         self.retrieve_top_k: int = kwargs.get("retrieve_top_k", 30)
         self.contra_repeat_max_count: int = kwargs.get("contra_repeat_max_count", 50)
+        self.enable_today_contra_repeat: bool = self.memoryscope_context.meta_data["enable_today_contra_repeat"]
 
     def _run(self):
         """
@@ -42,6 +43,10 @@ class ContraRepeatWorker(MemoryBaseWorker):
         6. Updates the status of nodes accordingly.
         7. Persists the changes back to memory storage.
         """
+        if not self.enable_today_contra_repeat:
+            self.logger.warning("today_contra_repeat is not enabled!")
+            return
+
         all_obs_nodes: List[MemoryNode] = self.memory_manager.get_memories([NEW_OBS_NODES, NEW_OBS_WITH_TIME_NODES])
         if not all_obs_nodes:
             self.logger.info("all_obs_nodes is empty!")

@@ -147,7 +147,7 @@ class ApiMemoryChat(BaseMemoryChat):
             dt_handler = DatetimeHandler()
             date_time = dt_handler.datetime_format("%Y-%m-%d %H:%M:%S")
             weekday = dt_handler.get_dt_info_dict(self.context.language)["weekday"]
-            system_prompt_list.append(self.prompt_handler.system_prompt.format(date_time=date_time, weekday=weekday))
+            system_prompt_list.append(self.prompt_handler.system_prompt.format(date_time=f"{date_time} {weekday}"))
 
         if memories:
             # add memory prompt

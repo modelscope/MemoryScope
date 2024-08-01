@@ -24,6 +24,7 @@ class LongContraRepeatWorker(MemoryBaseWorker):
         self.long_contra_repeat_top_k: int = kwargs.get("long_contra_repeat_top_k", 2)
         self.long_contra_repeat_threshold: float = kwargs.get("long_contra_repeat_threshold", 0.1)
         self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
+        self.enable_long_contra_repeat: bool = self.memoryscope_context.meta_data["enable_long_contra_repeat"]
 
     def retrieve_similar_content(self, node: MemoryNode) -> (MemoryNode, List[MemoryNode]):
         """
@@ -62,6 +63,10 @@ class LongContraRepeatWorker(MemoryBaseWorker):
 
         The process helps in maintaining conversation coherence by resolving contradictions and redundancies.
         """
+        if not self.enable_long_contra_repeat:
+            self.logger.warning("long_contra_repeat is not enabled!")
+            return
+
         not_updated_nodes: List[MemoryNode] = self.memory_manager.get_memories(NOT_UPDATED_NODES)
         for node in not_updated_nodes:
             self.submit_thread_task(fn=self.retrieve_similar_content, node=node)

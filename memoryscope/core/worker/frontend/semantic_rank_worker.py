@@ -13,6 +13,10 @@ class SemanticRankWorker(MemoryBaseWorker):
     while logging relevant information.
     """
 
+    def _parse_params(self, **kwargs):
+        self.enable_ranker: bool = self.memoryscope_context.meta_data["enable_ranker"]
+        self.output_memory_max_count: int = self.memoryscope_context.meta_data["output_memory_max_count"]
+
     def _run(self):
         """
         Executes the primary workflow of the SemanticRankWorker which includes:
@@ -34,8 +38,7 @@ class SemanticRankWorker(MemoryBaseWorker):
             self.logger.warning("Retrieve memory nodes is empty!")
             return
 
-        use_dummy_ranker: bool = self.memoryscope_context.meta_data["use_dummy_ranker"]
-        if use_dummy_ranker:
+        if not self.enable_ranker or len(memory_node_list) <= self.output_memory_max_count:
             for node in memory_node_list:
                 node.score_rank = node.score_recall
             self.logger.warning("use score_recall instead of score_rank!")

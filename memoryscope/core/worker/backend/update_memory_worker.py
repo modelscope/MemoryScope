@@ -112,10 +112,8 @@ class UpdateMemoryWorker(MemoryBaseWorker):
             return
 
         updated_nodes: Dict[str, List[MemoryNode]] = self.memory_manager.update_memories(nodes=getattr(self, method)())
-        line = []
-        i = 0
+        line = ["[MEMORY ACTIONS]:"]
         for action, nodes in updated_nodes.items():
             for node in nodes:
-                i += 1
-                line.append(f"{i} {action} {node.content}")
+                line.append(f"{action} {node.content}")
         self.set_context(RESULT, "\n".join(line))

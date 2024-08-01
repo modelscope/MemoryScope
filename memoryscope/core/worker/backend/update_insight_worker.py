@@ -24,18 +24,17 @@ class UpdateInsightWorker(MemoryBaseWorker):
         self.update_insight_threshold: float = kwargs.get("update_insight_threshold", 0.1)
         self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
         self.update_insight_max_count: int = kwargs.get("update_insight_max_count", 5)
+        self.enable_ranker: bool = self.memoryscope_context.meta_data["enable_ranker"]
 
     def filter_obs_nodes(self,
                          insight_node: MemoryNode,
-                         obs_nodes: List[MemoryNode],
-                         use_dummy_ranker: bool) -> (MemoryNode, List[MemoryNode], float):
+                         obs_nodes: List[MemoryNode]) -> (MemoryNode, List[MemoryNode], float):
         """
         Filters observed nodes based on their relevance to a given insight node using a ranking model.
 
         Args:
             insight_node (MemoryNode): The insight node used as the basis for filtering.
             obs_nodes (List[MemoryNode]): A list of observed nodes to be filtered.
-            use_dummy_ranker (bool): Global parameters, whether to use rank model or not.
 
         Returns:
             tuple: A tuple containing:
@@ -55,7 +54,7 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.warning("obs_nodes is empty!")
             return insight_node, filtered_nodes, max_score
 
-        if use_dummy_ranker:
+        if not self.enable_ranker:
             if not insight_node.key_vector:
                 key_vector: List[float] = self.embedding_model.call(text=insight_node.key).embedding_results
                 if not key_vector:
@@ -211,21 +210,17 @@ class UpdateInsightWorker(MemoryBaseWorker):
             self.logger.warning("insight_nodes is empty, stopping processing.")
             return
 
-        use_dummy_ranker: bool = self.memoryscope_context.meta_data["use_dummy_ranker"]
-
         # Process active insight nodes with corresponding not updated nodes
         for node in insight_nodes:
             time.sleep(1)
             if node.action_status == ActionStatusEnum.NEW.value:
                 self.submit_thread_task(fn=self.filter_obs_nodes,
                                         insight_node=node,
-                                        obs_nodes=not_reflected_nodes,
-                                        use_dummy_ranker=use_dummy_ranker)
+                                        obs_nodes=not_reflected_nodes)
             else:
                 self.submit_thread_task(fn=self.filter_obs_nodes,
                                         insight_node=node,
-                                        obs_nodes=not_updated_nodes,
-                                        use_dummy_ranker=use_dummy_ranker)
+                                        obs_nodes=not_updated_nodes)
 
         # select top n
         result_list = []

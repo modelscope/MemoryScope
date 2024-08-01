@@ -35,7 +35,7 @@ class InfoFilterWorker(MemoryBaseWorker):
         """
         # filter user msg
         info_messages: List[Message] = []
-        for msg in self.chat_messages:
+        for msg in self.chat_messages_scatter:
             if msg.memorized:
                 continue
 
@@ -101,4 +101,9 @@ class InfoFilterWorker(MemoryBaseWorker):
                 filtered_messages.append(message)
                 self.logger.info(f"info filter stage: keep {message.content}")
 
-        self.chat_messages = filtered_messages
+        if not filtered_messages:
+            self.logger.warning("filtered_messages is empty!")
+            self.continue_run = False
+            return
+
+        self.chat_messages_scatter = filtered_messages

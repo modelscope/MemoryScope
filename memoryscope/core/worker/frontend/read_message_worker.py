@@ -15,7 +15,7 @@ class ReadMessageWorker(MemoryBaseWorker):
         Executes the primary function to fetch unmemorized chat messages.
         """
         chat_messages_not_memorized: List[List[Message]] = []
-        for messages in self.chat_messages_origin:
+        for messages in self.chat_messages:
             if not messages:
                 continue
 
