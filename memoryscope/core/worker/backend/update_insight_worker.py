@@ -212,7 +212,8 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         # Process active insight nodes with corresponding not updated nodes
         for node in insight_nodes:
-            time.sleep(1)
+            if self.enable_parallel:
+                time.sleep(1)
             if node.action_status == ActionStatusEnum.NEW.value:
                 self.submit_thread_task(fn=self.filter_obs_nodes,
                                         insight_node=node,
@@ -233,8 +234,11 @@ class UpdateInsightWorker(MemoryBaseWorker):
 
         # Submit tasks to update insights for the top nodes
         for insight_node, filtered_nodes, _ in result_sorted:
-            time.sleep(1)
-            self.submit_thread_task(fn=self.update_insight, insight_node=insight_node, filtered_nodes=filtered_nodes)
+            if self.enable_parallel:
+                time.sleep(1)
+            self.submit_thread_task(fn=self.update_insight,
+                                    insight_node=insight_node,
+                                    filtered_nodes=filtered_nodes)
 
         # Gather the final results from all update tasks
         for _ in self.gather_thread_result():
