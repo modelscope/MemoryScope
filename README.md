@@ -13,7 +13,7 @@ Equip your LLM chatbot with a powerful and flexible long term memory system.
 
 - **[2024-07-29]** We release MemoryScope v0.1.0.2 now, which is also available in [PyPI](https://pypi.org/simple)!
 ----
-## What is MemoryScope
+## What is MemoryScope？
 
 MemoryScope is a powerful and flexible long term memory system for LLM chatbots. It consists 
 of a memory database and three customizable system operations, which can be flexibly combined to provide 
@@ -52,10 +52,17 @@ accurate relevant information when the query involves reference to time.
 
 
 ### Example Usages
+- [Simple Usages](./examples/api/simple_usages_en.ipynb)
+- [Advanced Customization](./examples/api/advanced_customization_en.ipynb)
 
-# 🚀 Installation
 
-## (1) Docker-Compose (Recommended)
+
+## 🚀 Installation
+
+### Quick Start (CLI)
+Todo: 
+
+### (1) Docker-Compose (Recommended)
 1. Clone the project and edit the config.
 
     ```
@@ -72,7 +79,7 @@ accurate relevant information when the query involves reference to time.
 3. Run `docker-compose up` to build and launch the memory-scope cli interface.
 
 
-## (2) Docker
+### (2) Docker
 
 1. Clone the project and edit the config.
 
@@ -100,7 +107,7 @@ accurate relevant information when the query involves reference to time.
     sudo docker run -it --rm --net=host memoryscope
     ```
 
-# 💡 Contribute
+## 💡 Contribute
 
 Contributions are always encouraged!
 
@@ -114,7 +121,7 @@ pre-commit install
 
 
 
-# 📖 Citation
+## 📖 Citation
 
 Reference to cite if you use MemoryScope in a paper:
 
