@@ -7,6 +7,7 @@ global:
   enable_ranker: false
   enable_today_contra_repeat: true
   enable_long_contra_repeat: false
+  output_memory_max_count: 20
 
 memory_chat:
   cli_memory_chat:
@@ -145,6 +146,7 @@ worker:
     class: core.worker.backend.update_insight_worker
     generation_model: generation_model
     rank_model: rank_model
+    embedding_model: embedding_model
     update_insight_threshold: 0.5
   long_contra_repeat:
     class: core.worker.backend.long_contra_repeat_worker
