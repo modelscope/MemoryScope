@@ -115,5 +115,5 @@ class UpdateMemoryWorker(MemoryBaseWorker):
         line = ["[MEMORY ACTIONS]:"]
         for action, nodes in updated_nodes.items():
             for node in nodes:
-                line.append(f"{action} {node.content}")
+                line.append(f"{node.memory_type} {action} {node.content} ({node.store_status})")
         self.set_context(RESULT, "\n".join(line))
