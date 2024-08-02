@@ -60,7 +60,7 @@ accurate relevant information when the query involves reference to time.
 ## 🚀 Installation
 
 ### Quick Start (CLI)
-Todo: 
+Todo: Jingli add CLI here
 
 ### (1) Docker-Compose (Recommended)
 1. Clone the project and edit the config.

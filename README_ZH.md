@@ -45,6 +45,11 @@ MemoryScope 是一个为LLM聊天机器人服务的强大且灵活的长期记�
 - [简易用法](./examples/api/simple_usages_cn.ipynb)
 - [进阶自定义用法](./examples/api/advanced_customization_cn.ipynb)
 
+## 🚀 安装
+
+### 快速开始 (CLI)
+Todo: Jingli add CLI here
+
 ## 💡 代码贡献
 
 欢迎社区的代码贡献。
