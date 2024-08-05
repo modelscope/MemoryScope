@@ -16,25 +16,15 @@ MemoryScope Documentation
    :maxdepth: 1
    :glob:
    :hidden:
-   :caption: AgentScope Tutorial
+   :caption: MemoryScope Tutorial
 
-   tutorial/101-agentscope.md
+   tutorial/101-memoryscope.md
    tutorial/102-installation.md
    tutorial/103-example.md
 
-   tutorial/contribute.rst
-
 .. toctree::
-   :maxdepth: 1
-   :glob:
+   :maxdepth: 6
    :caption: MemoryScope API Reference
 
-   memory_scope
-   memory_scope.chat
-   memory_scope.constants
-   memory_scope.enumeration
-   memory_scope.memory
-   memory_scope.models
-   memory_scope.scheme
-   memory_scope.storage
-   memory_scope.utils
+   memoryscope
+   
