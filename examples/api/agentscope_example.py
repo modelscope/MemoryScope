@@ -38,7 +38,7 @@ def main():
     # Setting of MemoryScope
     arguments = Arguments(
         language="cn",
-        human_name="用户",
+        human_name="User",
         assistant_name="AI",
         logger_to_screen=False,
         memory_chat_class="api_memory_chat",
