@@ -42,13 +42,11 @@ MemoryScope 是一个为LLM聊天机器人服务的强大且灵活的长期记�
 - T系统在执行记忆检索和记忆巩固时具备时间敏感性，因此在输入对话包含对时间的指涉时，可以检索到准确的相关信息。
 
 ### 用法示例
-- [简易用法](./examples/api/simple_usages_cn.ipynb)
+- [简易用法（快速开始）](./examples/api/simple_usages_cn.ipynb)
+- [在命令行与MemoryScope聊天机器人交互](./examples/cli/dash_cli_cn1.sh)
 - [进阶自定义用法](./examples/api/advanced_customization_cn.ipynb)
 
 ## 🚀 安装
-
-### 快速开始 (CLI)
-Todo: Jingli add CLI here
 
 ## 💡 代码贡献
 

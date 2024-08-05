@@ -52,15 +52,13 @@ accurate relevant information when the query involves reference to time.
 
 
 ### Example Usages
-- [Simple Usages](./examples/api/simple_usages_en.ipynb)
+- [Simple Usages (Quick Start)](./examples/api/simple_usages_en.ipynb)
+- [CLI with a MemoryScope Chatbot](./examples/cli/dash_cli_cn1.sh)
 - [Advanced Customization](./examples/api/advanced_customization_en.ipynb)
 
 
 
 ## 🚀 Installation
-
-### Quick Start (CLI)
-Todo: Jingli add CLI here
 
 ### (1) Docker-Compose (Recommended)
 1. Clone the project and edit the config.
