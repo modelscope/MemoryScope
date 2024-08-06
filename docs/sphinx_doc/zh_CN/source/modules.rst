@@ -1,7 +1,7 @@
-memory_scope
-============
+memoryscope
+===========
 
 .. toctree::
    :maxdepth: 4
 
-   memory_scope
+   memoryscope
