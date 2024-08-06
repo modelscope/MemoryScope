@@ -43,6 +43,7 @@ class BaseWorker(metaclass=ABCMeta):
         self.raise_exception: bool = raise_exception
         self.is_multi_thread: bool = is_multi_thread
         self.thread_pool: ThreadPoolExecutor = thread_pool
+        self.enable_parallel: bool = True
         self.kwargs: dict = kwargs
 
         self.continue_run: bool = True
@@ -113,7 +114,10 @@ class BaseWorker(metaclass=ABCMeta):
             args: Positional arguments for the function.
             kwargs: Keyword arguments for the function.
         """
-        self.thread_task_list.append(self.thread_pool.submit(fn, *args, **kwargs))
+        if self.enable_parallel:
+            self.thread_task_list.append(self.thread_pool.submit(fn, *args, **kwargs))
+        else:
+            self.thread_task_list.append(fn(*args, **kwargs))
 
     def gather_thread_result(self):
         """
@@ -122,9 +126,14 @@ class BaseWorker(metaclass=ABCMeta):
         Yields:
             The result of each completed task.
         """
-        for future in as_completed(self.thread_task_list):
-            yield future.result()
-        self.thread_task_list.clear()
+        if self.enable_parallel:
+            for future in as_completed(self.thread_task_list):
+                yield future.result()
+            self.thread_task_list.clear()
+        else:
+            for future in self.thread_task_list:
+                yield future
+            self.thread_task_list.clear()
 
     @abstractmethod
     def _run(self):

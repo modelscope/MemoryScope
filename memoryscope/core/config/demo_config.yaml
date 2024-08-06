@@ -148,6 +148,7 @@ worker:
     rank_model: rank_model
     embedding_model: embedding_model
     update_insight_threshold: 0.01
+    enable_parallel: false
   long_contra_repeat:
     class: core.worker.backend.long_contra_repeat_worker
     generation_model: generation_model
