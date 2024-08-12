@@ -31,7 +31,7 @@ class BaseWorkflow(object):
         self.context: Dict[str, Any] = {}
         self.context_lock = threading.Lock()
 
-        self.logger: Logger = Logger.get_logger()
+        self.logger: Logger = Logger.get_logger(Logger.append_timestamp("workflow"))
 
         if self.workflow:
             self.workflow_worker_list = self._parse_workflow()
@@ -165,21 +165,27 @@ class BaseWorkflow(object):
             **kwargs: Additional keyword arguments to be passed to context.
         """
         with Timer(f"workflow.{self.name}", time_log_type="wrap"):
+            self.logger.info(f"\n\n\n++++++++++++++++++++++++ [{self.name}] ++++++++++++++++++++++++")
+
             self.context.clear()
-
             self.context.update({WORKFLOW_NAME: self.name, **kwargs})
-
+            n_stage = len(self.workflow_worker_list)
             # Iterate over each part of the workflow
-            for workflow_part in self.workflow_worker_list:
+            for index, workflow_part in enumerate(self.workflow_worker_list):
                 # Sequential execution for single-item parts
                 if len(workflow_part) == 1:
+                    self.logger.info(f"\n-----------------------------------------------------")
+                    self.logger.info(f"sequential execution ({self.name}) | {index+1}/{n_stage}: {workflow_part[0]}")
                     if not self._run_sub_workflow(workflow_part[0]):
                         break
                 # Parallel execution for multi-item parts
                 else:
                     t_list = []
                     # Submit tasks to the thread pool
-                    for sub_workflow in workflow_part:
+                    n_sub_stage = len(workflow_part)
+                    for sub_index, sub_workflow in enumerate(workflow_part):
+                        self.logger.info(f"\n-----------------------------------------------------")
+                        self.logger.info(f"parallel sequential execution ({self.name}) | {index+1}/{n_stage} | {sub_index+1}/{n_sub_stage}: {str(sub_workflow)}")
                         t_list.append(self.thread_pool.submit(self._run_sub_workflow, sub_workflow))
 
                     # Check results; if any task returns False, stop the workflow
