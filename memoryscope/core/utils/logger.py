@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from rich.console import Console
 
 LOG_FORMAT = "%(asctime)s %(levelname)s %(threadName)s %(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -64,6 +65,36 @@ class Logger(logging.Logger):
 
         self.info(f"logger={name} is inited.")  # Logs an initialization message
 
+    def format_current_context(self, context):
+        from rich.panel import Panel
+        from rich.text import Text
+        import pprint
+        pp = pprint.PrettyPrinter()
+        pretty_string = pp.pformat(context)
+
+        def rich2text(rich_table):
+            console = Console(width=150)
+            with console.capture() as capture:
+                console.print(rich_table)
+            return '\n' + str(Text.from_ansi(capture.get()))
+
+        return rich2text(Panel(pretty_string, width=128))
+    
+    def format_current_memory(self, context):
+        from rich.panel import Panel
+        from rich.text import Text
+        import pprint
+        pp = pprint.PrettyPrinter()
+        pretty_string = pp.pformat(context)
+
+        def rich2text(rich_table):
+            console = Console(width=150)
+            with console.capture() as capture:
+                console.print(rich_table)
+            return '\n' + str(Text.from_ansi(capture.get()))
+
+        return rich2text(Panel(pretty_string, width=128))
+    
     def format_chat_message(self, message):
         buf = '\n'
         buf += f"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
@@ -111,7 +142,7 @@ class Logger(logging.Logger):
         file_path = Path().joinpath(self.dir_path, f"{self.name}.{self.file_type}")
         file_path.parent.mkdir(exist_ok=True)  # Ensure the directory exists
         file_name = file_path.as_posix()  # Get the absolute path as a string
-        print(f"[{self.name}] Registering Logger to file at: ", file_name)
+        Console().print(f"[{self.name}] Registering Logger to file at: " + file_name, style="bold blue")
 
         # Instantiate a rotating file handler with specified parameters
         file_handler = RotatingFileHandler(
@@ -221,4 +252,4 @@ class Logger(logging.Logger):
 
     @staticmethod
     def append_timestamp(name: str) -> str:
-        return f"{name}_{datetime.now().strftime(r'%Y%m%d_%H%M%S')}"
+        return f"{name}_{datetime.now().strftime(r'%Y%m%d_%H%M')}"

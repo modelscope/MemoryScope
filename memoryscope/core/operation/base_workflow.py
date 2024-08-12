@@ -132,6 +132,7 @@ class BaseWorkflow(object):
             if name not in self.memoryscope_context.worker_conf_dict:
                 raise RuntimeError(f"worker={name} is not exists in worker config!")
 
+            # note: shared context object in all workers
             self.worker_dict[name] = init_instance_by_config(
                 config=self.memoryscope_context.worker_conf_dict[name],
                 name=name,
@@ -165,13 +166,14 @@ class BaseWorkflow(object):
             **kwargs: Additional keyword arguments to be passed to context.
         """
         with Timer(f"workflow.{self.name}", time_log_type="wrap"):
-            self.logger.info(f"\n\n\n++++++++++++++++++++++++ [{self.name}] ++++++++++++++++++++++++")
+            self.logger.info(f"\n\n\n++++++++++++++++++++++++ [Operation: {self.name}] ++++++++++++++++++++++++")
 
             self.context.clear()
             self.context.update({WORKFLOW_NAME: self.name, **kwargs})
             n_stage = len(self.workflow_worker_list)
             # Iterate over each part of the workflow
             for index, workflow_part in enumerate(self.workflow_worker_list):
+                self.logger.info(self.logger.format_current_context(self.context))
                 # Sequential execution for single-item parts
                 if len(workflow_part) == 1:
                     self.logger.info(f"\n-----------------------------------------------------")

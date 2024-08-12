@@ -24,7 +24,7 @@ class MemoryManager(object):
         # dict: key -> memory_id
         self._key_id_dict: Dict[str, List[str]] = {}
 
-        self.logger = Logger.get_logger()
+        self.logger = Logger.get_logger(Logger.append_timestamp("memory_manager"))
 
     @property
     def memory_store(self) -> BaseMemoryStore:
@@ -95,7 +95,10 @@ class MemoryManager(object):
             self.logger.info(f"add to memory context memory id={node.memory_id} content={node.content} "
                              f"store_status={node.store_status} action_status={node.action_status}")
 
-        self._key_id_dict[key] = [n.memory_id for n in nodes]
+        self.logger.info(self.logger.format_current_memory(
+            [f"{node.memory_type} | {node.content}" for node in nodes]
+        ))
+        
 
     def get_memories(self, keys: str | List[str]) -> List[MemoryNode]:
         """
