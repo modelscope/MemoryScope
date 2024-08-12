@@ -15,6 +15,10 @@ class LlamaIndexEmbeddingModel(BaseModel):
     """
     m_type: ModelEnum = ModelEnum.EMBEDDING_MODEL
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger = self.logger.get_logger(self.logger.append_timestamp("llama_index_embedding_model"))
+
     @classmethod
     def register_model(cls, model_name: str, model_class: type):
         """
@@ -34,6 +38,7 @@ class LlamaIndexEmbeddingModel(BaseModel):
         if isinstance(text, str):
             text = [text]
         model_response.meta_data["data"] = dict(texts=text)
+        self.logger.info("Embedding Model:\n" + text[0])
 
     def after_call(self, model_response: ModelResponse, **kwargs) -> ModelResponse:
         embeddings = model_response.raw

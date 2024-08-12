@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
@@ -63,6 +64,40 @@ class Logger(logging.Logger):
 
         self.info(f"logger={name} is inited.")  # Logs an initialization message
 
+    def format_chat_message(self, message):
+        buf = '\n'
+        buf += f"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+        buf += f"LM Input:\n"
+        for chat_message in message.meta_data['data']['messages']:
+            buf += chat_message.content
+            buf += '\n'
+        buf += f"--------------------------------------------------------------\n"
+        buf += f"LM Output:\n"
+        buf += message.message.content
+        buf += '\n'
+        buf += f"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+        buf += '\n'
+        return buf
+
+    def format_rank_message(self, model_response):
+        buf = '\n'
+        buf += f"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+        buf += f"Query Input:\n"
+        buf += model_response.meta_data['data']['query_str']
+        buf += '\n'
+        buf += f"--------------------------------------------------------------\n"
+        buf += f"Rank:\n"
+        rank = 0
+        for index, score in model_response.rank_scores.items():
+            rank += 1
+            node = model_response.meta_data['data']['nodes'][index]
+            node_text = node.text
+            buf += f"Score {score} | Rank {rank} | {node_text}\n"
+        buf += '\n'
+        buf += f"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+        buf += '\n'
+        return buf
+    
     def _add_file_handler(self):
         """
         Adds a file handler to the logger which logs messages to a rotating file.
@@ -76,6 +111,7 @@ class Logger(logging.Logger):
         file_path = Path().joinpath(self.dir_path, f"{self.name}.{self.file_type}")
         file_path.parent.mkdir(exist_ok=True)  # Ensure the directory exists
         file_name = file_path.as_posix()  # Get the absolute path as a string
+        print(f"[{self.name}] Registering Logger to file at: ", file_name)
 
         # Instantiate a rotating file handler with specified parameters
         file_handler = RotatingFileHandler(
@@ -182,3 +218,7 @@ class Logger(logging.Logger):
             LOGGER_DICT[name] = Logger(name=name, **kwargs)
 
         return LOGGER_DICT[name]
+
+    @staticmethod
+    def append_timestamp(name: str) -> str:
+        return f"{name}_{datetime.now().strftime(r'%Y%m%d_%H%M%S')}"
