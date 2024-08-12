@@ -3,11 +3,19 @@ from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from rich.console import Console
+from rich.panel import Panel
 
 LOG_FORMAT = "%(asctime)s %(levelname)s %(threadName)s %(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 LOGGER_DICT = {}
+
+def rich2text(rich_table):
+    from rich.text import Text
+    console = Console(width=150)
+    with console.capture() as capture:
+        console.print(rich_table)
+    return '\n' + str(Text.from_ansi(capture.get()))
 
 
 class Logger(logging.Logger):
@@ -66,34 +74,13 @@ class Logger(logging.Logger):
         self.info(f"logger={name} is inited.")  # Logs an initialization message
 
     def format_current_context(self, context):
-        from rich.panel import Panel
-        from rich.text import Text
         import pprint
         pp = pprint.PrettyPrinter()
         pretty_string = pp.pformat(context)
-
-        def rich2text(rich_table):
-            console = Console(width=150)
-            with console.capture() as capture:
-                console.print(rich_table)
-            return '\n' + str(Text.from_ansi(capture.get()))
-
         return rich2text(Panel(pretty_string, width=128))
     
-    def format_current_memory(self, context):
-        from rich.panel import Panel
-        from rich.text import Text
-        import pprint
-        pp = pprint.PrettyPrinter()
-        pretty_string = pp.pformat(context)
-
-        def rich2text(rich_table):
-            console = Console(width=150)
-            with console.capture() as capture:
-                console.print(rich_table)
-            return '\n' + str(Text.from_ansi(capture.get()))
-
-        return rich2text(Panel(pretty_string, width=128))
+    def wrap_in_box(self, context):
+        return rich2text(Panel(context, width=128))
     
     def format_chat_message(self, message):
         buf = '\n'

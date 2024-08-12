@@ -13,7 +13,7 @@ class MemoryManager(object):
     The `MemoryHandler` class manages memory nodes with memory store.
     """
 
-    def __init__(self, memoryscope_context: MemoryscopeContext):
+    def __init__(self, memoryscope_context: MemoryscopeContext, worker_name: str ="default_worker"):
         self.memoryscope_context: MemoryscopeContext = memoryscope_context
 
         self._memory_store: BaseMemoryStore | None = None
@@ -25,6 +25,9 @@ class MemoryManager(object):
         self._key_id_dict: Dict[str, List[str]] = {}
 
         self.logger = Logger.get_logger(Logger.append_timestamp("memory_manager"))
+
+        self.worker_name = worker_name
+
 
     @property
     def memory_store(self) -> BaseMemoryStore:
@@ -95,10 +98,13 @@ class MemoryManager(object):
             self.logger.info(f"add to memory context memory id={node.memory_id} content={node.content} "
                              f"store_status={node.store_status} action_status={node.action_status}")
 
-        self.logger.info(self.logger.format_current_memory(
-            [f"{node.memory_type} | {node.content}" for node in nodes]
-        ))
-        
+        if nodes:
+            self.logger.info(
+                self.logger.wrap_in_box(
+                    '\n'.join([f"worker_name: {self.worker_name} | memory_type:{node.memory_type} | content:{node.content}" for node in nodes])
+                )
+            )
+
 
     def get_memories(self, keys: str | List[str]) -> List[MemoryNode]:
         """

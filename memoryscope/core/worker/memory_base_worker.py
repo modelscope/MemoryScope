@@ -204,7 +204,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             MemoryHandler: An instance of MemoryHandler.
         """
         if not self.has_content(MEMORY_MANAGER):
-            self.set_context(MEMORY_MANAGER, MemoryManager(self.memoryscope_context))
+            self.set_context(MEMORY_MANAGER, MemoryManager(self.memoryscope_context, worker_name=self.name))
         return self.get_context(MEMORY_MANAGER)
 
     def get_language_value(self, languages: dict | List[dict]) -> Any | List[Any]:
