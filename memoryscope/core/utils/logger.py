@@ -84,7 +84,6 @@ class Logger(logging.Logger):
     
     def format_chat_message(self, message):
         buf = '\n'
-        buf += f"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
         buf += f"LM Input:\n"
         for chat_message in message.meta_data['data']['messages']:
             buf += chat_message.content
@@ -93,13 +92,11 @@ class Logger(logging.Logger):
         buf += f"LM Output:\n"
         buf += message.message.content
         buf += '\n'
-        buf += f"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
         buf += '\n'
-        return buf
+        return self.wrap_in_box(buf)
 
     def format_rank_message(self, model_response):
         buf = '\n'
-        buf += f"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
         buf += f"Query Input:\n"
         buf += model_response.meta_data['data']['query_str']
         buf += '\n'
@@ -112,9 +109,8 @@ class Logger(logging.Logger):
             node_text = node.text
             buf += f"Score {score} | Rank {rank} | {node_text}\n"
         buf += '\n'
-        buf += f"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
         buf += '\n'
-        return buf
+        return self.wrap_in_box(buf)
     
     def _add_file_handler(self):
         """
@@ -239,4 +235,5 @@ class Logger(logging.Logger):
 
     @staticmethod
     def append_timestamp(name: str) -> str:
-        return f"{name}_{datetime.now().strftime(r'%Y%m%d_%H%M')}"
+        from memoryscope.core.memoryscope_context import get_ms_context
+        return f"{name}_{get_ms_context().memory_scope_uuid}"

@@ -2,8 +2,9 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 
 from memoryscope.enumeration.language_enum import LanguageEnum
+from memoryscope.core.utils.singleton import singleton
 
-
+@singleton
 @dataclass
 class MemoryscopeContext(object):
     """
@@ -27,3 +28,14 @@ class MemoryscopeContext(object):
     worker_conf_dict: dict = field(default_factory=lambda: {}, metadata={"help": "name -> worker_conf"})
 
     meta_data: dict = field(default_factory=lambda: {})
+
+    memory_scope_uuid: str = ""
+
+    context_initialized: bool = False
+
+def get_ms_context():
+    ms_context = MemoryscopeContext()
+    if ms_context.context_initialized:
+        return ms_context
+    else:
+        raise RuntimeError("MemoryscopeContext is not initialized yet. Please initialize it first.")

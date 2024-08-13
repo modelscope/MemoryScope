@@ -8,6 +8,8 @@ from memoryscope.core.utils.registry import Registry
 from memoryscope.core.utils.timer import Timer
 from memoryscope.enumeration.model_enum import ModelEnum
 from memoryscope.scheme.model_response import ModelResponse, ModelResponseGen
+from memoryscope.core.memoryscope_context import MemoryscopeContext
+from memoryscope.core.memoryscope_context import get_ms_context
 
 MODEL_REGISTRY = Registry("models")
 
@@ -32,6 +34,7 @@ class BaseModel(metaclass=ABCMeta):
         self.retry_interval: float = retry_interval
         self.kwargs_filter: bool = kwargs_filter
         self.raise_exception: bool = raise_exception
+        self.context: MemoryscopeContext = get_ms_context()
         self.kwargs: dict = kwargs
 
         self._model: Any = None
