@@ -73,15 +73,18 @@ class Logger(logging.Logger):
 
         self.info(f"logger={name} is inited.")  # Logs an initialization message
 
+    def log_dictionary_info(self, dictionary):
+        self.info(self.format_current_context(dictionary))
+
     def format_current_context(self, context):
         import pprint
         pp = pprint.PrettyPrinter()
         pretty_string = pp.pformat(context)
         return rich2text(Panel(pretty_string, width=128))
-    
+
     def wrap_in_box(self, context):
         return rich2text(Panel(context, width=128))
-    
+
     def format_chat_message(self, message):
         buf = '\n'
         buf += f"LM Input:\n"
@@ -111,7 +114,7 @@ class Logger(logging.Logger):
         buf += '\n'
         buf += '\n'
         return self.wrap_in_box(buf)
-    
+
     def _add_file_handler(self):
         """
         Adds a file handler to the logger which logs messages to a rotating file.
@@ -125,7 +128,7 @@ class Logger(logging.Logger):
         file_path = Path().joinpath(self.dir_path, f"{self.name}.{self.file_type}")
         file_path.parent.mkdir(exist_ok=True)  # Ensure the directory exists
         file_name = file_path.as_posix()  # Get the absolute path as a string
-        Console().print(f"[{self.name}] Registering Logger to file at: " + file_name, style="bold blue")
+        Console().print(f"[{self.name}] Registering logger to file at: " + file_name, style="bold blue")
 
         # Instantiate a rotating file handler with specified parameters
         file_handler = RotatingFileHandler(
