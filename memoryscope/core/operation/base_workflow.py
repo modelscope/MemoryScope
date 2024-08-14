@@ -37,6 +37,11 @@ class BaseWorkflow(object):
             self.workflow_worker_list = self._parse_workflow()
             self._print_workflow()
 
+    def workflow_print_console(self, *args, **kwargs):
+        if self.memoryscope_context.print_workflow_dynamic:
+            Console().print(*args, **kwargs)
+        return
+
     def _parse_workflow(self):
         """
         Parses the workflow string to configure worker threads and organizes them into execution order.
@@ -167,7 +172,8 @@ class BaseWorkflow(object):
         """
         with Timer(f"workflow.{self.name}", time_log_type="wrap"):
             log_buf = f"Operation: {self.name}"
-            self.logger.info(log_buf); Console().print(log_buf, style="bold red")
+            self.logger.info(log_buf)
+            self.workflow_print_console(log_buf, style="bold red")
             self.context.clear()
             self.context.update({WORKFLOW_NAME: self.name, **kwargs})
             n_stage = len(self.workflow_worker_list)
@@ -177,7 +183,8 @@ class BaseWorkflow(object):
                 # Sequential execution for single-item parts
                 if len(workflow_part) == 1:
                     log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage}: {workflow_part[0]}"
-                    self.logger.info(log_buf); Console().print(log_buf, style="bold red")
+                    self.logger.info(log_buf)
+                    self.workflow_print_console(log_buf, style="bold red")
                     if not self._run_sub_workflow(workflow_part[0]):
                         break
                 # Parallel execution for multi-item parts
@@ -187,7 +194,8 @@ class BaseWorkflow(object):
                     n_sub_stage = len(workflow_part)
                     for sub_index, sub_workflow in enumerate(workflow_part):
                         log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage} | sub workflow {sub_index+1}/{n_sub_stage}: {str(sub_workflow)}"
-                        self.logger.info(log_buf); Console().print(log_buf, style="red")
+                        self.logger.info(log_buf)
+                        self.workflow_print_console(log_buf, style="red")
                         t_list.append(self.thread_pool.submit(self._run_sub_workflow, sub_workflow))
 
                     # Check results; if any task returns False, stop the workflow

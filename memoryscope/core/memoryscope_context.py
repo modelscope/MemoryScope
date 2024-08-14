@@ -31,6 +31,8 @@ class MemoryscopeContext(object):
 
     memory_scope_uuid: str = ""
 
+    print_workflow_dynamic: bool = False
+
     context_initialized: bool = False
 
 def get_ms_context():
