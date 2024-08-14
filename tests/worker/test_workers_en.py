@@ -50,10 +50,10 @@ class TestWorkersEn(unittest.TestCase):
 
         query = "I will be on a business trip to Shanghai tomorrow."
         query_timestamp = int(datetime.datetime.now().timestamp())
-        worker.set_context(QUERY_WITH_TS, (query, query_timestamp))
+        worker.set_workflow_context(QUERY_WITH_TS, (query, query_timestamp))
         worker.run()
 
-        result = worker.get_context(EXTRACT_TIME_DICT)
+        result = worker.get_workflow_context(EXTRACT_TIME_DICT)
         worker.logger.info(f"result={result}")
 
     @unittest.skip
@@ -75,7 +75,7 @@ class TestWorkersEn(unittest.TestCase):
                     content="I'm going to take the college entrance examination tomorrow."),
         ]
 
-        worker.set_context(CHAT_MESSAGES, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
         result = [msg.content for msg in worker.chat_messages_scatter]
@@ -123,7 +123,7 @@ class TestWorkersEn(unittest.TestCase):
                     content="Last question, do you know how to maintain extensive social relationships?"),
         ]
 
-        worker.set_context(CHAT_MESSAGES, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
         result = [msg.content for msg in worker.chat_messages_scatter]
@@ -152,7 +152,7 @@ class TestWorkersEn(unittest.TestCase):
             Message(role=MessageRoleEnum.USER.value, content="I work for a company called JD.com"),
         ]
 
-        worker.set_context(CHAT_MESSAGES, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
         result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
@@ -194,7 +194,7 @@ class TestWorkersEn(unittest.TestCase):
                     content="Last question, do you know how to maintain extensive social relationships?"),
         ]
 
-        worker.set_context(CHAT_MESSAGES, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
         result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
@@ -226,7 +226,7 @@ class TestWorkersEn(unittest.TestCase):
             Message(role=MessageRoleEnum.USER.value, content="Tomorrow is my birthday."),
         ]
 
-        worker.set_context(CHAT_MESSAGES, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES, chat_messages)
         worker.run()
 
         result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_WITH_TIME_NODES)]

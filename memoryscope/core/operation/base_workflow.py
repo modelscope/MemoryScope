@@ -28,7 +28,7 @@ class BaseWorkflow(object):
 
         self.workflow_worker_list: List[List[List[str]]] = []
         self.worker_dict: Dict[str, BaseWorker | bool] = {}
-        self.context: Dict[str, Any] = {}
+        self.workflow_context: Dict[str, Any] = {}
         self.context_lock = threading.Lock()
 
         self.logger: Logger = Logger.get_logger(Logger.append_timestamp("workflow"))
@@ -142,7 +142,7 @@ class BaseWorkflow(object):
                 config=self.memoryscope_context.worker_conf_dict[name],
                 name=name,
                 is_multi_thread=is_backend or self.worker_dict[name],
-                context=self.context,
+                context=self.workflow_context,
                 memoryscope_context=self.memoryscope_context,
                 context_lock=self.context_lock,
                 thread_pool=self.thread_pool,
@@ -174,12 +174,12 @@ class BaseWorkflow(object):
             log_buf = f"Operation: {self.name}"
             self.logger.info(log_buf)
             self.workflow_print_console(log_buf, style="bold red")
-            self.context.clear()
-            self.context.update({WORKFLOW_NAME: self.name, **kwargs})
+            self.workflow_context.clear()
+            self.workflow_context.update({WORKFLOW_NAME: self.name, **kwargs})
             n_stage = len(self.workflow_worker_list)
             # Iterate over each part of the workflow
             for index, workflow_part in enumerate(self.workflow_worker_list):
-                # self.logger.info(self.logger.format_current_context(self.context))
+                # self.logger.info(self.logger.format_current_context(self.workflow_context))
                 # Sequential execution for single-item parts
                 if len(workflow_part) == 1:
                     log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage}: {workflow_part[0]}"

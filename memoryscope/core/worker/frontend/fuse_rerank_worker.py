@@ -61,7 +61,7 @@ class FuseRerankWorker(MemoryBaseWorker):
         5. Logs reranking details and formats the final list of memories for output.
         """
         # Parse input parameters from the worker's context
-        extract_time_dict: Dict[str, str] = self.get_context(EXTRACT_TIME_DICT)
+        extract_time_dict: Dict[str, str] = self.get_workflow_context(EXTRACT_TIME_DICT)
         memory_node_list: List[MemoryNode] = self.memory_manager.get_memories(RANKED_MEMORY_NODES)
 
         # Check if memory nodes are available; warn and return if not
@@ -106,4 +106,4 @@ class FuseRerankWorker(MemoryBaseWorker):
             memories.append(f"[{datetime} {weekday}] {node.content}")
 
         # Set the final list of formatted memories back into the worker's context
-        self.set_context(RESULT, "\n".join(memories))
+        self.set_workflow_context(RESULT, "\n".join(memories))

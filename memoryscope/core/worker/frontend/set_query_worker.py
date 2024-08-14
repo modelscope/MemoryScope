@@ -36,4 +36,4 @@ class SetQueryWorker(MemoryBaseWorker):
                 timestamp = _timestamp
 
         # Store the determined query and its timestamp in the context
-        self.set_context(QUERY_WITH_TS, (query, timestamp))
+        self.set_workflow_context(QUERY_WITH_TS, (query, timestamp))

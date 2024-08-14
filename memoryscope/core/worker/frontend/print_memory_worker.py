@@ -63,4 +63,4 @@ class PrintMemoryWorker(MemoryBaseWorker):
             observation_memory="\n".join(observation_memory_list),
             insight_memory="\n".join(insight_memory_list),
             expired_memory="\n".join(expired_memory_list)).strip()
-        self.set_context(RESULT, result)
+        self.set_workflow_context(RESULT, result)

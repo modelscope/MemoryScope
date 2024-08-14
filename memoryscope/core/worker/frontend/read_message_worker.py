@@ -37,4 +37,4 @@ class ReadMessageWorker(MemoryBaseWorker):
         for messages in chat_messages_not_memorized[-contextual_msg_max_count:]:
             chat_message_scatter.extend(messages)
         chat_message_scatter.sort(key=lambda _: _.time_created)
-        self.set_context(RESULT, chat_message_scatter)
+        self.set_workflow_context(RESULT, chat_message_scatter)
