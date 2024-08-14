@@ -1,11 +1,10 @@
 import logging
-from datetime import datetime
+import pprint
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
-import pprint
 
 LOG_FORMAT = "%(asctime)s %(levelname)s %(threadName)s %(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
