@@ -5,6 +5,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
+import pprint
 
 LOG_FORMAT = "%(asctime)s %(levelname)s %(threadName)s %(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -16,7 +17,6 @@ def rich2text(rich_table):
     with console.capture() as capture:
         console.print(rich_table)
     return '\n' + str(Text.from_ansi(capture.get()))
-
 
 class Logger(logging.Logger):
     """
@@ -77,7 +77,6 @@ class Logger(logging.Logger):
         self.info(self.format_current_context(dictionary))
 
     def format_current_context(self, context):
-        import pprint
         pp = pprint.PrettyPrinter()
         pretty_string = pp.pformat(context)
         return rich2text(Panel(pretty_string, width=128))
@@ -206,7 +205,7 @@ class Logger(logging.Logger):
         if extra is None:
             extra = {}
         if self.trace_id:
-            extra["trace_id"] = self.trace_id  # тнР Include trace_id from the logger in the log record extra data
+            extra["trace_id"] = self.trace_id  # Include trace_id from the logger in the log record extra data
         return super().makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra, sinfo)
 
     @classmethod
