@@ -12,11 +12,11 @@ class DummyWorker(MemoryBaseWorker):
 
         This method utilizes the BaseWorker's capabilities to interact with the workflow context.
         """
-        workflow_name = self.get_context(WORKFLOW_NAME)
-        chat_kwargs = self.get_context(CHAT_KWARGS)
+        workflow_name = self.get_workflow_context(WORKFLOW_NAME)
+        chat_kwargs = self.get_workflow_context(CHAT_KWARGS)
         self.logger.info(f"Entering workflow={workflow_name}.dummy_worker!")
         # Records the current timestamp as an integer
         ts = int(datetime.datetime.now().timestamp())
         # Retrieves the current file's path
         file_path = __file__
-        self.set_context(RESULT, f"test {workflow_name} kwargs={chat_kwargs} file_path={file_path} \nts={ts}")
+        self.set_workflow_context(RESULT, f"test {workflow_name} kwargs={chat_kwargs} file_path={file_path} \nts={ts}")

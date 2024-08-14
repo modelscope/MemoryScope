@@ -1,12 +1,21 @@
 import logging
+import pprint
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
 
 LOG_FORMAT = "%(asctime)s %(levelname)s %(threadName)s %(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 LOGGER_DICT = {}
 
+def rich2text(rich_table):
+    console = Console(width=150)
+    with console.capture() as capture:
+        console.print(rich_table)
+    return '\n' + str(Text.from_ansi(capture.get()))
 
 class Logger(logging.Logger):
     """
@@ -63,6 +72,49 @@ class Logger(logging.Logger):
 
         self.info(f"logger={name} is inited.")  # Logs an initialization message
 
+    def log_dictionary_info(self, dictionary):
+        self.info(self.format_current_context(dictionary))
+
+    def format_current_context(self, context):
+        pp = pprint.PrettyPrinter()
+        pretty_string = pp.pformat(context)
+        return rich2text(Panel(pretty_string, width=128))
+
+    def wrap_in_box(self, context):
+        return rich2text(Panel(context, width=128))
+
+    def format_chat_message(self, message):
+        buf = []
+        buf.append('\n')
+        buf.append(f"LM Input:\n")
+        for chat_message in message.meta_data['data']['messages']:
+            buf.append(chat_message.content)
+            buf.append('\n')
+        buf.append(f"--------------------------------------------------------------\n")
+        buf.append(f"LM Output:\n")
+        buf.append(message.message.content)
+        buf.append('\n')
+        buf.append('\n')
+        return self.wrap_in_box(''.join(buf))
+
+    def format_rank_message(self, model_response):
+        buf = []
+        buf.append('\n')
+        buf.append(f"Query Input:\n")
+        buf.append(model_response.meta_data['data']['query_str'])
+        buf.append('\n')
+        buf.append(f"--------------------------------------------------------------\n")
+        buf.append(f"Rank:\n")
+        rank = 0
+        for index, score in model_response.rank_scores.items():
+            rank += 1
+            node = model_response.meta_data['data']['nodes'][index]
+            node_text = node.text
+            buf.append(f"Score {score} | Rank {rank} | {node_text}\n")
+        buf.append('\n')
+        buf.append('\n')
+        return self.wrap_in_box(''.join(buf))
+
     def _add_file_handler(self):
         """
         Adds a file handler to the logger which logs messages to a rotating file.
@@ -76,6 +128,7 @@ class Logger(logging.Logger):
         file_path = Path().joinpath(self.dir_path, f"{self.name}.{self.file_type}")
         file_path.parent.mkdir(exist_ok=True)  # Ensure the directory exists
         file_name = file_path.as_posix()  # Get the absolute path as a string
+        Console().print(f"[{self.name}] Registering logger to file at: " + file_name, style="bold blue")
 
         # Instantiate a rotating file handler with specified parameters
         file_handler = RotatingFileHandler(
@@ -153,7 +206,7 @@ class Logger(logging.Logger):
         if extra is None:
             extra = {}
         if self.trace_id:
-            extra["trace_id"] = self.trace_id  # ⭐ Include trace_id from the logger in the log record extra data
+            extra["trace_id"] = self.trace_id  # Include trace_id from the logger in the log record extra data
         return super().makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra, sinfo)
 
     @classmethod
@@ -182,3 +235,8 @@ class Logger(logging.Logger):
             LOGGER_DICT[name] = Logger(name=name, **kwargs)
 
         return LOGGER_DICT[name]
+
+    @staticmethod
+    def append_timestamp(name: str) -> str:
+        from memoryscope.core.memoryscope_context import get_ms_context
+        return f"{name}_{get_ms_context().memory_scope_uuid}"

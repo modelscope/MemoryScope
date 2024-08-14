@@ -52,10 +52,10 @@ class TestWorkersCn(unittest.TestCase):
 
         query = "明天我去上海出差"
         query_timestamp = int(datetime.datetime.now().timestamp())
-        worker.set_context(QUERY_WITH_TS, (query, query_timestamp))
+        worker.set_workflow_context(QUERY_WITH_TS, (query, query_timestamp))
         worker.run()
 
-        result = worker.get_context(EXTRACT_TIME_DICT)
+        result = worker.get_workflow_context(EXTRACT_TIME_DICT)
         worker.logger.info(f"result={result}")
 
     # @unittest.skip
@@ -85,7 +85,7 @@ class TestWorkersCn(unittest.TestCase):
                     role_name=self.arguments.human_name),
         ]
 
-        worker.set_context(CHAT_MESSAGES_SCATTER, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES_SCATTER, chat_messages)
         worker.run()
 
         result = [msg.content for msg in worker.chat_messages_scatter]
@@ -133,7 +133,7 @@ class TestWorkersCn(unittest.TestCase):
                     role_name=self.arguments.human_name),
         ]
 
-        worker.set_context(CHAT_MESSAGES_SCATTER, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES_SCATTER, chat_messages)
         worker.run()
 
         result = [msg.content for msg in worker.chat_messages_scatter]
@@ -167,7 +167,7 @@ class TestWorkersCn(unittest.TestCase):
         #     Message(role=MessageRoleEnum.USER.value, content="我在一家叫京东的公司干活"),
         # ]
 
-        worker.set_context(CHAT_MESSAGES_SCATTER, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES_SCATTER, chat_messages)
         worker.run()
 
         result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
@@ -198,7 +198,7 @@ class TestWorkersCn(unittest.TestCase):
             Message(role=MessageRoleEnum.USER.value, content="最后一个问题，你知道怎么才能维持广泛的社交关系吗？", role_name=self.arguments.human_name),
         ]
 
-        worker.set_context(CHAT_MESSAGES_SCATTER, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES_SCATTER, chat_messages)
         worker.run()
 
         result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_NODES)]
@@ -227,7 +227,7 @@ class TestWorkersCn(unittest.TestCase):
             Message(role=MessageRoleEnum.USER.value, content="明天是我生日", role_name=self.arguments.human_name),
         ]
 
-        worker.set_context(CHAT_MESSAGES_SCATTER, chat_messages)
+        worker.set_workflow_context(CHAT_MESSAGES_SCATTER, chat_messages)
         worker.run()
 
         result = [node.content for node in worker.memory_manager.get_memories(NEW_OBS_WITH_TIME_NODES)]

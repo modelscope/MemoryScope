@@ -19,6 +19,10 @@ class LlamaIndexRankModel(BaseModel):
     m_type: ModelEnum = ModelEnum.RANK_MODEL
 
     MODEL_REGISTRY.register("dashscope_rank", DashScopeRerank)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger = self.logger.get_logger(self.logger.append_timestamp("llama_index_rank_model"))
 
     def before_call(self, model_response: ModelResponse, **kwargs):
         """
@@ -65,6 +69,8 @@ class LlamaIndexRankModel(BaseModel):
             text = node.node.text
             idx = documents_map[text]
             model_response.rank_scores[idx] = node.score
+
+        self.logger.info(self.logger.format_rank_message(model_response))
         return model_response
 
     def _call(self, model_response: ModelResponse, **kwargs):

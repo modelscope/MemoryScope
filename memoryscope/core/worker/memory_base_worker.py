@@ -54,7 +54,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         Returns:
             List[Message]: List of chat messages.
         """
-        return self.get_context(CHAT_MESSAGES)
+        return self.get_workflow_context(CHAT_MESSAGES)
 
     @property
     def chat_messages_scatter(self) -> List[Message]:
@@ -64,7 +64,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         Returns:
             List[Message]: List of chat messages.
         """
-        result = self.get_context(CHAT_MESSAGES_SCATTER)
+        result = self.get_workflow_context(CHAT_MESSAGES_SCATTER)
 
         if not result:
             if isinstance(self.chat_messages[0], list):
@@ -73,13 +73,13 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
                     if messages:
                         chat_messages.extend(messages)
                 chat_messages.sort(key=lambda _: _.time_created)
-                self.set_context(CHAT_MESSAGES_SCATTER, chat_messages)
+                self.set_workflow_context(CHAT_MESSAGES_SCATTER, chat_messages)
 
             else:
                 assert isinstance(self.chat_messages[0], Message)
-                self.set_context(CHAT_MESSAGES_SCATTER, self.chat_messages)
+                self.set_workflow_context(CHAT_MESSAGES_SCATTER, self.chat_messages)
 
-        return self.get_context(CHAT_MESSAGES_SCATTER)
+        return self.get_workflow_context(CHAT_MESSAGES_SCATTER)
 
     @chat_messages_scatter.setter
     def chat_messages_scatter(self, value: List[Message]):
@@ -87,7 +87,7 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         Set the chat messages with the new value.
         """
 
-        self.set_context(CHAT_MESSAGES_SCATTER, value)
+        self.set_workflow_context(CHAT_MESSAGES_SCATTER, value)
 
     @property
     def chat_kwargs(self) -> Dict[str, Any]:
@@ -100,19 +100,19 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         Returns:
             Dict[str, str]: A dictionary containing the chat keyword arguments.
         """
-        return self.get_context(CHAT_KWARGS)
+        return self.get_workflow_context(CHAT_KWARGS)
 
     @property
     def user_name(self) -> str:
-        return self.get_context(USER_NAME)
+        return self.get_workflow_context(USER_NAME)
 
     @property
     def target_name(self) -> str:
-        return self.get_context(TARGET_NAME)
+        return self.get_workflow_context(TARGET_NAME)
 
     @property
     def workflow_name(self) -> str:
-        return self.get_context(WORKFLOW_NAME)
+        return self.get_workflow_context(WORKFLOW_NAME)
 
     @property
     def language(self) -> LanguageEnum:
@@ -204,8 +204,8 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
             MemoryHandler: An instance of MemoryHandler.
         """
         if not self.has_content(MEMORY_MANAGER):
-            self.set_context(MEMORY_MANAGER, MemoryManager(self.memoryscope_context))
-        return self.get_context(MEMORY_MANAGER)
+            self.set_workflow_context(MEMORY_MANAGER, MemoryManager(self.memoryscope_context, workerflow_name=self.workflow_name))
+        return self.get_workflow_context(MEMORY_MANAGER)
 
     def get_language_value(self, languages: dict | List[dict]) -> Any | List[Any]:
         """
@@ -246,9 +246,9 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         system_message = Message(role=MessageRoleEnum.SYSTEM.value, content=system_content)
 
         if concat_system_prompt:
-            user_content_list = [system_content, few_shot, user_query]
+            user_content_list = [system_content, '\n', few_shot, '\n', user_query]
         else:
-            user_content_list = [few_shot, user_query]
+            user_content_list = [few_shot, '\n', user_query]
         user_message = Message(role=MessageRoleEnum.USER.value,
                                content="\n".join([x.strip() for x in user_content_list]))
         return [system_message, user_message]

@@ -3,6 +3,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from itertools import zip_longest
 from typing import Dict, Any, List
+from rich.console import Console
 
 from memoryscope.constants.common_constants import WORKFLOW_NAME
 from memoryscope.core.memoryscope_context import MemoryscopeContext
@@ -10,7 +11,6 @@ from memoryscope.core.utils.logger import Logger
 from memoryscope.core.utils.timer import Timer
 from memoryscope.core.utils.tool_functions import init_instance_by_config
 from memoryscope.core.worker.base_worker import BaseWorker
-
 
 class BaseWorkflow(object):
 
@@ -28,14 +28,19 @@ class BaseWorkflow(object):
 
         self.workflow_worker_list: List[List[List[str]]] = []
         self.worker_dict: Dict[str, BaseWorker | bool] = {}
-        self.context: Dict[str, Any] = {}
+        self.workflow_context: Dict[str, Any] = {}
         self.context_lock = threading.Lock()
 
-        self.logger: Logger = Logger.get_logger()
+        self.logger: Logger = Logger.get_logger(Logger.append_timestamp("workflow"))
 
         if self.workflow:
             self.workflow_worker_list = self._parse_workflow()
             self._print_workflow()
+
+    def workflow_print_console(self, *args, **kwargs):
+        if self.memoryscope_context.print_workflow_dynamic:
+            Console().print(*args, **kwargs)
+        return
 
     def _parse_workflow(self):
         """
@@ -132,11 +137,12 @@ class BaseWorkflow(object):
             if name not in self.memoryscope_context.worker_conf_dict:
                 raise RuntimeError(f"worker={name} is not exists in worker config!")
 
+            # note: shared context object in all workers
             self.worker_dict[name] = init_instance_by_config(
                 config=self.memoryscope_context.worker_conf_dict[name],
                 name=name,
                 is_multi_thread=is_backend or self.worker_dict[name],
-                context=self.context,
+                context=self.workflow_context,
                 memoryscope_context=self.memoryscope_context,
                 context_lock=self.context_lock,
                 thread_pool=self.thread_pool,
@@ -165,21 +171,31 @@ class BaseWorkflow(object):
             **kwargs: Additional keyword arguments to be passed to context.
         """
         with Timer(f"workflow.{self.name}", time_log_type="wrap"):
-            self.context.clear()
-
-            self.context.update({WORKFLOW_NAME: self.name, **kwargs})
-
+            log_buf = f"Operation: {self.name}"
+            self.logger.info(log_buf)
+            self.workflow_print_console(log_buf, style="bold red")
+            self.workflow_context.clear()
+            self.workflow_context.update({WORKFLOW_NAME: self.name, **kwargs})
+            n_stage = len(self.workflow_worker_list)
             # Iterate over each part of the workflow
-            for workflow_part in self.workflow_worker_list:
+            for index, workflow_part in enumerate(self.workflow_worker_list):
+                # self.logger.info(self.logger.format_current_context(self.workflow_context))
                 # Sequential execution for single-item parts
                 if len(workflow_part) == 1:
+                    log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage}: {workflow_part[0]}"
+                    self.logger.info(log_buf)
+                    self.workflow_print_console(log_buf, style="bold red")
                     if not self._run_sub_workflow(workflow_part[0]):
                         break
                 # Parallel execution for multi-item parts
                 else:
                     t_list = []
                     # Submit tasks to the thread pool
-                    for sub_workflow in workflow_part:
+                    n_sub_stage = len(workflow_part)
+                    for sub_index, sub_workflow in enumerate(workflow_part):
+                        log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage} | sub workflow {sub_index+1}/{n_sub_stage}: {str(sub_workflow)}"
+                        self.logger.info(log_buf)
+                        self.workflow_print_console(log_buf, style="red")
                         t_list.append(self.thread_pool.submit(self._run_sub_workflow, sub_workflow))
 
                     # Check results; if any task returns False, stop the workflow

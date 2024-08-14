@@ -25,6 +25,10 @@ class LlamaIndexGenerationModel(BaseModel):
     MODEL_REGISTRY.register("dashscope_generation", DashScope)
     MODEL_REGISTRY.register("openai_generation", OpenAI)
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger = self.logger.get_logger(self.logger.append_timestamp("llama_index_generation_model"))
+
     def before_call(self, model_response: ModelResponse, **kwargs):
         """
         Prepares the input data before making a call to the language model.
@@ -77,7 +81,7 @@ class LlamaIndexGenerationModel(BaseModel):
                 model_response.message.content = call_result.message.content
             else:
                 raise NotImplementedError
-
+            self.logger.info(self.logger.format_chat_message(model_response))
             return model_response
 
     def _call(self, model_response: ModelResponse, stream: bool = False, **kwargs):

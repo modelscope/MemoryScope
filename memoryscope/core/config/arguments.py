@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Literal, Dict
 
-
 @dataclass
 class Arguments(object):
     language: Literal["cn", "en"] = field(default="en", metadata={"help": "support en & cn now"})

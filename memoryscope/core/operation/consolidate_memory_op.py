@@ -70,7 +70,7 @@ class ConsolidateMemoryOp(BackendOperation):
         self.run_workflow(**workflow_kwargs)
 
         # Retrieve the result from the context after workflow execution
-        result = self.context.get(RESULT)
+        result = self.workflow_context.get(RESULT)
 
         # set message memorized
         with self.message_lock:

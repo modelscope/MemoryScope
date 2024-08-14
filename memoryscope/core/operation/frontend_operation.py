@@ -58,4 +58,4 @@ class FrontendOperation(BaseWorkflow, BaseOperation):
         self.run_workflow(**workflow_kwargs)
 
         # Retrieve the result from the context after workflow execution
-        return self.context.get(RESULT)
+        return self.workflow_context.get(RESULT)

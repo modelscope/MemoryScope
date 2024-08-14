@@ -32,7 +32,7 @@ class SemanticRankWorker(MemoryBaseWorker):
         appropriate warnings are logged.
         """
         # query
-        query, _ = self.get_context(QUERY_WITH_TS)
+        query, _ = self.get_workflow_context(QUERY_WITH_TS)
         memory_node_list: List[MemoryNode] = self.memory_manager.get_memories(RETRIEVE_MEMORY_NODES)
         if not memory_node_list:
             self.logger.warning("Retrieve memory nodes is empty!")

@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 
 from memoryscope.core.chat.base_memory_chat import BaseMemoryChat
 from memoryscope.core.config.config_manager import ConfigManager
@@ -32,6 +33,10 @@ class MemoryScope(ConfigManager):
             self.logger.warning("If a semantic ranking model is not available, MemoryScope will use cosine similarity "
                                 "scoring as a substitute. However, the ranking effectiveness will be somewhat "
                                 "compromised.")
+        self.context.memory_scope_uuid = datetime.now().strftime(global_conf["logger_name_time_suffix"])
+
+        # set context_initialized
+        self.context.context_initialized = True
 
         # init memory_chat
         memory_chat_conf_dict = self.config["memory_chat"]

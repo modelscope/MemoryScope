@@ -37,7 +37,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                         embed_model=self.embedding_model.model)
 
-        self.logger = Logger.get_logger()
+        self.logger = Logger.get_logger(Logger.append_timestamp("es_memory_store"))
 
     def retrieve_memories(self,
                           query: str = "",
@@ -65,7 +65,11 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         text_nodes = retriever.retrieve(query)
         if text_nodes and text_nodes[0].embedding:
             self.emb_dims = len(text_nodes[0].embedding)
-
+        self.logger.log_dictionary_info({
+            "action": "retrieve_memories",
+            "query": query,
+            "text_nodes": [f"ID: {n.node_id} |Text: {n.text}" for n in text_nodes]
+        })
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
     async def a_retrieve_memories(self,
@@ -115,14 +119,21 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
     def insert(self, node: MemoryNode):
         self.index.insert_nodes([self._memory_node_2_text_node(node)])
+        self.logger.log_dictionary_info({
+            "action": "insert",
+            "node": f"ID: {node.memory_id} | Text: {node.content} | Key: {node.key} | Type: {node.memory_type}"
+        })
 
     def delete(self, node: MemoryNode):
+        self.logger.log_dictionary_info({
+            "action": "delete",
+            "id": node.memory_id,
+        })
         return self.es_store.delete(node.memory_id)
 
     def update(self, node: MemoryNode, update_embedding: bool = True):
         if update_embedding:
             node.vector = []
-
         self.delete(node)
         self.insert(node)
 
