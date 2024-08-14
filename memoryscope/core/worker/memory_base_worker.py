@@ -246,9 +246,9 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         system_message = Message(role=MessageRoleEnum.SYSTEM.value, content=system_content)
 
         if concat_system_prompt:
-            user_content_list = [system_content, few_shot, user_query]
+            user_content_list = [system_content, '\n', few_shot, '\n', user_query]
         else:
-            user_content_list = [few_shot, user_query]
+            user_content_list = [few_shot, '\n', user_query]
         user_message = Message(role=MessageRoleEnum.USER.value,
                                content="\n".join([x.strip() for x in user_content_list]))
         return [system_message, user_message]

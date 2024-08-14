@@ -3,6 +3,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from itertools import zip_longest
 from typing import Dict, Any, List
+from rich.console import Console
 
 from memoryscope.constants.common_constants import WORKFLOW_NAME
 from memoryscope.core.memoryscope_context import MemoryscopeContext
@@ -10,7 +11,6 @@ from memoryscope.core.utils.logger import Logger
 from memoryscope.core.utils.timer import Timer
 from memoryscope.core.utils.tool_functions import init_instance_by_config
 from memoryscope.core.worker.base_worker import BaseWorker
-
 
 class BaseWorkflow(object):
 
@@ -166,18 +166,18 @@ class BaseWorkflow(object):
             **kwargs: Additional keyword arguments to be passed to context.
         """
         with Timer(f"workflow.{self.name}", time_log_type="wrap"):
-            self.logger.info(f"\n\n\n++++++++++++++++++++++++ [Operation: {self.name}] ++++++++++++++++++++++++")
-
+            log_buf = f"Operation: {self.name}"
+            self.logger.info(log_buf); Console().print(log_buf, style="bold red")
             self.context.clear()
             self.context.update({WORKFLOW_NAME: self.name, **kwargs})
             n_stage = len(self.workflow_worker_list)
             # Iterate over each part of the workflow
             for index, workflow_part in enumerate(self.workflow_worker_list):
-                self.logger.info(self.logger.format_current_context(self.context))
+                # self.logger.info(self.logger.format_current_context(self.context))
                 # Sequential execution for single-item parts
                 if len(workflow_part) == 1:
-                    self.logger.info(f"\n-----------------------------------------------------")
-                    self.logger.info(f"sequential execution ({self.name}) | {index+1}/{n_stage}: {workflow_part[0]}")
+                    log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage}: {workflow_part[0]}"
+                    self.logger.info(log_buf); Console().print(log_buf, style="bold red")
                     if not self._run_sub_workflow(workflow_part[0]):
                         break
                 # Parallel execution for multi-item parts
@@ -186,8 +186,8 @@ class BaseWorkflow(object):
                     # Submit tasks to the thread pool
                     n_sub_stage = len(workflow_part)
                     for sub_index, sub_workflow in enumerate(workflow_part):
-                        self.logger.info(f"\n-----------------------------------------------------")
-                        self.logger.info(f"parallel sequential execution ({self.name}) | {index+1}/{n_stage} | {sub_index+1}/{n_sub_stage}: {str(sub_workflow)}")
+                        log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage} | sub workflow {sub_index+1}/{n_sub_stage}: {str(sub_workflow)}"
+                        self.logger.info(log_buf); Console().print(log_buf, style="red")
                         t_list.append(self.thread_pool.submit(self._run_sub_workflow, sub_workflow))
 
                     # Check results; if any task returns False, stop the workflow

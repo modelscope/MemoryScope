@@ -1,10 +1,10 @@
 """Elasticsearch vector store."""
 
-from logging import getLogger
 from typing import Any, Callable, Dict, List, Literal, Optional, Union, cast
 
 import nest_asyncio
 import numpy as np
+from memoryscope.core.utils.logger import Logger
 from elasticsearch import AsyncElasticsearch, Elasticsearch
 from elasticsearch.helpers.vectorstore import (
     AsyncBM25Strategy,
@@ -29,8 +29,6 @@ from llama_index.core.vector_stores.utils import (
 from llama_index.vector_stores.elasticsearch.utils import (
     get_user_agent,
 )
-
-logger = getLogger(__name__)
 
 DISTANCE_STRATEGIES = Literal[
     "COSINE",
@@ -366,6 +364,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
     batch_size: int = 200
     distance_strategy: Optional[DISTANCE_STRATEGIES] = "COSINE"
     retrieval_strategy: AsyncRetrievalStrategy
+    logger: Logger = None
 
     _store = PrivateAttr()
 
@@ -431,6 +430,8 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             retrieval_strategy=retrieval_strategy,
         )
 
+        self.logger = Logger.get_logger(Logger.append_timestamp("elastic_search"))
+
     @property
     def client(self) -> Any:
         """
@@ -471,6 +472,10 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         Note:
             This method delegates the actual operation to the `sync_add` method.
         """
+        self.logger.log_dictionary_info({
+            "action": "add",
+            "node_count": len(nodes),
+        })
         return self.sync_add(nodes, create_index_if_not_exists=create_index_if_not_exists)
 
     def sync_add(
@@ -550,6 +555,10 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             This method internally calls a synchronous delete method (`sync_delete`)
             to execute the deletion operation against Elasticsearch.
         """
+        self.logger.log_dictionary_info({
+            "action": "delete",
+            "id": ref_doc_id,
+        })
         return self.sync_delete(ref_doc_id, **delete_kwargs)
 
     def sync_delete(self, ref_doc_id: str, **delete_kwargs: Any) -> None:
@@ -604,6 +613,10 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             Exception: If an error occurs during the Elasticsearch query execution.
 
         """
+        self.logger.log_dictionary_info({
+            "action": "query",
+            "query": query.query_str,
+        })
         return self.sync_query(query, custom_query, es_filter, **kwargs)
 
     def sync_query(
@@ -673,7 +686,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
                 node.embedding = embedding
             except Exception:
                 # Legacy support for old metadata format
-                logger.warning(
+                self.logger.warning(
                     f"Could not parse metadata from hit {hit['_source']['metadata']}"
                 )
                 node_info = source.get("node_info")
