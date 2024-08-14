@@ -119,7 +119,7 @@ class RetrieveMemoryWorker(MemoryBaseWorker):
         6. Logs detailed information about each memory node.
         7. Stores the processed memory nodes for further use.
         """
-        query, _ = self.get_context(QUERY_WITH_TS)
+        query, _ = self.get_workflow_context(QUERY_WITH_TS)
         self.logger.info(f"retrieve memory with query={query}.")
         self.submit_thread_task(self.retrieve_from_observation, query=query)
         self.submit_thread_task(self.retrieve_from_insight, query=query)

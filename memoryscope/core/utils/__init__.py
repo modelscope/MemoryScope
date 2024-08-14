@@ -15,12 +15,6 @@ from .tool_functions import (
     cosine_similarity
 )
 
-
-def get_context():
-    from memoryscope import MemoryscopeContext
-    return MemoryscopeContext()
-
-
 __all__ = [
     "DatetimeHandler",
     "Logger",

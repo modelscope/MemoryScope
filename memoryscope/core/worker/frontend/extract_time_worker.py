@@ -29,7 +29,7 @@ class ExtractTimeWorker(MemoryBaseWorker):
         The response is parsed for time-related data using regex, translated via a language-specific key map,
         and the resulting time data is stored in the shared context.
         """
-        query, query_timestamp = self.get_context(QUERY_WITH_TS)
+        query, query_timestamp = self.get_workflow_context(QUERY_WITH_TS)
 
         # Identify if the query contains datetime keywords
         contain_datetime = DatetimeHandler.has_time_word(query, self.language)
@@ -62,4 +62,4 @@ class ExtractTimeWorker(MemoryBaseWorker):
             if key in key_map.keys():
                 extract_time_dict[key_map[key]] = value
         self.logger.info(f"response_text={response_text} matches={matches} filters={extract_time_dict}")
-        self.set_context(EXTRACT_TIME_DICT, extract_time_dict)
+        self.set_workflow_context(EXTRACT_TIME_DICT, extract_time_dict)

@@ -1,9 +1,10 @@
 import logging
-from datetime import datetime
+import pprint
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
+from rich.text import Text
 
 LOG_FORMAT = "%(asctime)s %(levelname)s %(threadName)s %(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -11,12 +12,10 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 LOGGER_DICT = {}
 
 def rich2text(rich_table):
-    from rich.text import Text
     console = Console(width=150)
     with console.capture() as capture:
         console.print(rich_table)
     return '\n' + str(Text.from_ansi(capture.get()))
-
 
 class Logger(logging.Logger):
     """
@@ -77,7 +76,6 @@ class Logger(logging.Logger):
         self.info(self.format_current_context(dictionary))
 
     def format_current_context(self, context):
-        import pprint
         pp = pprint.PrettyPrinter()
         pretty_string = pp.pformat(context)
         return rich2text(Panel(pretty_string, width=128))
@@ -86,34 +84,36 @@ class Logger(logging.Logger):
         return rich2text(Panel(context, width=128))
 
     def format_chat_message(self, message):
-        buf = '\n'
-        buf += f"LM Input:\n"
+        buf = []
+        buf.append('\n')
+        buf.append(f"LM Input:\n")
         for chat_message in message.meta_data['data']['messages']:
-            buf += chat_message.content
-            buf += '\n'
-        buf += f"--------------------------------------------------------------\n"
-        buf += f"LM Output:\n"
-        buf += message.message.content
-        buf += '\n'
-        buf += '\n'
-        return self.wrap_in_box(buf)
+            buf.append(chat_message.content)
+            buf.append('\n')
+        buf.append(f"--------------------------------------------------------------\n")
+        buf.append(f"LM Output:\n")
+        buf.append(message.message.content)
+        buf.append('\n')
+        buf.append('\n')
+        return self.wrap_in_box(''.join(buf))
 
     def format_rank_message(self, model_response):
-        buf = '\n'
-        buf += f"Query Input:\n"
-        buf += model_response.meta_data['data']['query_str']
-        buf += '\n'
-        buf += f"--------------------------------------------------------------\n"
-        buf += f"Rank:\n"
+        buf = []
+        buf.append('\n')
+        buf.append(f"Query Input:\n")
+        buf.append(model_response.meta_data['data']['query_str'])
+        buf.append('\n')
+        buf.append(f"--------------------------------------------------------------\n")
+        buf.append(f"Rank:\n")
         rank = 0
         for index, score in model_response.rank_scores.items():
             rank += 1
             node = model_response.meta_data['data']['nodes'][index]
             node_text = node.text
-            buf += f"Score {score} | Rank {rank} | {node_text}\n"
-        buf += '\n'
-        buf += '\n'
-        return self.wrap_in_box(buf)
+            buf.append(f"Score {score} | Rank {rank} | {node_text}\n")
+        buf.append('\n')
+        buf.append('\n')
+        return self.wrap_in_box(''.join(buf))
 
     def _add_file_handler(self):
         """
@@ -206,7 +206,7 @@ class Logger(logging.Logger):
         if extra is None:
             extra = {}
         if self.trace_id:
-            extra["trace_id"] = self.trace_id  # ⭐ Include trace_id from the logger in the log record extra data
+            extra["trace_id"] = self.trace_id  # Include trace_id from the logger in the log record extra data
         return super().makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra, sinfo)
 
     @classmethod

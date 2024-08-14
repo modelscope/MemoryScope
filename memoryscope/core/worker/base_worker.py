@@ -37,7 +37,7 @@ class BaseWorker(metaclass=ABCMeta):
         """
 
         self.name: str = name
-        self.context: Dict[str, Any] = context
+        self.workflow_context: Dict[str, Any] = context
         self.memoryscope_context: MemoryscopeContext = memoryscope_context
         self.context_lock = context_lock
         self.raise_exception: bool = raise_exception
@@ -164,7 +164,7 @@ class BaseWorker(metaclass=ABCMeta):
                 except Exception as e:
                     self.logger.exception(f"run {self.name} failed! args={e.args}")
 
-    def get_context(self, key: str, default=None):
+    def get_workflow_context(self, key: str, default=None):
         """
         Retrieves a value from the shared context.
 
@@ -175,9 +175,9 @@ class BaseWorker(metaclass=ABCMeta):
         Returns:
             The value from the context or the default value.
         """
-        return self.context.get(key, default)
+        return self.workflow_context.get(key, default)
 
-    def set_context(self, key: str, value: Any):
+    def set_workflow_context(self, key: str, value: Any):
         """
         Sets a value in the shared context.
 
@@ -187,9 +187,9 @@ class BaseWorker(metaclass=ABCMeta):
         """
         if self.is_multi_thread:
             with self.context_lock:
-                self.context[key] = value
+                self.workflow_context[key] = value
         else:
-            self.context[key] = value
+            self.workflow_context[key] = value
 
     def has_content(self, key: str):
         """
@@ -201,4 +201,4 @@ class BaseWorker(metaclass=ABCMeta):
         Returns:
             bool: True if the key is in the context, otherwise False.
         """
-        return key in self.context
+        return key in self.workflow_context
