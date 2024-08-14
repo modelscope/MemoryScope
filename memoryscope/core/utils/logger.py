@@ -4,6 +4,7 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
+from rich.text import Text
 
 LOG_FORMAT = "%(asctime)s %(levelname)s %(threadName)s %(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -11,7 +12,6 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 LOGGER_DICT = {}
 
 def rich2text(rich_table):
-    from rich.text import Text
     console = Console(width=150)
     with console.capture() as capture:
         console.print(rich_table)
@@ -206,7 +206,7 @@ class Logger(logging.Logger):
         if extra is None:
             extra = {}
         if self.trace_id:
-            extra["trace_id"] = self.trace_id  # ⭐ Include trace_id from the logger in the log record extra data
+            extra["trace_id"] = self.trace_id  # тнР Include trace_id from the logger in the log record extra data
         return super().makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra, sinfo)
 
     @classmethod
