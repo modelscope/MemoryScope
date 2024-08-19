@@ -104,14 +104,15 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         return [self._text_node_2_memory_node(n) for n in text_nodes]
 
     def batch_insert(self, nodes: List[MemoryNode]):
-        # TODO batch insert
-        for node in nodes:
-            self.insert(node)
+        self.index.insert_nodes([self._memory_node_2_text_node(node) for node in nodes])
 
     def batch_update(self, nodes: List[MemoryNode], update_embedding: bool = True):
-        # TODO batch_update
-        for node in nodes:
-            self.update(node, update_embedding=update_embedding)
+        if update_embedding:
+            for node in nodes:
+                node.vector = []
+
+        self.batch_delete(nodes)
+        self.batch_insert(nodes)
 
     def batch_delete(self, nodes: List[MemoryNode]):
         # TODO batch_delete

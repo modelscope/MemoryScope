@@ -1,7 +1,7 @@
-import os
-import sys
-from typing import Optional, Union, Sequence, Literal, Dict, List, Any, Tuple
-from autogen import Agent, ConversableAgent, UserProxyAgent, config_list_from_json
+from typing import Optional, Union, Literal, Dict, List, Any, Tuple
+
+from autogen import Agent, ConversableAgent, UserProxyAgent
+
 from memoryscope import MemoryScope, Arguments
 
 
@@ -25,7 +25,6 @@ class MemoryScopeAgent(ConversableAgent):
 
         # Create a memory client in MemoryScope
         self.memory_scope = MemoryScope(arguments=arguments)
-        self.memory_scope.init_context_by_config()
         self.memory_chat = self.memory_scope.default_memory_chat
 
         self.register_reply([Agent, None], MemoryScopeAgent.generate_reply_with_memory,remove_other_reply_funcs=True)
@@ -63,7 +62,6 @@ def main():
         generation_model="qwen-max",
         embedding_backend="dashscope_embedding",
         embedding_model="text-embedding-v2",
-        use_dummy_ranker=False,
         rank_backend="dashscope_rank",
         rank_model="gte-rerank"
     )

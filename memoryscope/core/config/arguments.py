@@ -38,7 +38,7 @@ class Arguments(object):
     generation_backend: str = field(default="openai_generation", metadata={
         "help": "global generation backend: openai_generation, dashscope_generation, etc."})
 
-    generation_model: str = field(default="gpt-4o-mini", metadata={
+    generation_model: str = field(default="gpt-4o", metadata={
         "help": "global generation model: gpt-4o, gpt-4o-mini, gpt-4-turbo, qwen-max, etc."})
 
     generation_params: dict = field(default_factory=lambda: {}, metadata={

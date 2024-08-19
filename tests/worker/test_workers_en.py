@@ -41,12 +41,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "extract_time"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms.context},
+            context={MEMORYSCOPE_CONTEXT: self.ms._context},
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         query = "I will be on a business trip to Shanghai tomorrow."
         query_timestamp = int(datetime.datetime.now().timestamp())
@@ -61,12 +61,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "info_filter"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms.context},
+            context={MEMORYSCOPE_CONTEXT: self.ms._context},
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value, content="I love to eat Sichuan cuisine."),
@@ -87,12 +87,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "info_filter"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms.context},
+            context={MEMORYSCOPE_CONTEXT: self.ms._context},
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value, content="Do you know where the freshest seafood is in Beijing?"),
@@ -135,12 +135,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "get_observation"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms.context},
+            context={MEMORYSCOPE_CONTEXT: self.ms._context},
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         # FIXME Does the appearance of 'am' indicate the presence of a time keyword?
         chat_messages = [
@@ -164,12 +164,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "get_observation"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms.context},
+            context={MEMORYSCOPE_CONTEXT: self.ms._context},
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value,
@@ -206,12 +206,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "get_observation_with_time"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms.context},
+            context={MEMORYSCOPE_CONTEXT: self.ms._context},
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value,
@@ -238,12 +238,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "contra_repeat"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms.context},
+            context={MEMORYSCOPE_CONTEXT: self.ms._context},
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="User is working in Meituan"),
@@ -296,12 +296,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "get_reflection_subject"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms.context},
+            context={MEMORYSCOPE_CONTEXT: self.ms._context},
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         nodes = [
             MemoryNode(content="Users are interested in strategy games and looking for new challenges."),
@@ -333,12 +333,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "update_insight"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
             context=reflection_worker.context,
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         nodes = [
             MemoryNode(content="Users like to play King of Glory"),
@@ -355,12 +355,12 @@ class TestWorkersEn(unittest.TestCase):
         name = "long_contra_repeat"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms.context.worker_conf_dict[name],
+            config=self.ms._context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms.context},
+            context={MEMORYSCOPE_CONTEXT: self.ms._context},
             context_lock=None,
-            thread_pool=self.ms.context.thread_pool)
+            thread_pool=self.ms._context.thread_pool)
 
         nodes = [
             MemoryNode(content="Users are interested in strategy games and looking for new challenges."),

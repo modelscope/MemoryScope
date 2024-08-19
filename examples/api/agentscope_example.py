@@ -1,10 +1,11 @@
 from typing import Optional, Union, Sequence
+
 import agentscope
-import sys
-import os
 from agentscope.agents import AgentBase, UserAgent
 from agentscope.message import Msg
+
 from memoryscope import MemoryScope, Arguments
+
 
 class MemoryScopeAgent(AgentBase):
     def __init__(self, name: str, arguments: Arguments, **kwargs) -> None:
@@ -13,7 +14,6 @@ class MemoryScopeAgent(AgentBase):
 
         # Create a memory client in MemoryScope
         self.memory_scope = MemoryScope(arguments=arguments)
-        self.memory_scope.init_context_by_config()
         self.memory_chat = self.memory_scope.default_memory_chat
 
     def reply(self, x: Optional[Union[Msg, Sequence[Msg]]] = None) -> Msg:
@@ -46,7 +46,6 @@ def main():
         generation_model="qwen-max",
         embedding_backend="dashscope_embedding",
         embedding_model="text-embedding-v2",
-        use_dummy_ranker=False,
         rank_backend="dashscope_rank",
         rank_model="gte-rerank"
     )
