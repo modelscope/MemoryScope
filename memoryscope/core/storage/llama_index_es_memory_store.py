@@ -1,4 +1,5 @@
 import random
+import pickle
 from typing import Dict, List
 
 from llama_index.core import VectorStoreIndex
@@ -159,17 +160,21 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
             TextNode: The converted TextNode with content and metadata from the MemoryNode.
         """
         embedding = memory_node.vector
+        key_vector_str = pickle.dumps(memory_node.key_vector).decode('latin1')
         if not embedding:
             embedding = None
+        metadatas = memory_node.model_dump(exclude={"content",
+                                                    "vector",
+                                                    "key_vector",
+                                                    "score_recall",
+                                                    "score_rank",
+                                                    "score_rerank"})
+        metadatas["key_vector"] = key_vector_str
         return TextNode(id_=memory_node.memory_id,
                         text=memory_node.content,
                         embedding=embedding,
                         text_template="{content}",
-                        metadata=memory_node.model_dump(exclude={"content",
-                                                                 "vector",
-                                                                 "score_recall",
-                                                                 "score_rank",
-                                                                 "score_rerank"}))
+                        metadata=metadatas)
         
 
 
@@ -184,6 +189,9 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         Returns:
             MemoryNode: The converted MemoryNode with text and metadata from the NodeWithScore.
         """
+        key_vector = pickle.loads(text_node.metadata["key_vector"].encode('latin1'))
         text_node.metadata["vector"] = text_node.embedding if text_node.embedding else []
         text_node.metadata["score_recall"] = text_node.score
+        text_node.metadata["key_vector"] = key_vector
+        
         return MemoryNode(content=text_node.text, **text_node.metadata)

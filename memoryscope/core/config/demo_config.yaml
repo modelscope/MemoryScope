@@ -35,7 +35,7 @@ memory_service:
       list_memory:
         class: core.operation.frontend_operation
         workflow: set_query,retrieve_top_memory,print_memory
-        description: "read all long-term memory of the user, use `refresh_time=5` to refresh screen."
+        description: "read all long-term memory of the user, use `refresh_time=5` to refresh screen every 5 seconds."
 
       delete_memory:
         class: core.operation.frontend_operation
@@ -160,6 +160,7 @@ model:
     module_name: dashscope_generation
     model_name: qwen-max
     max_tokens: 2000
+    temperature: 0.01
   embedding_model:
     class: core.models.llama_index_embedding_model
     module_name: dashscope_embedding

@@ -24,7 +24,7 @@ class LlamaIndexGenerationModel(BaseModel):
 
     MODEL_REGISTRY.register("dashscope_generation", DashScope)
     MODEL_REGISTRY.register("openai_generation", OpenAI)
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.logger = self.logger.get_logger(self.logger.append_timestamp("llama_index_generation_model"))
@@ -69,7 +69,8 @@ class LlamaIndexGenerationModel(BaseModel):
         if stream:
             def gen() -> ModelResponseGen:
                 for response in call_result:
-                    model_response.message.content += response.delta
+                    delta = response.delta if response.delta else ""
+                    model_response.message.content += delta
                     model_response.delta = response.delta
                     yield model_response
 
@@ -86,7 +87,8 @@ class LlamaIndexGenerationModel(BaseModel):
 
     def _call(self, model_response: ModelResponse, stream: bool = False, **kwargs):
         data = model_response.meta_data["data"]
-        data.pop("stream") # special case for OpenAI model, is this necessary?
+        # FIXME: special case for OpenAI model, is this necessary?
+        data.pop("stream")
         if "prompt" in data:
             if stream:
                 model_response.raw = self.model.stream_complete(**data)
