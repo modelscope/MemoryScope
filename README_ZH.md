@@ -27,6 +27,11 @@ MemoryScope 是一个为LLM聊天机器人服务的强大且灵活的长期记�
 - 反思与再巩固：每隔一段时间，此操作对新记录的 *observations* 进行反思，以形成和更新 *insight* 形式的记忆片段。然后执行记忆再巩固，
 以确保记忆片段之间的矛盾和重复得到妥善处理。
 
+### 框架
+<p align="left">
+  <img src="docs/images/framework.jpg" width="700px" alt="MemoryScope Framework">
+</p>
+
 ### 主要特点
 
 ⚡ 极低的用户时延（RT）:

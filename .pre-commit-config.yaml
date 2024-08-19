@@ -10,6 +10,7 @@ repos:
       - id: check-json
       - id: detect-private-key
       - id: trailing-whitespace
+        exclude: (README\.md|README_ZH\.md)$
       - id: end-of-file-fixer
         files: \.py$
       - id: check-merge-conflict

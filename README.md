@@ -32,6 +32,11 @@ extracted from the queries as consolidated *observations* to be stored in the me
 to form and update *insights*. Then, memory re-consolidation is performed to ensure contradictions and repetitions
 among memory pieces are properly handled.
 
+### Framework
+<p align="left">
+  <img src="docs/images/framework.jpg" width="700px" alt="MemoryScope Framework">
+</p>
+
 ### Main Features
 
 ⚡ Low response-time (RT) for the user:
