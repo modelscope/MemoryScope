@@ -98,6 +98,8 @@ class MemoryManager(object):
             self.logger.info(f"add to memory context memory id={node.memory_id} content={node.content} "
                              f"store_status={node.store_status} action_status={node.action_status}")
 
+        self._key_id_dict[key] = [n.memory_id for n in nodes]
+        
         if nodes:
             self.logger.info(
                 self.logger.wrap_in_box(

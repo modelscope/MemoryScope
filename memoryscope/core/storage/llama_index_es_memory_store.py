@@ -189,9 +189,14 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         Returns:
             MemoryNode: The converted MemoryNode with text and metadata from the NodeWithScore.
         """
-        key_vector = pickle.loads(text_node.metadata["key_vector"].encode('latin1'))
+        
+        if text_node.metadata["key_vector"]:
+            key_vector = pickle.loads(text_node.metadata["key_vector"].encode('latin1'))
+        else:
+            key_vector = []
+        text_node.metadata["key_vector"] = key_vector
+
         text_node.metadata["vector"] = text_node.embedding if text_node.embedding else []
         text_node.metadata["score_recall"] = text_node.score
-        text_node.metadata["key_vector"] = key_vector
         
         return MemoryNode(content=text_node.text, **text_node.metadata)
