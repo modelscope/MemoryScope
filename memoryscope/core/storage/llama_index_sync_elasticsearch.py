@@ -619,6 +619,13 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         })
         return self.sync_query(query, custom_query, es_filter, **kwargs)
 
+    def sync_delete_all(self):
+        self._store.client.delete_by_query(index=[self.index_name], body={"query": {"match_all": {}}})
+
+    def sync_search_all(self):
+        search_res = self._store.client.search(index=[self.index_name], body={"query": {"match_all": {}}})
+        raise search_res
+
     def sync_query(
             self,
             query: VectorStoreQuery,
