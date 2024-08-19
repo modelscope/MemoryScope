@@ -157,14 +157,14 @@ worker:
 model:
   generation_model:
     class: core.models.llama_index_generation_model
-    module_name: openai_generation
-    model_name: gpt-4o
+    module_name: dashscope_generation
+    model_name: qwen-max
     max_tokens: 2000
     temperature: 0.01
   embedding_model:
     class: core.models.llama_index_embedding_model
-    module_name: openai_embedding
-    model_name: text-embedding-3-small
+    module_name: dashscope_embedding
+    model_name: text-embedding-v2
   rank_model:
     class: core.models.llama_index_rank_model
     module_name: dashscope_rank
