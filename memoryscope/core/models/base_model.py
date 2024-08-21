@@ -38,7 +38,7 @@ class BaseModel(metaclass=ABCMeta):
         self.kwargs: dict = kwargs
 
         self._model: Any = None
-        self.logger = Logger.get_logger(Logger.append_timestamp("base_model"))
+        self.logger = Logger.get_logger("base_model")
 
     @property
     def model(self):

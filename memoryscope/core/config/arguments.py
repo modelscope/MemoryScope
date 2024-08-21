@@ -3,7 +3,7 @@ from typing import Literal, Dict
 
 @dataclass
 class Arguments(object):
-    language: Literal["cn", "en"] = field(default="en", metadata={"help": "support en & cn now"})
+    language: Literal["cn", "en"] = field(default="cn", metadata={"help": "support en & cn now"})
 
     thread_pool_max_workers: int = field(default=5, metadata={"help": "thread pool max workers"})
 
@@ -35,7 +35,7 @@ class Arguments(object):
     worker_params: Dict[str, dict] = field(default_factory=lambda: {}, metadata={
         "help": "dict format: worker_name -> param_key -> param_value"})
 
-    generation_backend: str = field(default="openai_generation", metadata={
+    generation_backend: str = field(default="dashscope_generation", metadata={
         "help": "global generation backend: openai_generation, dashscope_generation, etc."})
 
     generation_model: str = field(default="gpt-4o", metadata={
@@ -44,7 +44,7 @@ class Arguments(object):
     generation_params: dict = field(default_factory=lambda: {}, metadata={
         "help": "global generation params: max_tokens, top_p, temperature, etc."})
 
-    embedding_backend: str = field(default="openai_embedding", metadata={
+    embedding_backend: str = field(default="dashscope_generation", metadata={
         "help": "global embedding backend: openai_embedding, dashscope_embedding, etc."})
 
     embedding_model: str = field(default="text-embedding-3-small", metadata={

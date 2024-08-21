@@ -9,7 +9,7 @@ from memoryscope.enumeration.message_role_enum import MessageRoleEnum
 from memoryscope.enumeration.model_enum import ModelEnum
 from memoryscope.scheme.message import Message
 from memoryscope.scheme.model_response import ModelResponse, ModelResponseGen
-
+from memoryscope.core.utils.logger import Logger
 
 class LlamaIndexGenerationModel(BaseModel):
     """
@@ -27,7 +27,7 @@ class LlamaIndexGenerationModel(BaseModel):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.logger = self.logger.get_logger(self.logger.append_timestamp("llama_index_generation_model"))
+        self.logger = Logger.get_logger("llama_index_generation_model")
 
     def before_call(self, model_response: ModelResponse, **kwargs):
         """

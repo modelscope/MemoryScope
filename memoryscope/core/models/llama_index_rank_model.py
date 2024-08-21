@@ -7,6 +7,7 @@ from llama_index.postprocessor.dashscope_rerank import DashScopeRerank
 from memoryscope.core.models.base_model import BaseModel, MODEL_REGISTRY
 from memoryscope.enumeration.model_enum import ModelEnum
 from memoryscope.scheme.model_response import ModelResponse
+from memoryscope.core.utils.logger import Logger
 
 
 class LlamaIndexRankModel(BaseModel):
@@ -22,7 +23,7 @@ class LlamaIndexRankModel(BaseModel):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.logger = self.logger.get_logger(self.logger.append_timestamp("llama_index_rank_model"))
+        self.logger = Logger.get_logger("llama_index_rank_model")
 
     def before_call(self, model_response: ModelResponse, **kwargs):
         """

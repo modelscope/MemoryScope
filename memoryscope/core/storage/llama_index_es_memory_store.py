@@ -9,8 +9,7 @@ from memoryscope.core.models.base_model import BaseModel
 from memoryscope.core.storage.base_memory_store import BaseMemoryStore
 from memoryscope.core.storage.llama_index_sync_elasticsearch import (SyncElasticsearchStore,
                                                                      ESCombinedRetrieveStrategy,
-                                                                     _to_elasticsearch_filter,
-                                                                     SPECIAL_QUERY)
+                                                                     _to_elasticsearch_filter)
 from memoryscope.core.utils.logger import Logger
 from memoryscope.scheme.memory_node import MemoryNode
 
@@ -38,7 +37,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
         self.index = VectorStoreIndex.from_vector_store(vector_store=self.es_store,
                                                         embed_model=self.embedding_model.model)
 
-        self.logger = Logger.get_logger(Logger.append_timestamp("es_memory_store"))
+        self.logger = Logger.get_logger("es_memory_store")
 
     def retrieve_memories(self,
                           query: str = "",
@@ -57,15 +56,12 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                                             similarity_top_k=top_k,
                                             sparse_top_k=top_k)
 
-        if not query:
-            query = SPECIAL_QUERY
-
-        if not query and self.emb_dims:
-            query = QueryBundle(query_str=SPECIAL_QUERY, embedding=self.dummy_query_vector())
-
-        text_nodes = retriever.retrieve(query)
-        if text_nodes and text_nodes[0].embedding:
-            self.emb_dims = len(text_nodes[0].embedding)
+        if query:
+            text_nodes = retriever.retrieve(query)
+            if text_nodes and text_nodes[0].embedding:
+                self.emb_dims = len(text_nodes[0].embedding)
+        else:
+            text_nodes = self.es_store.sync_search_all_with_filter(es_filter, ['embedding'])
         self.logger.log_dictionary_info({
             "action": "retrieve_memories",
             "query": query,
@@ -77,31 +73,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                                   query: str = "",
                                   top_k: int = 3,
                                   filter_dict: Dict[str, List[str]] | Dict[str, str] = None) -> List[MemoryNode]:
-        # if index is not created, return []
-        exists = self.es_store.client.indices.exists(index=self.index_name)
-        if not exists:
-            return []
-
-        if filter_dict is None:
-            filter_dict = {}
-
-        es_filter = _to_elasticsearch_filter(filter_dict)
-        retriever = self.index.as_retriever(vector_store_kwargs={"es_filter": es_filter, "fields": ['embedding']},
-                                            similarity_top_k=top_k,
-                                            sparse_top_k=top_k)
-
-        if not query:
-            query = SPECIAL_QUERY
-
-        if not query:
-            query = QueryBundle(query_str=SPECIAL_QUERY, embedding=self.dummy_query_vector())
-
-        text_nodes: List[NodeWithScore] = await retriever.aretrieve(query)
-
-        if text_nodes and text_nodes[0].embedding:
-            self.emb_dims = len(text_nodes[0].embedding)
-
-        return [self._text_node_2_memory_node(n) for n in text_nodes]
+        raise NotImplementedError
 
     def batch_insert(self, nodes: List[MemoryNode]):
         self.index.insert_nodes([self._memory_node_2_text_node(node) for node in nodes])
@@ -191,13 +163,15 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
             MemoryNode: The converted MemoryNode with text and metadata from the NodeWithScore.
         """
         
-        if text_node.metadata["key_vector"]:
+        if text_node.metadata.get("key_vector", None):
             key_vector = pickle.loads(text_node.metadata["key_vector"].encode('latin1'))
         else:
             key_vector = []
         text_node.metadata["key_vector"] = key_vector
 
         text_node.metadata["vector"] = text_node.embedding if text_node.embedding else []
-        text_node.metadata["score_recall"] = text_node.score
-        
+
+        if hasattr(text_node, "score"):
+            text_node.metadata["score_recall"] = text_node.score
+
         return MemoryNode(content=text_node.text, **text_node.metadata)

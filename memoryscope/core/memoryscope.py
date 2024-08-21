@@ -13,8 +13,9 @@ from memoryscope.enumeration.model_enum import ModelEnum
 class MemoryScope(ConfigManager):
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
         self._context: MemoryscopeContext = MemoryscopeContext()
+        self._context.memory_scope_uuid = datetime.now().strftime(r"%Y%m%d_%H%M%S")
+        super().__init__(**kwargs)
         self._init_context_by_config()
 
     def _init_context_by_config(self):
@@ -33,10 +34,6 @@ class MemoryScope(ConfigManager):
             self.logger.warning("If a semantic ranking model is not available, MemoryScope will use cosine similarity "
                                 "scoring as a substitute. However, the ranking effectiveness will be somewhat "
                                 "compromised.")
-        self._context.memory_scope_uuid = datetime.now().strftime(global_conf["logger_name_time_suffix"])
-
-        # set context_initialized
-        self._context.context_initialized = True
 
         # init memory_chat
         memory_chat_conf_dict = self.config["memory_chat"]

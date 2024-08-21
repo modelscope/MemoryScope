@@ -36,8 +36,6 @@ DISTANCE_STRATEGIES = Literal[
     "EUCLIDEAN_DISTANCE",
 ]
 
-SPECIAL_QUERY: str = "**--**"
-
 
 def get_elasticsearch_client(
         url: Optional[str] = None,
@@ -159,7 +157,7 @@ class ESCombinedRetrieveStrategy(AsyncDenseVectorStrategy):
         # RRF is used to even the score from the knn query and text query
         # RRF has two optional parameters: {'rank_constant':int, 'window_size':int}
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html
-        if query == SPECIAL_QUERY:
+        if not query:
             query_body = {
                 "query": {
                     "bool": {
@@ -430,7 +428,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             retrieval_strategy=retrieval_strategy,
         )
 
-        self.logger = Logger.get_logger(Logger.append_timestamp("elastic_search"))
+        self.logger = Logger.get_logger("elastic_search")
 
     @property
     def client(self) -> Any:
@@ -472,11 +470,10 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         Note:
             This method delegates the actual operation to the `sync_add` method.
         """
-        self.logger.log_dictionary_info({
-            "action": "add",
-            "node_count": len(nodes),
-        })
-        return self.sync_add(nodes, create_index_if_not_exists=create_index_if_not_exists)
+        add_res = self.sync_add(nodes, create_index_if_not_exists=create_index_if_not_exists)
+        self.log_vector_store_brief(title='after add')
+        return add_res
+
 
     def sync_add(
             self,
@@ -555,11 +552,9 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             This method internally calls a synchronous delete method (`sync_delete`)
             to execute the deletion operation against Elasticsearch.
         """
-        self.logger.log_dictionary_info({
-            "action": "delete",
-            "id": ref_doc_id,
-        })
-        return self.sync_delete(ref_doc_id, **delete_kwargs)
+        del_res = self.sync_delete(ref_doc_id, **delete_kwargs)
+        self.log_vector_store_brief(title='after delete')
+        return del_res
 
     def sync_delete(self, ref_doc_id: str, **delete_kwargs: Any) -> None:
         """
@@ -613,19 +608,59 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             Exception: If an error occurs during the Elasticsearch query execution.
 
         """
+
+        q_res = self.sync_query(query, custom_query, es_filter, **kwargs)
         self.logger.log_dictionary_info({
             "action": "query",
             "query": query.query_str,
+            "result": [tn.text for tn in q_res.nodes]
         })
-        return self.sync_query(query, custom_query, es_filter, **kwargs)
+        return q_res
 
     def sync_delete_all(self):
         self._store.client.delete_by_query(index=[self.index_name], body={"query": {"match_all": {}}})
 
     def sync_search_all(self):
         search_res = self._store.client.search(index=[self.index_name], body={"query": {"match_all": {}}})
-        raise search_res
+        return search_res
 
+    def log_vector_store_brief(self, title="current vector store content"):
+        search_res = self.sync_search_all()
+
+        brief = {
+            f"{hit['_source']['metadata']['memory_id']}({hit['_source']['metadata']['user_name']}/{hit['_source']['metadata']['target_name']}/{hit['_source']['metadata']['memory_type']})": 
+            hit['_source']['content']
+            for hit in search_res["hits"]["hits"]
+        }
+        self.logger.log_dictionary_info(brief, title=title)
+
+        return brief
+
+    def sync_search_all_with_filter(self, es_filter, fields):
+        query_body = {'query': {'bool': {'filter': es_filter}}}
+        k = 1000
+        fields = ['embedding', 'metadata', 'content']
+        response = self.client.search(
+            index=self.index_name,
+            **query_body,
+            size=k,
+            source=True,
+            source_includes=fields,
+        )
+        res = []
+        for hit in response["hits"]["hits"]:
+            tn = TextNode(
+                    id_=hit['_id'],
+                    text=hit['_source']['content'],
+                    embedding=hit['_source']['embedding'],
+                    text_template="{content}",
+                    metadata=hit['_source']['metadata']
+                )
+            res.append(
+                tn
+            )
+        return res
+    
     def sync_query(
             self,
             query: VectorStoreQuery,
@@ -676,9 +711,15 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
             custom_query=custom_query,
             fields=fields,
         )
+
+        return self.post_process_hits(hits)
+
+
+    def post_process_hits(self, hits: List[Dict[str, Any]]) -> VectorStoreQueryResult:
         top_k_nodes = []
         top_k_ids = []
         top_k_scores = []
+
         for hit in hits:
             source = hit["_source"]
             metadata = source.get("metadata", None)

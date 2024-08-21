@@ -33,11 +33,10 @@ class MemoryscopeContext(object):
 
     print_workflow_dynamic: bool = False
 
-    context_initialized: bool = False
 
 def get_ms_context():
     ms_context = MemoryscopeContext()
-    if ms_context.context_initialized:
-        return ms_context
+    if ms_context.memory_scope_uuid:
+        return ms_context.memory_scope_uuid
     else:
         raise RuntimeError("MemoryscopeContext is not initialized yet. Please initialize it first.")

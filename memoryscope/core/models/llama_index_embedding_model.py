@@ -6,6 +6,7 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 from memoryscope.core.models.base_model import BaseModel, MODEL_REGISTRY
 from memoryscope.enumeration.model_enum import ModelEnum
 from memoryscope.scheme.model_response import ModelResponse
+from memoryscope.core.utils.logger import Logger
 
 
 class LlamaIndexEmbeddingModel(BaseModel):
@@ -17,7 +18,7 @@ class LlamaIndexEmbeddingModel(BaseModel):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.logger = self.logger.get_logger(self.logger.append_timestamp("llama_index_embedding_model"))
+        self.logger = Logger.get_logger("llama_index_embedding_model")
 
     @classmethod
     def register_model(cls, model_name: str, model_class: type):

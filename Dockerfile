@@ -22,9 +22,10 @@ RUN echo '[global]' > /etc/pip.conf && \
     echo 'index-url = https://mirrors.aliyun.com/pypi/simple/' >> /etc/pip.conf && \
     echo 'trusted-host = mirrors.aliyun.com' >> /etc/pip.conf
 
-# (Not necessary) Install the majority of deps, using docker build cache to accelerate future building
-COPY requirements.txt ./
-RUN pip3 install -r requirements.txt
+# # (Not necessary) Install the majority of deps, using docker build cache to accelerate future building
+# COPY requirements.txt ./
+# RUN pip3 install poetry
+# RUN poetry install
 
 # Install Elastic Search
 RUN useradd -m elastic_search_user
@@ -46,7 +47,9 @@ WORKDIR /memory_scope_project
 # Enter working dir
 WORKDIR /memory_scope_project
 COPY . .
-RUN pip install -r requirements.txt
+RUN pip3 install poetry
+# RUN pip install -r requirements.txt
+RUN poetry install
 
 # Launch!
 # CMD ["bash"]

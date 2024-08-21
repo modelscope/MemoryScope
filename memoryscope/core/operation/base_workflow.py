@@ -31,7 +31,7 @@ class BaseWorkflow(object):
         self.workflow_context: Dict[str, Any] = {}
         self.context_lock = threading.Lock()
 
-        self.logger: Logger = Logger.get_logger(Logger.append_timestamp("workflow"))
+        self.logger: Logger = Logger.get_logger("workflow")
 
         if self.workflow:
             self.workflow_worker_list = self._parse_workflow()

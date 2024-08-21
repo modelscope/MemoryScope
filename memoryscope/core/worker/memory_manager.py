@@ -24,7 +24,7 @@ class MemoryManager(object):
         # dict: key -> memory_id
         self._key_id_dict: Dict[str, List[str]] = {}
 
-        self.logger = Logger.get_logger(Logger.append_timestamp("memory_manager"))
+        self.logger = Logger.get_logger("memory_manager")
 
         self.workerflow_name = workerflow_name
 

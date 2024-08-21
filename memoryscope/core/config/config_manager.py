@@ -52,10 +52,6 @@ class ConfigManager(object):
     def _init_logger(self) -> Logger:
         global_config = self.config["global"]
         logger_name = global_config["logger_name"]
-        logger_name_time_suffix = global_config["logger_name_time_suffix"]
-        if logger_name_time_suffix:
-            suffix = datetime.now().strftime(logger_name_time_suffix)
-            logger_name = f"{logger_name}_{suffix}"
         return Logger.get_logger(logger_name, to_stream=global_config["logger_to_screen"])
 
     def read_config(self, config_path: str):

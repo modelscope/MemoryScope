@@ -1,3 +1,4 @@
+import os
 import logging
 import pprint
 from logging.handlers import RotatingFileHandler
@@ -6,7 +7,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
-LOG_FORMAT = "%(asctime)s %(levelname)s %(threadName)s %(module)s:%(lineno)d] %(message)s"
+LOG_FORMAT = "%(asctime)s %(levelname)s [%(module)s:%(lineno)d] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 LOGGER_DICT = {}
@@ -16,6 +17,11 @@ def rich2text(rich_table):
     with console.capture() as capture:
         console.print(rich_table)
     return '\n' + str(Text.from_ansi(capture.get()))
+
+def append_memoryscope_uuid(dir_path):
+    from memoryscope.core.memoryscope_context import get_ms_context # pylint: disable=import-outside-toplevel
+    dir_path = os.path.join(dir_path, get_ms_context())
+    return dir_path
 
 class Logger(logging.Logger):
     """
@@ -72,13 +78,15 @@ class Logger(logging.Logger):
 
         self.info(f"logger={name} is inited.")  # Logs an initialization message
 
-    def log_dictionary_info(self, dictionary):
-        self.info(self.format_current_context(dictionary))
+    def log_dictionary_info(self, dictionary, title=""):
+        self.info(self.format_current_context(dictionary, title))
 
-    def format_current_context(self, context):
+    def format_current_context(self, context, title=""):
         pp = pprint.PrettyPrinter()
         pretty_string = pp.pformat(context)
-        return rich2text(Panel(pretty_string, width=128))
+        if title:
+            pretty_string = f"{title}\n{pretty_string}"
+        return self.wrap_in_box(pretty_string)
 
     def wrap_in_box(self, context):
         return rich2text(Panel(context, width=128))
@@ -90,7 +98,7 @@ class Logger(logging.Logger):
         for chat_message in message.meta_data['data']['messages']:
             buf.append(chat_message.content)
             buf.append('\n')
-        buf.append(f"--------------------------------------------------------------\n")
+        buf.append(f"------------------------------------------\n")
         buf.append(f"LM Output:\n")
         buf.append(message.message.content)
         buf.append('\n')
@@ -103,7 +111,7 @@ class Logger(logging.Logger):
         buf.append(f"Query Input:\n")
         buf.append(model_response.meta_data['data']['query_str'])
         buf.append('\n')
-        buf.append(f"--------------------------------------------------------------\n")
+        buf.append(f"------------------------------------------\n")
         buf.append(f"Rank:\n")
         rank = 0
         for index, score in model_response.rank_scores.items():
@@ -126,10 +134,11 @@ class Logger(logging.Logger):
         for consistent log message formatting.
         """
         file_path = Path().joinpath(self.dir_path, f"{self.name}.{self.file_type}")
-        file_path.parent.mkdir(exist_ok=True)  # Ensure the directory exists
+        os.makedirs(file_path.parent, exist_ok=True)  # Ensure the directory exists
         file_name = file_path.as_posix()  # Get the absolute path as a string
-        Console().print(f"[{self.name}] Registering logger to file at: " + file_name, style="bold blue")
-
+        if not hasattr(Logger, 'notice_print'):
+            Console().print(f"\nRegistering loggers at: {os.path.abspath(os.path.dirname(file_name))}. System logs can be found in this directory.\n", style="bold red")
+            Logger.notice_print = True
         # Instantiate a rotating file handler with specified parameters
         file_handler = RotatingFileHandler(
             filename=file_name,
@@ -232,11 +241,8 @@ class Logger(logging.Logger):
                 name = "default"
 
         if name not in LOGGER_DICT:
-            LOGGER_DICT[name] = Logger(name=name, **kwargs)
+            logger_dir = kwargs.get('dir_path', 'log')
+            logger_dir = append_memoryscope_uuid(logger_dir)
+            LOGGER_DICT[name] = Logger(name=name, dir_path=logger_dir, **kwargs)
 
         return LOGGER_DICT[name]
-
-    @staticmethod
-    def append_timestamp(name: str) -> str:
-        from memoryscope.core.memoryscope_context import get_ms_context
-        return f"{name}_{get_ms_context().memory_scope_uuid}"

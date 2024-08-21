@@ -3,7 +3,6 @@ import re
 from typing import List
 
 from memoryscope.constants.language_constants import WEEKDAYS, DATATIME_WORD_LIST, MONTH_DICT
-from memoryscope.core.utils.logger import Logger
 from memoryscope.enumeration.language_enum import LanguageEnum
 
 
@@ -14,7 +13,6 @@ class DatetimeHandler(object):
     specialized text parsing for date components.
     """
 
-    logger = Logger.get_logger()
 
     def __init__(self, dt: datetime.datetime | str | int | float = None):
         """
@@ -224,7 +222,7 @@ class DatetimeHandler(object):
         """
         func_name = f"extract_date_parts_{language.value}"
         if not hasattr(cls, func_name):
-            cls.logger.warning(f"language={language.value} needs to complete extract_date_parts func!")
+            # cls.logger.warning(f"language={language.value} needs to complete extract_date_parts func!")
             return {}
         return getattr(cls, func_name)(input_string=input_string)
 
@@ -274,11 +272,11 @@ class DatetimeHandler(object):
     def has_time_word(cls, query: str, language: LanguageEnum) -> bool:
         func_name = f"has_time_word_{language.value}"
         if not hasattr(cls, func_name):
-            cls.logger.warning(f"language={language.value} needs to complete has_time_word function!")
+            # cls.logger.warning(f"language={language.value} needs to complete has_time_word function!")
             return False
 
         if language not in DATATIME_WORD_LIST:
-            cls.logger.warning(f"language={language.value} is missing in DATATIME_WORD_LIST!")
+            # cls.logger.warning(f"language={language.value} is missing in DATATIME_WORD_LIST!")
             return False
 
         datetime_word_list = DATATIME_WORD_LIST[language]
