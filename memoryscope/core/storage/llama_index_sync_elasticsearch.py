@@ -5,6 +5,8 @@ from typing import Any, Callable, Dict, List, Literal, Optional, Union, cast
 import nest_asyncio
 import numpy as np
 from memoryscope.core.utils.logger import Logger
+from memoryscope.core.memoryscope_context import get_memoryscope_context
+
 from elasticsearch import AsyncElasticsearch, Elasticsearch
 from elasticsearch.helpers.vectorstore import (
     AsyncBM25Strategy,
@@ -232,6 +234,17 @@ class ESCombinedRetrieveStrategy(AsyncDenseVectorStrategy):
         return {"knn": knn}
 
 
+    def before_index_creation(
+        self, *, client: AsyncElasticsearch, text_field: str, vector_field: str
+    ) -> None:
+        if self.model_id:
+            from elasticsearch.helpers.vectorstore._async._utils import model_must_be_deployed
+            import asyncio
+            print('before_index_creation')
+            asyncio.run(model_must_be_deployed(client, self.model_id))
+            print('before_index_creation 2')
+
+
 def _to_elasticsearch_filter(standard_filters: Dict[str, List[str]]) -> Dict[str, Any]:
     """
     Converts standard Llama-index filters into a format compatible with Elasticsearch.
@@ -363,6 +376,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
     distance_strategy: Optional[DISTANCE_STRATEGIES] = "COSINE"
     retrieval_strategy: AsyncRetrievalStrategy
     logger: Logger = None
+    log_elasticsearch_dynamic: bool = False
 
     _store = PrivateAttr()
 
@@ -429,6 +443,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         )
 
         self.logger = Logger.get_logger("elastic_search")
+        self.log_elasticsearch_dynamic = get_memoryscope_context().log_elasticsearch_dynamic
 
     @property
     def client(self) -> Any:
@@ -625,6 +640,8 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         return search_res
 
     def log_vector_store_brief(self, title="current vector store content"):
+        if not self.log_elasticsearch_dynamic:
+            return "Dynamic elasticsearch logging is disabled to enhance performance."
         search_res = self.sync_search_all()
 
         brief = {
