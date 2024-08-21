@@ -75,7 +75,7 @@ def chat_example5():
 def chat_example6():
     with MemoryScope(arguments=arguments) as ms:
         memory_chat = ms.default_memory_chat
-        memory_chat.run_service_operation("delete_all", "锦鲤")
+        memory_chat.run_service_operation("delete_all", "用户")
         memory_chat.run_service_operation("delete_all", "浩然")
 
         print("浩然=========================")
@@ -88,12 +88,12 @@ def chat_example6():
         print("回答2：\n" + response.message.content)
         print("记忆2：\n" + response.meta_data["memories"])
 
-        print("锦鲤=========================")
-        response = memory_chat.chat_with_memory(query="我的爱好是打羽毛球。", role_name="锦鲤")
+        print("用户=========================")
+        response = memory_chat.chat_with_memory(query="我的爱好是打羽毛球。", role_name="用户")
         print("回答1：\n" + response.message.content)
-        result = memory_chat.run_service_operation("consolidate_memory", role_name="锦鲤")
+        result = memory_chat.run_service_operation("consolidate_memory", role_name="用户")
         print(result)
-        response = memory_chat.chat_with_memory(query="你知道我的运动爱好是什么？", role_name="锦鲤",
+        response = memory_chat.chat_with_memory(query="你知道我的运动爱好是什么？", role_name="用户",
                                                 history_message_strategy=None)
         print("回答2：\n" + response.message.content)
         print("记忆2：\n" + response.meta_data["memories"])

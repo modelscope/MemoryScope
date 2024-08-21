@@ -1,6 +1,6 @@
 # Installing MemoryScope
 
-## I. Install with docker [Recommanded]
+## I. Install with docker [Recommended]
 1. Clone the repository and edit settings
     ```bash
     # clone project
@@ -22,7 +22,7 @@
     ```
 
 
-## II. Install with docker compose [Recommanded]
+## II. Install with docker compose [Recommended]
 
 
 1. Clone the repository and edit settings

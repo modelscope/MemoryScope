@@ -18,13 +18,13 @@ Alternatively, you can specify all the parameters directly on the command line:
 ```bash
 memoryscope --language="cn" \
             --memory_chat_class="cli_memory_chat" \
-            --human_name="锦鲤" \
+            --human_name="用户" \
             --assistant_name="AI" \
             --generation_backend="dashscope_generation" \
             --generation_model="qwen-max" \
             --embedding_backend="dashscope_embedding" \
             --embedding_model="text-embedding-v2" \
-            --use_dummy_ranker=False \
+            --enable_ranker=False \
             --rank_backend="dashscope_rank" \
             --rank_model="gte-rerank"
 ```
@@ -39,6 +39,6 @@ Here are the available options that can be set through either method:
 - `--generation_model`: The model used for generating responses.
 - `--embedding_backend`: The backend used for text embeddings.
 - `--embedding_model`: The model used for creating text embeddings.
-- `--use_dummy_ranker`: A boolean indicating whether to use a dummy ranker (default is `False`).
+- `--enable_ranker`: A boolean indicating whether to use a dummy ranker (default is `False`).
 - `--rank_backend`: The backend used for ranking responses.
 - `--rank_model`: The model used for ranking responses.
