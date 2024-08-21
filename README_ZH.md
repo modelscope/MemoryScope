@@ -29,7 +29,7 @@ MemoryScope 是一个为LLM聊天机器人服务的强大且灵活的长期记�
 
 ### 框架
 <p align="left">
-  <img src="docs/images/framework.jpg" width="700px" alt="MemoryScope Framework">
+  <img src="docs/images/framework.png" width="700px" alt="MemoryScope Framework">
 </p>
 
 ### 主要特点

@@ -1,1 +1,0 @@
-memoryscope --config_path=memoryscope/core/config/demo_config.yaml

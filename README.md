@@ -34,7 +34,7 @@ among memory pieces are properly handled.
 
 ### Framework
 <p align="left">
-  <img src="docs/images/framework.jpg" width="700px" alt="MemoryScope Framework">
+  <img src="docs/images/framework.png" width="700px" alt="MemoryScope Framework">
 </p>
 
 ### Main Features
@@ -70,7 +70,7 @@ accurate relevant information when the query involves reference to time.
 
     ```
     git clone https://...
-    nano config/demo_config_cn.yaml
+    vim memoryscope/core/config/demo_config.yaml
     ```
 
 2. Edit `docker-compose.yml` to change environment variable.
@@ -88,7 +88,7 @@ accurate relevant information when the query involves reference to time.
 
     ```
     git clone https://...
-    nano config/demo_config_cn.yaml
+    vim memoryscope/core/config/demo_config.yaml
     ```
 
 2. Build the `Dockerfile` with command:
@@ -96,16 +96,7 @@ accurate relevant information when the query involves reference to time.
     sudo docker build --network=host -t memoryscope .
     ```
 
-3. Run `ElasticSearch` Container with command:
-    ```
-    docker run -p 9200:9200 \
-        -e "discovery.type=single-node" \
-        -e "xpack.security.enabled=false" \
-        -e "xpack.license.self_generated.type=trial" \
-        docker.elastic.co/elasticsearch/elasticsearch:8.13.2
-    ```
-
-4. Launch the built image with command:
+3. Launch the built image with command:
     ```
     sudo docker run -it --rm --net=host memoryscope
     ```

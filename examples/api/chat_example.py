@@ -38,7 +38,7 @@ def chat_example3():
         memory_chat = ms.default_memory_chat
         response = memory_chat.chat_with_memory(
             query="你知道我消灭了几个星系吗？",
-            temporary_memories="用户是一只哥斯拉，这是真是的，不是虚构的。\n前天用户消灭了星系0x4be？\n大前天用户消灭了星系0x5be？")
+            temporary_memories="张三是一只哥斯拉，这是真是的，不是虚构的。\n前天张三消灭了星系0x4be？\n大前天张三消灭了星系0x5be？")
         print("回答：\n" + response.message.content)
 
 
@@ -75,25 +75,25 @@ def chat_example5():
 def chat_example6():
     with MemoryScope(arguments=arguments) as ms:
         memory_chat = ms.default_memory_chat
-        memory_chat.run_service_operation("delete_all", "锦鲤")
-        memory_chat.run_service_operation("delete_all", "浩然")
+        memory_chat.run_service_operation("delete_all", "张三")
+        memory_chat.run_service_operation("delete_all", "李四")
 
-        print("浩然=========================")
-        response = memory_chat.chat_with_memory(query="我的爱好是弹琴。", role_name="浩然")
+        print("李四=========================")
+        response = memory_chat.chat_with_memory(query="我的爱好是弹琴。", role_name="李四")
         print("回答1：\n" + response.message.content)
-        result = memory_chat.run_service_operation("consolidate_memory", role_name="浩然")
+        result = memory_chat.run_service_operation("consolidate_memory", role_name="李四")
         print(result)
-        response = memory_chat.chat_with_memory(query="你知道我的乐器爱好是什么？", role_name="浩然",
+        response = memory_chat.chat_with_memory(query="你知道我的乐器爱好是什么？", role_name="李四",
                                                 history_message_strategy=None)
         print("回答2：\n" + response.message.content)
         print("记忆2：\n" + response.meta_data["memories"])
 
-        print("锦鲤=========================")
-        response = memory_chat.chat_with_memory(query="我的爱好是打羽毛球。", role_name="锦鲤")
+        print("张三=========================")
+        response = memory_chat.chat_with_memory(query="我的爱好是打羽毛球。", role_name="张三")
         print("回答1：\n" + response.message.content)
-        result = memory_chat.run_service_operation("consolidate_memory", role_name="锦鲤")
+        result = memory_chat.run_service_operation("consolidate_memory", role_name="张三")
         print(result)
-        response = memory_chat.chat_with_memory(query="你知道我的运动爱好是什么？", role_name="锦鲤",
+        response = memory_chat.chat_with_memory(query="你知道我的运动爱好是什么？", role_name="张三",
                                                 history_message_strategy=None)
         print("回答2：\n" + response.message.content)
         print("记忆2：\n" + response.meta_data["memories"])
