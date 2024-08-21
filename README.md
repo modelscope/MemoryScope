@@ -34,7 +34,7 @@ among memory pieces are properly handled.
 
 ### Framework
 <p align="left">
-  <img src="docs/images/framework.jpg" width="700px" alt="MemoryScope Framework">
+  <img src="docs/images/framework.png" width="700px" alt="MemoryScope Framework">
 </p>
 
 ### Main Features
