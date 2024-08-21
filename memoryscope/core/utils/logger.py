@@ -19,8 +19,8 @@ def rich2text(rich_table):
     return '\n' + str(Text.from_ansi(capture.get()))
 
 def append_memoryscope_uuid(dir_path):
-    from memoryscope.core.memoryscope_context import get_ms_context # pylint: disable=import-outside-toplevel
-    dir_path = os.path.join(dir_path, get_ms_context())
+    from memoryscope.core.memoryscope_context import get_memoryscope_uuid # pylint: disable=import-outside-toplevel
+    dir_path = os.path.join(dir_path, get_memoryscope_uuid())
     return dir_path
 
 class Logger(logging.Logger):

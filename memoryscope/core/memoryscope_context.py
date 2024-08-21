@@ -33,10 +33,19 @@ class MemoryscopeContext(object):
 
     print_workflow_dynamic: bool = False
 
+    log_elasticsearch_dynamic: bool = False
 
-def get_ms_context():
+
+def get_memoryscope_uuid():
     ms_context = MemoryscopeContext()
     if ms_context.memory_scope_uuid:
         return ms_context.memory_scope_uuid
+    else:
+        raise RuntimeError("MemoryscopeContext is not initialized yet. Please initialize it first.")
+
+def get_memoryscope_context():
+    ms_context = MemoryscopeContext()
+    if ms_context.memory_scope_uuid:
+        return ms_context
     else:
         raise RuntimeError("MemoryscopeContext is not initialized yet. Please initialize it first.")
