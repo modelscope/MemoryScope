@@ -1,5 +1,6 @@
 """ Version of MemoryScope."""
-__version__ = "0.1.0.4"
+import importlib.metadata
+__version__ = importlib.metadata.version("memoryscope")
 
 import fire
 

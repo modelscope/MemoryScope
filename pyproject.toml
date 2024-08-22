@@ -10,10 +10,14 @@ skip = "./examples,*.csv,*.html,*.json,*.jsonl,*.pdf,*.txt,*.ipynb"
 
 [tool.poetry]
 name = "memoryscope"
-version = "0.1.0.4"
+version = "0.1.1.0"
 description = "MemoryScope for LLM Agentic Application."
-authors = ["Your Name <you@example.com>"]
-license = "MIT"
+authors =  = [
+    "jinli <jinli.yl@alibaba-inc.com>",
+    "qiantiancheng <qiantiancheng.qtc@alibaba-inc.com>",
+    "fuqingxu <fuqingxu.fqx@alibaba-inc.com>"
+]
+license = "Apache"
 readme = "README.md"
 keywords = ["Memory", "LLM"]
 
