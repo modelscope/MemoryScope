@@ -56,50 +56,19 @@ from the aggregation of similarly-themed *observations*.
 accurate relevant information when the query involves reference to time.
 
 
-### Example Usages
+
+## 🚀 Installation
+For installation, please refer to [Installation.md](docs/Installation.md). 
+
+### One-key Demo Run
+
+Run `sudo docker run -it --rm --net=host memoryscope/memoryscope` to launch memoryscope cli demo.
+
+## Example Usages
 - [Simple Usages (Quick Start)](./examples/api/simple_usages_en.ipynb)
 - [CLI with a MemoryScope Chatbot](./examples/cli/dash_cli_cn1.sh)
 - [Advanced Customization](./examples/api/advanced_customization_en.ipynb)
 
-
-
-## 🚀 Installation
-
-### (1) Docker-Compose (Recommended)
-1. Clone the project and edit the config.
-
-    ```
-    git clone https://...
-    vim memoryscope/core/config/demo_config.yaml
-    ```
-
-2. Edit `docker-compose.yml` to change environment variable.
-
-    ```
-    DASHSCOPE_API_KEY: "sk-0000000000"
-    ```
-
-3. Run `docker-compose up` to build and launch the memory-scope cli interface.
-
-
-### (2) Docker
-
-1. Clone the project and edit the config.
-
-    ```
-    git clone https://...
-    vim memoryscope/core/config/demo_config.yaml
-    ```
-
-2. Build the `Dockerfile` with command:
-    ```
-    sudo docker build --network=host -t memoryscope .
-    ```
-
-3. Launch the built image with command:
-    ```
-    sudo docker run -it --rm --net=host memoryscope
-    ```
 
 ## 💡 Contribute
 

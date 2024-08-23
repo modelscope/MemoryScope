@@ -4,7 +4,7 @@
 1. Clone the repository and edit settings
     ```bash
     # clone project
-    git clone https://...
+    git clone https://github.com/modelscope/memoryscope
     cd memoryscope
     # edit configuration, e.g. add api keys
     vim memoryscope/core/config/demo_config.yaml
@@ -28,7 +28,7 @@
 1. Clone the repository and edit settings
     ```bash
     # clone project
-    git clone https://...
+    git clone https://github.com/modelscope/memoryscope
     cd memoryscope
     # edit configuration, e.g. add api keys
     vim memoryscope/core/config/demo_config.yaml
@@ -48,7 +48,7 @@
 1. Clone the repository and edit settings
     ```bash
     # clone project
-    git clone https://...
+    git clone https://github.com/modelscope/memoryscope
     cd memoryscope
     # edit configuration, e.g. add api keys
     vim memoryscope/core/config/demo_config.yaml
