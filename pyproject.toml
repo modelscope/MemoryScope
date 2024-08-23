@@ -12,10 +12,10 @@ skip = "./examples,*.csv,*.html,*.json,*.jsonl,*.pdf,*.txt,*.ipynb"
 name = "memoryscope"
 version = "0.1.1.0"
 description = "MemoryScope for LLM Agentic Application."
-authors =  = [
-    "jinli <jinli.yl@alibaba-inc.com>",
-    "qiantiancheng <qiantiancheng.qtc@alibaba-inc.com>",
-    "fuqingxu <fuqingxu.fqx@alibaba-inc.com>"
+authors = [
+  "jinli <jinli.yl@alibaba-inc.com>",
+  "qiantiancheng <qiantiancheng.qtc@alibaba-inc.com>",
+  "fuqingxu <fuqingxu.fqx@alibaba-inc.com>"
 ]
 license = "Apache"
 readme = "README.md"
