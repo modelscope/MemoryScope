@@ -6,7 +6,7 @@ if os.environ.get('DASHSCOPE_API_KEY', None) is None \
         input(
             '\n\n'
             'Missing api key from dashscope ( `https://help.aliyun.com/zh/model-studio/developer-reference/get-api-key` ), '
-            'please input key and press Enter:'
+            'please provide DASHSCOPE_API_KEY and press Enter:'
         )
 
 from memoryscope import cli

@@ -14,7 +14,6 @@
 #    sudo docker run -it --rm --net=host memoryscope
 
 
-
 FROM python:3.11
 
 # (Not necessary) Change pip source
@@ -39,13 +38,17 @@ USER root
 RUN chown -R elastic_search_user:elastic_search_user /home/elastic_search_user/
 WORKDIR /memory_scope_project
 
+# (Not necessary) Install the majority of deps, using docker build cache to accelerate future building
+COPY requirements.txt ./
+RUN pip3 install -r requirements.txt
+
 # Enter working dir
 WORKDIR /memory_scope_project
 COPY . .
 # RUN pip3 install poetry
-RUN pip install -r requirements.txt
 # RUN poetry install
+RUN pip3 install -r requirements.txt
 
 # Launch!
 # CMD ["bash"]
-CMD ["bash", "examples/docker/entry_point.sh"]
+CMD ["bash", "examples/docker/entrypoint.sh"]
