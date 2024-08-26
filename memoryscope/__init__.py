@@ -1,7 +1,5 @@
 """ Version of MemoryScope."""
-import importlib.metadata
-__version__ = importlib.metadata.version("memoryscope")
-
+__version__ = "0.1.1.0"
 import fire
 
 from memoryscope.core.config.arguments import Arguments  # noqa: F401
