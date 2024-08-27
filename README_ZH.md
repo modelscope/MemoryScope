@@ -49,7 +49,7 @@ MemoryScope 是一个为LLM聊天机器人服务的强大且灵活的长期记�
 
 ## 🚀 安装
 
-完整的安装方法请参考[Installation.md](docs/Installation.md)。
+完整的安装方法请参考[安装指南](docs/installation_zh.md)。
 
 ### 一键运行Demo
 

@@ -1,7 +1,7 @@
 import os
 
 if os.environ.get('DASHSCOPE_API_KEY', None) is None \
-         and os.environ.get('API_KEY', None) is None:
+         and os.environ.get('OPENAI_API_KEY', None) is None:
     os.environ['DASHSCOPE_API_KEY'] = \
         input(
             '\n\n'
