@@ -1,5 +1,6 @@
 import inspect
 import time
+import os
 from abc import abstractmethod, ABCMeta
 from typing import Any
 
@@ -46,6 +47,9 @@ class BaseModel(metaclass=ABCMeta):
             if self.module_name not in MODEL_REGISTRY.module_dict:
                 raise RuntimeError(f"method_type={self.module_name} is not supported!")
             obj_cls = MODEL_REGISTRY[self.module_name]
+            if 'openai' in self.module_name:
+                if os.environ.get('OPENAI_API_KEY', None) is None:
+                    raise ValueError("Missing openai api key!")
 
             if self.kwargs_filter:
                 allowed_kwargs = list(inspect.signature(obj_cls.__init__).parameters.keys())
