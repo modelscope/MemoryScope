@@ -16,7 +16,7 @@ class ConfigManager(object):
                  config: dict = None,
                  config_path: Optional[str] = None,
                  arguments: Optional[Arguments] = None,
-                 demo_config_name: str = "demo_config.yaml",
+                 demo_config_name: str = "demo_config_zh.yaml",
                  **kwargs):
         self.config: dict = {}
         self.kwargs = kwargs

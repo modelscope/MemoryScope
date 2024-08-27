@@ -1,5 +1,5 @@
 global:
-  language: zh
+  language: cn
   thread_pool_max_workers: 5
   logger_name: memoryscope
   logger_name_time_suffix: "%Y%m%d_%H%M%S"
@@ -19,7 +19,7 @@ memory_chat:
 memory_service:
   memoryscope_service:
     class: core.service.memory_scope_service
-    human_name: user
+    human_name: 用户
     assistant_name: AI
     memory_operations:
       read_message:

@@ -18,7 +18,7 @@ arguments = Arguments(
 
 
 def chat_example1():
-    with MemoryScope(config_path="memoryscope/core/config/demo_config.yaml") as ms:
+    with MemoryScope(config_path="memoryscope/core/config/demo_config_zh.yaml") as ms:
         memory_chat = ms.default_memory_chat
         response = memory_chat.chat_with_memory(query="我的爱好是弹琴。")
         print("回答：\n" + response.message.content)
