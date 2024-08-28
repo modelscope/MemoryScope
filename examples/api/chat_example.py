@@ -6,7 +6,6 @@ arguments = Arguments(
     language="cn",
     human_name="User",
     assistant_name="AI",
-    logger_to_screen=False,
     memory_chat_class="api_memory_chat",
     generation_backend="dashscope_generation",
     generation_model="qwen2-72b-instruct",

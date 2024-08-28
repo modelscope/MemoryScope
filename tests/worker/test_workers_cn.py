@@ -19,7 +19,6 @@ class TestWorkersCn(unittest.TestCase):
     def setUp(self):
         self.arguments = Arguments(
             language="cn",
-            logger_to_screen=True,
             human_name="用户",
             assistant_name="AI",
             memory_chat_class="api_memory_chat",

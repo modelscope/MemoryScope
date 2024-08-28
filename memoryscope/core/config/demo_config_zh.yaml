@@ -1,9 +1,6 @@
 global:
   language: cn
   thread_pool_max_workers: 5
-  logger_name: memoryscope
-  logger_name_time_suffix: "%Y%m%d_%H%M%S"
-  logger_to_screen: false
   enable_ranker: true
   enable_today_contra_repeat: true
   enable_long_contra_repeat: false

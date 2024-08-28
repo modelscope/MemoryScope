@@ -633,7 +633,10 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
         return q_res
 
     def sync_delete_all(self):
-        self._store.client.delete_by_query(index=[self.index_name], body={"query": {"match_all": {}}})
+        try:
+            self._store.client.delete_by_query(index=[self.index_name], body={"query": {"match_all": {}}})
+        except: # elasticsearch.NotFoundError
+            pass
 
     def sync_search_all(self):
         search_res = self._store.client.search(index=[self.index_name], body={"query": {"match_all": {}}})
