@@ -12,7 +12,8 @@
 
 # To run docker image: 
 #    sudo docker run -it --rm --net=host memoryscope
-
+# To run docker image with arguments (refer to memoryscope/core/config/arguments.py): 
+#    sudo docker run -it --rm --net=host -e "OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" -e "language=en" -e "human_name=superman" -e "generation_backend=openai_generation" -e "generation_model=gpt-4o" -e "embedding_backend=openai_embedding" -e "embedding_model=text-embedding-3-small" -e "enable_ranker=False" memoryscope
 
 FROM python:3.11
 
