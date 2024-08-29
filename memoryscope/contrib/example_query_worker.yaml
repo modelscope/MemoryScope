@@ -1,0 +1,21 @@
+rewrite_query_system:
+  cn: |
+    任务: 消除指代问题并重写
+    要求: 检查提供的问题是否存在指代。如果存在指代，通过上下文信息重写问题，使其信息充足，能够单独回答。如果没有指代问题，则回答“无”。
+  en: |
+    Task: Eliminate referencing issues and rewrite
+    Requirements: Check the provided questions for any references. If references exist, rewrite the questions using contextual information to make them sufficiently informative so they can be answered independently. If there are no referencing issues, respond with "None".
+
+rewrite_query_query:
+  cn: |
+    上下文：
+    {context}
+    问题：{query}
+    重写：
+
+  en: |
+    Context:
+    {context}
+    Question: {query}
+    Rewrite: 
+    

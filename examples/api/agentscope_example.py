@@ -21,7 +21,7 @@ class MemoryScopeAgent(AgentBase):
         response = self.memory_chat.chat_with_memory(query=x.content)
 
         # Wrap the response in a message object in AgentScope
-        msg = Msg(name=self.name, content=response.message.content, role="Assistant")
+        msg = Msg(name=self.name, content=response.message.content, role="assistant")
 
         # Print/speak the message in this agent's voice
         self.speak(msg)

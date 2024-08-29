@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Literal, Dict
 
+
 @dataclass
 class Arguments(object):
     language: Literal["cn", "en"] = field(default="cn", metadata={"help": "support en & cn now"})
@@ -32,7 +33,7 @@ class Arguments(object):
     generation_backend: str = field(default="dashscope_generation", metadata={
         "help": "global generation backend: openai_generation, dashscope_generation, etc."})
 
-    generation_model: str = field(default="gpt-4o", metadata={
+    generation_model: str = field(default="qwen-max", metadata={
         "help": "global generation model: gpt-4o, gpt-4o-mini, gpt-4-turbo, qwen-max, etc."})
 
     generation_params: dict = field(default_factory=lambda: {}, metadata={
@@ -41,7 +42,7 @@ class Arguments(object):
     embedding_backend: str = field(default="dashscope_generation", metadata={
         "help": "global embedding backend: openai_embedding, dashscope_embedding, etc."})
 
-    embedding_model: str = field(default="text-embedding-3-small", metadata={
+    embedding_model: str = field(default="text-embedding-v2", metadata={
         "help": "global embedding model: text-embedding-3-large, text-embedding-3-small, text-embedding-ada-002, "
                 "text-embedding-v2, etc."})
 

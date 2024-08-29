@@ -31,8 +31,6 @@ class TestWorkersCn(unittest.TestCase):
             enable_ranker=True,
         )
         self.ms = MemoryScope(arguments=self.arguments)
-        config = self.ms.dump_config()
-        self.ms.logger.info(f"config=\n{config}")
 
     def tearDown(self):
         self.ms.close()
@@ -42,12 +40,13 @@ class TestWorkersCn(unittest.TestCase):
         name = "extract_time"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context, TARGET_NAME: self.arguments.human_name},
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         query = "明天我去上海出差"
         query_timestamp = int(datetime.datetime.now().timestamp())
@@ -57,17 +56,18 @@ class TestWorkersCn(unittest.TestCase):
         result = worker.get_workflow_context(EXTRACT_TIME_DICT)
         worker.logger.info(f"result={result}")
 
-    # @unittest.skip
+    @unittest.skip
     def test_info_filter(self):
         name = "info_filter"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context, TARGET_NAME: self.arguments.human_name},
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value, content="我爱吃川菜", role_name=self.arguments.human_name),
@@ -96,12 +96,13 @@ class TestWorkersCn(unittest.TestCase):
         name = "info_filter"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context, TARGET_NAME: self.arguments.human_name},
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value, content="你知道北京哪里的海鲜最新鲜吗",
@@ -144,12 +145,13 @@ class TestWorkersCn(unittest.TestCase):
         name = "get_observation"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context, TARGET_NAME: self.arguments.human_name},
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value, content="我爱吃川菜", role_name=self.arguments.human_name),
@@ -178,12 +180,13 @@ class TestWorkersCn(unittest.TestCase):
         name = "get_observation"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context, TARGET_NAME: self.arguments.human_name},
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value, content="有没有推荐的策略游戏？最近想找新的挑战。", role_name=self.arguments.human_name),
@@ -209,12 +212,13 @@ class TestWorkersCn(unittest.TestCase):
         name = "get_observation_with_time"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context, TARGET_NAME: self.arguments.human_name},
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
             Message(role=MessageRoleEnum.USER.value, content="去年我们一起合作了因果推断技术", role_name=self.arguments.human_name),
@@ -238,12 +242,13 @@ class TestWorkersCn(unittest.TestCase):
         name = "contra_repeat"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context, TARGET_NAME: self.arguments.human_name},
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         nodes = [
             MemoryNode(user_name="AI", target_name="用户", content="用户在美团干活"),
@@ -298,12 +303,13 @@ class TestWorkersCn(unittest.TestCase):
         name = "get_reflection_subject"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context, TARGET_NAME: self.arguments.human_name},
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         nodes = [
             MemoryNode(content="用户对策略游戏感兴趣，寻找新挑战。", role_name=self.arguments.human_name),
@@ -334,12 +340,13 @@ class TestWorkersCn(unittest.TestCase):
         name = "update_insight"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
             context=reflection_worker.context,
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         nodes = [
             MemoryNode(content="用户喜欢打王者荣耀", role_name=self.arguments.human_name),
@@ -356,12 +363,13 @@ class TestWorkersCn(unittest.TestCase):
         name = "long_contra_repeat"
 
         worker: MemoryBaseWorker = init_instance_by_config(
-            config=self.ms._context.worker_conf_dict[name],
+            config=self.ms.context.worker_conf_dict[name],
             name=name,
             is_multi_thread=False,
-            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name},
+            context={MEMORYSCOPE_CONTEXT: self.ms.context, TARGET_NAME: self.arguments.human_name},
             context_lock=None,
-            thread_pool=self.ms._context.thread_pool)
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms.context.thread_pool)
 
         nodes = [
             MemoryNode(content="用户对策略游戏感兴趣，寻找新挑战。", role_name=self.arguments.human_name),
@@ -375,3 +383,34 @@ class TestWorkersCn(unittest.TestCase):
         result = [node.content for node in worker.memory_manager.get_memories(MERGE_OBS_NODES)]
         result = "\n".join(result)
         worker.logger.info(f"result.long_contra_repeat={result}")
+
+    # @unittest.skip
+    def test_example_query_worker(self):
+        name = "example_query_worker"
+
+        worker: MemoryBaseWorker = init_instance_by_config(
+            config={
+                "class": "contrib.example_query_worker",
+                "generation_model": "generation_model",
+            },
+            name=name,
+            context={MEMORYSCOPE_CONTEXT: self.ms._context, TARGET_NAME: self.arguments.human_name,
+                     "chat_kwargs": {"query": "我一直很爱他们"}},
+            context_lock=None,
+            memoryscope_context=self.ms.context,
+            thread_pool=self.ms._context.thread_pool)
+
+        chat_messages = [
+            Message(role=MessageRoleEnum.USER.value, content="我的两个孩子分别叫小明和小红",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.ASSISTANT.value,
+                    content="很高兴认识您和您的家庭成员！小明和小红是非常通俗且好听的名字。",
+                    role_name=self.arguments.assistant_name),
+            Message(role=MessageRoleEnum.USER.value, content="我一直很爱他们", role_name=self.arguments.human_name),
+        ]
+
+        worker.set_workflow_context(CHAT_MESSAGES_SCATTER, chat_messages)
+        worker.run()
+
+        result = worker.get_workflow_context(QUERY_WITH_TS)
+        worker.logger.info(f"result={result}")

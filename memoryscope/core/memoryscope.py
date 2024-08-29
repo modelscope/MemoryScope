@@ -91,7 +91,7 @@ class MemoryScope(ConfigManager):
         self.close()
 
     @property
-    def content(self):
+    def context(self):
         return self._context
 
     @property

@@ -1,0 +1,185 @@
+global:
+  language: en
+  thread_pool_max_workers: 5
+  logger_name: memoryscope
+  logger_name_time_suffix: "%Y%m%d_%H%M%S"
+  logger_to_screen: false
+  enable_ranker: false
+  enable_today_contra_repeat: true
+  enable_long_contra_repeat: false
+  output_memory_max_count: 20
+
+memory_chat:
+  cli_memory_chat:
+    class: core.chat.cli_memory_chat
+    memory_service: memoryscope_service
+    generation_model: generation_model
+    stream: true
+
+memory_service:
+  memoryscope_service:
+    class: core.service.memory_scope_service
+    human_name: user
+    assistant_name: AI
+    memory_operations:
+      read_message:
+        class: core.operation.frontend_operation
+        workflow: read_message
+        description: "read short memory"
+
+      retrieve_memory:
+        class: core.operation.frontend_operation
+        workflow: set_query_meow,[extract_time|retrieve_obs_ins,semantic_rank],fuse_rerank
+        description: "retrieve long-term memory"
+
+      list_memory:
+        class: core.operation.frontend_operation
+        workflow: set_query,retrieve_top_memory,print_memory
+        description: "read all long-term memory of the user, use `refresh_time=5` to refresh screen every 5 seconds."
+
+      delete_memory:
+        class: core.operation.frontend_operation
+        workflow: set_query,retrieve_all_memory,delete_memory
+        description: "delete a single long-term memory"
+
+      delete_all:
+        class: core.operation.frontend_operation
+        workflow: set_query,retrieve_all_memory,delete_all
+        description: "delete all long-term memory"
+
+      add_memory:
+        class: core.operation.frontend_operation
+        workflow: add_memory
+        description: "add a single observation"
+
+      consolidate_memory:
+        class: core.operation.consolidate_memory_op
+        workflow: info_filter,[get_observation|get_observation_with_time|load_today_memory],contra_repeat,store_memory
+        description: "summary user's observation memory, run backend."
+        interval_time: 1
+
+      reflect_and_reconsolidate:
+        class: core.operation.backend_operation
+        workflow: load_obs_and_insight,get_reflection_subject,update_insight,long_contra_repeat,store_memory
+        description: "summary user's insight memory, run backend."
+        interval_time: 15
+
+worker:
+  dummy:
+    class: core.worker.dummy_worker
+    generation_model: generation_model
+    embedding_model: embedding_model
+    rank_model: rank_model
+  read_message:
+    class: core.worker.frontend.read_message_worker
+  set_query:
+    class: core.worker.frontend.set_query_worker
+  set_query_meow:
+    class: contrib.example_query_worker
+    generation_model: generation_model
+  retrieve_obs_ins:
+    class: core.worker.frontend.retrieve_memory_worker
+    retrieve_obs_top_k: 100
+    retrieve_ins_top_k: 100
+  extract_time:
+    class: core.worker.frontend.extract_time_worker
+    generation_model: generation_model
+  semantic_rank:
+    class: core.worker.frontend.semantic_rank_worker
+    rank_model: rank_model
+  fuse_rerank:
+    class: core.worker.frontend.fuse_rerank_worker
+    fuse_score_threshold: 0.01
+    fuse_ratio_dict:
+      conversation: 0.5
+      observation: 1
+      obs_customized: 1.2
+      insight: 2.0
+    fuse_time_ratio: 2.0
+  retrieve_top_memory:
+    class: core.worker.frontend.retrieve_memory_worker
+    retrieve_obs_top_k: 100
+    retrieve_ins_top_k: 100
+    retrieve_expired_top_k: 100
+  print_memory:
+    class: core.worker.frontend.print_memory_worker
+  retrieve_all_memory:
+    class: core.worker.frontend.retrieve_memory_worker
+    retrieve_obs_top_k: 1000
+    retrieve_ins_top_k: 1000
+    retrieve_expired_top_k: 1000
+  delete_memory:
+    class: core.worker.backend.update_memory_worker
+    method: delete_memory
+  delete_all:
+    class: core.worker.backend.update_memory_worker
+    method: delete_all
+  add_memory:
+    class: core.worker.backend.update_memory_worker
+    method: from_query
+  info_filter:
+    class: core.worker.backend.info_filter_worker
+    generation_model: generation_model
+  load_today_memory:
+    class: core.worker.backend.load_memory_worker
+    retrieve_today_top_k: 100
+  get_observation:
+    class: core.worker.backend.get_observation_worker
+    generation_model: generation_model
+  get_observation_with_time:
+    class: core.worker.backend.get_observation_with_time_worker
+    generation_model: generation_model
+  contra_repeat:
+    class: core.worker.backend.contra_repeat_worker
+    generation_model: generation_model
+  store_memory:
+    class: core.worker.backend.update_memory_worker
+    method: from_memory_key
+    memory_key: all
+  load_obs_and_insight:
+    class: core.worker.backend.load_memory_worker
+    retrieve_not_reflected_top_k: 100
+    retrieve_not_updated_top_k: 100
+    retrieve_insight_top_k: 100
+  get_reflection_subject:
+    class: core.worker.backend.get_reflection_subject_worker
+    generation_model: generation_model
+    reflect_obs_cnt_threshold: 5
+  update_insight:
+    class: core.worker.backend.update_insight_worker
+    generation_model: generation_model
+    rank_model: rank_model
+    embedding_model: embedding_model
+    update_insight_threshold: 0.01
+    enable_parallel: false
+  long_contra_repeat:
+    class: core.worker.backend.long_contra_repeat_worker
+    generation_model: generation_model
+    long_contra_repeat_threshold: 0.5
+
+model:
+  generation_model:
+    class: core.models.llama_index_generation_model
+    module_name: dashscope_generation
+    model_name: qwen-max
+    max_tokens: 2000
+    temperature: 0.01
+  embedding_model:
+    class: core.models.llama_index_embedding_model
+    module_name: dashscope_embedding
+    model_name: text-embedding-v2
+  rank_model:
+    class: core.models.llama_index_rank_model
+    module_name: dashscope_rank
+    model_name: gte-rerank
+    top_n: 500
+
+memory_store:
+  class: core.storage.llama_index_es_memory_store
+  embedding_model: embedding_model
+  index_name: memory_index
+  es_url: http://localhost:9200
+  retrieve_mode: dense
+
+monitor:
+  class: core.storage.dummy_monitor

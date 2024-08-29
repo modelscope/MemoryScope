@@ -11,6 +11,7 @@ from memoryscope.scheme.message import Message
 from memoryscope.scheme.model_response import ModelResponse, ModelResponseGen
 from memoryscope.core.utils.logger import Logger
 
+
 class LlamaIndexGenerationModel(BaseModel):
     """
     This class represents a generation model within the LlamaIndex framework,
@@ -73,7 +74,7 @@ class LlamaIndexGenerationModel(BaseModel):
                     model_response.message.content += delta
                     model_response.delta = response.delta
                     yield model_response
-
+                self.logger.info(self.logger.format_chat_message(model_response))
             return gen()
         else:
             if isinstance(call_result, CompletionResponse):
