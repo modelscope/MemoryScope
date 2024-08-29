@@ -21,7 +21,7 @@ class GetReflectionSubjectWorker(MemoryBaseWorker):
     def _parse_params(self, **kwargs):
         self.reflect_obs_cnt_threshold: int = kwargs.get("reflect_obs_cnt_threshold", 10)
         self.generation_model_kwargs: dict = kwargs.get("generation_model_kwargs", {})
-        self.reflect_num_questions: int = kwargs.get("reflect_num_questions", 0)
+        self.reflect_num_questions: int = kwargs.get("reflect_num_questions", 1)
 
     def new_insight_node(self, insight_key: str) -> MemoryNode:
         """

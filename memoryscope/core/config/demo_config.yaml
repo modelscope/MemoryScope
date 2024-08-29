@@ -138,7 +138,7 @@ worker:
   get_reflection_subject:
     class: core.worker.backend.get_reflection_subject_worker
     generation_model: generation_model
-    reflect_obs_cnt_threshold: 5
+    reflect_obs_cnt_threshold: 6
   update_insight:
     class: core.worker.backend.update_insight_worker
     generation_model: generation_model
