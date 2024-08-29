@@ -67,6 +67,9 @@ class MemoryBaseWorker(BaseWorker, metaclass=ABCMeta):
         result = self.get_workflow_context(CHAT_MESSAGES_SCATTER)
 
         if not result:
+            if not self.chat_messages:
+                return []
+
             if isinstance(self.chat_messages[0], list):
                 chat_messages: List[Message] = []
                 for messages in self.chat_messages:
