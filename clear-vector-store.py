@@ -22,5 +22,5 @@ arguments = Arguments(
 )
 
 ms = MemoryScope(arguments=arguments)
-msms = ms._context.memory_store.es_store
-msms.sync_delete_all()
+es_store = ms.context.memory_store.es_store
+es_store.sync_delete_all()
