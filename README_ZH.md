@@ -2,10 +2,7 @@
 
 # MemoryScope
 
-![MemoryScope Logo](./docs/images/logo_1.png)
-<p align="left">
-  <img src="docs/images/logo.png" width="700px" alt="MemoryScope Logo">
-</p>
+![MemoryScope Logo](./docs/images/logo.png)
 
 为您的大语言模型聊天机器人配备强大且灵活的长期记忆系统。
 
@@ -16,7 +13,7 @@
 [![](https://img.shields.io/badge/license-Apache--2.0-black)](./LICENSE)
 [![](https://img.shields.io/badge/Contribute-Welcome-green)](https://modelscope.github.io/memoryscope/tutorial/contribute.html)
 
-<!-- 
+<!-- 创空间
 [![](https://img.shields.io/badge/ModelScope-Demos-4e29ff.svg?logo=data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjI0IDEyMS4zMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCTxwYXRoIGQ9Im0wIDQ3Ljg0aDI1LjY1djI1LjY1aC0yNS42NXoiIGZpbGw9IiM2MjRhZmYiIC8+Cgk8cGF0aCBkPSJtOTkuMTQgNzMuNDloMjUuNjV2MjUuNjVoLTI1LjY1eiIgZmlsbD0iIzYyNGFmZiIgLz4KCTxwYXRoIGQ9Im0xNzYuMDkgOTkuMTRoLTI1LjY1djIyLjE5aDQ3Ljg0di00Ny44NGgtMjIuMTl6IiBmaWxsPSIjNjI0YWZmIiAvPgoJPHBhdGggZD0ibTEyNC43OSA0Ny44NGgyNS42NXYyNS42NWgtMjUuNjV6IiBmaWxsPSIjMzZjZmQxIiAvPgoJPHBhdGggZD0ibTAgMjIuMTloMjUuNjV2MjUuNjVoLTI1LjY1eiIgZmlsbD0iIzM2Y2ZkMSIgLz4KCTxwYXRoIGQ9Im0xOTguMjggNDcuODRoMjUuNjV2MjUuNjVoLTI1LjY1eiIgZmlsbD0iIzYyNGFmZiIgLz4KCTxwYXRoIGQ9Im0xOTguMjggMjIuMTloMjUuNjV2MjUuNjVoLTI1LjY1eiIgZmlsbD0iIzM2Y2ZkMSIgLz4KCTxwYXRoIGQ9Im0xNTAuNDQgMHYyMi4xOWgyNS42NXYyNS42NWgyMi4xOXYtNDcuODR6IiBmaWxsPSIjNjI0YWZmIiAvPgoJPHBhdGggZD0ibTczLjQ5IDQ3Ljg0aDI1LjY1djI1LjY1aC0yNS42NXoiIGZpbGw9IiMzNmNmZDEiIC8+Cgk8cGF0aCBkPSJtNDcuODQgMjIuMTloMjUuNjV2LTIyLjE5aC00Ny44NHY0Ny44NGgyMi4xOXoiIGZpbGw9IiM2MjRhZmYiIC8+Cgk8cGF0aCBkPSJtNDcuODQgNzMuNDloLTIyLjE5djQ3Ljg0aDQ3Ljg0di0yMi4xOWgtMjUuNjV6IiBmaWxsPSIjNjI0YWZmIiAvPgo8L3N2Zz4K)](https://modelscope.cn/studios?name=memoryscope&page=1&sort=latest)
 -->
 
@@ -24,31 +21,16 @@
 ----
 ## 新闻
 
-- **[2024-09-02]** 我们现在发布了 MemoryScope v0.1.1，该版本也可以在 [PyPI](https://pypi.org/simple) 上获取！
+- **[2024-09-02]** 我们现在发布了 MemoryScope v0.1.1，该版本也可以在 [PyPI](https://pypi.org/simple/memoryscope/) 上获取！
 ----
 
 ## 什么是MemoryScope？
-
-💾 记忆数据库:
-- MemoryScope 配备了一个 *ElasticSearch (ES)* 向量数据库，用于存储系统中记录的所有记忆片段。
-
-🛠️ 系统操作:
-- 记忆检索：当用户输入对话，此操作返回语义相关的记忆片段。如果输入对话包含对时间的指涉，则同时返回相应时间中的记忆片段。
-- 记忆巩固：此操作接收一批用户的输入对话，并从对话中提取重要的用户信息，将其作为 *observation* 形式的记忆片段存储在记忆数据库中。
-- 反思与再巩固：每隔一段时间，此操作对新记录的 *observations* 进行反思，以形成和更新 *insight* 形式的记忆片段。然后执行记忆再巩固，
-以确保记忆片段之间的矛盾和重复得到妥善处理。
-
-### 框架
 MemoryScope可以为LLM聊天机器人提供强大且灵活的长期记忆能力，并提供了构建长期记忆能力的框架。
 MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期记忆能力来不断学习，记得用户的基础信息以及各种习惯和喜好，使得用户在使用LLM时逐渐感受到一种“默契”。
-<p align="left">
-  <img src="docs/images/framework.png" width="700px" alt="MemoryScope Framework">
-</p>
 
-![MemoryScope Logo](./docs/images/framework.png)
+![Framework](./docs/images/framework.png)
 
-### 主要特点
-### 长期记忆的框架：
+### 核心框架：
 
 💾 记忆数据库: MemoryScope配备了向量数据库(默认是*ElasticSearch*)，用于存储系统中记录的所有记忆片段。
 
@@ -113,7 +95,7 @@ MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期
 
 ## 快速开始
 - [简易用法（快速开始）](./examples/api/simple_usages_cn.ipynb)
-- [在命令行与MemoryScope聊天机器人交互](./examples/cli/README.md)
+- [在命令行与MemoryScope聊天机器人交互](./examples/cli/README_ZH.md)
 - [进阶自定义用法](./examples/advance/custom_operator.md)
 
 

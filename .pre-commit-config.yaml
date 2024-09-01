@@ -24,7 +24,6 @@ repos:
     rev: v0.23.1
     hooks:
       - id: toml-sort-fix
-        exclude: ".*poetry.lock"
   - repo: https://github.com/srstevenson/nb-clean
     rev: 3.1.0
     hooks:
