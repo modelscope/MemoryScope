@@ -10,3 +10,4 @@ sphinx_rtd_theme
 sphinxcontrib-mermaid
 myst-parser
 autodoc_pydantic
+nbsphinx

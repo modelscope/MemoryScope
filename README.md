@@ -2,9 +2,7 @@ English | [**中文**](./README_ZH.md)
 
 # MemoryScope
 
-<p align="left">
-  <img src="docs/images/logo_1.png" width="700px" alt="MemoryScope Logo">
-</p>
+![MemoryScope Logo](./docs/images/logo_1.png)
 
 Equip your LLM chatbot with a powerful and flexible long term memory system.
 
@@ -33,9 +31,8 @@ to form and update *insights*. Then, memory re-consolidation is performed to ens
 among memory pieces are properly handled.
 
 ### Framework
-<p align="left">
-  <img src="docs/images/framework.png" width="700px" alt="MemoryScope Framework">
-</p>
+
+![MemoryScope Logo](./docs/images/framework.png)
 
 ### Main Features
 

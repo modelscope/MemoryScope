@@ -1,9 +1,5 @@
 .. _api:
 
-=============
-API Reference
-=============
-
 
 MemoryScope API Documentation
 

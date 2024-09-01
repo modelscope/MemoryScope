@@ -43,28 +43,13 @@
 3. Run `docker-compose up` to build and launch the memory-scope cli interface.
 
 
-## III. Install from PYPI [Linux only]
+## III. Install from PyPI [Linux]
 
-1. Install from pypi:
-
-    ```bash
-    pip install memoryscope
-    ```
-
-
-2. test Chinese / Dashscope chat configuration:
-
-    ```bash
-    export DASHSCOPE_API_KEY="sk-0000000000"
-    memoryscope --config_path=memoryscope/core/config/demo_config_zh.yaml
-    ```
-
-3. test English / OpenAI chat configuration:
-
-    ```bash
-    export OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    python quick-start-demo.py --config_path=memoryscope/core/config/demo_config.yaml
-    ```
+```bash
+pip install memoryscope
+export DASHSCOPE_API_KEY="sk-0000000000"
+memoryscope --config_path=memoryscope/core/config/demo_config_zh.yaml
+```
 
 
 ## IV. Install from source [Linux only]
@@ -78,7 +63,7 @@
     vim memoryscope/core/config/demo_config_zh.yaml
     ```
 
-2. Install 
+2. Install
     ```bash
     pip install -e .
     ```
