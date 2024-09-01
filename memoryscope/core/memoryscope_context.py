@@ -41,11 +41,13 @@ def get_memoryscope_uuid():
     if ms_context.memory_scope_uuid:
         return ms_context.memory_scope_uuid
     else:
-        raise RuntimeError("MemoryscopeContext is not initialized yet. Please initialize it first.")
+        # raise RuntimeError("MemoryscopeContext is not initialized yet. Please initialize it first.")
+        return "memory_scope_uuid_not_registered"
 
 def get_memoryscope_context():
     ms_context = MemoryscopeContext()
     if ms_context.memory_scope_uuid:
         return ms_context
     else:
-        raise RuntimeError("MemoryscopeContext is not initialized yet. Please initialize it first.")
+        # raise RuntimeError("MemoryscopeContext is not initialized yet. Please initialize it first.")
+        return "memory_scope_uuid_not_registered"

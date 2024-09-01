@@ -90,8 +90,13 @@ Reference to cite if you use MemoryScope in a paper:
 
 ```
 @software{MemoryScope,
-author = {},
-month = {08},
+author = {Li Yu and 
+          Tiancheng Qin and
+          Qingxu Fu and
+          Sen Huang and
+          Xianzhe Xu and
+          Zhaoyang Liu},
+month = {09},
 title = {{MemoryScope}},
 url = {https://github.com/modelscope/MemoryScope},
 year = {2024}

@@ -74,8 +74,8 @@ contra_repeat_few_shot:
     3 Charles is {user_name}'s supervisor.
     4 Charles is {user_name}'s supervisor.
     5 Charles is {user_name}'s supervisor and the branch manager of a bank.
-    5 {user_name} loves playing basketball with classmates.
-    6 {user_name} likes playing basketball.
+    6 {user_name} loves playing basketball with classmates.
+    7 {user_name} likes playing basketball.
 
     Thought: The first sentence does not have any contradictions or complete repetitions with the previously numbered sentences.
     Judgment: <1> <None>

@@ -80,7 +80,7 @@
 
 2. Install 
     ```bash
-    poetry install
+    pip install -e .
     ```
 
 3. Run Elasticsearch service, refer to [elasticsearch documents](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html).

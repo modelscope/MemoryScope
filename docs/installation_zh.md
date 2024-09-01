@@ -57,7 +57,7 @@
 3. 测试英文 / OpenAI 对话配置：
     ```bash
     export OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    python quick-start-demo.py --config_path=memoryscope/core/config/demo_config.yaml
+    memoryscope --config_path=memoryscope/core/config/demo_config.yaml
     ```
 
 
@@ -74,7 +74,7 @@
 
 2. 安装依赖
     ```bash
-    poetry install
+    pip install -e .
     ```
 
 3. 运行 Elasticsearch 服务，参照 [Elasticsearch 文档](https://www.elastic.co/guide/cn/elasticsearch/reference/current/getting-started.html)。
