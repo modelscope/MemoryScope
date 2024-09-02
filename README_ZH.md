@@ -8,7 +8,7 @@
 
 [![](https://img.shields.io/badge/python-3.10+-blue)](https://pypi.org/project/memoryscope/)
 [![](https://img.shields.io/badge/pypi-v0.1.1-blue?logo=pypi)](https://pypi.org/project/memoryscope/)
-[![](https://img.shields.io/badge/Docs-English%7C%E4%B8%AD%E6%96%87-blue?logo=markdown)](https://modelscope.github.io/memoryscope/#welcome-to-agentscope-tutorial-hub)
+[![](https://img.shields.io/badge/Docs-English%7C%E4%B8%AD%E6%96%87-blue?logo=markdown)](https://modelscope.github.io/memoryscope/#welcome-to-memoryscope-tutorial-hub)
 [![](https://img.shields.io/badge/Docs-API_Reference-blue?logo=markdown)](https://modelscope.github.io/memoryscope/)
 [![](https://img.shields.io/badge/license-Apache--2.0-black)](./LICENSE)
 [![](https://img.shields.io/badge/Contribute-Welcome-green)](https://modelscope.github.io/memoryscope/tutorial/contribute.html)
@@ -21,7 +21,7 @@
 ----
 ## 新闻
 
-- **[2024-09-02]** 我们现在发布了 MemoryScope v0.1.1，该版本也可以在 [PyPI](https://pypi.org/simple/memoryscope/) 上获取！
+- **[2024-09-06]** 我们现在发布了 MemoryScope v0.1.1，该版本也可以在 [PyPI](https://pypi.org/simple/memoryscope/) 上获取！
 ----
 
 ## 什么是MemoryScope？
@@ -38,15 +38,15 @@ MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期
 
 🛠️ 核心Op库: 并基于worker的pipeline构建了memory服务的核心operation，实现了记忆检索，记忆巩固等核心能力。
 
-1. 记忆检索：当用户输入对话，此操作返回语义相关的记忆片段。如果输入对话包含对时间的指涉，则同时返回相应时间中的记忆片段。
-2. 记忆巩固：此操作接收一批用户的输入对话，并从对话中提取重要的用户信息，将其作为 *observation* 形式的记忆片段存储在记忆数据库中。
-3. 反思与再巩固：每隔一段时间，此操作对新记录的 *observations* 进行反思，以形成和更新 *insight*
+- 记忆检索：当用户输入对话，此操作返回语义相关的记忆片段。如果输入对话包含对时间的指涉，则同时返回相应时间中的记忆片段。
+- 记忆巩固：此操作接收一批用户的输入对话，并从对话中提取重要的用户信息，将其作为 *observation* 形式的记忆片段存储在记忆数据库中。
+- 反思与再巩固：每隔一段时间，此操作对新记录的 *observations* 进行反思，以形成和更新 *insight*
    形式的记忆片段。然后执行记忆再巩固，以确保记忆片段之间的矛盾和重复得到妥善处理。
 
 ⚙️ 最佳实践:
 
-1. MemoryScope在构建了长期记忆核心能力的基础上，实现了带长期记忆的对话接口(API)和带长期记忆的命令行对话实践(CLI)。
-2. MemoryScope结合了目前流行的Agent框架（AutoGen、AgentScope），给出了最佳实践。
+- MemoryScope在构建了长期记忆核心能力的基础上，实现了带长期记忆的对话接口(API)和带长期记忆的命令行对话实践(CLI)。
+- MemoryScope结合了目前流行的Agent框架（AutoGen、AgentScope），给出了最佳实践。
 
 ### 🤝主要特点
 
@@ -89,7 +89,9 @@ MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期
 
 ### Docker方式一键运行Demo
 
+<!--
 运行 `sudo docker run -it --rm --net=host memoryscope/memoryscope` 一键运行memoryscope的演示。
+-->
 
 完整的安装方法请参考[安装指南](docs/installation_zh.md)。
 

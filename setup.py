@@ -7,12 +7,15 @@ python setup.py sdist bdist_wheel
 
 # 3. finally, upload
 twine upload dist/*
+
+rm -rf dist build && python setup.py sdist bdist_wheel && twine upload dist/*
 """
 
 import setuptools, glob, os
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
+
 
 def _process_requirements():
     packages = open('requirements.txt').read().strip().split('\n')
@@ -25,6 +28,7 @@ def _process_requirements():
             requires.append(pkg)
     return requires
 
+
 def package_files(directory):
     paths = []
     for (path, directories, filenames) in os.walk(directory):
@@ -33,8 +37,8 @@ def package_files(directory):
                 paths.append(os.path.join('..', path, filename))
     return paths
 
-extra_files = package_files('memoryscope')
 
+extra_files = package_files('memoryscope')
 
 authors = [
     {"name": "Li Yu", "email": "jinli.yl@alibaba-inc.com"},
@@ -47,10 +51,12 @@ authors = [
 
 setuptools.setup(
     name="memoryscope",
-    version="0.1.1.1",
+    version="0.1.0.9",
     author=', '.join([author['name'] for author in authors]),
     author_email=', '.join([author['email'] for author in authors]),
-    description="MemoryScope is a powerful and flexible long term memory system for LLM chatbots. It consists of a memory database and three customizable system operations, which can be flexibly combined to provide robust long term memory services for your LLM chatbot.",
+    description="MemoryScope is a powerful and flexible long term memory system for LLM chatbots. It consists of a "
+                "memory database and three customizable system operations, which can be flexibly combined to provide "
+                "robust long term memory services for your LLM chatbot.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/modelscope/memoryscope",
@@ -59,13 +65,13 @@ setuptools.setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: Apache License",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
     package_dir={"": "."},
     package_data={"": extra_files},
     include_package_data=True,
-    entry_points = {
+    entry_points={
         'console_scripts': ['memoryscope=memoryscope:cli'],
     },
     packages=setuptools.find_packages(where="."),

@@ -29,7 +29,7 @@ memory_service:
 
       retrieve_memory:
         class: core.operation.frontend_operation
-        workflow: set_query_meow,[extract_time|retrieve_obs_ins,semantic_rank],fuse_rerank
+        workflow: rewrite_query,[extract_time|retrieve_obs_ins,semantic_rank],fuse_rerank
         description: "retrieve long-term memory"
 
       list_memory:
@@ -74,7 +74,7 @@ worker:
     class: core.worker.frontend.read_message_worker
   set_query:
     class: core.worker.frontend.set_query_worker
-  set_query_meow:
+  rewrite_query:
     class: contrib.example_query_worker
     generation_model: generation_model
   retrieve_obs_ins:
