@@ -48,16 +48,44 @@
     pip install memoryscope
     ```
 
-2. 测试中文 / Dashscope 对话配置：
-    ```bash
-    export DASHSCOPE_API_KEY="sk-0000000000"
-    memoryscope --config_path=memoryscope/core/config/demo_config_zh.yaml
+2. 运行 Elasticsearch 服务，参照 [Elasticsearch 文档](https://www.elastic.co/guide/cn/elasticsearch/reference/current/getting-started.html)。
+推荐使用 Docker 方法：
+    ```
+    sudo docker run -p 9200:9200 \
+    -e "discovery.type=single-node" \
+    -e "xpack.security.enabled=false" \
+    -e "xpack.license.self_generated.type=trial" \
+    docker.elastic.co/elasticsearch/elasticsearch:8.13.2
     ```
 
-3. 测试英文 / OpenAI 对话配置：
+3. 测试中文 / Dashscope 对话配置：
+    ```bash
+    export DASHSCOPE_API_KEY="sk-0000000000"
+    memoryscope --language="cn" \
+            --memory_chat_class="cli_memory_chat" \
+            --human_name="用户" \
+            --assistant_name="AI" \
+            --generation_backend="dashscope_generation" \
+            --generation_model="qwen-max" \
+            --embedding_backend="dashscope_embedding" \
+            --embedding_model="text-embedding-v2" \
+            --enable_ranker=True \
+            --rank_backend="dashscope_rank" \
+            --rank_model="gte-rerank"
+    ```
+
+4. 测试英文 / OpenAI 对话配置：
     ```bash
     export OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    memoryscope --config_path=memoryscope/core/config/demo_config.yaml
+    memoryscope --language="en" \
+            --memory_chat_class="cli_memory_chat" \
+            --human_name="User" \
+            --assistant_name="AI" \
+            --generation_backend="openai_generation" \
+            --generation_model="gpt-4o" \
+            --embedding_backend="openai_embedding" \
+            --embedding_model="text-embedding-3-small" \
+            --enable_ranker=False
     ```
 
 
@@ -89,7 +117,6 @@
 
 4. 启动 MemoryScope，同时参考 [CLI 文档](../examples/cli/README.md)
     ```bash
-    pip install -r requirements.txt
     export DASHSCOPE_API_KEY="sk-0000000000"
     python quick-start-demo.py --config_path=memoryscope/core/config/demo_config_zh.yaml
     ```
