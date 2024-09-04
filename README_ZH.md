@@ -113,7 +113,7 @@ poetry install --with dev
 pre-commit install
 ```
 
-Please refer to our [Contribution Guide](./docs/contribute_zh.md) for more details.
+请参阅我们的[贡献指南](./docs/contribute_zh.md) 了解更多详细信息。
 
 ## 📖 引用
 

@@ -39,7 +39,7 @@ git checkout -b your-feature-branch-name
 
 ```bash
 # 安装开发者版本
-pip install -e .[dev]
+pip install -e .
 # 安装 pre-commit 钩子
 pre-commit install
 ```
@@ -49,7 +49,7 @@ pre-commit install
 修改完成之后就是提交它们的时候了。请提供清晰而简洁的提交信息，以解释您的修改内容。
 
 ```bash
-git add -U
+git add -A
 git commit -m "修改内容的简要描述"
 ```
 

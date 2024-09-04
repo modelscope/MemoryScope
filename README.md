@@ -102,7 +102,7 @@ poetry install --with dev
 pre-commit install
 ```
 
-
+Please refer to our [Contribution Guide](./docs/contribute.md) for more details.
 
 ## 📖 Citation
 
