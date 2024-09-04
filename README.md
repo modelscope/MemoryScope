@@ -86,9 +86,9 @@ For installation, please refer to [Installation.md](docs/installation.md).
 
 ## Example Usages
 - [Simple Usages (Quick Start)](./examples/api/simple_usages_en.ipynb)
+- [With AutoGen](./examples/api/autogen_example.md)
 - [CLI with a MemoryScope Chatbot](./examples/cli/README.md)
 - [Advanced Customization](./examples/advance/custom_operator.md)
-
 
 ## 💡 Contribute
 

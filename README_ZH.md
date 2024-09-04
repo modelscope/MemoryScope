@@ -99,6 +99,7 @@ MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期
 - [简易用法（快速开始）](./examples/api/simple_usages_cn.ipynb)
 - [在命令行与MemoryScope聊天机器人交互](./examples/cli/README_ZH.md)
 - [进阶自定义用法](./examples/advance/custom_operator.md)
+- [结合AutoGen使用](./examples/api/autogen_example.md)
 
 
 ## 💡 代码贡献

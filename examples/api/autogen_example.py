@@ -27,7 +27,7 @@ class MemoryScopeAgent(ConversableAgent):
         self.memory_scope = MemoryScope(arguments=arguments)
         self.memory_chat = self.memory_scope.default_memory_chat
 
-        self.register_reply([Agent, None], MemoryScopeAgent.generate_reply_with_memory,remove_other_reply_funcs=True)
+        self.register_reply([Agent, None], MemoryScopeAgent.generate_reply_with_memory, remove_other_reply_funcs=True)
 
 
     def generate_reply_with_memory(

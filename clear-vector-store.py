@@ -5,8 +5,6 @@ This script purges the entire vector store !
 
 """
 
-import sys
-sys.path.append(".")
 from memoryscope import MemoryScope, Arguments
 
 arguments = Arguments(
