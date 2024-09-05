@@ -11,7 +11,7 @@ MemoryScope Documentation
 Welcome to MemoryScope Tutorial
 -------------------------------
 
-.. image:: docs/images/logo_1.png
+.. image:: docs/images/logo.png
     :align: center
 
 MemoryScope is a powerful and flexible long term memory system for LLM chatbots. It consists

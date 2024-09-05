@@ -7,13 +7,13 @@ from memoryscope import MemoryScope, Arguments
 
 class MemoryScopeAgent(ConversableAgent):
     def __init__(
-        self,
-        name: str = "assistant",
-        system_message: Optional[str] = "",
-        human_input_mode: Literal["ALWAYS", "NEVER", "TERMINATE"] = "NEVER",
-        llm_config: Optional[Union[Dict, bool]] = None,
-        arguments: Arguments = None,
-        **kwargs,
+            self,
+            name: str = "assistant",
+            system_message: Optional[str] = "",
+            human_input_mode: Literal["ALWAYS", "NEVER", "TERMINATE"] = "NEVER",
+            llm_config: Optional[Union[Dict, bool]] = None,
+            arguments: Arguments = None,
+            **kwargs,
     ):
         super().__init__(
             name=name,
@@ -29,12 +29,11 @@ class MemoryScopeAgent(ConversableAgent):
 
         self.register_reply([Agent, None], MemoryScopeAgent.generate_reply_with_memory, remove_other_reply_funcs=True)
 
-
     def generate_reply_with_memory(
-        self,
-        messages: Optional[List[Dict]] = None,
-        sender: Optional[Agent] = None,
-        config: Optional[Any] = None,
+            self,
+            messages: Optional[List[Dict]] = None,
+            sender: Optional[Agent] = None,
+            config: Optional[Any] = None,
     ) -> Tuple[bool, Union[str, Dict, None]]:
         # Generate response
 
@@ -50,11 +49,12 @@ class MemoryScopeAgent(ConversableAgent):
     def close(self):
         self.memory_scope.close()
 
+
 def main():
     # Create the agent of MemoryScope
     arguments = Arguments(
         language="cn",
-        human_name="User",
+        human_name="用户",
         assistant_name="AI",
         memory_chat_class="api_memory_chat",
         generation_backend="dashscope_generation",
@@ -71,7 +71,7 @@ def main():
     user_proxy = UserProxyAgent("user", code_execution_config=False)
 
     # Let the assistant start the conversation.  It will end when the user types exit.
-    assistant.initiate_chat(user_proxy, message="How can I help you today?")
+    assistant.initiate_chat(user_proxy, message="有什么需要帮忙的吗？")
     assistant.close()
 
 

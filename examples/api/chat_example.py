@@ -1,19 +1,17 @@
-import sys
-sys.path.append(".")
 from memoryscope import MemoryScope, Arguments
 
 arguments = Arguments(
     language="cn",
-    human_name="User",
+    human_name="用户",
     assistant_name="AI",
     memory_chat_class="api_memory_chat",
     generation_backend="dashscope_generation",
-    generation_model="qwen2-72b-instruct",
+    generation_model="qwen-max",
     embedding_backend="dashscope_embedding",
     embedding_model="text-embedding-v2",
     rank_backend="dashscope_rank",
     rank_model="gte-rerank",
-    enable_ranker=False)
+    enable_ranker=True)
 
 
 def chat_example1():

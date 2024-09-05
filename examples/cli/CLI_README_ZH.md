@@ -8,7 +8,7 @@ MemoryScope 可以通过两种不同的方式启动：
 
 如果您更喜欢通过 YAML 文件配置设置，可以通过提供配置文件的路径来实现：
 ```bash
-memoryscope --config_path=memoryscope/core/config/demo_config.yaml
+memoryscope --config_path=memoryscope/core/config/demo_config_zh.yaml
 ```
  
 ### 2. 使用命令行参数
@@ -28,7 +28,6 @@ memoryscope --language="cn" \
             --enable_ranker=True \
             --rank_backend="dashscope_rank" \
             --rank_model="gte-rerank"
-
 # 英文
 memoryscope --language="en" \
             --memory_chat_class="cli_memory_chat" \
@@ -40,7 +39,6 @@ memoryscope --language="en" \
             --embedding_model="text-embedding-3-small" \
             --enable_ranker=False
 ```
- 
 
 以下是可以通过任一方法设置的可用选项：
 

@@ -1,36 +1,40 @@
-# Custom Operator and Worker
+# 自定义 Operator 和 Worker
 
-1. Create a new worker named `example_query_worker.py` in the `contrib` directory:
+1. 在 `contrib` 路径下创建新worker，命名为 `example_query_worker.py`:
     ```bash
     vim memoryscope/contrib/example_query_worker.py
     ```
 
-2. Write the program for the new custom worker. Note that the class name must match the filename, which is `ExampleQueryWorker`:
+2. 写入新的自定义worker的程序，注意`class`的命名需要与文件名保持一致，为`ExampleQueryWorker`：
     ```python
     import datetime
     from memoryscope.constants.common_constants import QUERY_WITH_TS
     from memoryscope.core.worker.memory_base_worker import MemoryBaseWorker
 
     class ExampleQueryWorker(MemoryBaseWorker):
+
         def _run(self):
+
             timestamp = int(datetime.datetime.now().timestamp())  # Current timestamp as default
+
             assert "query" in self.chat_kwargs
             query = self.chat_kwargs["query"]
             if not query:
                 query = ""
             else:
-                query = query.strip() + "\n You must add a `meow~` at the end of each of your answers."
+                query = query.strip() + "\n You must add a `meow~` at the end of each of your answer."
+
             # Store the determined query and its timestamp in the context
             self.set_workflow_context(QUERY_WITH_TS, (query, timestamp))
     ```
 
-3. Create a YAML startup file (copying `demo_config.yaml`):
+3. 创建yaml启动文件（复制demo_config_zh.yaml）
     ```
-    cp memoryscope/core/config/demo_config.yaml examples/advance/replacement.yaml
+    cp memoryscope/core/config/demo_config_zh.yaml examples/advance/replacement.yaml
     vim examples/advance/replacement.yaml
     ```
 
-4. At the bottom, insert the definition for the new worker and replace the previous default `set_query` worker, and update the operation's workflow:
+4. 在最下面插入新worker的定义，并且取代之前的默认`set_query`worker，并替换operation的workflow
     ```
     rewrite_query:
       class: contrib.example_query_worker
@@ -43,7 +47,7 @@
         description: "retrieve long-term memory"     
     ```
 
-5. Verify:
+5. 验证：
     ```
     python quick-start-demo.py --config examples/advance/replacement.yaml
     ```

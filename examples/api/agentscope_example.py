@@ -34,11 +34,10 @@ class MemoryScopeAgent(AgentBase):
 
 
 def main():
-
     # Setting of MemoryScope
     arguments = Arguments(
         language="cn",
-        human_name="User",
+        human_name="用户",
         assistant_name="AI",
         memory_chat_class="api_memory_chat",
         generation_backend="dashscope_generation",
@@ -46,19 +45,12 @@ def main():
         embedding_backend="dashscope_embedding",
         embedding_model="text-embedding-v2",
         rank_backend="dashscope_rank",
-        rank_model="gte-rerank"
-    )
+        rank_model="gte-rerank")
 
     # Initialize AgentScope
-    agentscope.init(
-        project="MemoryScope",
+    agentscope.init(project="MemoryScope")
 
-    )
-
-    memoryscope_agent = MemoryScopeAgent(
-        name="Assistant",
-        arguments=arguments
-    )
+    memoryscope_agent = MemoryScopeAgent(name="Assistant", arguments=arguments)
 
     user_agent = UserAgent()
 

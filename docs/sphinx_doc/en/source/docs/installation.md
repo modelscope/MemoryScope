@@ -1,20 +1,20 @@
 # Installing MemoryScope
 
 ## I. Install with docker [Recommended]
+
 1. Clone the repository and edit settings
     ```bash
     # clone project
     git clone https://github.com/modelscope/memoryscope
     cd memoryscope
     # edit configuration, e.g. add api keys
-    vim memoryscope/core/config/demo_config_zh.yaml
+    vim memoryscope/core/config/demo_config.yaml
     ```
 
 2. Build Docker image
     ```bash
     sudo docker build --network=host -t memoryscope .
     ```
-
 
 3. Launch Docker container
     ```bash
@@ -24,31 +24,29 @@
 
 ## II. Install with docker compose [Recommended]
 
-
 1. Clone the repository and edit settings
     ```bash
     # clone project
     git clone https://github.com/modelscope/memoryscope
     cd memoryscope
     # edit configuration, e.g. add api keys
-    vim memoryscope/core/config/demo_config_zh.yaml
+    vim memoryscope/core/config/demo_config.yaml
     ```
-
 
 2. Edit `docker-compose.yml` to change environment variable.
     ```
-    DASHSCOPE_API_KEY: "sk-0000000000"
+    OPENAI_API_KEY: "sk-0000000000"
     ```
 
 3. Run `docker-compose up` to build and launch the memory-scope cli interface.
 
 
 ## III. Install from PyPI
-1. Install from PyPI
 
-```bash
-pip install memoryscope
-```
+1. Install from PyPI
+   ```bash
+   pip install memoryscope
+   ```
 
 2. Run Elasticsearch service, refer to [elasticsearch documents](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html).
 The docker method is recommended:
@@ -98,7 +96,7 @@ The docker method is recommended:
     git clone https://github.com/modelscope/memoryscope
     cd memoryscope
     # edit configuration, e.g. add api keys
-    vim memoryscope/core/config/demo_config_zh.yaml
+    vim memoryscope/core/config/demo_config.yaml
     ```
 
 2. Install
@@ -118,6 +116,6 @@ The docker method is recommended:
 
 4. Launch memoryscope, also refer to [cli documents](../examples/cli/README.md)
     ```bash
-    export DASHSCOPE_API_KEY="sk-0000000000"
+    export OPENAI_API_KEY="sk-0000000000"
     python quick-start-demo.py --config_path=memoryscope/core/config/demo_config_zh.yaml
     ```
