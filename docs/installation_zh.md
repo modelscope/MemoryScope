@@ -41,7 +41,7 @@
 3. 运行 `docker-compose up` 命令来构建并启动 MemoryScope CLI 界面。
 
 
-## 三、通过 PYPI 安装 [仅限 Linux]
+## 三、通过 PYPI 安装
 
 1. 从 PyPI 安装：
     ```bash
@@ -89,7 +89,7 @@
     ```
 
 
-## 四、从源码安装 [仅限 Linux]
+## 四、从源码安装
 
 1. 克隆仓库并编辑设置
     ```bash

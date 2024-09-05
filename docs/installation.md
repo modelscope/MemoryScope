@@ -43,7 +43,7 @@
 3. Run `docker-compose up` to build and launch the memory-scope cli interface.
 
 
-## III. Install from PyPI [Linux]
+## III. Install from PyPI
 1. Install from PyPI
 
 ```bash
@@ -90,7 +90,7 @@ The docker method is recommended:
             --enable_ranker=False
     ```
 
-## IV. Install from source [Linux only]
+## IV. Install from source
 
 1. Clone the repository and edit settings
     ```bash

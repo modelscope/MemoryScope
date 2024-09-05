@@ -1,4 +1,5 @@
 import time
+import threading
 
 from memoryscope.core.operation.base_operation import OPERATION_TYPE
 from memoryscope.core.operation.frontend_operation import FrontendOperation
@@ -10,6 +11,7 @@ class BackendOperation(FrontendOperation):
     It manages operation status, loop control, and integrates with a global context for thread management.
     """
     operation_type: OPERATION_TYPE = "backend"
+    operation_lock: threading.Lock = threading.Lock()
 
     def __init__(self, interval_time: int, **kwargs):
         super().__init__(**kwargs)
@@ -52,7 +54,8 @@ class BackendOperation(FrontendOperation):
 
                 for target_name in self.target_names:
                     try:
-                        self.run_operation(target_name=target_name, **kwargs)
+                        with BackendOperation.operation_lock:
+                            self.run_operation(target_name=target_name, **kwargs)
                     except Exception as e:
                         self.logger.exception(f"op_name={self.name} target_name={target_name} encounter exception. "
                                               f"args={e.args}")

@@ -197,3 +197,24 @@ def cosine_similarity(query: List[float], documents: List[List[float]]):
 
     cosine_similarities = dot_product / (query_norm * documents_norm)
     return cosine_similarities.tolist()
+
+
+def cosine_similarity_matrix(query: List[List[float]]):
+    query = np.array(query)
+
+    documents_norm = np.linalg.norm(query, axis=1)
+    if np.any(documents_norm == 0):
+        raise ValueError("One of the document vectors has zero norm, which will result in a division by zero")
+    
+    n_query = query.shape[0]
+    query_expanded = np.expand_dims(query, axis=0)
+    query_triplicated = np.repeat(query_expanded, repeats=n_query, axis=0)
+    query_transpose = query_triplicated.swapaxes(0, 1)
+
+    q = np.expand_dims(documents_norm, axis=0)
+    norm_dot = q.transpose() * q
+    dot_product = (query_triplicated*query_transpose).sum(-1) / norm_dot
+
+    return dot_product
+
+
