@@ -103,16 +103,13 @@ MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期
 
 
 ## 💡 代码贡献
-
 欢迎社区的代码贡献。
-
 我们非常推荐每一个贡献者在代码提交前，安装`pre-commit`钩子工具，
 能够帮助在每一次git提交的时候，进行自动化的代码格式校验。
 ```shell
-poetry install --with dev
+pip install -e .
 pre-commit install
 ```
-
 请参阅我们的[贡献指南](./docs/contribute_zh.md) 了解更多详细信息。
 
 ## 📖 引用

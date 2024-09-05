@@ -15,7 +15,7 @@ git clone https://github.com/your-username/memoryscope.git
 cd memoryscope
 ```
 ### Create a New Branch
-Create a new branch for your work. This helps keep proposed changes organized and separate from the `master` branch.
+Create a new branch for your work. This helps keep proposed changes organized and separate from the `main` branch.
 ```bash
 git checkout -b your-feature-branch-name
 ```
@@ -36,7 +36,7 @@ git commit -m "A brief description of the changes"
 ```
 You might get some error messages raised by `pre-commit`. Please resolve them according to the error code and commit again.
 ### Submit a Pull Request
-When you're ready for feedback, submit a pull request to the MemoryScope `master` branch. In your pull request description, explain the changes you've made and any other relevant context.
+When you're ready for feedback, submit a pull request to the MemoryScope `main` branch. In your pull request description, explain the changes you've made and any other relevant context.
 We will review your pull request. This process might involve some discussion, additional changes on your part, or both.
 ### Code Review
 Wait for us to review your pull request. We may suggest some changes or improvements. Keep an eye on your GitHub notifications and be responsive to any feedback.
