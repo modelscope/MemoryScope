@@ -84,7 +84,7 @@ In the future, we will support more model interfaces and local deployment of LLM
 For installation, please refer to [Installation.md](docs/installation.md). 
 
 
-## 🍕 Example Usages
+## 🍕 Quick Start
 - [Simple Usages (Quick Start)](./examples/api/simple_usages.ipynb)
 - [With AutoGen](./examples/api/autogen_example.md)
 - [CLI with a MemoryScope Chatbot](./examples/cli/README.md)
@@ -98,7 +98,7 @@ We highly recommend install pre-commit hooks in this repo before committing pull
 These hooks are small house-keeping scripts executed every time you make a git commit,
 which will take care of the formatting and linting automatically.
 ```shell
-poetry install --with dev
+pip install -e .
 pre-commit install
 ```
 
