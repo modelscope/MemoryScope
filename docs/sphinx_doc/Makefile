@@ -6,8 +6,8 @@ ASSETSDIR     = assets
 BUILDDIR      = build/html
 SOURCEDIR_EN  = en/source
 BUILDDIR_EN   = build/html/en
-SOURCEDIR_ZH  = zh_CN/source
-BUILDDIR_ZH   = build/html/zh_CN
+SOURCEDIR_ZH  = zh/source
+BUILDDIR_ZH   = build/html/zh
 
 # English document
 en:
@@ -16,7 +16,7 @@ en:
 	@echo "Build finished. The HTML pages are in $(BUILDDIR_EN)"
 
 # Chinese document
-zh_CN:
+zh:
 	@$(SPHINXBUILD) -b html "$(SOURCEDIR_ZH)" "$(BUILDDIR_ZH)"
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR_ZH)"
@@ -27,6 +27,6 @@ index:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR_EN)" "$(BUILDDIR_EN)" $(O)
 
-all: en zh_CN index
+all: en zh index
 
-.PHONY: all en zh_CN index
+.PHONY: all en zh index

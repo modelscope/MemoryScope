@@ -1,55 +1,55 @@
-# MemoryScope 安装指南
+# Installing MemoryScope
 
-## 一、使用 Docker 安装 [推荐]
+## I. Install with docker [Recommended]
 
-1. 克隆仓库并编辑配置
+1. Clone the repository and edit settings
     ```bash
-    # 克隆项目
+    # clone project
     git clone https://github.com/modelscope/memoryscope
     cd memoryscope
-    # 编辑配置，例如添加 API 密钥
-    vim memoryscope/core/config/demo_config_zh.yaml
+    # edit configuration, e.g. add api keys
+    vim memoryscope/core/config/demo_config.yaml
     ```
 
-2. 构建 Docker 镜像
+2. Build Docker image
     ```bash
     sudo docker build --network=host -t memoryscope .
     ```
 
-3. 启动 Docker 容器
+3. Launch Docker container
     ```bash
     sudo docker run -it --rm --net=host memoryscope
     ```
 
 
-## 二、使用 Docker Compose 安装 [推荐]
+## II. Install with docker compose [Recommended]
 
-1. 克隆仓库并编辑配置
+1. Clone the repository and edit settings
     ```bash
-    # 克隆项目
+    # clone project
     git clone https://github.com/modelscope/memoryscope
     cd memoryscope
-    # 编辑配置，例如添加 API 密钥
-    vim memoryscope/core/config/demo_config_zh.yaml
+    # edit configuration, e.g. add api keys
+    vim memoryscope/core/config/demo_config.yaml
     ```
 
-2. 编辑 `docker-compose.yml` 文件以更改环境变量。
+2. Edit `docker-compose.yml` to change environment variable.
     ```
-    DASHSCOPE_API_KEY: "sk-0000000000"
-    ```
-
-3. 运行 `docker-compose up` 命令来构建并启动 MemoryScope CLI 界面。
-
-
-## 三、通过 PYPI 安装
-
-1. 从 PyPI 安装：
-    ```bash
-    pip install memoryscope
+    OPENAI_API_KEY: "sk-0000000000"
     ```
 
-2. 运行 Elasticsearch 服务，参照 [Elasticsearch 文档](https://www.elastic.co/guide/cn/elasticsearch/reference/current/getting-started.html)。
-推荐使用 Docker 方法：
+3. Run `docker-compose up` to build and launch the memory-scope cli interface.
+
+
+## III. Install from PyPI
+
+1. Install from PyPI
+   ```bash
+   pip install memoryscope
+   ```
+
+2. Run Elasticsearch service, refer to [elasticsearch documents](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html).
+The docker method is recommended:
     ```
     sudo docker run -p 9200:9200 \
     -e "discovery.type=single-node" \
@@ -58,7 +58,7 @@
     docker.elastic.co/elasticsearch/elasticsearch:8.13.2
     ```
 
-3. 测试中文 / Dashscope 对话配置：
+3. Test Chinese / Dashscope Configuration
     ```bash
     export DASHSCOPE_API_KEY="sk-0000000000"
     memoryscope --language="cn" \
@@ -74,7 +74,7 @@
             --rank_model="gte-rerank"
     ```
 
-4. 测试英文 / OpenAI 对话配置：
+4. Test English / OpenAI Configuration
     ```bash
     export OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     memoryscope --language="en" \
@@ -88,25 +88,24 @@
             --enable_ranker=False
     ```
 
+## IV. Install from source
 
-## 四、从源码安装
-
-1. 克隆仓库并编辑设置
+1. Clone the repository and edit settings
     ```bash
-    # 克隆项目
+    # clone project
     git clone https://github.com/modelscope/memoryscope
     cd memoryscope
-    # 编辑配置，例如添加 API 密钥
-    vim memoryscope/core/config/demo_config_zh.yaml
+    # edit configuration, e.g. add api keys
+    vim memoryscope/core/config/demo_config.yaml
     ```
 
-2. 安装依赖
+2. Install
     ```bash
     pip install -e .
     ```
 
-3. 运行 Elasticsearch 服务，参照 [Elasticsearch 文档](https://www.elastic.co/guide/cn/elasticsearch/reference/current/getting-started.html)。
-推荐使用 Docker 方法：
+3. Run Elasticsearch service, refer to [elasticsearch documents](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html).
+The docker method is recommended:
     ```
     sudo docker run -p 9200:9200 \
     -e "discovery.type=single-node" \
@@ -115,9 +114,8 @@
     docker.elastic.co/elasticsearch/elasticsearch:8.13.2
     ```
 
-4. 启动 MemoryScope，同时参考 [CLI 文档](../examples/cli/README.md)
+4. Launch memoryscope, also refer to [cli documents](../examples/cli/CLI_README.md)
     ```bash
-    export DASHSCOPE_API_KEY="sk-0000000000"
+    export OPENAI_API_KEY="sk-0000000000"
     python quick-start-demo.py --config_path=memoryscope/core/config/demo_config_zh.yaml
     ```
-

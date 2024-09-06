@@ -19,12 +19,12 @@
 
 
 ----
-## 新闻
+## 📰 新闻
 
 - **[2024-09-06]** 我们现在发布了 MemoryScope v0.1.1，该版本也可以在 [PyPI](https://pypi.org/simple/memoryscope/) 上获取！
 ----
 
-## 什么是MemoryScope？
+## 🌟 什么是MemoryScope？
 MemoryScope可以为LLM聊天机器人提供强大且灵活的长期记忆能力，并提供了构建长期记忆能力的框架。
 MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期记忆能力来不断学习，记得用户的基础信息以及各种习惯和喜好，使得用户在使用LLM时逐渐感受到一种“默契”。
 
@@ -78,25 +78,10 @@ MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期
 
 ----
 ## 🚀 安装
-
-### 1. 使用 Docker 安装
-
-### 2. 使用 Docker Compose 安装
-
-### 3. 使用 PYPI + Docker 安装 [仅限 Linux & MacOS]
-
-### 3. 使用 从源码安装 + Docker 安装 [仅限 Linux & MacOS]
-
-### Docker方式一键运行Demo
-
-<!--
-运行 `sudo docker run -it --rm --net=host memoryscope/memoryscope` 一键运行memoryscope的演示。
--->
-
 完整的安装方法请参考[安装指南](docs/installation_zh.md)。
 
-## 快速开始
-- [简易用法（快速开始）](./examples/api/simple_usages_cn.ipynb)
+## 🍕 快速开始
+- [简易用法（快速开始）](./examples/api/simple_usages_zh.ipynb)
 - [在命令行与MemoryScope聊天机器人交互](./examples/cli/README_ZH.md)
 - [进阶自定义用法](./examples/advance/custom_operator.md)
 - [结合AutoGen使用](./examples/api/autogen_example.md)
@@ -110,7 +95,7 @@ MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期
 pip install -e .
 pre-commit install
 ```
-请参阅我们的[贡献指南](./docs/contribute_zh.md) 了解更多详细信息。
+请参阅我们的[贡献指南](./docs/contribution_zh.md) 了解更多详细信息。
 
 ## 📖 引用
 

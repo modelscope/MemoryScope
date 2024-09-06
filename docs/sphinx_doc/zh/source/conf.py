@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath("../../../../../MemoryScope"))
 
 # -- Project information -----------------------------------------------------
 
-language = "zh_CN"
+language = "zh"
 
 project = "MemoryScope"
 copyright = "2024, Alibaba Tongyi Lab"

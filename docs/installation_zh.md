@@ -1,55 +1,55 @@
-# Installing MemoryScope
+# MemoryScope 安装指南
 
-## I. Install with docker [Recommended]
+## 一、使用 Docker 安装 [推荐]
 
-1. Clone the repository and edit settings
+1. 克隆仓库并编辑配置
     ```bash
-    # clone project
+    # 克隆项目
     git clone https://github.com/modelscope/memoryscope
     cd memoryscope
-    # edit configuration, e.g. add api keys
-    vim memoryscope/core/config/demo_config.yaml
+    # 编辑配置，例如添加 API 密钥
+    vim memoryscope/core/config/demo_config_zh.yaml
     ```
 
-2. Build Docker image
+2. 构建 Docker 镜像
     ```bash
     sudo docker build --network=host -t memoryscope .
     ```
 
-3. Launch Docker container
+3. 启动 Docker 容器
     ```bash
     sudo docker run -it --rm --net=host memoryscope
     ```
 
 
-## II. Install with docker compose [Recommended]
+## 二、使用 Docker Compose 安装 [推荐]
 
-1. Clone the repository and edit settings
+1. 克隆仓库并编辑配置
     ```bash
-    # clone project
+    # 克隆项目
     git clone https://github.com/modelscope/memoryscope
     cd memoryscope
-    # edit configuration, e.g. add api keys
-    vim memoryscope/core/config/demo_config.yaml
+    # 编辑配置，例如添加 API 密钥
+    vim memoryscope/core/config/demo_config_zh.yaml
     ```
 
-2. Edit `docker-compose.yml` to change environment variable.
+2. 编辑 `docker-compose.yml` 文件以更改环境变量。
     ```
-    OPENAI_API_KEY: "sk-0000000000"
+    DASHSCOPE_API_KEY: "sk-0000000000"
     ```
 
-3. Run `docker-compose up` to build and launch the memory-scope cli interface.
+3. 运行 `docker-compose up` 命令来构建并启动 MemoryScope CLI 界面。
 
 
-## III. Install from PyPI
+## 三、通过 PYPI 安装
 
-1. Install from PyPI
-   ```bash
-   pip install memoryscope
-   ```
+1. 从 PyPI 安装：
+    ```bash
+    pip install memoryscope
+    ```
 
-2. Run Elasticsearch service, refer to [elasticsearch documents](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html).
-The docker method is recommended:
+2. 运行 Elasticsearch 服务，参照 [Elasticsearch 文档](https://www.elastic.co/guide/cn/elasticsearch/reference/current/getting-started.html)。
+推荐使用 Docker 方法：
     ```
     sudo docker run -p 9200:9200 \
     -e "discovery.type=single-node" \
@@ -58,7 +58,7 @@ The docker method is recommended:
     docker.elastic.co/elasticsearch/elasticsearch:8.13.2
     ```
 
-3. Test Chinese / Dashscope Configuration
+3. 测试中文 / Dashscope 对话配置：
     ```bash
     export DASHSCOPE_API_KEY="sk-0000000000"
     memoryscope --language="cn" \
@@ -74,7 +74,7 @@ The docker method is recommended:
             --rank_model="gte-rerank"
     ```
 
-4. Test English / OpenAI Configuration
+4. 测试英文 / OpenAI 对话配置：
     ```bash
     export OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     memoryscope --language="en" \
@@ -88,24 +88,25 @@ The docker method is recommended:
             --enable_ranker=False
     ```
 
-## IV. Install from source
 
-1. Clone the repository and edit settings
+## 四、从源码安装
+
+1. 克隆仓库并编辑设置
     ```bash
-    # clone project
+    # 克隆项目
     git clone https://github.com/modelscope/memoryscope
     cd memoryscope
-    # edit configuration, e.g. add api keys
-    vim memoryscope/core/config/demo_config.yaml
+    # 编辑配置，例如添加 API 密钥
+    vim memoryscope/core/config/demo_config_zh.yaml
     ```
 
-2. Install
+2. 安装依赖
     ```bash
     pip install -e .
     ```
 
-3. Run Elasticsearch service, refer to [elasticsearch documents](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html).
-The docker method is recommended:
+3. 运行 Elasticsearch 服务，参照 [Elasticsearch 文档](https://www.elastic.co/guide/cn/elasticsearch/reference/current/getting-started.html)。
+推荐使用 Docker 方法：
     ```
     sudo docker run -p 9200:9200 \
     -e "discovery.type=single-node" \
@@ -114,8 +115,9 @@ The docker method is recommended:
     docker.elastic.co/elasticsearch/elasticsearch:8.13.2
     ```
 
-4. Launch memoryscope, also refer to [cli documents](../examples/cli/README.md)
+4. 启动 MemoryScope，同时参考 [CLI 文档](../examples/cli/CLI_README_ZH.md)
     ```bash
-    export OPENAI_API_KEY="sk-0000000000"
+    export DASHSCOPE_API_KEY="sk-0000000000"
     python quick-start-demo.py --config_path=memoryscope/core/config/demo_config_zh.yaml
     ```
+

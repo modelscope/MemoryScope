@@ -14,11 +14,11 @@ Equip your LLM chatbot with a powerful and flexible long term memory system.
 [![](https://img.shields.io/badge/Contribute-Welcome-green)](https://modelscope.github.io/memoryscope/tutorial/contribute.html)
 
 ----
-## News
+## 📰 News
 
 - **[2024-09-06]** We release MemoryScope v0.1.1 now, which is also available in [PyPI](https://pypi.org/simple/memoryscope/)!
 ----
-## What is MemoryScope？
+## 🌟 What is MemoryScope？
 MemoryScope provides LLM chatbots with powerful and flexible long-term memory capabilities, offering a framework for building such abilities. 
 It can be applied to scenarios like personal assistants and emotional companions, continuously learning through long-term memory to remember users' basic information as well as various habits and preferences. 
 This allows users to gradually experience a sense of "understanding" when using the LLM.
@@ -84,8 +84,8 @@ In the future, we will support more model interfaces and local deployment of LLM
 For installation, please refer to [Installation.md](docs/installation.md). 
 
 
-## Example Usages
-- [Simple Usages (Quick Start)](./examples/api/simple_usages_en.ipynb)
+## 🍕 Example Usages
+- [Simple Usages (Quick Start)](./examples/api/simple_usages.ipynb)
 - [With AutoGen](./examples/api/autogen_example.md)
 - [CLI with a MemoryScope Chatbot](./examples/cli/README.md)
 - [Advanced Customization](./examples/advance/custom_operator.md)
@@ -102,7 +102,7 @@ poetry install --with dev
 pre-commit install
 ```
 
-Please refer to our [Contribution Guide](./docs/contribute.md) for more details.
+Please refer to our [Contribution Guide](./docs/contribution.md) for more details.
 
 ## 📖 Citation
 
