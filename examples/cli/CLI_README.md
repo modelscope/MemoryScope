@@ -1,7 +1,7 @@
 # The Cli Interface of MemoryScope
 
 ## Usage
-
+Before running, follow the [**Installation**](../../docs/installation.md#iii-install-from-pypi) guidelines in Readme, and start the Docker image first.
 MemoryScope can be launched in two different ways:
 
 ### 1. Using YAML Configuration File

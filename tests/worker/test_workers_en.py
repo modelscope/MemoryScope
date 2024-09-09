@@ -405,7 +405,8 @@ class TestWorkersEn(unittest.TestCase):
             Message(role=MessageRoleEnum.ASSISTANT.value,
                     content="I am very pleased to meet you and your family members! Xiaoming and Xiaohong are very pleasant names.",
                     role_name=self.arguments.assistant_name),
-            Message(role=MessageRoleEnum.USER.value, content="I have always loved them.", role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="I have always loved them.",
+                    role_name=self.arguments.human_name),
         ]
 
         worker.set_workflow_context(CHAT_MESSAGES_SCATTER, chat_messages)

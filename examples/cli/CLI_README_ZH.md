@@ -1,7 +1,7 @@
 # MemoryScope 的命令行接口
 
 ## 使用方法
-
+在运行之前，请先按照 Readme 中的 [**Installation**](../../docs/installation_zh.md#三通过-pypi-安装) 指南进行安装，并启动 Docker 镜像。
 MemoryScope 可以通过两种不同的方式启动：
 
 ### 1. 使用 YAML 配置文件

@@ -189,15 +189,24 @@ class TestWorkersCn(unittest.TestCase):
             thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
-            Message(role=MessageRoleEnum.USER.value, content="有没有推荐的策略游戏？最近想找新的挑战。", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="最近在北京的工作压力太大，有什么放松的建议吗？", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="说到朋友，我确实有几位很要好的朋友，我们经常一起出去吃饭。", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="对了，最近想换工作，你觉得北京的哪个区工作机会更多？", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="我很喜欢尝试新的美食，有没有推荐的美食应用？", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="我有时也喜欢自己在家做饭，你有没有好的海鲜菜谱推荐？", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="我在北京阿里云园区工作", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="我是阿里云百炼的工程师", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="最后一个问题，你知道怎么才能维持广泛的社交关系吗？", role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="有没有推荐的策略游戏？最近想找新的挑战。",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="最近在北京的工作压力太大，有什么放松的建议吗？",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="说到朋友，我确实有几位很要好的朋友，我们经常一起出去吃饭。",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="对了，最近想换工作，你觉得北京的哪个区工作机会更多？",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="我很喜欢尝试新的美食，有没有推荐的美食应用？",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="我有时也喜欢自己在家做饭，你有没有好的海鲜菜谱推荐？",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="我在北京阿里云园区工作",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="我是阿里云百炼的工程师",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="最后一个问题，你知道怎么才能维持广泛的社交关系吗？",
+                    role_name=self.arguments.human_name),
         ]
 
         worker.set_workflow_context(CHAT_MESSAGES_SCATTER, chat_messages)
@@ -221,12 +230,15 @@ class TestWorkersCn(unittest.TestCase):
             thread_pool=self.ms.context.thread_pool)
 
         chat_messages = [
-            Message(role=MessageRoleEnum.USER.value, content="去年我们一起合作了因果推断技术", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="上个月我去了杭州旅游", role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="去年我们一起合作了因果推断技术",
+                    role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="上个月我去了杭州旅游",
+                    role_name=self.arguments.human_name),
             Message(role=MessageRoleEnum.USER.value, content="下周我要去高考", role_name=self.arguments.human_name),
             Message(role=MessageRoleEnum.USER.value, content="明天我去北京出差", role_name=self.arguments.human_name),
             Message(role=MessageRoleEnum.USER.value, content="前天我把苹果扔掉了", role_name=self.arguments.human_name),
-            Message(role=MessageRoleEnum.USER.value, content="前天我把苹果扔掉了，我不喜欢吃", role_name=self.arguments.human_name),
+            Message(role=MessageRoleEnum.USER.value, content="前天我把苹果扔掉了，我不喜欢吃",
+                    role_name=self.arguments.human_name),
             Message(role=MessageRoleEnum.USER.value, content="明天是我生日", role_name=self.arguments.human_name),
         ]
 

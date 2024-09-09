@@ -46,14 +46,15 @@ authors = [
     {"name": "Li Yu", "email": "jinli.yl@alibaba-inc.com"},
     {"name": "Tiancheng Qin", "email": "qiancheng.qtc@alibaba-inc.com"},
     {"name": "Qingxu Fu", "email": "fuqingxu.fqx@alibaba-inc.com"},
-    {"name": "Sen Huang", "email": "sen.huang@alibaba-inc.com"},
+    {"name": "Sen Huang", "email": "huangsen.huang@alibaba-inc.com"},
     {"name": "Xianzhe Xu", "email": "xianzhe.xxz@alibaba-inc.com"},
-    {"name": "Zhaoyang Liu", "email": "zhaoyang.liu@alibaba-inc.com"}
+    {"name": "Zhaoyang Liu", "email": "jingmu.lzy@alibaba-inc.com"},
+    {"name": "Boyin Liu", "email": "liuboyin.lby@alibaba-inc.com"},
 ]
 
 setuptools.setup(
     name="memoryscope",
-    version="0.1.0.9",
+    version="0.1.0.10",
     author=', '.join([author['name'] for author in authors]),
     author_email=', '.join([author['email'] for author in authors]),
     description="MemoryScope is a powerful and flexible long term memory system for LLM chatbots. It consists of a "

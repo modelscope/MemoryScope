@@ -6,8 +6,9 @@ services:
       context: ./
     environment:
       DASHSCOPE_API_KEY: "sk-0000000000"
+      # OPENAI_API_KEY: "sk-0000000000"
     volumes:
-      - ./config:/memory_scope_project/memoryscope/config
+      - ./memoryscope/core/config:/memory_scope_project/memoryscope/memoryscope/core/config
     depends_on:
       - elasticsearch
 
