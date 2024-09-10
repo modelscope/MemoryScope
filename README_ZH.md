@@ -28,9 +28,11 @@
 MemoryScope可以为LLM聊天机器人提供强大且灵活的长期记忆能力，并提供了构建长期记忆能力的框架。
 MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期记忆能力来不断学习，记得用户的基础信息以及各种习惯和喜好，使得用户在使用LLM时逐渐感受到一种“默契”。
 
-![Framework](./docs/images/framework.png)
+### Demo
+![chinese-gif](https://github.com/user-attachments/assets/57519274-8c01-4d88-bcd2-0ebce3551e5d)
 
 ### 核心框架：
+![Framework](./docs/images/framework.png)
 
 💾 记忆数据库: MemoryScope配备了向量数据库(默认是*ElasticSearch*)，用于存储系统中记录的所有记忆片段。
 
