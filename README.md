@@ -24,7 +24,7 @@ It can be applied to scenarios like personal assistants and emotional companions
 This allows users to gradually experience a sense of "understanding" when using the LLM.
 
 ### Demo
-![chinese-gif](https://github.com/user-attachments/assets/e83a097c-87d4-45db-8930-e8eab3952829)
+![english-gif](https://github.com/user-attachments/assets/1754c814-1342-4288-a8a3-74d0b40f59a6)
 
 ### Framework
 ![Framework](./docs/images/framework.png)
