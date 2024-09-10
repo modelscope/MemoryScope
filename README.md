@@ -23,9 +23,11 @@ MemoryScope provides LLM chatbots with powerful and flexible long-term memory ca
 It can be applied to scenarios like personal assistants and emotional companions, continuously learning through long-term memory to remember users' basic information as well as various habits and preferences. 
 This allows users to gradually experience a sense of "understanding" when using the LLM.
 
-![Framework](./docs/images/framework.png)
+### Demo
+![chinese-gif](https://github.com/user-attachments/assets/e83a097c-87d4-45db-8930-e8eab3952829)
 
 ### Framework
+![Framework](./docs/images/framework.png)
 
 💾 Memory Database: MemoryScope is equipped with a vector database (default is *ElasticSearch*) to store all memory fragments recorded in the system.
 
