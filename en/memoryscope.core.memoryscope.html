@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,54 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-memoryscope-module">
-<h1>memoryscope.core.memoryscope module<a class="headerlink" href="#memoryscope-core-memoryscope-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.memoryscope">
+<span id="memoryscope-core-memoryscope-module"></span><h1>memoryscope.core.memoryscope module<a class="headerlink" href="#module-memoryscope.core.memoryscope" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.memoryscope.MemoryScope">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.memoryscope.</span></span><span class="sig-name descname"><span class="pre">MemoryScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/memoryscope.html#MemoryScope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.memoryscope.MemoryScope" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.config.config_manager.html#memoryscope.core.config.config_manager.ConfigManager" title="memoryscope.core.config.config_manager.ConfigManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigManager</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.memoryscope.MemoryScope.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/memoryscope.html#MemoryScope.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.memoryscope.MemoryScope.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.memoryscope.MemoryScope.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/memoryscope.html#MemoryScope.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.memoryscope.MemoryScope.close" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.memoryscope.MemoryScope.context">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">context</span></span><a class="headerlink" href="#memoryscope.core.memoryscope.MemoryScope.context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.memoryscope.MemoryScope.memory_chat_dict">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">memory_chat_dict</span></span><a class="headerlink" href="#memoryscope.core.memoryscope.MemoryScope.memory_chat_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.memoryscope.MemoryScope.memory_service_dict">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">memory_service_dict</span></span><a class="headerlink" href="#memoryscope.core.memoryscope.MemoryScope.memory_service_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.memoryscope.MemoryScope.default_memory_chat">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_memory_chat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.chat.base_memory_chat.html#memoryscope.core.chat.base_memory_chat.BaseMemoryChat" title="memoryscope.core.chat.base_memory_chat.BaseMemoryChat"><span class="pre">BaseMemoryChat</span></a></em><a class="headerlink" href="#memoryscope.core.memoryscope.MemoryScope.default_memory_chat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.memoryscope.MemoryScope.default_memory_service">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_memory_service</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.service.base_memory_service.html#memoryscope.core.service.base_memory_service.BaseMemoryService" title="memoryscope.core.service.base_memory_service.BaseMemoryService"><span class="pre">BaseMemoryService</span></a></em><a class="headerlink" href="#memoryscope.core.memoryscope.MemoryScope.default_memory_service" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.memoryscope.MemoryScope.cli_memory_chat">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cli_memory_chat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/memoryscope.html#MemoryScope.cli_memory_chat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.memoryscope.MemoryScope.cli_memory_chat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

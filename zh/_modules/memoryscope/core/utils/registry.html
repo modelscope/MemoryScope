@@ -1,0 +1,224 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.utils.registry &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/utils/registry.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/utils/registry.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">模块代码</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.utils.registry</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>memoryscope.core.utils.registry 源代码</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Registry for different modules.</span>
+<span class="sd">Init class according to the class name and verify the input parameters.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
+
+
+<div class="viewcode-block" id="Registry">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.registry.html#memoryscope.core.utils.Registry">[文档]</a>
+<span class="k">class</span> <span class="nc">Registry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A registry to manage and instantiate various modules by their names, ensuring the uniqueness of registered entries.</span>
+<span class="sd">    It supports both individual and bulk registration of modules, as well as retrieval of modules by name.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name (str): The name of the registry.</span>
+<span class="sd">        module_dict (Dict[str, Any]): A dictionary holding registered modules where keys are module names and values are</span>
+<span class="sd">         the modules themselves.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Registry.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.registry.html#memoryscope.core.utils.Registry.__init__">[文档]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the Registry with a given name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name to identify this registry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="Registry.register">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.registry.html#memoryscope.core.utils.Registry.register">[文档]</a>
+    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Registers module in the registry in a single call.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            module_name (str): The name of module to be registered.</span>
+<span class="sd">            module (List[Any] | Dict[str, Any]): The module to be registered.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: If the input is already registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">module_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="k">if</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_dict</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s1"> is already registered in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_dict</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span></div>
+
+
+<div class="viewcode-block" id="Registry.batch_register">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.registry.html#memoryscope.core.utils.Registry.batch_register">[文档]</a>
+    <span class="k">def</span> <span class="nf">batch_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Registers multiple modules in the registry in a single call. Accepts either a list of modules or a dictionary</span>
+<span class="sd">            mapping names to modules.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            modules (List[Any] | Dict[str, Any]): A list of modules or a dictionary mapping module names to the modules.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: If the input is neither a list nor a dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">modules</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">module_name_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">}</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">modules</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">module_name_dict</span> <span class="o">=</span> <span class="n">modules</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Input must be a list or a dictionary.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">module_name_dict</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves a registered module by its name using index notation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            module_name (str): The name of the module to retrieve.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A registered module corresponding to the given name.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: If the specified module is not found in the registry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_dict</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2"> not found in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_dict</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

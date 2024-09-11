@@ -1,0 +1,277 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.worker.frontend.retrieve_memory_worker &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../../en/_modules/memoryscope/core/worker/frontend/retrieve_memory_worker.html">English</a></li> |
+    <a href="../../../../../../zh/_modules/memoryscope/core/worker/frontend/retrieve_memory_worker.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">模块代码</a></li>
+          <li class="breadcrumb-item"><a href="../../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.worker.frontend.retrieve_memory_worker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>memoryscope.core.worker.frontend.retrieve_memory_worker 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.constants.common_constants</span> <span class="kn">import</span> <span class="n">QUERY_WITH_TS</span><span class="p">,</span> <span class="n">RETRIEVE_MEMORY_NODES</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.timer</span> <span class="kn">import</span> <span class="n">timer</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.worker.memory_base_worker</span> <span class="kn">import</span> <span class="n">MemoryBaseWorker</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.action_status_enum</span> <span class="kn">import</span> <span class="n">ActionStatusEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.memory_type_enum</span> <span class="kn">import</span> <span class="n">MemoryTypeEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.store_status_enum</span> <span class="kn">import</span> <span class="n">StoreStatusEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.scheme.memory_node</span> <span class="kn">import</span> <span class="n">MemoryNode</span>
+
+
+<div class="viewcode-block" id="RetrieveMemoryWorker">
+<a class="viewcode-back" href="../../../../../memoryscope.core.worker.frontend.retrieve_memory_worker.html#memoryscope.core.worker.frontend.RetrieveMemoryWorker">[文档]</a>
+<span class="k">class</span> <span class="nc">RetrieveMemoryWorker</span><span class="p">(</span><span class="n">MemoryBaseWorker</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves memories based on specified criteria such as status, type, and timestamp.</span>
+<span class="sd">    Processes these memories concurrently, sorts them by similarity, and logs the activity,</span>
+<span class="sd">    facilitating efficient memory retrieval operations within a given scope.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_parse_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_obs_top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;retrieve_obs_top_k&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_ins_top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;retrieve_ins_top_k&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_expired_top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;retrieve_expired_top_k&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="nd">@timer</span>
+    <span class="k">def</span> <span class="nf">retrieve_from_observation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves memory nodes from observation based on a query, considering active memories</span>
+<span class="sd">        with specific types. If the retrieval limit is not set, an empty list is returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query (str): The query string used to filter and rank the memory nodes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[MemoryNode]: A list of MemoryNode objects that match the query criteria,</span>
+<span class="sd">                             sorted by their relevance. Returns an empty list if no retrieval limit is configured.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_obs_top_k</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">filter_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;user_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span>
+            <span class="s2">&quot;target_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_name</span><span class="p">,</span>
+            <span class="s2">&quot;store_status&quot;</span><span class="p">:</span> <span class="n">StoreStatusEnum</span><span class="o">.</span><span class="n">VALID</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;memory_type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">MemoryTypeEnum</span><span class="o">.</span><span class="n">OBSERVATION</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">MemoryTypeEnum</span><span class="o">.</span><span class="n">OBS_CUSTOMIZED</span><span class="o">.</span><span class="n">value</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="c1"># Retrieve memories matching the query, filtered by the specified conditions,</span>
+        <span class="c1"># limited to a certain number, and sorted by relevance.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_store</span><span class="o">.</span><span class="n">retrieve_memories</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+                                                   <span class="n">top_k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">retrieve_obs_top_k</span><span class="p">,</span>
+                                                   <span class="n">filter_dict</span><span class="o">=</span><span class="n">filter_dict</span><span class="p">)</span>
+
+    <span class="nd">@timer</span>
+    <span class="k">def</span> <span class="nf">retrieve_from_insight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves memories marked as insights from the store based on a query, filtered by user, target,</span>
+<span class="sd">        and set to active status.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query (str): The search query to match against the insights.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[MemoryNode]: A list of MemoryNode objects that match the query criteria,</span>
+<span class="sd">                              limited by &#39;retrieve_ins_pf_top_k&#39;.</span>
+<span class="sd">                              Returns an empty list if &#39;retrieve_ins_pf_top_k&#39; is not set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_ins_top_k</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">filter_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;user_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span>
+            <span class="s2">&quot;target_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_name</span><span class="p">,</span>
+            <span class="s2">&quot;store_status&quot;</span><span class="p">:</span> <span class="n">StoreStatusEnum</span><span class="o">.</span><span class="n">VALID</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;memory_type&quot;</span><span class="p">:</span> <span class="n">MemoryTypeEnum</span><span class="o">.</span><span class="n">INSIGHT</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="c1"># ⭐ Retrieve insights matching the query, filtered, and limited by top_k</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_store</span><span class="o">.</span><span class="n">retrieve_memories</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+                                                   <span class="n">top_k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">retrieve_ins_top_k</span><span class="p">,</span>
+                                                   <span class="n">filter_dict</span><span class="o">=</span><span class="n">filter_dict</span><span class="p">)</span>
+
+    <span class="nd">@timer</span>
+    <span class="k">def</span> <span class="nf">retrieve_expired_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves expired memories marked as observation from the store based on a query, filtered by user, target,</span>
+<span class="sd">        and set to active status.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query (str): The search query to match against the memories.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[MemoryNode]: A list of MemoryNode objects that match the query criteria,</span>
+<span class="sd">                              limited by &#39;retrieve_expired_top_k&#39;.</span>
+<span class="sd">                              Returns an empty list if &#39;retrieve_expired_top_k&#39; is not set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_expired_top_k</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">filter_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;user_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span>
+            <span class="s2">&quot;target_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_name</span><span class="p">,</span>
+            <span class="s2">&quot;store_status&quot;</span><span class="p">:</span> <span class="n">StoreStatusEnum</span><span class="o">.</span><span class="n">EXPIRED</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;memory_type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">MemoryTypeEnum</span><span class="o">.</span><span class="n">OBSERVATION</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">MemoryTypeEnum</span><span class="o">.</span><span class="n">OBS_CUSTOMIZED</span><span class="o">.</span><span class="n">value</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_store</span><span class="o">.</span><span class="n">retrieve_memories</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+                                                   <span class="n">top_k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">retrieve_expired_top_k</span><span class="p">,</span>
+                                                   <span class="n">filter_dict</span><span class="o">=</span><span class="n">filter_dict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes the main retrieval for memories. It fetches the query from the context, initiates concurrent tasks</span>
+<span class="sd">        to retrieve memories from observations, insights, and expired sources, collects the results, sorts them by</span>
+<span class="sd">        similarity score, logs the details, and finally sets the retrieved memory nodes.</span>
+
+<span class="sd">        The method follows these steps:</span>
+<span class="sd">        1. Retrieves the query from the worker&#39;s context.</span>
+<span class="sd">        2. Submits tasks to asynchronously retrieve memories from various sources.</span>
+<span class="sd">        3. Gathers the results from all submitted tasks.</span>
+<span class="sd">        4. Logs the total number of collected memory nodes.</span>
+<span class="sd">        5. Sorts the memory nodes based on their similarity scores in descending order.</span>
+<span class="sd">        6. Logs detailed information about each memory node.</span>
+<span class="sd">        7. Stores the processed memory nodes for further use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">QUERY_WITH_TS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;retrieve memory with query=</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retrieve_from_observation</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retrieve_from_insight</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retrieve_expired_memory</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+
+        <span class="n">memory_node_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gather_thread_result</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">memory_node_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;memory_node_list.size=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">memory_node_list</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">memory_node_list</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">memory_node_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">memory_node_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">score_recall</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">memory_node_list</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">action_status</span> <span class="o">=</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">NONE</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;recall_stage: content=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2"> score=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">score_recall</span><span class="si">}</span><span class="s2"> type=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">memory_type</span><span class="si">}</span><span class="s2"> &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;store_status=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">store_status</span><span class="si">}</span><span class="s2"> action_status=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">action_status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory_manager</span><span class="o">.</span><span class="n">set_memories</span><span class="p">(</span><span class="n">RETRIEVE_MEMORY_NODES</span><span class="p">,</span> <span class="n">memory_node_list</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

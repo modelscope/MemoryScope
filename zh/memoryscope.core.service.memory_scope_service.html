@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,93 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-service-memory-scope-service-module">
-<h1>memoryscope.core.service.memory_scope_service module<a class="headerlink" href="#memoryscope-core-service-memory-scope-service-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.service.memory_scope_service">
+<span id="memoryscope-core-service-memory-scope-service-module"></span><h1>memoryscope.core.service.memory_scope_service module<a class="headerlink" href="#module-memoryscope.core.service.memory_scope_service" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.service.memory_scope_service.MemoryScopeService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.service.memory_scope_service.</span></span><span class="sig-name descname"><span class="pre">MemoryScopeService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history_msg_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contextual_msg_max_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contextual_msg_min_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/service/memory_scope_service.html#MemoryScopeService"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.service.memory_scope_service.MemoryScopeService" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.service.base_memory_service.html#memoryscope.core.service.base_memory_service.BaseMemoryService" title="memoryscope.core.service.base_memory_service.BaseMemoryService"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMemoryService</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.service.memory_scope_service.MemoryScopeService.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history_msg_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contextual_msg_max_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contextual_msg_min_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/service/memory_scope_service.html#MemoryScopeService.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.service.memory_scope_service.MemoryScopeService.__init__" title="Link to this definition"></a></dt>
+<dd><p>init function.
+:param history_msg_count: The conversation history in memory, control the quantity, and reduce memory usage.
+:type history_msg_count: int
+:param contextual_msg_max_count: The maximum context length in a conversation. If it exceeds this length,</p>
+<blockquote>
+<div><p>it will not be included in the context to prevent token overflow.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contextual_msg_min_count</strong> (<em>int</em>) -- The minimum context length in a conversation. If it is shorter than this
+length, no conversation summary will be made and no long-term memory will be generated.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) -- Additional parameters to customize service behavior.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.service.memory_scope_service.MemoryScopeService.add_messages_pair">
+<span class="sig-name descname"><span class="pre">add_messages_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/service/memory_scope_service.html#MemoryScopeService.add_messages_pair"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.service.memory_scope_service.MemoryScopeService.add_messages_pair" title="Link to this definition"></a></dt>
+<dd><p>Adds a list of messages to the chat history, it can be a pair [user_message, assistant_message].
+Ensuring the message list remains sorted by creation time and does not exceed the maximum history message count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> (<em>List</em><em>[</em><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message"><em>Message</em></a><em>] </em><em>| </em><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message"><em>Message</em></a>) -- A single message instance or a list of message instances</p></li>
+<li><p><strong>history.</strong> (<em>to be added to the chat</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.service.memory_scope_service.MemoryScopeService.register_operation">
+<span class="sig-name descname"><span class="pre">register_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/service/memory_scope_service.html#MemoryScopeService.register_operation"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.service.memory_scope_service.MemoryScopeService.register_operation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.service.memory_scope_service.MemoryScopeService.init_service">
+<span class="sig-name descname"><span class="pre">init_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/service/memory_scope_service.html#MemoryScopeService.init_service"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.service.memory_scope_service.MemoryScopeService.init_service" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.service.memory_scope_service.MemoryScopeService.run_operation">
+<span class="sig-name descname"><span class="pre">run_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/service/memory_scope_service.html#MemoryScopeService.run_operation"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.service.memory_scope_service.MemoryScopeService.run_operation" title="Link to this definition"></a></dt>
+<dd><p>Executes a specific operation by its name with provided keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) -- The name of the operation to execute.</p></li>
+<li><p><strong>role_name</strong> (<em>str</em>) -- The name of the operation to execute.</p></li>
+<li><p><strong>**kwargs</strong> -- Keyword arguments for the operation's execution.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the operation execution, if any. Otherwise, None.</p>
+</dd>
+<dt class="field-odd">抛出<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Warning</strong> -- If the operation name is not initialized in <cite>_operation_dict</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.service.memory_scope_service.MemoryScopeService.start_backend_service">
+<span class="sig-name descname"><span class="pre">start_backend_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/service/memory_scope_service.html#MemoryScopeService.start_backend_service"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.service.memory_scope_service.MemoryScopeService.start_backend_service" title="Link to this definition"></a></dt>
+<dd><p>Start all backend operations.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.service.memory_scope_service.MemoryScopeService.stop_backend_service">
+<span class="sig-name descname"><span class="pre">stop_backend_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait_service</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/service/memory_scope_service.html#MemoryScopeService.stop_backend_service"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.service.memory_scope_service.MemoryScopeService.stop_backend_service" title="Link to this definition"></a></dt>
+<dd><p>Stops all backend operations that are currently running.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

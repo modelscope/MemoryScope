@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,457 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-storage-llama-index-sync-elasticsearch-module">
-<h1>memoryscope.core.storage.llama_index_sync_elasticsearch module<a class="headerlink" href="#memoryscope-core-storage-llama-index-sync-elasticsearch-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.storage.llama_index_sync_elasticsearch">
+<span id="memoryscope-core-storage-llama-index-sync-elasticsearch-module"></span><h1>memoryscope.core.storage.llama_index_sync_elasticsearch module<a class="headerlink" href="#module-memoryscope.core.storage.llama_index_sync_elasticsearch" title="Link to this heading"></a></h1>
+<p>Elasticsearch vector store.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.get_elasticsearch_client">
+<span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.llama_index_sync_elasticsearch.</span></span><span class="sig-name descname"><span class="pre">get_elasticsearch_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cloud_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_async</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncElasticsearch</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#get_elasticsearch_client"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.get_elasticsearch_client" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.llama_index_sync_elasticsearch.</span></span><span class="sig-name descname"><span class="pre">ESCombinedRetrieveStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DistanceMetric</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DistanceMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieve_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rrf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'text_field'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hybrid_alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#ESCombinedRetrieveStrategy"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncDenseVectorStrategy</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DistanceMetric</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DistanceMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieve_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rrf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'text_field'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hybrid_alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#ESCombinedRetrieveStrategy.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy.es_query">
+<span class="sig-name descname"><span class="pre">es_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_candidates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#ESCombinedRetrieveStrategy.es_query"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy.es_query" title="Link to this definition"></a></dt>
+<dd><p>Returns the Elasticsearch query body for the given parameters.
+The store will execute the query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> -- The text query. Can be None if query_vector is given.</p></li>
+<li><p><strong>k</strong> -- The total number of results to retrieve.</p></li>
+<li><p><strong>num_candidates</strong> -- The number of results to fetch initially in knn search.</p></li>
+<li><p><strong>filter</strong> -- List of filter clauses to apply to the query.</p></li>
+<li><p><strong>query_vector</strong> -- The query vector. Can be None if a query string is given.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Elasticsearch query body.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy.before_index_creation">
+<span class="sig-name descname"><span class="pre">before_index_creation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncElasticsearch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#ESCombinedRetrieveStrategy.before_index_creation"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy.before_index_creation" title="Link to this definition"></a></dt>
+<dd><p>Executes before the index is created. Used for setting up
+any required Elasticsearch resources like a pipeline.
+Defaults to a no-op.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> -- The Elasticsearch client.</p></li>
+<li><p><strong>text_field</strong> -- The field containing the text data in the index.</p></li>
+<li><p><strong>vector_field</strong> -- The field containing the vector representations in the index.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.llama_index_sync_elasticsearch.</span></span><span class="sig-name descname"><span class="pre">SyncElasticsearchStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_cloud_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'content'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'embedding'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'COSINE'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'DOT_PRODUCT'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'EUCLIDEAN_DISTANCE'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'COSINE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieval_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncRetrievalStrategy</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">BasePydanticVectorStore</span></code></p>
+<p>Elasticsearch vector store.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_name</strong> -- Name of the Elasticsearch index.</p></li>
+<li><p><strong>es_client</strong> -- Optional. Pre-existing AsyncElasticsearch client.</p></li>
+<li><p><strong>es_url</strong> -- Optional. Elasticsearch URL.</p></li>
+<li><p><strong>es_cloud_id</strong> -- Optional. Elasticsearch cloud ID.</p></li>
+<li><p><strong>es_api_key</strong> -- Optional. Elasticsearch API key.</p></li>
+<li><p><strong>es_user</strong> -- Optional. Elasticsearch username.</p></li>
+<li><p><strong>es_password</strong> -- Optional. Elasticsearch password.</p></li>
+<li><p><strong>text_field</strong> -- Optional. Name of the Elasticsearch field that stores the text.</p></li>
+<li><p><strong>vector_field</strong> -- Optional. Name of the Elasticsearch field that stores the
+embedding.</p></li>
+<li><p><strong>batch_size</strong> -- Optional. Batch size for bulk indexing. Defaults to 200.</p></li>
+<li><p><strong>distance_strategy</strong> -- Optional. Distance strategy to use for similarity search.
+Defaults to &quot;COSINE&quot;.</p></li>
+<li><p><strong>retrieval_strategy</strong> -- Retrieval strategy to use. AsyncBM25Strategy /
+AsyncSparseVectorStrategy / AsyncDenseVectorStrategy / AsyncRetrievalStrategy.
+Defaults to AsyncDenseVectorStrategy.</p></li>
+</ul>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ConnectionError</strong> -- If AsyncElasticsearch client cannot connect to Elasticsearch.</p></li>
+<li><p><strong>ValueError</strong> -- If neither es_client nor es_url nor es_cloud_id is provided.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">示例</p>
+<p><cite>pip install llama-index-vector-stores-elasticsearch</cite></p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+from llama_index.vector_stores import ElasticsearchStore</p>
+<p># Additional setup for ElasticsearchStore class
+index_name = &quot;my_index&quot;
+es_url = &quot;<a class="reference external" href="http://localhost:9200">http://localhost:9200</a>&quot;
+es_cloud_id = &quot;&lt;cloud-id&gt;&quot;  # Found within the deployment page
+es_user = &quot;elastic&quot;
+es_password = &quot;&lt;password&gt;&quot;  # Provided when creating deployment or can be reset
+es_api_key = &quot;&lt;api-key&gt;&quot;  # Create an API key within Kibana (Security -&gt; API Keys)</p>
+<p># Connecting to ElasticsearchStore locally
+es_local = ElasticsearchStore(</p>
+<blockquote>
+<div><p>index_name=index_name,
+es_url=es_url)</p>
+</div></blockquote>
+<p># Connecting to Elastic Cloud with username and password
+es_cloud_user_pass = ElasticsearchStore(</p>
+<blockquote>
+<div><p>index_name=index_name,
+es_cloud_id=es_cloud_id,
+es_user=es_user,
+es_password=es_password)</p>
+</div></blockquote>
+<p># Connecting to Elastic Cloud with API Key
+es_cloud_api_key = ElasticsearchStore(</p>
+<blockquote>
+<div><p>index_name=index_name,
+es_cloud_id=es_cloud_id,
+es_api_key=es_api_key,</p>
+</div></blockquote>
+<section id="id5">
+<h2>)<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.Config"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.Config" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.Config.arbitrary_types_allowed">
+<span class="sig-name descname"><span class="pre">arbitrary_types_allowed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.Config.arbitrary_types_allowed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.stores_text">
+<span class="sig-name descname"><span class="pre">stores_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.stores_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.index_name">
+<span class="sig-name descname"><span class="pre">index_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.index_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_client">
+<span class="sig-name descname"><span class="pre">es_client</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_client" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_url">
+<span class="sig-name descname"><span class="pre">es_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_cloud_id">
+<span class="sig-name descname"><span class="pre">es_cloud_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_cloud_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_api_key">
+<span class="sig-name descname"><span class="pre">es_api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_api_key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_user">
+<span class="sig-name descname"><span class="pre">es_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_password">
+<span class="sig-name descname"><span class="pre">es_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.text_field">
+<span class="sig-name descname"><span class="pre">text_field</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.text_field" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.vector_field">
+<span class="sig-name descname"><span class="pre">vector_field</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.vector_field" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.batch_size">
+<span class="sig-name descname"><span class="pre">batch_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.batch_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.distance_strategy">
+<span class="sig-name descname"><span class="pre">distance_strategy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'COSINE'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'DOT_PRODUCT'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'EUCLIDEAN_DISTANCE'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.distance_strategy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.retrieval_strategy">
+<span class="sig-name descname"><span class="pre">retrieval_strategy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">AsyncRetrievalStrategy</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.retrieval_strategy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_cloud_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'content'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'embedding'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'COSINE'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'DOT_PRODUCT'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'EUCLIDEAN_DISTANCE'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'COSINE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieval_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncRetrievalStrategy</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.__init__" title="Link to this definition"></a></dt>
+<dd><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger" title="memoryscope.core.utils.logger.Logger"><span class="pre">Logger</span></a></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.log_elasticsearch_dynamic">
+<span class="sig-name descname"><span class="pre">log_elasticsearch_dynamic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.log_elasticsearch_dynamic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.client">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.client" title="Link to this definition"></a></dt>
+<dd><p>Get the asynchronous Elasticsearch client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The asynchronous Elasticsearch client instance configured for this store.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.close"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.close" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseNode</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_index_if_not_exists</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">add_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.add"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.add" title="Link to this definition"></a></dt>
+<dd><p>Adds a list of nodes, each containing embeddings, to an Elasticsearch index.
+Optionally creates the index if it does not already exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes</strong> (<em>List</em><em>[</em><em>BaseNode</em><em>]</em>) -- A list of node objects, each encapsulating an embedding.</p></li>
+<li><p><strong>create_index_if_not_exists</strong> (<em>bool</em><em>, </em><em>optional</em>) -- A flag indicating whether to create the Elasticsearch index if it's not present.
+Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of node IDs that have been successfully added to the index.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ImportError</strong> -- If the 'elasticsearch[async]' Python package is not installed.</p></li>
+<li><p><strong>BulkIndexError</strong> -- If there is a failure during the asynchronous bulk indexing with AsyncElasticsearch.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>This method delegates the actual operation to the <cite>sync_add</cite> method.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_add">
+<span class="sig-name descname"><span class="pre">sync_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseNode</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_index_if_not_exists</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">add_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_add"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_add" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously adds a list of nodes, each containing an embedding, to the Elasticsearch index.</p>
+<p>This method processes each node to extract its ID, embedding, text content, and metadata,
+preparing them for batch insertion into the index. It ensures the index is created if not present
+and respects the dimensionality of the embeddings for consistency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes</strong> (<em>List</em><em>[</em><em>BaseNode</em><em>]</em>) -- A list of node objects, each encapsulating an embedding.</p></li>
+<li><p><strong>create_index_if_not_exists</strong> (<em>bool</em><em>, </em><em>optional</em>) -- A flag indicating whether to create the Elasticsearch
+index if it does not already exist. Defaults to True.</p></li>
+<li><p><strong>**add_kwargs</strong> (<em>Any</em>) -- Additional keyword arguments passed to the underlying add_texts method
+for customization during the indexing process.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of node IDs that were successfully added to the index.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ImportError</strong> -- If the Elasticsearch Python client is not installed.</p></li>
+<li><p><strong>BulkIndexError</strong> -- If there's a failure during the asynchronous bulk indexing operation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_doc_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">delete_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.delete"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.delete" title="Link to this definition"></a></dt>
+<dd><p>Deletes a node from the Elasticsearch index using the provided reference document ID.</p>
+<p>Optionally, extra keyword arguments can be supplied to customize the deletion behavior,
+which are passed directly to Elasticsearch's <cite>delete_by_query</cite> operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_doc_id</strong> (<em>str</em>) -- The unique identifier of the node/document to be deleted.</p></li>
+<li><p><strong>delete_kwargs</strong> (<em>Any</em>) -- Additional keyword arguments for Elasticsearch's
+<cite>delete_by_query</cite>. These might include query filters,
+timeouts, or other operational configurations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> -- If the deletion operation via Elasticsearch's <cite>delete_by_query</cite> fails.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>This method internally calls a synchronous delete method (<cite>sync_delete</cite>)
+to execute the deletion operation against Elasticsearch.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_delete">
+<span class="sig-name descname"><span class="pre">sync_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_doc_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">delete_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_delete"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_delete" title="Link to this definition"></a></dt>
+<dd><p>Synchronously deletes a node from the Elasticsearch index based on the reference document ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_doc_id</strong> (<em>str</em>) -- The unique identifier of the node/document to be deleted.</p></li>
+<li><p><strong>delete_kwargs</strong> (<em>Any</em>) -- Optional keyword arguments to be passed
+to the delete_by_query operation of AsyncElasticsearch,
+allowing for additional customization of the deletion process.</p></li>
+</ul>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> -- If the deletion operation via AsyncElasticsearch's delete_by_query fails.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>The function directly uses '_id' field to match the document for deletion instead of 'metadata.ref_doc_id',
+ensuring targeted removal based on the document's unique identifier within Elasticsearch.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VectorStoreQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">VectorStoreQuery</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">VectorStoreQueryResult</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.query"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.query" title="Link to this definition"></a></dt>
+<dd><p>Executes a query against the Elasticsearch index to retrieve the top k most similar nodes
+based on the input query embedding. Supports customization of the query process and
+application of Elasticsearch filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>VectorStoreQuery</em>) -- The query containing the embedding and other parameters.</p></li>
+<li><p><strong>custom_query</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>, </em><em>Union</em><em>[</em><em>VectorStoreQuery</em><em>, </em><em>None</em><em>]</em><em>]</em><em>, </em><em>Dict</em><em>]</em><em>, </em><em>optional</em>) -- An optional custom function to modify the Elasticsearch query body, allowing for
+additional query parameters or logic. Defaults to None.</p></li>
+<li><p><strong>es_filter</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>Dict</em><em>]</em><em>]</em><em>, </em><em>optional</em>) -- An optional Elasticsearch filter list to
+apply to the query. If a filter is directly included in the <cite>query</cite>, this argument
+will not be used. Defaults to None.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) -- Additional keyword arguments that might be used in the query process.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the query operation, including the most similar nodes.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>VectorStoreQueryResult</p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> -- If an error occurs during the Elasticsearch query execution.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_delete_all">
+<span class="sig-name descname"><span class="pre">sync_delete_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_delete_all"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_delete_all" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_search_all">
+<span class="sig-name descname"><span class="pre">sync_search_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_search_all"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_search_all" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.log_vector_store_brief">
+<span class="sig-name descname"><span class="pre">log_vector_store_brief</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'current</span> <span class="pre">vector</span> <span class="pre">store</span> <span class="pre">content'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.log_vector_store_brief"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.log_vector_store_brief" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_search_all_with_filter">
+<span class="sig-name descname"><span class="pre">sync_search_all_with_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">es_filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_search_all_with_filter"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_search_all_with_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.is_embedding_query">
+<span class="sig-name descname"><span class="pre">is_embedding_query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.is_embedding_query" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_query">
+<span class="sig-name descname"><span class="pre">sync_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VectorStoreQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">VectorStoreQuery</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">VectorStoreQueryResult</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_query"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_query" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously queries the Elasticsearch index for the top k most similar nodes
+based on the provided query embedding. Supports custom query modifications
+and application of Elasticsearch filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>VectorStoreQuery</em>) -- The query containing the embedding and other details.</p></li>
+<li><p><strong>custom_query</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>, </em><em>Union</em><em>[</em><em>VectorStoreQuery</em><em>, </em><em>None</em><em>]</em><em>]</em><em>, </em><em>Dict</em><em>]</em><em>, </em><em>optional</em>) -- A custom function to modify the Elasticsearch query body. Defaults to None.</p></li>
+<li><p><strong>es_filter</strong> (<em>List</em><em>[</em><em>Dict</em><em>]</em><em>, </em><em>optional</em>) -- Additional filters to apply during the query.
+If filters are present in the query, these filters will not be used. Defaults to None.</p></li>
+<li><p><strong>fields</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) -- <p>.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>The result of the query, including nodes, their IDs,</dt><dd><p>and similarity scores.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>VectorStoreQueryResult</p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> -- If the Elasticsearch query encounters an error.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>The mode of the query must align with the retrieval strategy set for this store.
+In case of legacy metadata, a warning is logged and nodes are constructed accordingly.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.post_process_hits">
+<span class="sig-name descname"><span class="pre">post_process_hits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">VectorStoreQueryResult</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.post_process_hits"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.post_process_hits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
 </section>
 
 

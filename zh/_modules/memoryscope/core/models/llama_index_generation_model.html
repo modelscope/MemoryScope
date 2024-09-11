@@ -1,0 +1,271 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.models.llama_index_generation_model &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/models/llama_index_generation_model.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/models/llama_index_generation_model.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">模块代码</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.models.llama_index_generation_model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>memoryscope.core.models.llama_index_generation_model 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">llama_index.core.base.llms.types</span> <span class="kn">import</span> <span class="n">ChatMessage</span><span class="p">,</span> <span class="n">ChatResponse</span><span class="p">,</span> <span class="n">CompletionResponse</span>
+<span class="kn">from</span> <span class="nn">llama_index.llms.dashscope</span> <span class="kn">import</span> <span class="n">DashScope</span>
+<span class="kn">from</span> <span class="nn">llama_index.llms.openai</span> <span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.core.models.base_model</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">MODEL_REGISTRY</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.message_role_enum</span> <span class="kn">import</span> <span class="n">MessageRoleEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.model_enum</span> <span class="kn">import</span> <span class="n">ModelEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.scheme.message</span> <span class="kn">import</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">memoryscope.scheme.model_response</span> <span class="kn">import</span> <span class="n">ModelResponse</span><span class="p">,</span> <span class="n">ModelResponseGen</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+
+
+<div class="viewcode-block" id="LlamaIndexGenerationModel">
+<a class="viewcode-back" href="../../../../memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.LlamaIndexGenerationModel">[文档]</a>
+<span class="k">class</span> <span class="nc">LlamaIndexGenerationModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents a generation model within the LlamaIndex framework,</span>
+<span class="sd">    capable of processing input prompts or message histories, selecting an appropriate</span>
+<span class="sd">    language model service from a registry, and generating text responses, with support</span>
+<span class="sd">    for both streaming and non-streaming modes. It encapsulates logic for formatting</span>
+<span class="sd">    these interactions within the context of a memory scope management system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">m_type</span><span class="p">:</span> <span class="n">ModelEnum</span> <span class="o">=</span> <span class="n">ModelEnum</span><span class="o">.</span><span class="n">GENERATION_MODEL</span>
+
+    <span class="n">MODEL_REGISTRY</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;dashscope_generation&quot;</span><span class="p">,</span> <span class="n">DashScope</span><span class="p">)</span>
+    <span class="n">MODEL_REGISTRY</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;openai_generation&quot;</span><span class="p">,</span> <span class="n">OpenAI</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LlamaIndexGenerationModel.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.LlamaIndexGenerationModel.__init__">[文档]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="s2">&quot;llama_index_generation_model&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LlamaIndexGenerationModel.before_call">
+<a class="viewcode-back" href="../../../../memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.LlamaIndexGenerationModel.before_call">[文档]</a>
+    <span class="k">def</span> <span class="nf">before_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_response</span><span class="p">:</span> <span class="n">ModelResponse</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepares the input data before making a call to the language model.</span>
+<span class="sd">        It accepts either a &#39;prompt&#39; directly or a list of &#39;messages&#39;.</span>
+<span class="sd">        If &#39;prompt&#39; is provided, it sets the data accordingly.</span>
+<span class="sd">        If &#39;messages&#39; are provided, it constructs a list of ChatMessage objects from the list.</span>
+<span class="sd">        Raises an error if neither &#39;prompt&#39; nor &#39;messages&#39; are supplied.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model_response: model_response</span>
+<span class="sd">            **kwargs: Arbitrary keyword arguments including &#39;prompt&#39; and &#39;messages&#39;.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: When both &#39;prompt&#39; and &#39;messages&#39; inputs are not provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;prompt&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Message</span><span class="p">]</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;messages&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="k">if</span> <span class="n">prompt</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">}</span>
+        <span class="k">elif</span> <span class="n">messages</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ChatMessage</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="n">msg</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">],</span> <span class="n">content</span><span class="o">=</span><span class="n">msg</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">]}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ChatMessage</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">role</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">]}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;prompt and messages are both empty!&quot;</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">model_response</span><span class="o">.</span><span class="n">meta_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="LlamaIndexGenerationModel.after_call">
+<a class="viewcode-back" href="../../../../memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.LlamaIndexGenerationModel.after_call">[文档]</a>
+    <span class="k">def</span> <span class="nf">after_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                   <span class="n">model_response</span><span class="p">:</span> <span class="n">ModelResponse</span><span class="p">,</span>
+                   <span class="n">stream</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelResponse</span> <span class="o">|</span> <span class="n">ModelResponseGen</span><span class="p">:</span>
+        <span class="n">model_response</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="n">MessageRoleEnum</span><span class="o">.</span><span class="n">ASSISTANT</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">call_result</span> <span class="o">=</span> <span class="n">model_response</span><span class="o">.</span><span class="n">raw</span>
+        <span class="k">if</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">gen</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">ModelResponseGen</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">call_result</span><span class="p">:</span>
+                    <span class="n">delta</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">delta</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">delta</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">model_response</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span> <span class="o">+=</span> <span class="n">delta</span>
+                    <span class="n">model_response</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">delta</span>
+                    <span class="k">yield</span> <span class="n">model_response</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">format_chat_message</span><span class="p">(</span><span class="n">model_response</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">gen</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">call_result</span><span class="p">,</span> <span class="n">CompletionResponse</span><span class="p">):</span>
+                <span class="n">model_response</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">call_result</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">call_result</span><span class="p">,</span> <span class="n">ChatResponse</span><span class="p">):</span>
+                <span class="n">model_response</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">call_result</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">format_chat_message</span><span class="p">(</span><span class="n">model_response</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">model_response</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_response</span><span class="p">:</span> <span class="n">ModelResponse</span><span class="p">,</span> <span class="n">stream</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">model_response</span><span class="o">.</span><span class="n">meta_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+        <span class="c1"># FIXME: special case for OpenAI model, is this necessary?</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;stream&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;prompt&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stream</span><span class="p">:</span>
+                <span class="n">model_response</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stream_complete</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model_response</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">complete</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;messages&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stream</span><span class="p">:</span>
+                <span class="n">model_response</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stream_chat</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model_response</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;prompt or messages is missing!&quot;</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_async_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_response</span><span class="p">:</span> <span class="n">ModelResponse</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronously calls the language model with the provided prompt or message history,</span>
+<span class="sd">        and packages the raw response into a ModelResponse object.</span>
+
+<span class="sd">        This method checks if the input data contains a &#39;prompt&#39; or &#39;messages&#39; key to decide</span>
+<span class="sd">        which method to call on the model instance. It uses &#39;acomplete&#39; for simple prompts and</span>
+<span class="sd">        &#39;achat&#39; for chat-based message histories.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs: Additional keyword arguments that might be used in the model call.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ModelResponse: An object containing the raw response from the language model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">model_response</span><span class="o">.</span><span class="n">meta_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;prompt&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">model_response</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">acomplete</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;messages&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">model_response</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">achat</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;prompt or messages is missing!&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

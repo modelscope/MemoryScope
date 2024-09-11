@@ -1,0 +1,224 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.chat.base_memory_chat &mdash; MemoryScope  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/chat/base_memory_chat.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/chat/base_memory_chat.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">About MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README.html">Cli Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages.html">Simple Usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator.html">Advanced usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">Contribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.chat.base_memory_chat</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for memoryscope.core.chat.base_memory_chat</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.core.service.base_memory_service</span> <span class="kn">import</span> <span class="n">BaseMemoryService</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+
+
+<div class="viewcode-block" id="BaseMemoryChat">
+<a class="viewcode-back" href="../../../../memoryscope.core.chat.base_memory_chat.html#memoryscope.core.chat.BaseMemoryChat">[docs]</a>
+<span class="k">class</span> <span class="nc">BaseMemoryChat</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An abstract base class representing a chat system integrated with memory services.</span>
+<span class="sd">    It outlines the method to initiate a chat session leveraging memory data, which concrete subclasses must implement.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BaseMemoryChat.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.chat.base_memory_chat.html#memoryscope.core.chat.BaseMemoryChat.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">memory_service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseMemoryService</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract property to access the memory service.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: This method should be implemented in a subclass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="BaseMemoryChat.chat_with_memory">
+<a class="viewcode-back" href="../../../../memoryscope.core.chat.base_memory_chat.html#memoryscope.core.chat.BaseMemoryChat.chat_with_memory">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">chat_with_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                         <span class="n">role_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">system_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">memory_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">temporary_memories</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">history_message_strategy</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                         <span class="n">remember_response</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The core function that carries out conversation with memory accepts user queries through query and returns the</span>
+<span class="sd">        conversation results through model_response. The retrieved memories are stored in the memories within meta_data.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            query (str): User&#39;s query, includes the user&#39;s question.</span>
+<span class="sd">            role_name (str, optional): User&#39;s role name.</span>
+<span class="sd">            system_prompt (str, optional): System prompt. Defaults to the system_prompt in &quot;memory_chat_prompt.yaml&quot;.</span>
+<span class="sd">            memory_prompt (str, optional): Memory prompt, It takes effect when there is a memory and will be placed in</span>
+<span class="sd">                front of the retrieved memory. Defaults to the memory_prompt in &quot;memory_chat_prompt.yaml&quot;.</span>
+<span class="sd">            temporary_memories (str, optional): Manually added user memory in this function.</span>
+<span class="sd">            history_message_strategy (&quot;auto&quot;, None, int):</span>
+<span class="sd">                - If it is set to &quot;auto&quot;， the history messages in the conversation will retain those that have not</span>
+<span class="sd">                    yet been summarized. Default to &quot;auto&quot;.</span>
+<span class="sd">                - If it is set to None， no conversation history will be saved.</span>
+<span class="sd">                - If it is set to an integer value &quot;n&quot;, recent &quot;n&quot; message-pair[user, assistant] will be retained.</span>
+<span class="sd">            remember_response (bool, optional): Flag indicating whether to save the AI&#39;s response to memory.</span>
+<span class="sd">                Defaults to False.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            - ModelResponse: In non-streaming mode, returns a complete AI response.</span>
+<span class="sd">            - ModelResponseGen: In streaming mode, returns a generator yielding AI response parts.</span>
+<span class="sd">            - Memories: To obtain the memory by invoking the method of model_response.meta_data[MEMORIES]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="BaseMemoryChat.start_backend_service">
+<a class="viewcode-back" href="../../../../memoryscope.core.chat.base_memory_chat.html#memoryscope.core.chat.BaseMemoryChat.start_backend_service">[docs]</a>
+    <span class="k">def</span> <span class="nf">start_backend_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory_service</span><span class="o">.</span><span class="n">start_backend_service</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseMemoryChat.run_service_operation">
+<a class="viewcode-back" href="../../../../memoryscope.core.chat.base_memory_chat.html#memoryscope.core.chat.BaseMemoryChat.run_service_operation">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_service_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">role_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_service</span><span class="o">.</span><span class="n">run_operation</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="n">role_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseMemoryChat.run">
+<a class="viewcode-back" href="../../../../memoryscope.core.chat.base_memory_chat.html#memoryscope.core.chat.BaseMemoryChat.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method to run the chat system.</span>
+
+<span class="sd">        This method should contain the logic to initiate and manage the chat process,</span>
+<span class="sd">        utilizing the memory service as needed. It must be implemented by subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alibaba Tongyi Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,83 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-worker-backend-info-filter-worker-module">
-<h1>memoryscope.core.worker.backend.info_filter_worker module<a class="headerlink" href="#memoryscope-core-worker-backend-info-filter-worker-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.worker.backend.info_filter_worker">
+<span id="memoryscope-core-worker-backend-info-filter-worker-module"></span><h1>memoryscope.core.worker.backend.info_filter_worker module<a class="headerlink" href="#module-memoryscope.core.worker.backend.info_filter_worker" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.info_filter_worker.</span></span><span class="sig-name descname"><span class="pre">InfoFilterWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/info_filter_worker.html#InfoFilterWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>This worker filters and modifies the chat message history (<cite>self.chat_messages</cite>) by retaining only the messages
+that include significant information. It then constructs a prompt from these filtered messages, utilizes an AI
+model to process this prompt, parses the AI’s generated response to allocate scores, and ultimately retains
+messages in <cite>self.chat_messages</cite> based on these assigned scores.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/info_filter_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.workflow_context">
+<span class="sig-name descname"><span class="pre">workflow_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.workflow_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.memoryscope_context">
+<span class="sig-name descname"><span class="pre">memoryscope_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">MemoryscopeContext</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.memoryscope_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.raise_exception">
+<span class="sig-name descname"><span class="pre">raise_exception</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.raise_exception" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.is_multi_thread">
+<span class="sig-name descname"><span class="pre">is_multi_thread</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.is_multi_thread" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.thread_pool">
+<span class="sig-name descname"><span class="pre">thread_pool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ThreadPoolExecutor</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.thread_pool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.enable_parallel">
+<span class="sig-name descname"><span class="pre">enable_parallel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.enable_parallel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.kwargs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.continue_run">
+<span class="sig-name descname"><span class="pre">continue_run</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.continue_run" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.async_task_list">
+<span class="sig-name descname"><span class="pre">async_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.async_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.thread_task_list">
+<span class="sig-name descname"><span class="pre">thread_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.thread_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.utils.html#memoryscope.core.utils.Logger" title="memoryscope.core.utils.Logger"><span class="pre">Logger</span></a></em><a class="headerlink" href="#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

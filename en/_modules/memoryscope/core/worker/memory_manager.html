@@ -1,0 +1,389 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.worker.memory_manager &mdash; MemoryScope  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/worker/memory_manager.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/worker/memory_manager.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">About MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README.html">Cli Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages.html">Simple Usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator.html">Advanced usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">Contribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.worker.memory_manager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for memoryscope.core.worker.memory_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.core.memoryscope_context</span> <span class="kn">import</span> <span class="n">MemoryscopeContext</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.storage.base_memory_store</span> <span class="kn">import</span> <span class="n">BaseMemoryStore</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.action_status_enum</span> <span class="kn">import</span> <span class="n">ActionStatusEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.store_status_enum</span> <span class="kn">import</span> <span class="n">StoreStatusEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.scheme.memory_node</span> <span class="kn">import</span> <span class="n">MemoryNode</span>
+
+
+<div class="viewcode-block" id="MemoryManager">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_manager.html#memoryscope.core.worker.MemoryManager">[docs]</a>
+<span class="k">class</span> <span class="nc">MemoryManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The `MemoryHandler` class manages memory nodes with memory store.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MemoryManager.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_manager.html#memoryscope.core.worker.MemoryManager.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memoryscope_context</span><span class="p">:</span> <span class="n">MemoryscopeContext</span><span class="p">,</span> <span class="n">workerflow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span><span class="s2">&quot;default_worker&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="p">:</span> <span class="n">MemoryscopeContext</span> <span class="o">=</span> <span class="n">memoryscope_context</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_store</span><span class="p">:</span> <span class="n">BaseMemoryStore</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># dict: memory_id -&gt; MemoryNode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MemoryNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># dict: key -&gt; memory_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="s2">&quot;memory_manager&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">workerflow_name</span> <span class="o">=</span> <span class="n">workerflow_name</span></div>
+
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">memory_store</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseMemoryStore</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the memory store. If not initialized, it fetches the memory store from the global context.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaseMemoryStore: The memory store instance associated with this worker.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_store</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_memory_store</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">memory_store</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_store</span>
+
+<div class="viewcode-block" id="MemoryManager.clear">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_manager.html#memoryscope.core.worker.MemoryManager.clear">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear all memory nodes cached, reset the class instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MemoryManager.add_memories">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_manager.html#memoryscope.core.worker.MemoryManager.add_memories">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_memories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">MemoryNode</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">],</span> <span class="n">log_repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add the memories.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): The key mapping to memory nodes.</span>
+<span class="sd">            nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.</span>
+<span class="sd">            log_repeat (bool): Log duplicated memory node or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_memories</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">log_repeat</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">MemoryNode</span><span class="p">):</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">memory_id</span>
+            <span class="k">if</span> <span class="n">_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="p">[</span><span class="n">_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;add to memory context memory id=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">memory_id</span><span class="si">}</span><span class="s2"> content=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;store_status=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">store_status</span><span class="si">}</span><span class="s2"> action_status=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">action_status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MemoryManager.set_memories">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_manager.html#memoryscope.core.worker.MemoryManager.set_memories">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_memories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">MemoryNode</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">],</span> <span class="n">log_repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add the memories into &#39;_id_memory_dict&#39; and &#39;_key_id_dict&#39;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): The key mapping to memory nodes.</span>
+<span class="sd">            nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.</span>
+<span class="sd">            log_repeat: if log_repeat=True, print log info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">nodes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">MemoryNode</span><span class="p">):</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">memory_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">log_repeat</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;repeated_id memory id=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">memory_id</span><span class="si">}</span><span class="s2"> content=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                      <span class="sa">f</span><span class="s2">&quot;store_status=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">store_status</span><span class="si">}</span><span class="s2"> action_status=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">action_status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">memory_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;add to memory context memory id=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">memory_id</span><span class="si">}</span><span class="s2"> content=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2"> &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;store_status=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">store_status</span><span class="si">}</span><span class="s2"> action_status=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">action_status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">memory_id</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">wrap_in_box</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;workerflow_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workerflow_name</span><span class="si">}</span><span class="s2"> | memory_type:</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">memory_type</span><span class="si">}</span><span class="s2"> | content:</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MemoryManager.get_memories">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_manager.html#memoryscope.core.worker.MemoryManager.get_memories">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_memories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetch the memories by keys.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keys (str | List[str]): The key mapping to memory nodes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[MemoryNode]: Memories mapped to the key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">memories</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MemoryNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">keys</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+                <span class="n">memories</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">memory_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">memory_ids</span><span class="p">:</span>
+                <span class="n">memories</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">memory_ids</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">memories</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="MemoryManager.delete_memories">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_manager.html#memoryscope.core.worker.MemoryManager.delete_memories">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_memories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">MemoryNode</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">],</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete the memories.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): The key mapping to memory nodes.</span>
+<span class="sd">            nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be deleted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">MemoryNode</span><span class="p">):</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">_id</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">memory_id</span>
+            <span class="k">if</span> <span class="n">_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_id_memory_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">id_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">_id</span> <span class="ow">in</span> <span class="n">id_list</span><span class="p">:</span>
+                        <span class="n">id_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">id_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_id_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">_id</span> <span class="ow">in</span> <span class="n">id_list</span><span class="p">:</span>
+                    <span class="n">id_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MemoryManager.update_memories">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_manager.html#memoryscope.core.worker.MemoryManager.update_memories">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_memories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">MemoryNode</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the memories.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keys (str): The memories.</span>
+<span class="sd">            nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">update_memories</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MemoryNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="o">.</span><span class="n">memory_id</span><span class="p">:</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_memories</span><span class="p">(</span><span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">)}</span>
+
+        <span class="k">if</span> <span class="n">nodes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">MemoryNode</span><span class="p">):</span>
+                <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">]</span>
+            <span class="n">update_memories</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">n</span><span class="o">.</span><span class="n">memory_id</span><span class="p">:</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">})</span>
+
+        <span class="c1"># Save collected nodes to memory store</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_memories</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">update_memories</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_update_memories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the memories based on their status:</span>
+<span class="sd">        - New: Embeds and inserts the memory node.</span>
+<span class="sd">        - Modified: Directly updates the memory node.</span>
+<span class="sd">        - Content Modified: Embeds and then updates the memory node.</span>
+<span class="sd">        - Active: No action required.</span>
+<span class="sd">        - Expired: Updates the memory node.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nodes (List[MemoryNode]): A single memory node or a list of memory nodes to be updated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+
+        <span class="n">update_info_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="c1"># Non-deleted expired memory nodes need to be changed to a modified state.</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">store_status</span> <span class="o">==</span> <span class="n">StoreStatusEnum</span><span class="o">.</span><span class="n">EXPIRED</span><span class="o">.</span><span class="n">value</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">action_status</span> <span class="o">!=</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">DELETE</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">action_status</span> <span class="o">=</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">MODIFIED</span>
+
+        <span class="c1"># emb &amp; insert new memories</span>
+        <span class="n">new_memories</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">action_status</span> <span class="o">==</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">NEW</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">new_memories</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">new_memories</span><span class="p">:</span>
+                <span class="n">n</span><span class="o">.</span><span class="n">action_status</span> <span class="o">=</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">NONE</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory_store</span><span class="o">.</span><span class="n">batch_insert</span><span class="p">(</span><span class="n">new_memories</span><span class="p">)</span>
+            <span class="n">update_info_dict</span><span class="p">[</span><span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">NEW</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_memories</span>
+
+        <span class="c1"># emb &amp; update new memories</span>
+        <span class="n">c_modified_memories</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">action_status</span> <span class="o">==</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">CONTENT_MODIFIED</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">c_modified_memories</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c_modified_memories</span><span class="p">:</span>
+                <span class="n">n</span><span class="o">.</span><span class="n">action_status</span> <span class="o">=</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">NONE</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory_store</span><span class="o">.</span><span class="n">batch_update</span><span class="p">(</span><span class="n">c_modified_memories</span><span class="p">,</span> <span class="n">update_embedding</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">update_info_dict</span><span class="p">[</span><span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">CONTENT_MODIFIED</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">c_modified_memories</span>
+
+        <span class="c1"># update new memories</span>
+        <span class="n">modified_memories</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">action_status</span> <span class="o">==</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">MODIFIED</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">modified_memories</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">modified_memories</span><span class="p">:</span>
+                <span class="n">n</span><span class="o">.</span><span class="n">action_status</span> <span class="o">=</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">NONE</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory_store</span><span class="o">.</span><span class="n">batch_update</span><span class="p">(</span><span class="n">modified_memories</span><span class="p">,</span> <span class="n">update_embedding</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">update_info_dict</span><span class="p">[</span><span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">MODIFIED</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">modified_memories</span>
+
+        <span class="c1"># set memories expired</span>
+        <span class="n">delete_memories</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">action_status</span> <span class="o">==</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">DELETE</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">delete_memories</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory_store</span><span class="o">.</span><span class="n">batch_delete</span><span class="p">(</span><span class="n">delete_memories</span><span class="p">)</span>
+            <span class="n">update_info_dict</span><span class="p">[</span><span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">DELETE</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">delete_memories</span>
+
+        <span class="k">return</span> <span class="n">update_info_dict</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alibaba Tongyi Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

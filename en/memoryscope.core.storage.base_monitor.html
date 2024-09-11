@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,69 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-storage-base-monitor-module">
-<h1>memoryscope.core.storage.base_monitor module<a class="headerlink" href="#memoryscope-core-storage-base-monitor-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.storage.base_monitor">
+<span id="memoryscope-core-storage-base-monitor-module"></span><h1>memoryscope.core.storage.base_monitor module<a class="headerlink" href="#module-memoryscope.core.storage.base_monitor" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.base_monitor.BaseMonitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.base_monitor.</span></span><span class="sig-name descname"><span class="pre">BaseMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.base_monitor.BaseMonitor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An abstract base class defining the interface for monitor classes.
+Subclasses should implement the methods defined here to provide concrete monitoring behavior.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.base_monitor.BaseMonitor.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.base_monitor.BaseMonitor.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.base_monitor.BaseMonitor.add">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.base_monitor.BaseMonitor.add" title="Link to this definition"></a></dt>
+<dd><p>Abstract method to add data or events to the monitor.
+This method should be implemented by subclasses to define how data is added into the monitoring system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.base_monitor.BaseMonitor.add_token">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.add_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.base_monitor.BaseMonitor.add_token" title="Link to this definition"></a></dt>
+<dd><p>Abstract method to add a token or a specific type of identifier to the monitor.
+Subclasses should implement this to specify how tokens are managed within the monitoring context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.base_monitor.BaseMonitor.flush">
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.base_monitor.BaseMonitor.flush" title="Link to this definition"></a></dt>
+<dd><p>Method to flush any buffered data in the monitor.
+Intended to ensure that all pending recorded data is processed or written out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.base_monitor.BaseMonitor.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.base_monitor.BaseMonitor.close" title="Link to this definition"></a></dt>
+<dd><p>Method to close the monitor, performing necessary cleanup operations.
+This could include releasing resources, closing files, or any other termination tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

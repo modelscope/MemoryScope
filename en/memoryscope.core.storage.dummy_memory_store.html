@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,103 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-storage-dummy-memory-store-module">
-<h1>memoryscope.core.storage.dummy_memory_store module<a class="headerlink" href="#memoryscope-core-storage-dummy-memory-store-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.storage.dummy_memory_store">
+<span id="memoryscope-core-storage-dummy-memory-store-module"></span><h1>memoryscope.core.storage.dummy_memory_store module<a class="headerlink" href="#module-memoryscope.core.storage.dummy_memory_store" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_memory_store.DummyMemoryStore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.dummy_memory_store.</span></span><span class="sig-name descname"><span class="pre">DummyMemoryStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore" title="memoryscope.core.storage.base_memory_store.BaseMemoryStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMemoryStore</span></code></a></p>
+<p>Placeholder implementation of a memory storage system interface. Defines methods for querying, updating,
+and closing memory nodes with asynchronous capabilities, leveraging an embedding model for potential
+semantic retrieval. Actual storage operations are not implemented.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the DummyMemoryStore with an embedding model and additional keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embedding_model</strong> (<a class="reference internal" href="memoryscope.core.models.html#memoryscope.core.models.BaseModel" title="memoryscope.core.models.BaseModel"><em>BaseModel</em></a>) – The model used to embed data for potential similarity-based retrieval.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments for configuration or future expansion.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.retrieve_memories">
+<span class="sig-name descname"><span class="pre">retrieve_memories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.retrieve_memories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.retrieve_memories" title="Link to this definition"></a></dt>
+<dd><p>Retrieves a list of MemoryNode objects that are most relevant to the query,
+considering a filter dictionary for additional constraints. The number of nodes returned
+is limited by top_k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – The query string used to find relevant memories.</p></li>
+<li><p><strong>top_k</strong> (<em>int</em>) – The maximum number of MemoryNode objects to return.</p></li>
+<li><p><strong>filter_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – A dictionary with keys representing filter fields
+and values as lists of strings for filtering criteria.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A list of MemoryNode objects sorted by relevance to the query,</dt><dd><p>limited to top_k items.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.a_retrieve_memories">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a_retrieve_memories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.a_retrieve_memories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.a_retrieve_memories" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously retrieves a list of MemoryNode objects that best match the query,
+respecting a filter dictionary, with the result size capped at top_k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – The text to search for in memory nodes.</p></li>
+<li><p><strong>top_k</strong> (<em>int</em>) – Maximum number of nodes to return.</p></li>
+<li><p><strong>filter_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Filters to apply on memory nodes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of up to top_k MemoryNode objects matching the criteria.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.batch_insert">
+<span class="sig-name descname"><span class="pre">batch_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.batch_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.batch_insert" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.batch_update">
+<span class="sig-name descname"><span class="pre">batch_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_embedding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.batch_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.batch_update" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.batch_delete">
+<span class="sig-name descname"><span class="pre">batch_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.batch_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.batch_delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.close" title="Link to this definition"></a></dt>
+<dd><p>Closes the memory store, releasing any resources associated with it.
+Subclasses must implement this method to define how the memory store is properly closed.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

@@ -1,0 +1,310 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.utils.prompt_handler &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/utils/prompt_handler.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/utils/prompt_handler.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">模块代码</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.utils.prompt_handler</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>memoryscope.core.utils.prompt_handler 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.language_enum</span> <span class="kn">import</span> <span class="n">LanguageEnum</span>
+
+
+<div class="viewcode-block" id="PromptHandler">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.PromptHandler">[文档]</a>
+<span class="k">class</span> <span class="nc">PromptHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The `PromptHandler` class manages prompt messages by loading them from YAML or JSON files and dictionaries,</span>
+<span class="sd">    supporting language selection based on a context, and providing dictionary-like access to the prompt messages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PromptHandler.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.PromptHandler.__init__">[文档]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">class_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">language</span><span class="p">:</span> <span class="n">LanguageEnum</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">prompt_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                 <span class="n">prompt_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the PromptHandler with paths to prompt sources and additional keyword arguments.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            class_path (str): The path to the class where prompts are utilized.</span>
+<span class="sd">            prompt_file (str, optional): The path to an external file containing prompts. Defaults to &quot;&quot;.</span>
+<span class="sd">            prompt_dict (dict, optional): A dictionary directly containing prompt definitions. Defaults to None.</span>
+<span class="sd">            language (LanguageEnum, str): context language.</span>
+<span class="sd">            **kwargs: Additional keyword arguments that might be used in prompt handling.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">class_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">class_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_class_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">class_path</span><span class="o">.</span><span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_class_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">class_path</span><span class="o">.</span><span class="n">stem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_language_enum</span><span class="p">:</span> <span class="n">LanguageEnum</span> <span class="o">=</span> <span class="n">LanguageEnum</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_prompt_file</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_class_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_class_name</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(),</span> <span class="n">raise_exception</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prompt_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_prompt_file</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_class_dir</span> <span class="o">/</span> <span class="n">prompt_file</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">prompt_dict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_prompt_dict</span><span class="p">(</span><span class="n">prompt_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PromptHandler.file_path_completion">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.PromptHandler.file_path_completion">[文档]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">file_path_completion</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">raise_exception</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attempts to complete the given file path by appending either a `.yaml` or `.json` extension</span>
+<span class="sd">        based on the existence of the respective file. If neither exists, an exception is raised.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_path (str): The base path of the file to be completed.</span>
+<span class="sd">            raise_exception (bool): If the file cannot be found, report an error.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The completed file path with the appropriate extension.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If neither the `.yaml` nor `.json` file exists at the given path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.yaml&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">file_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">file_path</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">.yaml&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">.yaml&quot;</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">.json&quot;</span>
+
+        <span class="k">if</span> <span class="n">raise_exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">/yaml/json is not exists!&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PromptHandler.add_prompt_file">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.PromptHandler.add_prompt_file">[文档]</a>
+    <span class="k">def</span> <span class="nf">add_prompt_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">raise_exception</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds prompt messages from a YAML or JSON file to the internal dictionary.</span>
+
+<span class="sd">        This method supports loading prompts from files ending with &#39;.yaml&#39; or &#39;.json&#39;.</span>
+<span class="sd">        It uses the respective libraries to parse the content and merge it into the current prompt dictionary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_path (str): The path to the YAML or JSON file containing the prompts.</span>
+<span class="sd">            raise_exception (bool): If the file cannot be found, report an error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path_completion</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">raise_exception</span><span class="o">=</span><span class="n">raise_exception</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">prompt_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.yaml&quot;</span><span class="p">):</span>
+            <span class="c1"># Load prompts from a YAML file</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">prompt_dict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">file_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">):</span>
+            <span class="c1"># Load prompts from a JSON file (corrected file handling)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">prompt_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="c1"># Merge the loaded prompts into the existing dictionary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_prompt_dict</span><span class="p">(</span><span class="n">prompt_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PromptHandler.add_prompt_dict">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.PromptHandler.add_prompt_dict">[文档]</a>
+    <span class="k">def</span> <span class="nf">add_prompt_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds prompt messages from a dictionary, ensuring each message has a valid entry for the current language.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            prompt_dict (dict): A dictionary where keys represent prompt identifiers and values are nested dictionaries</span>
+<span class="sd">                               containing language-specific prompt messages.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If a prompt message for the current language is not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">language_dict</span> <span class="ow">in</span> <span class="n">prompt_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">prompts</span> <span class="o">=</span> <span class="n">language_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_language_enum</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">prompts</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.prompt.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_language_enum</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> is empty!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">prompts</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">prompt_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the internal dictionary containing all prompt messages.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The dictionary of prompt messages with keys as identifiers and values as prompt strings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_dict</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enables accessing prompt messages using dictionary-like indexing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): The identifier for the prompt message.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The prompt message corresponding to the given key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allows setting prompt messages using dictionary-like item assignment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): The identifier for the prompt message.</span>
+<span class="sd">            value (str): The new prompt message content.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overrides attribute access to provide prompt messages dynamically.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): The identifier for the prompt message attempted to access as an attribute.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The prompt message corresponding to the given attribute-like key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

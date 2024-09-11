@@ -1,0 +1,421 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.utils.logger &mdash; MemoryScope  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/utils/logger.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/utils/logger.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">About MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README.html">Cli Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages.html">Simple Usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator.html">Advanced usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">Contribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.utils.logger</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for memoryscope.core.utils.logger</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">from</span> <span class="nn">logging.handlers</span> <span class="kn">import</span> <span class="n">RotatingFileHandler</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+<span class="kn">from</span> <span class="nn">rich.panel</span> <span class="kn">import</span> <span class="n">Panel</span>
+<span class="kn">from</span> <span class="nn">rich.text</span> <span class="kn">import</span> <span class="n">Text</span>
+
+<span class="n">LOG_FORMAT</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2"> [</span><span class="si">%(module)s</span><span class="s2">:</span><span class="si">%(lineno)d</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+<span class="n">DATE_FORMAT</span> <span class="o">=</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+
+<span class="n">LOGGER_DICT</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="rich2text">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.rich2text">[docs]</a>
+<span class="k">def</span> <span class="nf">rich2text</span><span class="p">(</span><span class="n">rich_table</span><span class="p">):</span>
+    <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">console</span><span class="o">.</span><span class="n">capture</span><span class="p">()</span> <span class="k">as</span> <span class="n">capture</span><span class="p">:</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">rich_table</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">Text</span><span class="o">.</span><span class="n">from_ansi</span><span class="p">(</span><span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="append_memoryscope_uuid">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.append_memoryscope_uuid">[docs]</a>
+<span class="k">def</span> <span class="nf">append_memoryscope_uuid</span><span class="p">(</span><span class="n">dir_path</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">memoryscope.core.memoryscope_context</span> <span class="kn">import</span> <span class="n">get_memoryscope_uuid</span> <span class="c1"># pylint: disable=import-outside-toplevel</span>
+    <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">get_memoryscope_uuid</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">dir_path</span></div>
+
+
+<div class="viewcode-block" id="Logger">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger">[docs]</a>
+<span class="k">class</span> <span class="nc">Logger</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The `Logger` class handle the stream of information or errors in activities.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Logger.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+                 <span class="n">format_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">LOG_FORMAT</span><span class="p">,</span>
+                 <span class="n">date_format_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DATE_FORMAT</span><span class="p">,</span>
+                 <span class="n">to_stream</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">to_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">file_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+                 <span class="n">file_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+                 <span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+                 <span class="n">max_bytes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>
+                 <span class="n">backup_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the Logger instance, setting up handlers for console and file logging based on provided parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Identifier for the logger.</span>
+<span class="sd">            level (int, optional): Logging level. Defaults to logging.INFO.</span>
+<span class="sd">            format_style (str, optional): Log message format. Defaults to LOG_FORMAT constant.</span>
+<span class="sd">            date_format_style (str, optional): Date format for logs. Defaults to DATE_FORMAT constant.</span>
+<span class="sd">            to_stream (bool, optional): Enables console logging. Defaults to True.</span>
+<span class="sd">            to_file (bool, optional): Enables file logging. Defaults to True.</span>
+<span class="sd">            file_mode (str, optional): File open mode. Defaults to &#39;w&#39;.</span>
+<span class="sd">            file_type (str, optional): Log file extension type. Defaults to &#39;log&#39;.</span>
+<span class="sd">            dir_path (str, optional): Directory for log files. Defaults to &#39;log&#39;.</span>
+<span class="sd">            max_bytes (int, optional): Maximum log file size before rotation. Defaults to 1GB.</span>
+<span class="sd">            backup_count (int, optional): Number of rotated log files to retain. Defaults to 10.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Logger</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">format_style</span><span class="p">,</span> <span class="n">date_format_style</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_format_style</span> <span class="o">=</span> <span class="n">date_format_style</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_stream</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">to_stream</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">to_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">file_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">file_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dir_path</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_bytes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">max_bytes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backup_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">backup_count</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_stream</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_stream_handler</span><span class="p">()</span>  <span class="c1"># Adds a handler to output logs to the console</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_file_handler</span><span class="p">()</span>  <span class="c1"># Adds a handler to output logs to a file</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;logger=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is inited.&quot;</span><span class="p">)</span>  <span class="c1"># Logs an initialization message</span></div>
+
+
+<div class="viewcode-block" id="Logger.log_dictionary_info">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.log_dictionary_info">[docs]</a>
+    <span class="k">def</span> <span class="nf">log_dictionary_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format_current_context</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">title</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Logger.format_current_context">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.format_current_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">format_current_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">()</span>
+        <span class="n">pretty_string</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">title</span><span class="p">:</span>
+            <span class="n">pretty_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_string</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_in_box</span><span class="p">(</span><span class="n">pretty_string</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Logger.wrap_in_box">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.wrap_in_box">[docs]</a>
+    <span class="k">def</span> <span class="nf">wrap_in_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">rich2text</span><span class="p">(</span><span class="n">Panel</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">128</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Logger.format_chat_message">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.format_chat_message">[docs]</a>
+    <span class="k">def</span> <span class="nf">format_chat_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LM Input:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">chat_message</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;messages&#39;</span><span class="p">]:</span>
+            <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chat_message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+            <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;------------------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_in_box</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Logger.format_rank_message">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.format_rank_message">[docs]</a>
+    <span class="k">def</span> <span class="nf">format_rank_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_response</span><span class="p">):</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Query Input:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_response</span><span class="o">.</span><span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;query_str&#39;</span><span class="p">])</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;------------------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rank:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">model_response</span><span class="o">.</span><span class="n">rank_scores</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">rank</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">model_response</span><span class="o">.</span><span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;nodes&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">node_text</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2"> | Rank </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">node_text</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_in_box</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_add_file_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a file handler to the logger which logs messages to a rotating file.</span>
+
+<span class="sd">        The file is stored in a specified directory with a name derived from the logger&#39;s name and type.</span>
+<span class="sd">        The file handler is set up to rotate when it reaches a certain size and keeps a defined number of backups.</span>
+
+<span class="sd">        This method ensures the directory exists before creating the file handler and sets the formatter</span>
+<span class="sd">        for consistent log message formatting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Ensure the directory exists</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>  <span class="c1"># Get the absolute path as a string</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Logger</span><span class="p">,</span> <span class="s1">&#39;notice_print&#39;</span><span class="p">):</span>
+            <span class="n">Console</span><span class="p">()</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Registering loggers at: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_name</span><span class="p">))</span><span class="si">}</span><span class="s2">. System logs can be found in this directory.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;bold red&quot;</span><span class="p">)</span>
+            <span class="n">Logger</span><span class="o">.</span><span class="n">notice_print</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># Instantiate a rotating file handler with specified parameters</span>
+        <span class="n">file_handler</span> <span class="o">=</span> <span class="n">RotatingFileHandler</span><span class="p">(</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">file_name</span><span class="p">,</span>
+            <span class="n">maxBytes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_bytes</span><span class="p">,</span>  <span class="c1"># Maximum size of the log file before rotation</span>
+            <span class="n">backupCount</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backup_count</span><span class="p">,</span>  <span class="c1"># Number of backup files to keep</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>  <span class="c1"># Set the encoding to UTF-8</span>
+        <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="p">)</span>  <span class="c1"># Apply the logger&#39;s formatter to the handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>  <span class="c1"># Add the file handler to this logger instance</span>
+
+    <span class="k">def</span> <span class="nf">_add_stream_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a stream handler to the logger for console output. The handler is configured</span>
+<span class="sd">        with the logger&#39;s formatter and set to use UTF-8 encoding.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stream_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+        <span class="n">stream_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="p">)</span>  <span class="c1"># Configure the handler with the logger&#39;s formatter</span>
+        <span class="n">stream_handler</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span>  <span class="c1"># Set the handler&#39;s encoding to UTF-8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">stream_handler</span><span class="p">)</span>  <span class="c1"># Add the handler to the logger</span>
+
+<div class="viewcode-block" id="Logger.close">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes all handlers associated with this logger instance.</span>
+
+<span class="sd">        This method iterates over the handlers attached to the logger and</span>
+<span class="sd">        calls their `close` method to ensure that any system resources used</span>
+<span class="sd">        by the handlers are freed properly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+            <span class="c1"># Close each handler to release resources</span>
+            <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Logger.clear">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.clear">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clears all handlers from the logger.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Logger.set_trace_id">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.set_trace_id">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_trace_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the trace ID for the logger. If the provided trace ID is longer than 8 characters,</span>
+<span class="sd">        it will be truncated to the first 8 characters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trace_id (str): The trace identifier to be associated with the logs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">trace_id</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trace_id</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trace_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace_id</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Logger.makeRecord">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.makeRecord">[docs]</a>
+    <span class="k">def</span> <span class="nf">makeRecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">lno</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">,</span>
+                   <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a log record with additional trace_id included in the extra information.</span>
+
+<span class="sd">        This method extends the default behavior of creating a log record by adding</span>
+<span class="sd">        a trace_id from the logger instance to the record&#39;s extra data, allowing</span>
+<span class="sd">        for traceability within logged data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name of the logger.</span>
+<span class="sd">            level (int): The logging level of the record.</span>
+<span class="sd">            fn (str): The name of the function containing the logging call.</span>
+<span class="sd">            lno (int): The line number at which the logging call was made.</span>
+<span class="sd">            msg (str): The logged message, before formatting.</span>
+<span class="sd">            args (tuple): The arguments to the log message.</span>
+<span class="sd">            exc_info (tuple): Exception information or None.</span>
+<span class="sd">            func (function): The function where the logging call was made. Defaults to None.</span>
+<span class="sd">            extra (dict): Additional information for the log record. Defaults to None.</span>
+<span class="sd">            sinfo (str): Stack trace information or None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            logging.LogRecord: The created log record with potentially enriched &#39;extra&#39; field.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">extra</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extra</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace_id</span><span class="p">:</span>
+            <span class="n">extra</span><span class="p">[</span><span class="s2">&quot;trace_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace_id</span>  <span class="c1"># Include trace_id from the logger in the log record extra data</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">makeRecord</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">lno</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">extra</span><span class="p">,</span> <span class="n">sinfo</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Logger.get_logger">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.logger.html#memoryscope.core.utils.Logger.get_logger">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_logger</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves or creates a logger instance with the specified name and configurations.</span>
+
+<span class="sd">        If no name is provided, it defaults to the first registered logger&#39;s name or &#39;default&#39; if none exist.</span>
+<span class="sd">        This method ensures that only one logger instance exists per name by reusing existing instances</span>
+<span class="sd">        stored in `LOGGER_DICT`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str, optional): The name of the logger. Defaults to None, which triggers auto-naming logic.</span>
+<span class="sd">            **kwargs: Additional keyword arguments to configure the logger.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Logger: The requested or newly created logger instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">LOGGER_DICT</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">LOGGER_DICT</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">LOGGER_DICT</span><span class="p">:</span>
+            <span class="n">logger_dir</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dir_path&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">)</span>
+            <span class="n">logger_dir</span> <span class="o">=</span> <span class="n">append_memoryscope_uuid</span><span class="p">(</span><span class="n">logger_dir</span><span class="p">)</span>
+            <span class="n">LOGGER_DICT</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">dir_path</span><span class="o">=</span><span class="n">logger_dir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">LOGGER_DICT</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alibaba Tongyi Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

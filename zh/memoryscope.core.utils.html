@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -123,18 +123,840 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.logger.html">memoryscope.core.utils.logger module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html">memoryscope.core.utils.prompt_handler module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.registry.html">memoryscope.core.utils.registry module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html">memoryscope.core.utils.response_text_parser module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.singleton.html">memoryscope.core.utils.singleton module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.timer.html">memoryscope.core.utils.timer module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html">memoryscope.core.utils.tool_functions module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.logger.html">memoryscope.core.utils.logger module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.rich2text"><code class="docutils literal notranslate"><span class="pre">rich2text</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.append_memoryscope_uuid"><code class="docutils literal notranslate"><span class="pre">append_memoryscope_uuid</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger"><code class="docutils literal notranslate"><span class="pre">Logger</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.__init__"><code class="docutils literal notranslate"><span class="pre">Logger.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.log_dictionary_info"><code class="docutils literal notranslate"><span class="pre">Logger.log_dictionary_info</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.format_current_context"><code class="docutils literal notranslate"><span class="pre">Logger.format_current_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.wrap_in_box"><code class="docutils literal notranslate"><span class="pre">Logger.wrap_in_box</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.format_chat_message"><code class="docutils literal notranslate"><span class="pre">Logger.format_chat_message</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.format_rank_message"><code class="docutils literal notranslate"><span class="pre">Logger.format_rank_message</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.close"><code class="docutils literal notranslate"><span class="pre">Logger.close</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.clear"><code class="docutils literal notranslate"><span class="pre">Logger.clear</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.set_trace_id"><code class="docutils literal notranslate"><span class="pre">Logger.set_trace_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.makeRecord"><code class="docutils literal notranslate"><span class="pre">Logger.makeRecord</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger.get_logger"><code class="docutils literal notranslate"><span class="pre">Logger.get_logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html">memoryscope.core.utils.prompt_handler module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.prompt_handler.PromptHandler"><code class="docutils literal notranslate"><span class="pre">PromptHandler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.prompt_handler.PromptHandler.__init__"><code class="docutils literal notranslate"><span class="pre">PromptHandler.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.prompt_handler.PromptHandler.file_path_completion"><code class="docutils literal notranslate"><span class="pre">PromptHandler.file_path_completion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.prompt_handler.PromptHandler.add_prompt_file"><code class="docutils literal notranslate"><span class="pre">PromptHandler.add_prompt_file</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.prompt_handler.PromptHandler.add_prompt_dict"><code class="docutils literal notranslate"><span class="pre">PromptHandler.add_prompt_dict</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.prompt_handler.PromptHandler.prompt_dict"><code class="docutils literal notranslate"><span class="pre">PromptHandler.prompt_dict</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.registry.html">memoryscope.core.utils.registry module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.registry.html#memoryscope.core.utils.registry.Registry"><code class="docutils literal notranslate"><span class="pre">Registry</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.registry.html#memoryscope.core.utils.registry.Registry.name"><code class="docutils literal notranslate"><span class="pre">Registry.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.registry.html#memoryscope.core.utils.registry.Registry.module_dict"><code class="docutils literal notranslate"><span class="pre">Registry.module_dict</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.registry.html#memoryscope.core.utils.registry.Registry.__init__"><code class="docutils literal notranslate"><span class="pre">Registry.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.registry.html#memoryscope.core.utils.registry.Registry.register"><code class="docutils literal notranslate"><span class="pre">Registry.register</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.registry.html#memoryscope.core.utils.registry.Registry.batch_register"><code class="docutils literal notranslate"><span class="pre">Registry.batch_register</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html">memoryscope.core.utils.response_text_parser module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html#memoryscope.core.utils.response_text_parser.ResponseTextParser"><code class="docutils literal notranslate"><span class="pre">ResponseTextParser</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html#memoryscope.core.utils.response_text_parser.ResponseTextParser.PATTERN_V1"><code class="docutils literal notranslate"><span class="pre">ResponseTextParser.PATTERN_V1</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html#memoryscope.core.utils.response_text_parser.ResponseTextParser.__init__"><code class="docutils literal notranslate"><span class="pre">ResponseTextParser.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html#memoryscope.core.utils.response_text_parser.ResponseTextParser.response_text"><code class="docutils literal notranslate"><span class="pre">ResponseTextParser.response_text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html#memoryscope.core.utils.response_text_parser.ResponseTextParser.language"><code class="docutils literal notranslate"><span class="pre">ResponseTextParser.language</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html#memoryscope.core.utils.response_text_parser.ResponseTextParser.logger_prefix"><code class="docutils literal notranslate"><span class="pre">ResponseTextParser.logger_prefix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html#memoryscope.core.utils.response_text_parser.ResponseTextParser.logger"><code class="docutils literal notranslate"><span class="pre">ResponseTextParser.logger</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html#memoryscope.core.utils.response_text_parser.ResponseTextParser.parse_v1"><code class="docutils literal notranslate"><span class="pre">ResponseTextParser.parse_v1</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.response_text_parser.html#memoryscope.core.utils.response_text_parser.ResponseTextParser.parse_v2"><code class="docutils literal notranslate"><span class="pre">ResponseTextParser.parse_v2</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.singleton.html">memoryscope.core.utils.singleton module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.singleton.html#memoryscope.core.utils.singleton.singleton"><code class="docutils literal notranslate"><span class="pre">singleton</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.timer.html">memoryscope.core.utils.timer module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.timer.html#memoryscope.core.utils.timer.Timer"><code class="docutils literal notranslate"><span class="pre">Timer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.timer.html#memoryscope.core.utils.timer.Timer.__init__"><code class="docutils literal notranslate"><span class="pre">Timer.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.utils.timer.html#memoryscope.core.utils.timer.Timer.cost_str"><code class="docutils literal notranslate"><span class="pre">Timer.cost_str</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.timer.html#memoryscope.core.utils.timer.timer"><code class="docutils literal notranslate"><span class="pre">timer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html">memoryscope.core.utils.tool_functions module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.tool_functions.underscore_to_camelcase"><code class="docutils literal notranslate"><span class="pre">underscore_to_camelcase</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.tool_functions.camelcase_to_underscore"><code class="docutils literal notranslate"><span class="pre">camelcase_to_underscore</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.tool_functions.init_instance_by_config"><code class="docutils literal notranslate"><span class="pre">init_instance_by_config</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.tool_functions.prompt_to_msg"><code class="docutils literal notranslate"><span class="pre">prompt_to_msg</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.tool_functions.char_logo"><code class="docutils literal notranslate"><span class="pre">char_logo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.tool_functions.md5_hash"><code class="docutils literal notranslate"><span class="pre">md5_hash</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.tool_functions.contains_keyword"><code class="docutils literal notranslate"><span class="pre">contains_keyword</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.tool_functions.cosine_similarity"><code class="docutils literal notranslate"><span class="pre">cosine_similarity</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.tool_functions.cosine_similarity_matrix"><code class="docutils literal notranslate"><span class="pre">cosine_similarity_matrix</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-memoryscope.core.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-memoryscope.core.utils" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">DatetimeHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles operations related to datetime such as parsing, extraction, and formatting,
+with support for both Chinese and English contexts including weekday names and
+specialized text parsing for date components.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize the DatetimeHandler instance with a datetime object, string, integer, or float representation
+of a timestamp. If no argument is provided, the current time is used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> (<em>datetime.datetime</em><em> | </em><em>str</em><em> | </em><em>int</em><em> | </em><em>float</em><em>, </em><em>optional</em>) -- The datetime to be handled. Can be a datetime object, a timestamp string, or a numeric timestamp.
+Defaults to None, which sets the instance to the current datetime.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.self._dt">
+<span class="sig-prename descclassname"><span class="pre">self.</span></span><span class="sig-name descname"><span class="pre">_dt</span></span><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.self._dt" title="Link to this definition"></a></dt>
+<dd><p>The internal datetime representation of the input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime.datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.self._dt_info_dict">
+<span class="sig-prename descclassname"><span class="pre">self.</span></span><span class="sig-name descname"><span class="pre">_dt_info_dict</span></span><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.self._dt_info_dict" title="Link to this definition"></a></dt>
+<dd><p>A dictionary containing parsed datetime information, defaults to None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.get_dt_info_dict">
+<span class="sig-name descname"><span class="pre">get_dt_info_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.get_dt_info_dict"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.get_dt_info_dict" title="Link to this definition"></a></dt>
+<dd><p>Property method to get the dictionary containing parsed datetime information.
+If None, initialize using <cite>_parse_dt_info</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary with parsed datetime information.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.extract_date_parts_cn">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_date_parts_cn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.extract_date_parts_cn"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.extract_date_parts_cn" title="Link to this definition"></a></dt>
+<dd><p>Extracts various components of a date (year, month, day, etc.) from an input string based on Chinese formats.</p>
+<p>This method identifies year, month, day, weekday, and hour components within the input
+string based on predefined patterns. It supports relative terms like '每' (every) and
+translates weekday names into numeric representations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_string</strong> (<em>str</em>) -- The Chinese text containing date and time information.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A dictionary with keys 'year', 'month', 'day', 'weekday', and 'hour',</dt><dd><p>each holding the corresponding extracted value. If a component is not found,
+it will not be included in the dictionary. For relative terms like '每' (every),
+the value is set to -1.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.extract_date_parts_en">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_date_parts_en</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.extract_date_parts_en"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.extract_date_parts_en" title="Link to this definition"></a></dt>
+<dd><p>Extracts various components of a date (year, month, day, etc.) from an input string based on English formats.</p>
+<p>This method employs regex patterns to identify and parse different date and time elements within the provided
+text. It supports extraction of year, month name, day, 12-hour and 24-hour time formats, and weekdays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_string</strong> (<em>str</em>) -- The English text containing date and time information.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing the extracted date parts with default values of -1 where components are not
+found. Keys include 'year', 'month', 'day', 'hour', 'minute', 'second', and 'weekday'.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.extract_date_parts">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_date_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.extract_date_parts"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.extract_date_parts" title="Link to this definition"></a></dt>
+<dd><p>Extracts various date components from the input string based on the current language context.</p>
+<p>This method dynamically selects a language-specific function to parse the input string and extract
+date parts such as year, month, day, etc. If the function for current language context does not exist,
+a warning is logged and an empty dictionary is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_string</strong> (<em>str</em>) -- The string containing date information to be parsed.</p></li>
+<li><p><strong>language</strong> (<em>str</em>) -- current language.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing extracted date components, or an empty dictionary if parsing fails.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.has_time_word_cn">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_time_word_cn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_word_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.has_time_word_cn"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.has_time_word_cn" title="Link to this definition"></a></dt>
+<dd><p>Check if the input query contains any datetime-related words based on the cn language context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) -- The input string to check for datetime-related words.</p></li>
+<li><p><strong>datetime_word_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) -- datetime keywords</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the query contains at least one datetime-related word, False otherwise.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.has_time_word_en">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_time_word_en</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_word_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.has_time_word_en"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.has_time_word_en" title="Link to this definition"></a></dt>
+<dd><p>Check if the input query contains any datetime-related words based on the en language context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) -- The input string to check for datetime-related words.</p></li>
+<li><p><strong>datetime_word_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) -- datetime keywords</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the query contains at least one datetime-related word, False otherwise.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.has_time_word">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_time_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.has_time_word"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.has_time_word" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.datetime_format">
+<span class="sig-name descname"><span class="pre">datetime_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'%Y%m%d'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.datetime_format"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.datetime_format" title="Link to this definition"></a></dt>
+<dd><p>Format the stored datetime object into a string based on the provided format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt_format</strong> (<em>str</em><em>, </em><em>optional</em>) -- The datetime format string. Defaults to &quot;%Y%m%d&quot;.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A formatted datetime string.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.string_format">
+<span class="sig-name descname"><span class="pre">string_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.string_format"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.string_format" title="Link to this definition"></a></dt>
+<dd><p>Format the datetime information stored in the instance using a custom string format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string_format</strong> (<em>str</em>) -- A format string where placeholders are keys from <cite>dt_info_dict</cite>.</p></li>
+<li><p><strong>language</strong> (<em>str</em>) -- current language.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A formatted datetime string.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.utils.DatetimeHandler.timestamp">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#memoryscope.core.utils.DatetimeHandler.timestamp" title="Link to this definition"></a></dt>
+<dd><p>Get the timestamp representation of the stored datetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A timestamp value.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'%(asctime)s</span> <span class="pre">%(levelname)s</span> <span class="pre">[%(module)s:%(lineno)d]</span> <span class="pre">%(message)s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_format_style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'%Y-%m-%d</span> <span class="pre">%H:%M:%S'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1073741824</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backup_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></p>
+<p>The <cite>Logger</cite> class handle the stream of information or errors in activities.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'%(asctime)s</span> <span class="pre">%(levelname)s</span> <span class="pre">[%(module)s:%(lineno)d]</span> <span class="pre">%(message)s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_format_style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'%Y-%m-%d</span> <span class="pre">%H:%M:%S'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1073741824</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backup_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the Logger instance, setting up handlers for console and file logging based on provided parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) -- Identifier for the logger.</p></li>
+<li><p><strong>level</strong> (<em>int</em><em>, </em><em>optional</em>) -- Logging level. Defaults to logging.INFO.</p></li>
+<li><p><strong>format_style</strong> (<em>str</em><em>, </em><em>optional</em>) -- Log message format. Defaults to LOG_FORMAT constant.</p></li>
+<li><p><strong>date_format_style</strong> (<em>str</em><em>, </em><em>optional</em>) -- Date format for logs. Defaults to DATE_FORMAT constant.</p></li>
+<li><p><strong>to_stream</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Enables console logging. Defaults to True.</p></li>
+<li><p><strong>to_file</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Enables file logging. Defaults to True.</p></li>
+<li><p><strong>file_mode</strong> (<em>str</em><em>, </em><em>optional</em>) -- File open mode. Defaults to 'w'.</p></li>
+<li><p><strong>file_type</strong> (<em>str</em><em>, </em><em>optional</em>) -- Log file extension type. Defaults to 'log'.</p></li>
+<li><p><strong>dir_path</strong> (<em>str</em><em>, </em><em>optional</em>) -- Directory for log files. Defaults to 'log'.</p></li>
+<li><p><strong>max_bytes</strong> (<em>int</em><em>, </em><em>optional</em>) -- Maximum log file size before rotation. Defaults to 1GB.</p></li>
+<li><p><strong>backup_count</strong> (<em>int</em><em>, </em><em>optional</em>) -- Number of rotated log files to retain. Defaults to 10.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.log_dictionary_info">
+<span class="sig-name descname"><span class="pre">log_dictionary_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.log_dictionary_info"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.log_dictionary_info" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.format_current_context">
+<span class="sig-name descname"><span class="pre">format_current_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.format_current_context"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.format_current_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.wrap_in_box">
+<span class="sig-name descname"><span class="pre">wrap_in_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.wrap_in_box"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.wrap_in_box" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.format_chat_message">
+<span class="sig-name descname"><span class="pre">format_chat_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.format_chat_message"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.format_chat_message" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.format_rank_message">
+<span class="sig-name descname"><span class="pre">format_rank_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.format_rank_message"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.format_rank_message" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.close"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.close" title="Link to this definition"></a></dt>
+<dd><p>Closes all handlers associated with this logger instance.</p>
+<p>This method iterates over the handlers attached to the logger and
+calls their <cite>close</cite> method to ensure that any system resources used
+by the handlers are freed properly.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.clear"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.clear" title="Link to this definition"></a></dt>
+<dd><p>Clears all handlers from the logger.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.set_trace_id">
+<span class="sig-name descname"><span class="pre">set_trace_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trace_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.set_trace_id"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.set_trace_id" title="Link to this definition"></a></dt>
+<dd><p>Sets the trace ID for the logger. If the provided trace ID is longer than 8 characters,
+it will be truncated to the first 8 characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>trace_id</strong> (<em>str</em>) -- The trace identifier to be associated with the logs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.makeRecord">
+<span class="sig-name descname"><span class="pre">makeRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lno</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sinfo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.makeRecord"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.makeRecord" title="Link to this definition"></a></dt>
+<dd><p>Creates a log record with additional trace_id included in the extra information.</p>
+<p>This method extends the default behavior of creating a log record by adding
+a trace_id from the logger instance to the record's extra data, allowing
+for traceability within logged data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) -- The name of the logger.</p></li>
+<li><p><strong>level</strong> (<em>int</em>) -- The logging level of the record.</p></li>
+<li><p><strong>fn</strong> (<em>str</em>) -- The name of the function containing the logging call.</p></li>
+<li><p><strong>lno</strong> (<em>int</em>) -- The line number at which the logging call was made.</p></li>
+<li><p><strong>msg</strong> (<em>str</em>) -- The logged message, before formatting.</p></li>
+<li><p><strong>args</strong> (<em>tuple</em>) -- The arguments to the log message.</p></li>
+<li><p><strong>exc_info</strong> (<em>tuple</em>) -- Exception information or None.</p></li>
+<li><p><strong>func</strong> (<em>function</em>) -- The function where the logging call was made. Defaults to None.</p></li>
+<li><p><strong>extra</strong> (<em>dict</em>) -- Additional information for the log record. Defaults to None.</p></li>
+<li><p><strong>sinfo</strong> (<em>str</em>) -- Stack trace information or None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created log record with potentially enriched 'extra' field.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>logging.LogRecord</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Logger.get_logger">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/logger.html#Logger.get_logger"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Logger.get_logger" title="Link to this definition"></a></dt>
+<dd><p>Retrieves or creates a logger instance with the specified name and configurations.</p>
+<p>If no name is provided, it defaults to the first registered logger's name or 'default' if none exist.
+This method ensures that only one logger instance exists per name by reusing existing instances
+stored in <cite>LOGGER_DICT</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) -- The name of the logger. Defaults to None, which triggers auto-naming logic.</p></li>
+<li><p><strong>**kwargs</strong> -- Additional keyword arguments to configure the logger.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The requested or newly created logger instance.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#memoryscope.core.utils.Logger" title="memoryscope.core.utils.Logger">Logger</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.utils.PromptHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">PromptHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.PromptHandler" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The <cite>PromptHandler</cite> class manages prompt messages by loading them from YAML or JSON files and dictionaries,
+supporting language selection based on a context, and providing dictionary-like access to the prompt messages.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.PromptHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.PromptHandler.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the PromptHandler with paths to prompt sources and additional keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class_path</strong> (<em>str</em>) -- The path to the class where prompts are utilized.</p></li>
+<li><p><strong>prompt_file</strong> (<em>str</em><em>, </em><em>optional</em>) -- The path to an external file containing prompts. Defaults to &quot;&quot;.</p></li>
+<li><p><strong>prompt_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) -- A dictionary directly containing prompt definitions. Defaults to None.</p></li>
+<li><p><strong>language</strong> (<a class="reference internal" href="memoryscope.enumeration.html#memoryscope.enumeration.LanguageEnum" title="memoryscope.enumeration.LanguageEnum"><em>LanguageEnum</em></a><em>, </em><em>str</em>) -- context language.</p></li>
+<li><p><strong>**kwargs</strong> -- Additional keyword arguments that might be used in prompt handling.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.PromptHandler.file_path_completion">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file_path_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler.file_path_completion"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.PromptHandler.file_path_completion" title="Link to this definition"></a></dt>
+<dd><p>Attempts to complete the given file path by appending either a <cite>.yaml</cite> or <cite>.json</cite> extension
+based on the existence of the respective file. If neither exists, an exception is raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) -- The base path of the file to be completed.</p></li>
+<li><p><strong>raise_exception</strong> (<em>bool</em>) -- If the file cannot be found, report an error.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The completed file path with the appropriate extension.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> -- If neither the <cite>.yaml</cite> nor <cite>.json</cite> file exists at the given path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.PromptHandler.add_prompt_file">
+<span class="sig-name descname"><span class="pre">add_prompt_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler.add_prompt_file"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.PromptHandler.add_prompt_file" title="Link to this definition"></a></dt>
+<dd><p>Adds prompt messages from a YAML or JSON file to the internal dictionary.</p>
+<p>This method supports loading prompts from files ending with '.yaml' or '.json'.
+It uses the respective libraries to parse the content and merge it into the current prompt dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) -- The path to the YAML or JSON file containing the prompts.</p></li>
+<li><p><strong>raise_exception</strong> (<em>bool</em>) -- If the file cannot be found, report an error.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.PromptHandler.add_prompt_dict">
+<span class="sig-name descname"><span class="pre">add_prompt_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler.add_prompt_dict"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.PromptHandler.add_prompt_dict" title="Link to this definition"></a></dt>
+<dd><p>Adds prompt messages from a dictionary, ensuring each message has a valid entry for the current language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>prompt_dict</strong> (<em>dict</em>) -- A dictionary where keys represent prompt identifiers and values are nested dictionaries
+containing language-specific prompt messages.</p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> -- If a prompt message for the current language is not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.utils.PromptHandler.prompt_dict">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prompt_dict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.utils.PromptHandler.prompt_dict" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the internal dictionary containing all prompt messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dictionary of prompt messages with keys as identifiers and values as prompt strings.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Registry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">Registry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/registry.html#Registry"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Registry" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A registry to manage and instantiate various modules by their names, ensuring the uniqueness of registered entries.
+It supports both individual and bulk registration of modules, as well as retrieval of modules by name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Registry.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#memoryscope.core.utils.Registry.name" title="Link to this definition"></a></dt>
+<dd><p>The name of the registry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Registry.module_dict">
+<span class="sig-name descname"><span class="pre">module_dict</span></span><a class="headerlink" href="#memoryscope.core.utils.Registry.module_dict" title="Link to this definition"></a></dt>
+<dd><p>A dictionary holding registered modules where keys are module names and values are
+the modules themselves.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Registry.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/registry.html#Registry.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Registry.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the Registry with a given name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) -- The name to identify this registry.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Registry.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/registry.html#Registry.register"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Registry.register" title="Link to this definition"></a></dt>
+<dd><p>Registers module in the registry in a single call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module_name</strong> (<em>str</em>) -- The name of module to be registered.</p></li>
+<li><p><strong>module</strong> (<em>List</em><em>[</em><em>Any</em><em>] </em><em>| </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) -- The module to be registered.</p></li>
+</ul>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> -- If the input is already registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Registry.batch_register">
+<span class="sig-name descname"><span class="pre">batch_register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/registry.html#Registry.batch_register"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Registry.batch_register" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Registers multiple modules in the registry in a single call. Accepts either a list of modules or a dictionary</dt><dd><p>mapping names to modules.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>modules</strong> (<em>List</em><em>[</em><em>Any</em><em>] </em><em>| </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) -- A list of modules or a dictionary mapping module names to the modules.</p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> -- If the input is neither a list nor a dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.utils.ResponseTextParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">ResponseTextParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/response_text_parser.html#ResponseTextParser"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.ResponseTextParser" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The <cite>ResponseTextParser</cite> class is designed to parse and process response texts. It provides methods to extract
+patterns from the text and filter out unnecessary information, while also logging the processing steps and outcomes.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.utils.ResponseTextParser.PATTERN_V1">
+<span class="sig-name descname"><span class="pre">PATTERN_V1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">re.compile('&lt;(.*?)&gt;')</span></em><a class="headerlink" href="#memoryscope.core.utils.ResponseTextParser.PATTERN_V1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.ResponseTextParser.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/response_text_parser.html#ResponseTextParser.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.ResponseTextParser.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.ResponseTextParser.parse_v1">
+<span class="sig-name descname"><span class="pre">parse_v1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/response_text_parser.html#ResponseTextParser.parse_v1"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.ResponseTextParser.parse_v1" title="Link to this definition"></a></dt>
+<dd><p>Extract specific patterns from the text which match content within angle brackets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Contents match the specific patterns.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.ResponseTextParser.parse_v2">
+<span class="sig-name descname"><span class="pre">parse_v2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/response_text_parser.html#ResponseTextParser.parse_v2"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.ResponseTextParser.parse_v2" title="Link to this definition"></a></dt>
+<dd><p>Extract lines which contain NONE_WORD.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Contents match the specific patterns.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Timer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">Timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_log_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'end'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'wrap'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'none'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'end'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float_precision</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/timer.html#Timer"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Timer" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class used to measure the execution time of code blocks. It supports logging the elapsed time and can be
+customized to display time in seconds or milliseconds.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Timer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_log_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'end'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'wrap'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'none'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'end'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float_precision</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/timer.html#Timer.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.Timer.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the <cite>Timer</cite> instance with the provided args and sets up a logger</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) -- The log name.</p></li>
+<li><p><strong>time_log_type</strong> (<em>str</em>) -- The log type. Defaults to 'End'.</p></li>
+<li><p><strong>use_ms</strong> (<em>bool</em>) -- Use 'ms' as the timescale or not. Defaults to True.</p></li>
+<li><p><strong>stack_level</strong> (<em>int</em>) -- The stack level of log. Defaults to 2.</p></li>
+<li><p><strong>float_precision</strong> (<em>int</em>) -- The precision of cost time. Defaults to 4.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.utils.Timer.cost_str">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cost_str</span></span><a class="headerlink" href="#memoryscope.core.utils.Timer.cost_str" title="Link to this definition"></a></dt>
+<dd><p>Represent the cost time into a formatted string.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memoryscope.core.utils.underscore_to_camelcase">
+<span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">underscore_to_camelcase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/tool_functions.html#underscore_to_camelcase"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.underscore_to_camelcase" title="Link to this definition"></a></dt>
+<dd><p>Converts an underscore_notation string to CamelCase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) -- The underscore_notation string to be converted.</p></li>
+<li><p><strong>is_first_title</strong> (<em>bool</em>) -- Title the first word or not. Defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A CamelCase formatted string.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memoryscope.core.utils.camelcase_to_underscore">
+<span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">camelcase_to_underscore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/tool_functions.html#camelcase_to_underscore"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.camelcase_to_underscore" title="Link to this definition"></a></dt>
+<dd><p>Converts a CamelCase string to underscore_notation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) -- The CamelCase formatted string to be converted.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A converted string in underscore_notation.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memoryscope.core.utils.init_instance_by_config">
+<span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">init_instance_by_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_class_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'memoryscope'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/tool_functions.html#init_instance_by_config"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.init_instance_by_config" title="Link to this definition"></a></dt>
+<dd><p>Initialize an instance of a class specified in the configuration dictionary.</p>
+<p>This function dynamically imports a class from a module path, allowing for
+user-defined classes or default paths. It supports adding a suffix to the
+class name, merging additional keyword arguments with the config, and handling
+nested module paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>dict</em>) -- A dictionary containing the configuration, including
+the 'class' key that specifies the class's module path.</p></li>
+<li><p><strong>default_class_dir</strong> (<em>str</em><em>, </em><em>optional</em>) -- The default module path prefix
+to use if not explicitly defined in
+'config'. Defaults to &quot;memory_scope&quot;.</p></li>
+<li><p><strong>**kwargs</strong> -- Additional keyword arguments to pass to the class constructor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance initialized with the provided config and kwargs.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memoryscope.core.utils.prompt_to_msg">
+<span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">prompt_to_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concat_system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/tool_functions.html#prompt_to_msg"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.prompt_to_msg" title="Link to this definition"></a></dt>
+<dd><p>Converts input strings into a structured list of message objects suitable for AI interactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system_prompt</strong> (<em>str</em>) -- The system-level instruction or context.</p></li>
+<li><p><strong>few_shot</strong> (<em>str</em>) -- An example or demonstration input, often used for illustrating expected behavior.</p></li>
+<li><p><strong>user_query</strong> (<em>str</em>) -- The actual user query or prompt to be processed.</p></li>
+<li><p><strong>concat_system_prompt</strong> (<em>bool</em>) -- Concat system prompt again or not in the user message.
+A simple method to improve the effectiveness for some LLMs. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of Message objects, each representing a part of the conversation setup.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memoryscope.core.utils.char_logo">
+<span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">char_logo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">words</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1726057277758252449</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/tool_functions.html#char_logo"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.char_logo" title="Link to this definition"></a></dt>
+<dd><p>Render the context of logo with colors</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>words</strong> -- The context of logo.</p></li>
+<li><p><strong>seed</strong> -- The random seed which generates colors if there is no specific color. Defaults to the current timestamp.</p></li>
+<li><p><strong>color</strong> -- The specific color. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A rendered logo</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memoryscope.core.utils.md5_hash">
+<span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">md5_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/tool_functions.html#md5_hash"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.md5_hash" title="Link to this definition"></a></dt>
+<dd><p>Computes a MD5 hash of the given input string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_string</strong> (<em>str</em>) -- The string for which the MD5 hash needs to be computed.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A hexadecimal MD5 hash representation.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memoryscope.core.utils.contains_keyword">
+<span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">contains_keyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/tool_functions.html#contains_keyword"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.contains_keyword" title="Link to this definition"></a></dt>
+<dd><p>Checks if the given text contains any of the specified keywords, ignoring case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em>) -- The text to search within.</p></li>
+<li><p><strong>keywords</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) -- A list of keywords to look for in the text.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if any keyword is found in the text, False otherwise.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memoryscope.core.utils.cosine_similarity">
+<span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.</span></span><span class="sig-name descname"><span class="pre">cosine_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">documents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/tool_functions.html#cosine_similarity"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.cosine_similarity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 </section>
 

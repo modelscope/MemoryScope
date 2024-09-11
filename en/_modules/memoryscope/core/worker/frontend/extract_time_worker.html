@@ -1,0 +1,199 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.worker.frontend.extract_time_worker &mdash; MemoryScope  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../../en/_modules/memoryscope/core/worker/frontend/extract_time_worker.html">English</a></li> |
+    <a href="../../../../../../zh/_modules/memoryscope/core/worker/frontend/extract_time_worker.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../README.html">About MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/cli/CLI_README.html">Cli Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/api/simple_usages.html">Simple Usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/advance/custom_operator.html">Advanced usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/contribution.html">Contribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.worker.frontend.extract_time_worker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for memoryscope.core.worker.frontend.extract_time_worker</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.constants.common_constants</span> <span class="kn">import</span> <span class="n">QUERY_WITH_TS</span><span class="p">,</span> <span class="n">EXTRACT_TIME_DICT</span>
+<span class="kn">from</span> <span class="nn">memoryscope.constants.language_constants</span> <span class="kn">import</span> <span class="n">DATATIME_KEY_MAP</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.datetime_handler</span> <span class="kn">import</span> <span class="n">DatetimeHandler</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.worker.memory_base_worker</span> <span class="kn">import</span> <span class="n">MemoryBaseWorker</span>
+
+
+<div class="viewcode-block" id="ExtractTimeWorker">
+<a class="viewcode-back" href="../../../../../memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.ExtractTimeWorker">[docs]</a>
+<span class="k">class</span> <span class="nc">ExtractTimeWorker</span><span class="p">(</span><span class="n">MemoryBaseWorker</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A specialized worker class designed to identify and extract time-related information</span>
+<span class="sd">    from text generated by an LLM, translating date-time keywords based on the set language,</span>
+<span class="sd">    and storing this extracted data within a shared context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">EXTRACT_TIME_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;-\s*(\S+)[：:]\s*(\S+)&quot;</span>
+    <span class="n">FILE_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="vm">__file__</span>
+
+    <span class="k">def</span> <span class="nf">_parse_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generation_model_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;generation_model_kwargs&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes the primary logic of identifying and extracting time data from an LLM&#39;s response.</span>
+
+<span class="sd">        This method first checks if the input query contains any datetime keywords. If not, it logs and returns.</span>
+<span class="sd">        It then constructs a prompt with contextual information including formatted timestamps and calls the LLM.</span>
+<span class="sd">        The response is parsed for time-related data using regex, translated via a language-specific key map,</span>
+<span class="sd">        and the resulting time data is stored in the shared context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span><span class="p">,</span> <span class="n">query_timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">QUERY_WITH_TS</span><span class="p">)</span>
+
+        <span class="c1"># Identify if the query contains datetime keywords</span>
+        <span class="n">contain_datetime</span> <span class="o">=</span> <span class="n">DatetimeHandler</span><span class="o">.</span><span class="n">has_time_word</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">contain_datetime</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;contain_datetime=</span><span class="si">{</span><span class="n">contain_datetime</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Prepare the prompt with necessary contextual details</span>
+        <span class="n">query_time_str</span> <span class="o">=</span> <span class="n">DatetimeHandler</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">query_timestamp</span><span class="p">)</span><span class="o">.</span><span class="n">string_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_handler</span><span class="o">.</span><span class="n">time_string_format</span><span class="p">,</span>
+                                                                           <span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+        <span class="n">system_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_handler</span><span class="o">.</span><span class="n">extract_time_system</span>
+        <span class="n">few_shot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_handler</span><span class="o">.</span><span class="n">extract_time_few_shot</span>
+        <span class="n">user_query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_handler</span><span class="o">.</span><span class="n">extract_time_user_query</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">query_time_str</span><span class="o">=</span><span class="n">query_time_str</span><span class="p">)</span>
+        <span class="n">extract_time_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_to_msg</span><span class="p">(</span><span class="n">system_prompt</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">,</span> <span class="n">few_shot</span><span class="o">=</span><span class="n">few_shot</span><span class="p">,</span> <span class="n">user_query</span><span class="o">=</span><span class="n">user_query</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;extract_time_message=</span><span class="si">{</span><span class="n">extract_time_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Invoke the LLM to generate a response</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generation_model</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">messages</span><span class="o">=</span><span class="n">extract_time_message</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">generation_model_kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Handle empty or unsuccessful responses</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">response_text</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+
+        <span class="c1"># Extract time information from the LLM&#39;s response using regex</span>
+        <span class="n">extract_time_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EXTRACT_TIME_PATTERN</span><span class="p">,</span> <span class="n">response_text</span><span class="p">)</span>
+        <span class="n">key_map</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_language_value</span><span class="p">(</span><span class="n">DATATIME_KEY_MAP</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">key_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">extract_time_dict</span><span class="p">[</span><span class="n">key_map</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;response_text=</span><span class="si">{</span><span class="n">response_text</span><span class="si">}</span><span class="s2"> matches=</span><span class="si">{</span><span class="n">matches</span><span class="si">}</span><span class="s2"> filters=</span><span class="si">{</span><span class="n">extract_time_dict</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_workflow_context</span><span class="p">(</span><span class="n">EXTRACT_TIME_DICT</span><span class="p">,</span> <span class="n">extract_time_dict</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alibaba Tongyi Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

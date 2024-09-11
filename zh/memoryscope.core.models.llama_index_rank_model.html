@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,109 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-models-llama-index-rank-model-module">
-<h1>memoryscope.core.models.llama_index_rank_model module<a class="headerlink" href="#memoryscope-core-models-llama-index-rank-model-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.models.llama_index_rank_model">
+<span id="memoryscope-core-models-llama-index-rank-model-module"></span><h1>memoryscope.core.models.llama_index_rank_model module<a class="headerlink" href="#module-memoryscope.core.models.llama_index_rank_model" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.models.llama_index_rank_model.</span></span><span class="sig-name descname"><span class="pre">LlamaIndexRankModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/models/llama_index_rank_model.html#LlamaIndexRankModel"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>The LlamaIndexRankModel class is designed to rerank documents according to their relevance
+to a provided query, utilizing the DashScope Rerank model. It transforms document lists
+and queries into a compatible format for ranking, manages the ranking process, and allocates
+rank scores to individual documents.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.m_type">
+<span class="sig-name descname"><span class="pre">m_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.enumeration.model_enum.html#memoryscope.enumeration.model_enum.ModelEnum" title="memoryscope.enumeration.model_enum.ModelEnum"><span class="pre">ModelEnum</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'rank_model'</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.m_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/models/llama_index_rank_model.html#LlamaIndexRankModel.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.before_call">
+<span class="sig-name descname"><span class="pre">before_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.model_response.html#memoryscope.scheme.model_response.ModelResponse" title="memoryscope.scheme.model_response.ModelResponse"><span class="pre">ModelResponse</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/models/llama_index_rank_model.html#LlamaIndexRankModel.before_call"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.before_call" title="Link to this definition"></a></dt>
+<dd><p>Prepares necessary data before the ranking call by extracting the query and documents,
+ensuring they are valid, and initializing nodes with dummy scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_response</strong> -- model response</p></li>
+<li><p><strong>**kwargs</strong> -- Keyword arguments containing 'query' and 'documents'.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.after_call">
+<span class="sig-name descname"><span class="pre">after_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.model_response.html#memoryscope.scheme.model_response.ModelResponse" title="memoryscope.scheme.model_response.ModelResponse"><span class="pre">ModelResponse</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="memoryscope.scheme.model_response.html#memoryscope.scheme.model_response.ModelResponse" title="memoryscope.scheme.model_response.ModelResponse"><span class="pre">ModelResponse</span></a></span></span><a class="reference internal" href="_modules/memoryscope/core/models/llama_index_rank_model.html#LlamaIndexRankModel.after_call"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.after_call" title="Link to this definition"></a></dt>
+<dd><p>Processes the model response post-ranking, assigning calculated rank scores to each document
+based on their index in the original document list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_response</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.ModelResponse" title="memoryscope.scheme.ModelResponse"><em>ModelResponse</em></a>) -- The initial response from the ranking model.</p></li>
+<li><p><strong>**kwargs</strong> -- Additional keyword arguments (unused).</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated response with rank scores assigned to documents.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.ModelResponse" title="memoryscope.scheme.ModelResponse">ModelResponse</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.module_name">
+<span class="sig-name descname"><span class="pre">module_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.module_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.timeout" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.max_retries">
+<span class="sig-name descname"><span class="pre">max_retries</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.max_retries" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.retry_interval">
+<span class="sig-name descname"><span class="pre">retry_interval</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.retry_interval" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.kwargs_filter">
+<span class="sig-name descname"><span class="pre">kwargs_filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.kwargs_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.raise_exception">
+<span class="sig-name descname"><span class="pre">raise_exception</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.raise_exception" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.context">
+<span class="sig-name descname"><span class="pre">context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">MemoryscopeContext</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.kwargs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

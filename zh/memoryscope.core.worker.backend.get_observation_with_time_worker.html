@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,123 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-worker-backend-get-observation-with-time-worker-module">
-<h1>memoryscope.core.worker.backend.get_observation_with_time_worker module<a class="headerlink" href="#memoryscope-core-worker-backend-get-observation-with-time-worker-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.worker.backend.get_observation_with_time_worker">
+<span id="memoryscope-core-worker-backend-get-observation-with-time-worker-module"></span><h1>memoryscope.core.worker.backend.get_observation_with_time_worker module<a class="headerlink" href="#module-memoryscope.core.worker.backend.get_observation_with_time_worker" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.get_observation_with_time_worker.</span></span><span class="sig-name descname"><span class="pre">GetObservationWithTimeWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_with_time_worker.html#GetObservationWithTimeWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker" title="memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetObservationWorker</span></code></a></p>
+<p>A specialized worker class that extends GetObservationWorker functionality to handle
+retrieval of observations which include associated timestamp information from chat messages.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/get_observation_with_time_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.OBS_STORE_KEY">
+<span class="sig-name descname"><span class="pre">OBS_STORE_KEY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'new_obs_with_time_nodes'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.OBS_STORE_KEY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.filter_messages">
+<span class="sig-name descname"><span class="pre">filter_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_with_time_worker.html#GetObservationWithTimeWorker.filter_messages"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.filter_messages" title="Link to this definition"></a></dt>
+<dd><p>Filters the chat messages to only include those which contain time-related keywords.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of filtered messages that mention time.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.build_message">
+<span class="sig-name descname"><span class="pre">build_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_with_time_worker.html#GetObservationWithTimeWorker.build_message"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.build_message" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Constructs a prompt message for obtaining observations with timestamp information</dt><dd><p>based on filtered chat messages.</p>
+</dd>
+</dl>
+<p>This method processes each filtered message with the timestamp information.
+It then organizes these timestamped messages into a structured prompt that includes a system prompt,
+few-shot examples, and the concatenated user queries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filter_messages</strong> (<em>List</em><em>[</em><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message"><em>Message</em></a><em>]</em>) -- A list of Message objects that have been filtered for processing.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list containing the newly constructed Message object for further interaction.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.workflow_context">
+<span class="sig-name descname"><span class="pre">workflow_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.workflow_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.memoryscope_context">
+<span class="sig-name descname"><span class="pre">memoryscope_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">MemoryscopeContext</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.memoryscope_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.raise_exception">
+<span class="sig-name descname"><span class="pre">raise_exception</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.raise_exception" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.is_multi_thread">
+<span class="sig-name descname"><span class="pre">is_multi_thread</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.is_multi_thread" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.thread_pool">
+<span class="sig-name descname"><span class="pre">thread_pool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ThreadPoolExecutor</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.thread_pool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.enable_parallel">
+<span class="sig-name descname"><span class="pre">enable_parallel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.enable_parallel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.kwargs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.continue_run">
+<span class="sig-name descname"><span class="pre">continue_run</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.continue_run" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.async_task_list">
+<span class="sig-name descname"><span class="pre">async_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.async_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.thread_task_list">
+<span class="sig-name descname"><span class="pre">thread_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.thread_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.utils.html#memoryscope.core.utils.Logger" title="memoryscope.core.utils.Logger"><span class="pre">Logger</span></a></em><a class="headerlink" href="#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

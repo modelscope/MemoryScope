@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -102,17 +102,934 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html">memoryscope.core.storage.base_memory_store module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.base_monitor.html">memoryscope.core.storage.base_monitor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html">memoryscope.core.storage.dummy_memory_store module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.dummy_monitor.html">memoryscope.core.storage.dummy_monitor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html">memoryscope.core.storage.llama_index_es_memory_store module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html">memoryscope.core.storage.llama_index_sync_elasticsearch module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html">memoryscope.core.storage.base_memory_store module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore"><code class="docutils literal notranslate"><span class="pre">BaseMemoryStore</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore.retrieve_memories"><code class="docutils literal notranslate"><span class="pre">BaseMemoryStore.retrieve_memories</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore.a_retrieve_memories"><code class="docutils literal notranslate"><span class="pre">BaseMemoryStore.a_retrieve_memories</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore.batch_insert"><code class="docutils literal notranslate"><span class="pre">BaseMemoryStore.batch_insert</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore.batch_update"><code class="docutils literal notranslate"><span class="pre">BaseMemoryStore.batch_update</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore.batch_delete"><code class="docutils literal notranslate"><span class="pre">BaseMemoryStore.batch_delete</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore.flush"><code class="docutils literal notranslate"><span class="pre">BaseMemoryStore.flush</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore.close"><code class="docutils literal notranslate"><span class="pre">BaseMemoryStore.close</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.base_monitor.html">memoryscope.core.storage.base_monitor module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.storage.base_monitor.html#memoryscope.core.storage.base_monitor.BaseMonitor"><code class="docutils literal notranslate"><span class="pre">BaseMonitor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_monitor.html#memoryscope.core.storage.base_monitor.BaseMonitor.__init__"><code class="docutils literal notranslate"><span class="pre">BaseMonitor.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_monitor.html#memoryscope.core.storage.base_monitor.BaseMonitor.add"><code class="docutils literal notranslate"><span class="pre">BaseMonitor.add</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_monitor.html#memoryscope.core.storage.base_monitor.BaseMonitor.add_token"><code class="docutils literal notranslate"><span class="pre">BaseMonitor.add_token</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_monitor.html#memoryscope.core.storage.base_monitor.BaseMonitor.flush"><code class="docutils literal notranslate"><span class="pre">BaseMonitor.flush</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.base_monitor.html#memoryscope.core.storage.base_monitor.BaseMonitor.close"><code class="docutils literal notranslate"><span class="pre">BaseMonitor.close</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html">memoryscope.core.storage.dummy_memory_store module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore"><code class="docutils literal notranslate"><span class="pre">DummyMemoryStore</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.__init__"><code class="docutils literal notranslate"><span class="pre">DummyMemoryStore.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.retrieve_memories"><code class="docutils literal notranslate"><span class="pre">DummyMemoryStore.retrieve_memories</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.a_retrieve_memories"><code class="docutils literal notranslate"><span class="pre">DummyMemoryStore.a_retrieve_memories</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.batch_insert"><code class="docutils literal notranslate"><span class="pre">DummyMemoryStore.batch_insert</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.batch_update"><code class="docutils literal notranslate"><span class="pre">DummyMemoryStore.batch_update</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.batch_delete"><code class="docutils literal notranslate"><span class="pre">DummyMemoryStore.batch_delete</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_memory_store.html#memoryscope.core.storage.dummy_memory_store.DummyMemoryStore.close"><code class="docutils literal notranslate"><span class="pre">DummyMemoryStore.close</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.dummy_monitor.html">memoryscope.core.storage.dummy_monitor module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.storage.dummy_monitor.html#memoryscope.core.storage.dummy_monitor.DummyMonitor"><code class="docutils literal notranslate"><span class="pre">DummyMonitor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_monitor.html#memoryscope.core.storage.dummy_monitor.DummyMonitor.add"><code class="docutils literal notranslate"><span class="pre">DummyMonitor.add</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_monitor.html#memoryscope.core.storage.dummy_monitor.DummyMonitor.add_token"><code class="docutils literal notranslate"><span class="pre">DummyMonitor.add_token</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.dummy_monitor.html#memoryscope.core.storage.dummy_monitor.DummyMonitor.close"><code class="docutils literal notranslate"><span class="pre">DummyMonitor.close</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html">memoryscope.core.storage.llama_index_es_memory_store module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.__init__"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.retrieve_memories"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.retrieve_memories</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.a_retrieve_memories"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.a_retrieve_memories</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.batch_insert"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.batch_insert</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.batch_update"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.batch_update</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.batch_delete"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.batch_delete</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.insert"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.insert</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.delete"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.delete</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.update"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.update</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.close"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.close</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_es_memory_store.html#memoryscope.core.storage.llama_index_es_memory_store.LlamaIndexEsMemoryStore.dummy_query_vector"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEsMemoryStore.dummy_query_vector</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html">memoryscope.core.storage.llama_index_sync_elasticsearch module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.get_elasticsearch_client"><code class="docutils literal notranslate"><span class="pre">get_elasticsearch_client</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy"><code class="docutils literal notranslate"><span class="pre">ESCombinedRetrieveStrategy</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy.__init__"><code class="docutils literal notranslate"><span class="pre">ESCombinedRetrieveStrategy.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy.es_query"><code class="docutils literal notranslate"><span class="pre">ESCombinedRetrieveStrategy.es_query</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.ESCombinedRetrieveStrategy.before_index_creation"><code class="docutils literal notranslate"><span class="pre">ESCombinedRetrieveStrategy.before_index_creation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.Config"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.Config</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.Config.arbitrary_types_allowed"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.Config.arbitrary_types_allowed</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.stores_text"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.stores_text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.index_name"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.index_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_client"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.es_client</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_url"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.es_url</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_cloud_id"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.es_cloud_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_api_key"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.es_api_key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_user"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.es_user</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.es_password"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.es_password</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.text_field"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.text_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.vector_field"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.vector_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.batch_size"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.batch_size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.distance_strategy"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.distance_strategy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.retrieval_strategy"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.retrieval_strategy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.__init__"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.logger"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.logger</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.log_elasticsearch_dynamic"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.log_elasticsearch_dynamic</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.client"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.client</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.close"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.close</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.add"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.add</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_add"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.sync_add</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.delete"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.delete</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_delete"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.sync_delete</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.query"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.query</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_delete_all"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.sync_delete_all</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_search_all"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.sync_search_all</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.log_vector_store_brief"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.log_vector_store_brief</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_search_all_with_filter"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.sync_search_all_with_filter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.is_embedding_query"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.is_embedding_query</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.sync_query"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.sync_query</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.llama_index_sync_elasticsearch.SyncElasticsearchStore.post_process_hits"><code class="docutils literal notranslate"><span class="pre">SyncElasticsearchStore.post_process_hits</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-memoryscope.core.storage">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-memoryscope.core.storage" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMemoryStore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.</span></span><span class="sig-name descname"><span class="pre">BaseMemoryStore</span></span><a class="reference internal" href="_modules/memoryscope/core/storage/base_memory_store.html#BaseMemoryStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMemoryStore" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An abstract base class defining the interface for a memory store which handles memory nodes.
+It outlines essential operations like retrieval, updating, flushing, and closing of memory scopes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMemoryStore.retrieve_memories">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">retrieve_memories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/base_memory_store.html#BaseMemoryStore.retrieve_memories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMemoryStore.retrieve_memories" title="Link to this definition"></a></dt>
+<dd><p>Retrieves a list of MemoryNode objects that are most relevant to the query,
+considering a filter dictionary for additional constraints. The number of nodes returned
+is limited by top_k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – The query string used to find relevant memories.</p></li>
+<li><p><strong>top_k</strong> (<em>int</em>) – The maximum number of MemoryNode objects to return.</p></li>
+<li><p><strong>filter_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – A dictionary with keys representing filter fields
+and values as lists of strings for filtering criteria.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A list of MemoryNode objects sorted by relevance to the query,</dt><dd><p>limited to top_k items.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMemoryStore.a_retrieve_memories">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a_retrieve_memories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/base_memory_store.html#BaseMemoryStore.a_retrieve_memories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMemoryStore.a_retrieve_memories" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously retrieves a list of MemoryNode objects that best match the query,
+respecting a filter dictionary, with the result size capped at top_k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – The text to search for in memory nodes.</p></li>
+<li><p><strong>top_k</strong> (<em>int</em>) – Maximum number of nodes to return.</p></li>
+<li><p><strong>filter_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Filters to apply on memory nodes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of up to top_k MemoryNode objects matching the criteria.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMemoryStore.batch_insert">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_memory_store.html#BaseMemoryStore.batch_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMemoryStore.batch_insert" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMemoryStore.batch_update">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_embedding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_memory_store.html#BaseMemoryStore.batch_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMemoryStore.batch_update" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMemoryStore.batch_delete">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_memory_store.html#BaseMemoryStore.batch_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMemoryStore.batch_delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMemoryStore.flush">
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_memory_store.html#BaseMemoryStore.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMemoryStore.flush" title="Link to this definition"></a></dt>
+<dd><p>Flushes any pending memory updates or operations to ensure data consistency.
+This method should be overridden by subclasses to provide the specific flushing mechanism.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMemoryStore.close">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_memory_store.html#BaseMemoryStore.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMemoryStore.close" title="Link to this definition"></a></dt>
+<dd><p>Closes the memory store, releasing any resources associated with it.
+Subclasses must implement this method to define how the memory store is properly closed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMonitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.</span></span><span class="sig-name descname"><span class="pre">BaseMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMonitor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An abstract base class defining the interface for monitor classes.
+Subclasses should implement the methods defined here to provide concrete monitoring behavior.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMonitor.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMonitor.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMonitor.add">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMonitor.add" title="Link to this definition"></a></dt>
+<dd><p>Abstract method to add data or events to the monitor.
+This method should be implemented by subclasses to define how data is added into the monitoring system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMonitor.add_token">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.add_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMonitor.add_token" title="Link to this definition"></a></dt>
+<dd><p>Abstract method to add a token or a specific type of identifier to the monitor.
+Subclasses should implement this to specify how tokens are managed within the monitoring context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMonitor.flush">
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMonitor.flush" title="Link to this definition"></a></dt>
+<dd><p>Method to flush any buffered data in the monitor.
+Intended to ensure that all pending recorded data is processed or written out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.BaseMonitor.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/base_monitor.html#BaseMonitor.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.BaseMonitor.close" title="Link to this definition"></a></dt>
+<dd><p>Method to close the monitor, performing necessary cleanup operations.
+This could include releasing resources, closing files, or any other termination tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMemoryStore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.</span></span><span class="sig-name descname"><span class="pre">DummyMemoryStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMemoryStore" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore" title="memoryscope.core.storage.base_memory_store.BaseMemoryStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMemoryStore</span></code></a></p>
+<p>Placeholder implementation of a memory storage system interface. Defines methods for querying, updating,
+and closing memory nodes with asynchronous capabilities, leveraging an embedding model for potential
+semantic retrieval. Actual storage operations are not implemented.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMemoryStore.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMemoryStore.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the DummyMemoryStore with an embedding model and additional keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embedding_model</strong> (<a class="reference internal" href="memoryscope.core.models.html#memoryscope.core.models.BaseModel" title="memoryscope.core.models.BaseModel"><em>BaseModel</em></a>) – The model used to embed data for potential similarity-based retrieval.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments for configuration or future expansion.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMemoryStore.retrieve_memories">
+<span class="sig-name descname"><span class="pre">retrieve_memories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.retrieve_memories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMemoryStore.retrieve_memories" title="Link to this definition"></a></dt>
+<dd><p>Retrieves a list of MemoryNode objects that are most relevant to the query,
+considering a filter dictionary for additional constraints. The number of nodes returned
+is limited by top_k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – The query string used to find relevant memories.</p></li>
+<li><p><strong>top_k</strong> (<em>int</em>) – The maximum number of MemoryNode objects to return.</p></li>
+<li><p><strong>filter_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – A dictionary with keys representing filter fields
+and values as lists of strings for filtering criteria.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A list of MemoryNode objects sorted by relevance to the query,</dt><dd><p>limited to top_k items.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMemoryStore.a_retrieve_memories">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a_retrieve_memories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.a_retrieve_memories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMemoryStore.a_retrieve_memories" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously retrieves a list of MemoryNode objects that best match the query,
+respecting a filter dictionary, with the result size capped at top_k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – The text to search for in memory nodes.</p></li>
+<li><p><strong>top_k</strong> (<em>int</em>) – Maximum number of nodes to return.</p></li>
+<li><p><strong>filter_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Filters to apply on memory nodes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of up to top_k MemoryNode objects matching the criteria.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMemoryStore.batch_insert">
+<span class="sig-name descname"><span class="pre">batch_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.batch_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMemoryStore.batch_insert" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMemoryStore.batch_update">
+<span class="sig-name descname"><span class="pre">batch_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_embedding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.batch_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMemoryStore.batch_update" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMemoryStore.batch_delete">
+<span class="sig-name descname"><span class="pre">batch_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.batch_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMemoryStore.batch_delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMemoryStore.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_memory_store.html#DummyMemoryStore.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMemoryStore.close" title="Link to this definition"></a></dt>
+<dd><p>Closes the memory store, releasing any resources associated with it.
+Subclasses must implement this method to define how the memory store is properly closed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMonitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.</span></span><span class="sig-name descname"><span class="pre">DummyMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_monitor.html#DummyMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMonitor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.storage.base_monitor.html#memoryscope.core.storage.base_monitor.BaseMonitor" title="memoryscope.core.storage.base_monitor.BaseMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMonitor</span></code></a></p>
+<p>DummyMonitor serves as a placeholder or mock class extending BaseMonitor,
+providing empty method bodies for ‘add’, ‘add_token’, and ‘close’ operations.
+This can be used for testing or in situations where a full monitor implementation is not required.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMonitor.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_monitor.html#DummyMonitor.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMonitor.add" title="Link to this definition"></a></dt>
+<dd><p>Placeholder for adding data to the monitor.
+This method currently does nothing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMonitor.add_token">
+<span class="sig-name descname"><span class="pre">add_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_monitor.html#DummyMonitor.add_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMonitor.add_token" title="Link to this definition"></a></dt>
+<dd><p>Placeholder for adding a token to the monitored data.
+This method currently does nothing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.DummyMonitor.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_monitor.html#DummyMonitor.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.DummyMonitor.close" title="Link to this definition"></a></dt>
+<dd><p>Placeholder for closing the monitor and performing any necessary cleanup.
+This method currently does nothing.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.</span></span><span class="sig-name descname"><span class="pre">LlamaIndexEsMemoryStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieve_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hybrid_alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore" title="memoryscope.core.storage.base_memory_store.BaseMemoryStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMemoryStore</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieve_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hybrid_alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.retrieve_memories">
+<span class="sig-name descname"><span class="pre">retrieve_memories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.retrieve_memories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.retrieve_memories" title="Link to this definition"></a></dt>
+<dd><p>Retrieves a list of MemoryNode objects that are most relevant to the query,
+considering a filter dictionary for additional constraints. The number of nodes returned
+is limited by top_k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – The query string used to find relevant memories.</p></li>
+<li><p><strong>top_k</strong> (<em>int</em>) – The maximum number of MemoryNode objects to return.</p></li>
+<li><p><strong>filter_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – A dictionary with keys representing filter fields
+and values as lists of strings for filtering criteria.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A list of MemoryNode objects sorted by relevance to the query,</dt><dd><p>limited to top_k items.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.a_retrieve_memories">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a_retrieve_memories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.a_retrieve_memories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.a_retrieve_memories" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously retrieves a list of MemoryNode objects that best match the query,
+respecting a filter dictionary, with the result size capped at top_k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – The text to search for in memory nodes.</p></li>
+<li><p><strong>top_k</strong> (<em>int</em>) – Maximum number of nodes to return.</p></li>
+<li><p><strong>filter_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Filters to apply on memory nodes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of up to top_k MemoryNode objects matching the criteria.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.batch_insert">
+<span class="sig-name descname"><span class="pre">batch_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.batch_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.batch_insert" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.batch_update">
+<span class="sig-name descname"><span class="pre">batch_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_embedding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.batch_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.batch_update" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.batch_delete">
+<span class="sig-name descname"><span class="pre">batch_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.batch_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.batch_delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.insert" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_embedding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.update" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.close" title="Link to this definition"></a></dt>
+<dd><p>Closes the Elasticsearch store, releasing any resources associated with it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.LlamaIndexEsMemoryStore.dummy_query_vector">
+<span class="sig-name descname"><span class="pre">dummy_query_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_es_memory_store.html#LlamaIndexEsMemoryStore.dummy_query_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.LlamaIndexEsMemoryStore.dummy_query_vector" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.ESCombinedRetrieveStrategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.</span></span><span class="sig-name descname"><span class="pre">ESCombinedRetrieveStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DistanceMetric</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DistanceMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieve_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rrf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'text_field'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hybrid_alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#ESCombinedRetrieveStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.ESCombinedRetrieveStrategy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncDenseVectorStrategy</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.ESCombinedRetrieveStrategy.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DistanceMetric</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DistanceMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieve_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rrf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'text_field'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hybrid_alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#ESCombinedRetrieveStrategy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.ESCombinedRetrieveStrategy.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.ESCombinedRetrieveStrategy.es_query">
+<span class="sig-name descname"><span class="pre">es_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_candidates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#ESCombinedRetrieveStrategy.es_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.ESCombinedRetrieveStrategy.es_query" title="Link to this definition"></a></dt>
+<dd><p>Returns the Elasticsearch query body for the given parameters.
+The store will execute the query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – The text query. Can be None if query_vector is given.</p></li>
+<li><p><strong>k</strong> – The total number of results to retrieve.</p></li>
+<li><p><strong>num_candidates</strong> – The number of results to fetch initially in knn search.</p></li>
+<li><p><strong>filter</strong> – List of filter clauses to apply to the query.</p></li>
+<li><p><strong>query_vector</strong> – The query vector. Can be None if a query string is given.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Elasticsearch query body.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.ESCombinedRetrieveStrategy.before_index_creation">
+<span class="sig-name descname"><span class="pre">before_index_creation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncElasticsearch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#ESCombinedRetrieveStrategy.before_index_creation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.ESCombinedRetrieveStrategy.before_index_creation" title="Link to this definition"></a></dt>
+<dd><p>Executes before the index is created. Used for setting up
+any required Elasticsearch resources like a pipeline.
+Defaults to a no-op.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – The Elasticsearch client.</p></li>
+<li><p><strong>text_field</strong> – The field containing the text data in the index.</p></li>
+<li><p><strong>vector_field</strong> – The field containing the vector representations in the index.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.</span></span><span class="sig-name descname"><span class="pre">SyncElasticsearchStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_cloud_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'content'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'embedding'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'COSINE'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'DOT_PRODUCT'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'EUCLIDEAN_DISTANCE'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'COSINE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieval_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncRetrievalStrategy</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePydanticVectorStore</span></code></p>
+<p>Elasticsearch vector store.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_name</strong> – Name of the Elasticsearch index.</p></li>
+<li><p><strong>es_client</strong> – Optional. Pre-existing AsyncElasticsearch client.</p></li>
+<li><p><strong>es_url</strong> – Optional. Elasticsearch URL.</p></li>
+<li><p><strong>es_cloud_id</strong> – Optional. Elasticsearch cloud ID.</p></li>
+<li><p><strong>es_api_key</strong> – Optional. Elasticsearch API key.</p></li>
+<li><p><strong>es_user</strong> – Optional. Elasticsearch username.</p></li>
+<li><p><strong>es_password</strong> – Optional. Elasticsearch password.</p></li>
+<li><p><strong>text_field</strong> – Optional. Name of the Elasticsearch field that stores the text.</p></li>
+<li><p><strong>vector_field</strong> – Optional. Name of the Elasticsearch field that stores the
+embedding.</p></li>
+<li><p><strong>batch_size</strong> – Optional. Batch size for bulk indexing. Defaults to 200.</p></li>
+<li><p><strong>distance_strategy</strong> – Optional. Distance strategy to use for similarity search.
+Defaults to “COSINE”.</p></li>
+<li><p><strong>retrieval_strategy</strong> – Retrieval strategy to use. AsyncBM25Strategy /
+AsyncSparseVectorStrategy / AsyncDenseVectorStrategy / AsyncRetrievalStrategy.
+Defaults to AsyncDenseVectorStrategy.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ConnectionError</strong> – If AsyncElasticsearch client cannot connect to Elasticsearch.</p></li>
+<li><p><strong>ValueError</strong> – If neither es_client nor es_url nor es_cloud_id is provided.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><cite>pip install llama-index-vector-stores-elasticsearch</cite></p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+from llama_index.vector_stores import ElasticsearchStore</p>
+<p># Additional setup for ElasticsearchStore class
+index_name = “my_index”
+es_url = “<a class="reference external" href="http://localhost:9200">http://localhost:9200</a>”
+es_cloud_id = “&lt;cloud-id&gt;”  # Found within the deployment page
+es_user = “elastic”
+es_password = “&lt;password&gt;”  # Provided when creating deployment or can be reset
+es_api_key = “&lt;api-key&gt;”  # Create an API key within Kibana (Security -&gt; API Keys)</p>
+<p># Connecting to ElasticsearchStore locally
+es_local = ElasticsearchStore(</p>
+<blockquote>
+<div><p>index_name=index_name,
+es_url=es_url)</p>
+</div></blockquote>
+<p># Connecting to Elastic Cloud with username and password
+es_cloud_user_pass = ElasticsearchStore(</p>
+<blockquote>
+<div><p>index_name=index_name,
+es_cloud_id=es_cloud_id,
+es_user=es_user,
+es_password=es_password)</p>
+</div></blockquote>
+<p># Connecting to Elastic Cloud with API Key
+es_cloud_api_key = ElasticsearchStore(</p>
+<blockquote>
+<div><p>index_name=index_name,
+es_cloud_id=es_cloud_id,
+es_api_key=es_api_key,</p>
+</div></blockquote>
+<section id="id5">
+<h3>)<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.Config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.Config" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.Config.arbitrary_types_allowed">
+<span class="sig-name descname"><span class="pre">arbitrary_types_allowed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.Config.arbitrary_types_allowed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.stores_text">
+<span class="sig-name descname"><span class="pre">stores_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.stores_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.index_name">
+<span class="sig-name descname"><span class="pre">index_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.index_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.es_client">
+<span class="sig-name descname"><span class="pre">es_client</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.es_client" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.es_url">
+<span class="sig-name descname"><span class="pre">es_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.es_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.es_cloud_id">
+<span class="sig-name descname"><span class="pre">es_cloud_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.es_cloud_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.es_api_key">
+<span class="sig-name descname"><span class="pre">es_api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.es_api_key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.es_user">
+<span class="sig-name descname"><span class="pre">es_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.es_user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.es_password">
+<span class="sig-name descname"><span class="pre">es_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.es_password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.text_field">
+<span class="sig-name descname"><span class="pre">text_field</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.text_field" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.vector_field">
+<span class="sig-name descname"><span class="pre">vector_field</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.vector_field" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.batch_size">
+<span class="sig-name descname"><span class="pre">batch_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.batch_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.distance_strategy">
+<span class="sig-name descname"><span class="pre">distance_strategy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'COSINE'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'DOT_PRODUCT'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'EUCLIDEAN_DISTANCE'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.distance_strategy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.retrieval_strategy">
+<span class="sig-name descname"><span class="pre">retrieval_strategy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">AsyncRetrievalStrategy</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.retrieval_strategy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_cloud_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'content'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'embedding'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'COSINE'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'DOT_PRODUCT'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'EUCLIDEAN_DISTANCE'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'COSINE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieval_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncRetrievalStrategy</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.__init__" title="Link to this definition"></a></dt>
+<dd><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.utils.logger.html#memoryscope.core.utils.logger.Logger" title="memoryscope.core.utils.logger.Logger"><span class="pre">Logger</span></a></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.log_elasticsearch_dynamic">
+<span class="sig-name descname"><span class="pre">log_elasticsearch_dynamic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.log_elasticsearch_dynamic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.client">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.client" title="Link to this definition"></a></dt>
+<dd><p>Get the asynchronous Elasticsearch client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The asynchronous Elasticsearch client instance configured for this store.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.close" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseNode</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_index_if_not_exists</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">add_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.add" title="Link to this definition"></a></dt>
+<dd><p>Adds a list of nodes, each containing embeddings, to an Elasticsearch index.
+Optionally creates the index if it does not already exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes</strong> (<em>List</em><em>[</em><em>BaseNode</em><em>]</em>) – A list of node objects, each encapsulating an embedding.</p></li>
+<li><p><strong>create_index_if_not_exists</strong> (<em>bool</em><em>, </em><em>optional</em>) – A flag indicating whether to create the Elasticsearch index if it’s not present.
+Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of node IDs that have been successfully added to the index.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ImportError</strong> – If the ‘elasticsearch[async]’ Python package is not installed.</p></li>
+<li><p><strong>BulkIndexError</strong> – If there is a failure during the asynchronous bulk indexing with AsyncElasticsearch.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method delegates the actual operation to the <cite>sync_add</cite> method.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.sync_add">
+<span class="sig-name descname"><span class="pre">sync_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseNode</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_index_if_not_exists</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">add_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.sync_add" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously adds a list of nodes, each containing an embedding, to the Elasticsearch index.</p>
+<p>This method processes each node to extract its ID, embedding, text content, and metadata,
+preparing them for batch insertion into the index. It ensures the index is created if not present
+and respects the dimensionality of the embeddings for consistency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes</strong> (<em>List</em><em>[</em><em>BaseNode</em><em>]</em>) – A list of node objects, each encapsulating an embedding.</p></li>
+<li><p><strong>create_index_if_not_exists</strong> (<em>bool</em><em>, </em><em>optional</em>) – A flag indicating whether to create the Elasticsearch
+index if it does not already exist. Defaults to True.</p></li>
+<li><p><strong>**add_kwargs</strong> (<em>Any</em>) – Additional keyword arguments passed to the underlying add_texts method
+for customization during the indexing process.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of node IDs that were successfully added to the index.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ImportError</strong> – If the Elasticsearch Python client is not installed.</p></li>
+<li><p><strong>BulkIndexError</strong> – If there’s a failure during the asynchronous bulk indexing operation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_doc_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">delete_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.delete" title="Link to this definition"></a></dt>
+<dd><p>Deletes a node from the Elasticsearch index using the provided reference document ID.</p>
+<p>Optionally, extra keyword arguments can be supplied to customize the deletion behavior,
+which are passed directly to Elasticsearch’s <cite>delete_by_query</cite> operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_doc_id</strong> (<em>str</em>) – The unique identifier of the node/document to be deleted.</p></li>
+<li><p><strong>delete_kwargs</strong> (<em>Any</em>) – Additional keyword arguments for Elasticsearch’s
+<cite>delete_by_query</cite>. These might include query filters,
+timeouts, or other operational configurations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the deletion operation via Elasticsearch’s <cite>delete_by_query</cite> fails.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method internally calls a synchronous delete method (<cite>sync_delete</cite>)
+to execute the deletion operation against Elasticsearch.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.sync_delete">
+<span class="sig-name descname"><span class="pre">sync_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_doc_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">delete_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.sync_delete" title="Link to this definition"></a></dt>
+<dd><p>Synchronously deletes a node from the Elasticsearch index based on the reference document ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_doc_id</strong> (<em>str</em>) – The unique identifier of the node/document to be deleted.</p></li>
+<li><p><strong>delete_kwargs</strong> (<em>Any</em>) – Optional keyword arguments to be passed
+to the delete_by_query operation of AsyncElasticsearch,
+allowing for additional customization of the deletion process.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the deletion operation via AsyncElasticsearch’s delete_by_query fails.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function directly uses ‘_id’ field to match the document for deletion instead of ‘metadata.ref_doc_id’,
+ensuring targeted removal based on the document’s unique identifier within Elasticsearch.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VectorStoreQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">VectorStoreQuery</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">VectorStoreQueryResult</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.query" title="Link to this definition"></a></dt>
+<dd><p>Executes a query against the Elasticsearch index to retrieve the top k most similar nodes
+based on the input query embedding. Supports customization of the query process and
+application of Elasticsearch filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>VectorStoreQuery</em>) – The query containing the embedding and other parameters.</p></li>
+<li><p><strong>custom_query</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>, </em><em>Union</em><em>[</em><em>VectorStoreQuery</em><em>, </em><em>None</em><em>]</em><em>]</em><em>, </em><em>Dict</em><em>]</em><em>, </em><em>optional</em>) – An optional custom function to modify the Elasticsearch query body, allowing for
+additional query parameters or logic. Defaults to None.</p></li>
+<li><p><strong>es_filter</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>Dict</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – An optional Elasticsearch filter list to
+apply to the query. If a filter is directly included in the <cite>query</cite>, this argument
+will not be used. Defaults to None.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – Additional keyword arguments that might be used in the query process.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the query operation, including the most similar nodes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>VectorStoreQueryResult</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If an error occurs during the Elasticsearch query execution.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.sync_delete_all">
+<span class="sig-name descname"><span class="pre">sync_delete_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_delete_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.sync_delete_all" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.sync_search_all">
+<span class="sig-name descname"><span class="pre">sync_search_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_search_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.sync_search_all" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.log_vector_store_brief">
+<span class="sig-name descname"><span class="pre">log_vector_store_brief</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'current</span> <span class="pre">vector</span> <span class="pre">store</span> <span class="pre">content'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.log_vector_store_brief"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.log_vector_store_brief" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.sync_search_all_with_filter">
+<span class="sig-name descname"><span class="pre">sync_search_all_with_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">es_filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_search_all_with_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.sync_search_all_with_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.sync_query">
+<span class="sig-name descname"><span class="pre">sync_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VectorStoreQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">VectorStoreQuery</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">VectorStoreQueryResult</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.sync_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.sync_query" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously queries the Elasticsearch index for the top k most similar nodes
+based on the provided query embedding. Supports custom query modifications
+and application of Elasticsearch filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>VectorStoreQuery</em>) – The query containing the embedding and other details.</p></li>
+<li><p><strong>custom_query</strong> (<em>Callable</em><em>[</em><em>[</em><em>Dict</em><em>, </em><em>Union</em><em>[</em><em>VectorStoreQuery</em><em>, </em><em>None</em><em>]</em><em>]</em><em>, </em><em>Dict</em><em>]</em><em>, </em><em>optional</em>) – A custom function to modify the Elasticsearch query body. Defaults to None.</p></li>
+<li><p><strong>es_filter</strong> (<em>List</em><em>[</em><em>Dict</em><em>]</em><em>, </em><em>optional</em>) – Additional filters to apply during the query.
+If filters are present in the query, these filters will not be used. Defaults to None.</p></li>
+<li><p><strong>fields</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – <p>.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>The result of the query, including nodes, their IDs,</dt><dd><p>and similarity scores.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>VectorStoreQueryResult</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the Elasticsearch query encounters an error.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The mode of the query must align with the retrieval strategy set for this store.
+In case of legacy metadata, a warning is logged and nodes are constructed accordingly.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.SyncElasticsearchStore.post_process_hits">
+<span class="sig-name descname"><span class="pre">post_process_hits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">VectorStoreQueryResult</span></span></span><a class="reference internal" href="_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html#SyncElasticsearchStore.post_process_hits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.SyncElasticsearchStore.post_process_hits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
 </section>
 </section>
 

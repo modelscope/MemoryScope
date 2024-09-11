@@ -1,0 +1,373 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.config.config_manager &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/config/config_manager.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/config/config_manager.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">模块代码</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.config.config_manager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>memoryscope.core.config.config_manager 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">fields</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.core.config.arguments</span> <span class="kn">import</span> <span class="n">Arguments</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+
+
+<div class="viewcode-block" id="ConfigManager">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager">[文档]</a>
+<span class="k">class</span> <span class="nc">ConfigManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ConfigManager.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.__init__">[文档]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">config_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">arguments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Arguments</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">demo_config_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;demo_config_zh.yaml&quot;</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="s2">&quot;memoryscope&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">config_path</span> <span class="ow">or</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="n">arguments</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;can not init config manager without kwargs or --config_path!&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">((</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">demo_config_name</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">())</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">Arguments</span><span class="p">)]}</span>
+        <span class="n">kwargs_padding</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">Arguments</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">}</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs_padding</span><span class="p">)</span>
+
+        <span class="c1"># (high) when there are environment variables, read them and merge into kwargs</span>
+        <span class="n">kwargs_from_env</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">:</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">Arguments</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs_from_env</span><span class="p">)</span>
+
+        <span class="c1"># generate argument dataclass</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">arguments</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">=</span> <span class="n">Arguments</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># (highest) when arguments is passed into the memoryscope</span>
+            <span class="n">arguments</span> <span class="o">=</span> <span class="n">arguments</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_config_by_arguments</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_config</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.read_config">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.read_config">[文档]</a>
+    <span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.yaml&quot;</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">config_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.update_ignore_none">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.update_ignore_none">[文档]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_ignore_none</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">new_config_dict</span><span class="p">):</span>
+        <span class="n">update_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_config_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">update_dict</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.update_global_by_arguments">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.update_global_by_arguments">[文档]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_global_by_arguments</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">Arguments</span><span class="p">):</span>
+        <span class="n">ConfigManager</span><span class="o">.</span><span class="n">update_ignore_none</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">language</span><span class="p">,</span>
+                <span class="s2">&quot;thread_pool_max_workers&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">thread_pool_max_workers</span><span class="p">,</span>
+                <span class="s2">&quot;enable_ranker&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">enable_ranker</span><span class="p">,</span>
+                <span class="s2">&quot;enable_today_contra_repeat&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">enable_today_contra_repeat</span><span class="p">,</span>
+                <span class="s2">&quot;enable_long_contra_repeat&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">enable_long_contra_repeat</span><span class="p">,</span>
+                <span class="s2">&quot;output_memory_max_count&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">output_memory_max_count</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.update_memory_chat_by_arguments">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.update_memory_chat_by_arguments">[文档]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_memory_chat_by_arguments</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">Arguments</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">memory_chat_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">memory_chat_class_split</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="n">stream</span> <span class="o">=</span> <span class="n">arguments</span><span class="o">.</span><span class="n">chat_stream</span>
+            <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">stream</span> <span class="o">=</span> <span class="n">arguments</span><span class="o">.</span><span class="n">memory_chat_class</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;cli_memory_chat&quot;</span><span class="p">,</span> <span class="p">]</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">memory_chat_class_split</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">arguments</span><span class="o">.</span><span class="n">memory_chat_class</span><span class="p">]),</span>
+                    <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="n">stream</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.update_memory_service_by_arguments">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.update_memory_service_by_arguments">[文档]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_memory_service_by_arguments</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">Arguments</span><span class="p">):</span>
+        <span class="n">ConfigManager</span><span class="o">.</span><span class="n">update_ignore_none</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s2">&quot;human_name&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">human_name</span><span class="p">,</span>
+            <span class="s2">&quot;assistant_name&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">assistant_name</span><span class="p">,</span>
+        <span class="p">})</span>
+        <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">consolidate_memory_interval_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;memory_operations&quot;</span><span class="p">][</span><span class="s2">&quot;consolidate_memory&quot;</span><span class="p">][</span><span class="s2">&quot;interval_time&quot;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">arguments</span><span class="o">.</span><span class="n">consolidate_memory_interval_time</span>
+
+        <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">reflect_and_reconsolidate_interval_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;memory_operations&quot;</span><span class="p">][</span><span class="s2">&quot;reflect_and_reconsolidate&quot;</span><span class="p">][</span><span class="s2">&quot;interval_time&quot;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">arguments</span><span class="o">.</span><span class="n">reflect_and_reconsolidate_interval_time</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.update_worker_by_arguments">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.update_worker_by_arguments">[文档]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_worker_by_arguments</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">Arguments</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">worker_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">worker_name</span><span class="p">,</span> <span class="n">kv_dict</span> <span class="ow">in</span> <span class="n">arguments</span><span class="o">.</span><span class="n">worker_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">worker_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">config</span><span class="p">[</span><span class="n">worker_name</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kv_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.update_model_by_arguments">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.update_model_by_arguments">[文档]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_model_by_arguments</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">Arguments</span><span class="p">):</span>
+        <span class="n">ConfigManager</span><span class="o">.</span><span class="n">update_ignore_none</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;generation_model&quot;</span><span class="p">],</span> <span class="p">{</span>
+            <span class="s2">&quot;module_name&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">generation_backend</span><span class="p">,</span>
+            <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">generation_model</span><span class="p">,</span>
+        <span class="p">})</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">generation_params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">ConfigManager</span><span class="o">.</span><span class="n">update_ignore_none</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;generation_model&quot;</span><span class="p">],</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">arguments</span><span class="o">.</span><span class="n">generation_params</span><span class="p">,</span>
+            <span class="p">})</span>
+
+        <span class="n">ConfigManager</span><span class="o">.</span><span class="n">update_ignore_none</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;embedding_model&quot;</span><span class="p">],</span> <span class="p">{</span>
+            <span class="s2">&quot;module_name&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">embedding_backend</span><span class="p">,</span>
+            <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">embedding_model</span><span class="p">,</span>
+        <span class="p">})</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">embedding_params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">ConfigManager</span><span class="o">.</span><span class="n">update_ignore_none</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;embedding_model&quot;</span><span class="p">],</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">arguments</span><span class="o">.</span><span class="n">embedding_params</span><span class="p">,</span>
+            <span class="p">})</span>
+
+        <span class="n">ConfigManager</span><span class="o">.</span><span class="n">update_ignore_none</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;rank_model&quot;</span><span class="p">],</span> <span class="p">{</span>
+            <span class="s2">&quot;module_name&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">rank_backend</span><span class="p">,</span>
+            <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">rank_model</span><span class="p">,</span>
+        <span class="p">})</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">rank_params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">ConfigManager</span><span class="o">.</span><span class="n">update_ignore_none</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;rank_model&quot;</span><span class="p">],</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">arguments</span><span class="o">.</span><span class="n">rank_params</span><span class="p">,</span>
+            <span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.update_memory_store_by_arguments">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.update_memory_store_by_arguments">[文档]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_memory_store_by_arguments</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">Arguments</span><span class="p">):</span>
+        <span class="n">ConfigManager</span><span class="o">.</span><span class="n">update_ignore_none</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s2">&quot;index_name&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">es_index_name</span><span class="p">,</span>
+            <span class="s2">&quot;es_url&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">es_url</span><span class="p">,</span>
+            <span class="s2">&quot;retrieve_mode&quot;</span><span class="p">:</span> <span class="n">arguments</span><span class="o">.</span><span class="n">retrieve_mode</span><span class="p">}</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.update_config_by_arguments">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.update_config_by_arguments">[文档]</a>
+    <span class="k">def</span> <span class="nf">update_config_by_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">Arguments</span><span class="p">):</span>
+        <span class="c1"># prepare global</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_global_by_arguments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;global&quot;</span><span class="p">],</span> <span class="n">arguments</span><span class="p">)</span>
+
+        <span class="c1"># prepare memory chat</span>
+        <span class="n">memory_chat_conf_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;memory_chat&quot;</span><span class="p">]</span>
+        <span class="n">memory_chat_config</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">memory_chat_conf_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_memory_chat_by_arguments</span><span class="p">(</span><span class="n">memory_chat_config</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span>
+
+        <span class="c1"># prepare memory service</span>
+        <span class="n">memory_service_conf_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;memory_service&quot;</span><span class="p">]</span>
+        <span class="n">memory_service_config</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">memory_service_conf_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_memory_service_by_arguments</span><span class="p">(</span><span class="n">memory_service_config</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span>
+
+        <span class="c1"># prepare worker</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_worker_by_arguments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;worker&quot;</span><span class="p">],</span> <span class="n">arguments</span><span class="p">)</span>
+
+        <span class="c1"># prepare model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_model_by_arguments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">],</span> <span class="n">arguments</span><span class="p">)</span>
+
+        <span class="c1"># prepare memory store</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_memory_store_by_arguments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;memory_store&quot;</span><span class="p">],</span> <span class="n">arguments</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.add_node_object">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.add_node_object">[文档]</a>
+    <span class="k">def</span> <span class="nf">add_node_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.pop_node_object">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.pop_node_object">[文档]</a>
+    <span class="k">def</span> <span class="nf">pop_node_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.clear_node_all">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.clear_node_all">[文档]</a>
+    <span class="k">def</span> <span class="nf">clear_node_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.dump_config">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.config_manager.html#memoryscope.core.config.ConfigManager.dump_config">[文档]</a>
+    <span class="k">def</span> <span class="nf">dump_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;yaml&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;yaml&quot;</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;yaml&quot;</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">allow_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+        <span class="k">if</span> <span class="n">file_path</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">content</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,102 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-utils-prompt-handler-module">
-<h1>memoryscope.core.utils.prompt_handler module<a class="headerlink" href="#memoryscope-core-utils-prompt-handler-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.utils.prompt_handler">
+<span id="memoryscope-core-utils-prompt-handler-module"></span><h1>memoryscope.core.utils.prompt_handler module<a class="headerlink" href="#module-memoryscope.core.utils.prompt_handler" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.utils.prompt_handler.PromptHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.prompt_handler.</span></span><span class="sig-name descname"><span class="pre">PromptHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.prompt_handler.PromptHandler" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The <cite>PromptHandler</cite> class manages prompt messages by loading them from YAML or JSON files and dictionaries,
+supporting language selection based on a context, and providing dictionary-like access to the prompt messages.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.prompt_handler.PromptHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.prompt_handler.PromptHandler.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the PromptHandler with paths to prompt sources and additional keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class_path</strong> (<em>str</em>) -- The path to the class where prompts are utilized.</p></li>
+<li><p><strong>prompt_file</strong> (<em>str</em><em>, </em><em>optional</em>) -- The path to an external file containing prompts. Defaults to &quot;&quot;.</p></li>
+<li><p><strong>prompt_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) -- A dictionary directly containing prompt definitions. Defaults to None.</p></li>
+<li><p><strong>language</strong> (<a class="reference internal" href="memoryscope.enumeration.html#memoryscope.enumeration.LanguageEnum" title="memoryscope.enumeration.LanguageEnum"><em>LanguageEnum</em></a><em>, </em><em>str</em>) -- context language.</p></li>
+<li><p><strong>**kwargs</strong> -- Additional keyword arguments that might be used in prompt handling.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.prompt_handler.PromptHandler.file_path_completion">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file_path_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler.file_path_completion"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.prompt_handler.PromptHandler.file_path_completion" title="Link to this definition"></a></dt>
+<dd><p>Attempts to complete the given file path by appending either a <cite>.yaml</cite> or <cite>.json</cite> extension
+based on the existence of the respective file. If neither exists, an exception is raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) -- The base path of the file to be completed.</p></li>
+<li><p><strong>raise_exception</strong> (<em>bool</em>) -- If the file cannot be found, report an error.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The completed file path with the appropriate extension.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> -- If neither the <cite>.yaml</cite> nor <cite>.json</cite> file exists at the given path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.prompt_handler.PromptHandler.add_prompt_file">
+<span class="sig-name descname"><span class="pre">add_prompt_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler.add_prompt_file"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.prompt_handler.PromptHandler.add_prompt_file" title="Link to this definition"></a></dt>
+<dd><p>Adds prompt messages from a YAML or JSON file to the internal dictionary.</p>
+<p>This method supports loading prompts from files ending with '.yaml' or '.json'.
+It uses the respective libraries to parse the content and merge it into the current prompt dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) -- The path to the YAML or JSON file containing the prompts.</p></li>
+<li><p><strong>raise_exception</strong> (<em>bool</em>) -- If the file cannot be found, report an error.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.prompt_handler.PromptHandler.add_prompt_dict">
+<span class="sig-name descname"><span class="pre">add_prompt_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/prompt_handler.html#PromptHandler.add_prompt_dict"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.prompt_handler.PromptHandler.add_prompt_dict" title="Link to this definition"></a></dt>
+<dd><p>Adds prompt messages from a dictionary, ensuring each message has a valid entry for the current language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>prompt_dict</strong> (<em>dict</em>) -- A dictionary where keys represent prompt identifiers and values are nested dictionaries
+containing language-specific prompt messages.</p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> -- If a prompt message for the current language is not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.utils.prompt_handler.PromptHandler.prompt_dict">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prompt_dict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.utils.prompt_handler.PromptHandler.prompt_dict" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the internal dictionary containing all prompt messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dictionary of prompt messages with keys as identifiers and values as prompt strings.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

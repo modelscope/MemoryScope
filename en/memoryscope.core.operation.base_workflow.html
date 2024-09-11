@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,64 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-operation-base-workflow-module">
-<h1>memoryscope.core.operation.base_workflow module<a class="headerlink" href="#memoryscope-core-operation-base-workflow-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.operation.base_workflow">
+<span id="memoryscope-core-operation-base-workflow-module"></span><h1>memoryscope.core.operation.base_workflow module<a class="headerlink" href="#module-memoryscope.core.operation.base_workflow" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.operation.base_workflow.BaseWorkflow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.operation.base_workflow.</span></span><span class="sig-name descname"><span class="pre">BaseWorkflow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memoryscope_context:</span> <span class="pre">~memoryscope.core.utils.singleton.singleton.&lt;locals&gt;._singleton</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/operation/base_workflow.html#BaseWorkflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.operation.base_workflow.BaseWorkflow" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.operation.base_workflow.BaseWorkflow.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memoryscope_context:</span> <span class="pre">~memoryscope.core.utils.singleton.singleton.&lt;locals&gt;._singleton</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/operation/base_workflow.html#BaseWorkflow.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.operation.base_workflow.BaseWorkflow.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.operation.base_workflow.BaseWorkflow.workflow_print_console">
+<span class="sig-name descname"><span class="pre">workflow_print_console</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/operation/base_workflow.html#BaseWorkflow.workflow_print_console"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.operation.base_workflow.BaseWorkflow.workflow_print_console" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.operation.base_workflow.BaseWorkflow.init_workers">
+<span class="sig-name descname"><span class="pre">init_workers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/operation/base_workflow.html#BaseWorkflow.init_workers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.operation.base_workflow.BaseWorkflow.init_workers" title="Link to this definition"></a></dt>
+<dd><p>Initializes worker instances based on the configuration for each worker defined in <cite>G_CONTEXT.worker_config</cite>.
+Each worker can be set to run in a multithreaded mode depending on the <cite>is_backend</cite> flag or the worker’s
+individual configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>is_backend</strong> (<em>bool</em><em>, </em><em>optional</em>) – A flag indicating whether the workers should be initialized in a</p></li>
+<li><p><strong>False.</strong> (<em>backend context. Defaults to</em>)</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments to be passed during worker initialization.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If a worker mentioned in <cite>self.worker_dict</cite> does not exist in <cite>G_CONTEXT.worker_config</cite>.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method modifies <cite>self.worker_dict</cite> in-place, replacing the keys with actual worker instances.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.operation.base_workflow.BaseWorkflow.run_workflow">
+<span class="sig-name descname"><span class="pre">run_workflow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/operation/base_workflow.html#BaseWorkflow.run_workflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.operation.base_workflow.BaseWorkflow.run_workflow" title="Link to this definition"></a></dt>
+<dd><p>Executes the workflow by orchestrating the steps defined in <cite>self.workflow_worker_list</cite>.
+This method supports both sequential and parallel execution of sub-workflows based on the structure
+of <cite>self.workflow_worker_list</cite>.</p>
+<p>If a workflow part consists of a single item, it is executed sequentially. For parts with multiple items,
+they are submitted for parallel execution using a thread pool. The workflow will stop if any sub-workflow
+returns False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Additional keyword arguments to be passed to context.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

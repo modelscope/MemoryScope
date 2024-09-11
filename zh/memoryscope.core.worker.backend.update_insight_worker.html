@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,151 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-worker-backend-update-insight-worker-module">
-<h1>memoryscope.core.worker.backend.update_insight_worker module<a class="headerlink" href="#memoryscope-core-worker-backend-update-insight-worker-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.worker.backend.update_insight_worker">
+<span id="memoryscope-core-worker-backend-update-insight-worker-module"></span><h1>memoryscope.core.worker.backend.update_insight_worker module<a class="headerlink" href="#module-memoryscope.core.worker.backend.update_insight_worker" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.update_insight_worker.</span></span><span class="sig-name descname"><span class="pre">UpdateInsightWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_insight_worker.html#UpdateInsightWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>This class is responsible for updating insight value in a memory system. It filters insight nodes
+based on their association with observed nodes, utilizes a ranking model to prioritize them,
+generates refreshed insights via an LLM, and manages node statuses and content updates,
+incorporating features for concurrent execution and logging.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/update_insight_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.filter_obs_nodes">
+<span class="sig-name descname"><span class="pre">filter_obs_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">insight_node:</span> <span class="pre">~memoryscope.scheme.memory_node.MemoryNode,</span> <span class="pre">obs_nodes:</span> <span class="pre">~typing.List[~memoryscope.scheme.memory_node.MemoryNode])</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'memoryscope.scheme.memory_node.MemoryNode'&gt;,</span> <span class="pre">typing.List[memoryscope.scheme.memory_node.MemoryNode],</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_insight_worker.html#UpdateInsightWorker.filter_obs_nodes"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.filter_obs_nodes" title="Link to this definition"></a></dt>
+<dd><p>Filters observed nodes based on their relevance to a given insight node using a ranking model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insight_node</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a>) -- The insight node used as the basis for filtering.</p></li>
+<li><p><strong>obs_nodes</strong> (<em>List</em><em>[</em><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a><em>]</em>) -- A list of observed nodes to be filtered.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A tuple containing:</dt><dd><ul class="simple">
+<li><p>The original insight node.</p></li>
+<li><p>A list of filtered observed nodes that are relevant to the insight node.</p></li>
+<li><p>The maximum relevance score among the filtered nodes.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.update_insight_node">
+<span class="sig-name descname"><span class="pre">update_insight_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">insight_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">insight_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_insight_worker.html#UpdateInsightWorker.update_insight_node"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.update_insight_node" title="Link to this definition"></a></dt>
+<dd><p>Updates the MemoryNode with the new insight value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insight_node</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a>) -- The MemoryNode whose insight value needs to be updated.</p></li>
+<li><p><strong>insight_value</strong> (<em>str</em>) -- The new insight value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated MemoryNode with potentially revised insight value.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.update_insight">
+<span class="sig-name descname"><span class="pre">update_insight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">insight_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtered_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_insight_worker.html#UpdateInsightWorker.update_insight"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.update_insight" title="Link to this definition"></a></dt>
+<dd><p>Updates the insight value of a given MemoryNode based on the context from a list of filtered MemoryNodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insight_node</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a>) -- The MemoryNode whose insight value needs to be updated.</p></li>
+<li><p><strong>filtered_nodes</strong> (<em>List</em><em>[</em><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a><em>]</em>) -- A list of MemoryNodes used as context for updating the insight.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated MemoryNode with potentially revised insight value.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.workflow_context">
+<span class="sig-name descname"><span class="pre">workflow_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.workflow_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.memoryscope_context">
+<span class="sig-name descname"><span class="pre">memoryscope_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">MemoryscopeContext</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.memoryscope_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.raise_exception">
+<span class="sig-name descname"><span class="pre">raise_exception</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.raise_exception" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.is_multi_thread">
+<span class="sig-name descname"><span class="pre">is_multi_thread</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.is_multi_thread" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.thread_pool">
+<span class="sig-name descname"><span class="pre">thread_pool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ThreadPoolExecutor</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.thread_pool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.enable_parallel">
+<span class="sig-name descname"><span class="pre">enable_parallel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.enable_parallel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.kwargs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.continue_run">
+<span class="sig-name descname"><span class="pre">continue_run</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.continue_run" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.async_task_list">
+<span class="sig-name descname"><span class="pre">async_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.async_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.thread_task_list">
+<span class="sig-name descname"><span class="pre">thread_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.thread_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.utils.html#memoryscope.core.utils.Logger" title="memoryscope.core.utils.Logger"><span class="pre">Logger</span></a></em><a class="headerlink" href="#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

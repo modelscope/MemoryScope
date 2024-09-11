@@ -1,0 +1,400 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.worker.memory_base_worker &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/worker/memory_base_worker.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/worker/memory_base_worker.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">模块代码</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.worker.memory_base_worker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>memoryscope.core.worker.memory_base_worker 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.constants.common_constants</span> <span class="kn">import</span> <span class="p">(</span><span class="n">CHAT_MESSAGES</span><span class="p">,</span> <span class="n">CHAT_KWARGS</span><span class="p">,</span> <span class="n">WORKFLOW_NAME</span><span class="p">,</span> <span class="n">MEMORY_MANAGER</span><span class="p">,</span>
+                                                    <span class="n">USER_NAME</span><span class="p">,</span> <span class="n">TARGET_NAME</span><span class="p">,</span> <span class="n">CHAT_MESSAGES_SCATTER</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">memoryscope.constants.language_constants</span> <span class="kn">import</span> <span class="n">DEFAULT_HUMAN_NAME</span><span class="p">,</span> <span class="n">USER_NAME_EXPRESSION</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.models.base_model</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.storage.base_memory_store</span> <span class="kn">import</span> <span class="n">BaseMemoryStore</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.storage.base_monitor</span> <span class="kn">import</span> <span class="n">BaseMonitor</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.prompt_handler</span> <span class="kn">import</span> <span class="n">PromptHandler</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.worker.base_worker</span> <span class="kn">import</span> <span class="n">BaseWorker</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.worker.memory_manager</span> <span class="kn">import</span> <span class="n">MemoryManager</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.language_enum</span> <span class="kn">import</span> <span class="n">LanguageEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.message_role_enum</span> <span class="kn">import</span> <span class="n">MessageRoleEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.scheme.message</span> <span class="kn">import</span> <span class="n">Message</span>
+
+
+<div class="viewcode-block" id="MemoryBaseWorker">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.MemoryBaseWorker">[文档]</a>
+<span class="k">class</span> <span class="nc">MemoryBaseWorker</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="n">FILE_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="vm">__file__</span>
+
+<div class="viewcode-block" id="MemoryBaseWorker.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.MemoryBaseWorker.__init__">[文档]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">embedding_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                 <span class="n">generation_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                 <span class="n">rank_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the MemoryBaseWorker with specified models and configurations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            embedding_model (str): Identifier or instance of the embedding model used for transforming text.</span>
+<span class="sd">            generation_model (str): Identifier or instance of the text generation model.</span>
+<span class="sd">            rank_model (str): Identifier or instance of the ranking model for sorting the retrieved memories</span>
+<span class="sd">                wrt. the semantic similarities.</span>
+<span class="sd">            **kwargs: Additional keyword arguments passed to the parent class initializer.</span>
+
+<span class="sd">        The constructor also initializes key attributes related to memory store, monitoring,</span>
+<span class="sd">        user and target identification, and a prompt handler, setting them up for later use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MemoryBaseWorker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_model</span><span class="p">:</span> <span class="n">BaseModel</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">embedding_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generation_model</span><span class="p">:</span> <span class="n">BaseModel</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">generation_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rank_model</span><span class="p">:</span> <span class="n">BaseModel</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">rank_model</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_store</span><span class="p">:</span> <span class="n">BaseMemoryStore</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="p">:</span> <span class="n">BaseMonitor</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_handler</span><span class="p">:</span> <span class="n">PromptHandler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chat_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Message</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to get the chat messages.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Message]: List of chat messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">CHAT_MESSAGES</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chat_messages_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to get the chat messages.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Message]: List of chat messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">CHAT_MESSAGES_SCATTER</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_messages</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[]</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chat_messages</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">chat_messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Message</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">messages</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_messages</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">messages</span><span class="p">:</span>
+                        <span class="n">chat_messages</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+                <span class="n">chat_messages</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">_</span><span class="o">.</span><span class="n">time_created</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_workflow_context</span><span class="p">(</span><span class="n">CHAT_MESSAGES_SCATTER</span><span class="p">,</span> <span class="n">chat_messages</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chat_messages</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Message</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_workflow_context</span><span class="p">(</span><span class="n">CHAT_MESSAGES_SCATTER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_messages</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">CHAT_MESSAGES_SCATTER</span><span class="p">)</span>
+
+    <span class="nd">@chat_messages_scatter</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">chat_messages_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Message</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the chat messages with the new value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_workflow_context</span><span class="p">(</span><span class="n">CHAT_MESSAGES_SCATTER</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chat_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the chat keyword arguments from the context.</span>
+
+<span class="sd">        This property getter fetches the chat-related parameters stored in the context,</span>
+<span class="sd">        which are used to configure how chat interactions are handled.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, str]: A dictionary containing the chat keyword arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">CHAT_KWARGS</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">user_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">USER_NAME</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">target_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">TARGET_NAME</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">workflow_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">WORKFLOW_NAME</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">language</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LanguageEnum</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">language</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">embedding_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to get the embedding model. If the model is currently stored as a string,</span>
+<span class="sd">        it will be replaced with the actual model instance from the global context&#39;s model dictionary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaseModel: The embedding model used for converting text into vector representations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_embedding_model</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">model_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_embedding_model</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_model</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">generation_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the generation model. If the model is stored as a string,</span>
+<span class="sd">        it retrieves the actual model instance from the global context&#39;s model dictionary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaseModel: The model used for text generation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generation_model</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_generation_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">model_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_generation_model</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generation_model</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rank_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the rank model. If the stored rank model is a string, it fetches the actual model instance</span>
+<span class="sd">        from the global context&#39;s model dictionary before returning it.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaseModel: The rank model instance used for ranking tasks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rank_model</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rank_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">model_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_rank_model</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rank_model</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">memory_store</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseMemoryStore</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the memory vector store. If not initialized, it fetches</span>
+<span class="sd">        the global memory store.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaseMemoryStore: The memory store instance used for inserting, updating, retrieving and deleting operations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_store</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_memory_store</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">memory_store</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_store</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">monitor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseMonitor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the monitoring component. If not initialized, it fetches</span>
+<span class="sd">        the global monitor.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaseMonitor: The monitoring component instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">monitor</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">prompt_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PromptHandler</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lazily initializes and returns the PromptHandler instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PromptHandler: An instance of PromptHandler initialized with specific file path and keyword arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_handler</span> <span class="o">=</span> <span class="n">PromptHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_handler</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">memory_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MemoryManager</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lazily initializes and returns the MemoryHandler instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MemoryHandler: An instance of MemoryHandler.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_content</span><span class="p">(</span><span class="n">MEMORY_MANAGER</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_workflow_context</span><span class="p">(</span><span class="n">MEMORY_MANAGER</span><span class="p">,</span> <span class="n">MemoryManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="p">,</span> <span class="n">workerflow_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workflow_name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workflow_context</span><span class="p">(</span><span class="n">MEMORY_MANAGER</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MemoryBaseWorker.get_language_value">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.MemoryBaseWorker.get_language_value">[文档]</a>
+    <span class="k">def</span> <span class="nf">get_language_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">languages</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the value(s) corresponding to the current language context.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            languages (dict | list[dict]): A dictionary or list of dictionaries containing language-keyed values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Any | list[Any]: The value or list of values matching the current language setting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">languages</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">languages</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">languages</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MemoryBaseWorker.prompt_to_msg">
+<a class="viewcode-back" href="../../../../memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.MemoryBaseWorker.prompt_to_msg">[文档]</a>
+    <span class="k">def</span> <span class="nf">prompt_to_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                      <span class="n">system_prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                      <span class="n">few_shot</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                      <span class="n">user_query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                      <span class="n">concat_system_prompt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts input strings into a structured list of message objects suitable for AI interactions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            system_prompt (str): The system-level instruction or context.</span>
+<span class="sd">            few_shot (str): An example or demonstration input, often used for illustrating expected behavior.</span>
+<span class="sd">            user_query (str): The actual user query or prompt to be processed.</span>
+<span class="sd">            concat_system_prompt(bool): Concat system prompt again or not in the user message.</span>
+<span class="sd">                A simple method to improve the effectiveness for some LLMs. Defaults to True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Message]: A list of Message objects, each representing a part of the conversation setup.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">system_content</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_name</span> <span class="o">!=</span> <span class="n">DEFAULT_HUMAN_NAME</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">]:</span>
+            <span class="n">system_content</span> <span class="o">+=</span> <span class="n">USER_NAME_EXPRESSION</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_name</span><span class="p">)</span>
+        <span class="n">system_content</span> <span class="o">+=</span> <span class="n">system_prompt</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">system_message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="n">MessageRoleEnum</span><span class="o">.</span><span class="n">SYSTEM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">system_content</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">concat_system_prompt</span><span class="p">:</span>
+            <span class="n">user_content_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">system_content</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">few_shot</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user_query</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">user_content_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">few_shot</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user_query</span><span class="p">]</span>
+        <span class="n">user_message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="n">MessageRoleEnum</span><span class="o">.</span><span class="n">USER</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                               <span class="n">content</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">user_content_list</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">system_message</span><span class="p">,</span> <span class="n">user_message</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

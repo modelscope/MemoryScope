@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -102,18 +102,217 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html">memoryscope.core.worker.frontend.extract_time_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.fuse_rerank_worker.html">memoryscope.core.worker.frontend.fuse_rerank_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html">memoryscope.core.worker.frontend.print_memory_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.read_message_worker.html">memoryscope.core.worker.frontend.read_message_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.retrieve_memory_worker.html">memoryscope.core.worker.frontend.retrieve_memory_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.semantic_rank_worker.html">memoryscope.core.worker.frontend.semantic_rank_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.set_query_worker.html">memoryscope.core.worker.frontend.set_query_worker module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html">memoryscope.core.worker.frontend.extract_time_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.EXTRACT_TIME_PATTERN"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.EXTRACT_TIME_PATTERN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.FILE_PATH"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.FILE_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.name"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.workflow_context"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.workflow_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.memoryscope_context"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.memoryscope_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.raise_exception"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.raise_exception</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.is_multi_thread"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.is_multi_thread</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.thread_pool"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.thread_pool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.enable_parallel"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.enable_parallel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.kwargs"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.continue_run"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.continue_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.async_task_list"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.async_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.thread_task_list"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.thread_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.extract_time_worker.html#memoryscope.core.worker.frontend.extract_time_worker.ExtractTimeWorker.logger"><code class="docutils literal notranslate"><span class="pre">ExtractTimeWorker.logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.fuse_rerank_worker.html">memoryscope.core.worker.frontend.fuse_rerank_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.frontend.fuse_rerank_worker.html#memoryscope.core.worker.frontend.fuse_rerank_worker.FuseRerankWorker"><code class="docutils literal notranslate"><span class="pre">FuseRerankWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.fuse_rerank_worker.html#memoryscope.core.worker.frontend.fuse_rerank_worker.FuseRerankWorker.match_node_time"><code class="docutils literal notranslate"><span class="pre">FuseRerankWorker.match_node_time</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html">memoryscope.core.worker.frontend.print_memory_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.FILE_PATH"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.FILE_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.name"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.workflow_context"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.workflow_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.memoryscope_context"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.memoryscope_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.raise_exception"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.raise_exception</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.is_multi_thread"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.is_multi_thread</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.thread_pool"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.thread_pool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.enable_parallel"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.enable_parallel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.kwargs"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.continue_run"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.continue_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.async_task_list"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.async_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.thread_task_list"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.thread_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.print_memory_worker.html#memoryscope.core.worker.frontend.print_memory_worker.PrintMemoryWorker.logger"><code class="docutils literal notranslate"><span class="pre">PrintMemoryWorker.logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.read_message_worker.html">memoryscope.core.worker.frontend.read_message_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.frontend.read_message_worker.html#memoryscope.core.worker.frontend.read_message_worker.ReadMessageWorker"><code class="docutils literal notranslate"><span class="pre">ReadMessageWorker</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.retrieve_memory_worker.html">memoryscope.core.worker.frontend.retrieve_memory_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.frontend.retrieve_memory_worker.html#memoryscope.core.worker.frontend.retrieve_memory_worker.RetrieveMemoryWorker"><code class="docutils literal notranslate"><span class="pre">RetrieveMemoryWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.retrieve_memory_worker.html#memoryscope.core.worker.frontend.retrieve_memory_worker.RetrieveMemoryWorker.retrieve_from_observation"><code class="docutils literal notranslate"><span class="pre">RetrieveMemoryWorker.retrieve_from_observation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.retrieve_memory_worker.html#memoryscope.core.worker.frontend.retrieve_memory_worker.RetrieveMemoryWorker.retrieve_from_insight"><code class="docutils literal notranslate"><span class="pre">RetrieveMemoryWorker.retrieve_from_insight</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.frontend.retrieve_memory_worker.html#memoryscope.core.worker.frontend.retrieve_memory_worker.RetrieveMemoryWorker.retrieve_expired_memory"><code class="docutils literal notranslate"><span class="pre">RetrieveMemoryWorker.retrieve_expired_memory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.semantic_rank_worker.html">memoryscope.core.worker.frontend.semantic_rank_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.frontend.semantic_rank_worker.html#memoryscope.core.worker.frontend.semantic_rank_worker.SemanticRankWorker"><code class="docutils literal notranslate"><span class="pre">SemanticRankWorker</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.frontend.set_query_worker.html">memoryscope.core.worker.frontend.set_query_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.frontend.set_query_worker.html#memoryscope.core.worker.frontend.set_query_worker.SetQueryWorker"><code class="docutils literal notranslate"><span class="pre">SetQueryWorker</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-memoryscope.core.worker.frontend">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-memoryscope.core.worker.frontend" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.ExtractTimeWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.frontend.</span></span><span class="sig-name descname"><span class="pre">ExtractTimeWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/frontend/extract_time_worker.html#ExtractTimeWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.frontend.ExtractTimeWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>A specialized worker class designed to identify and extract time-related information
+from text generated by an LLM, translating date-time keywords based on the set language,
+and storing this extracted data within a shared context.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.ExtractTimeWorker.EXTRACT_TIME_PATTERN">
+<span class="sig-name descname"><span class="pre">EXTRACT_TIME_PATTERN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'-\\s*(\\S+)[：:]\\s*(\\S+)'</span></em><a class="headerlink" href="#memoryscope.core.worker.frontend.ExtractTimeWorker.EXTRACT_TIME_PATTERN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.ExtractTimeWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/frontend/extract_time_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.frontend.ExtractTimeWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.FuseRerankWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.frontend.</span></span><span class="sig-name descname"><span class="pre">FuseRerankWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/frontend/fuse_rerank_worker.html#FuseRerankWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.frontend.FuseRerankWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>Reranks the memory nodes by scores, types, and temporal relevance. Formats the top-K reranked nodes to print.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.FuseRerankWorker.match_node_time">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match_node_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extract_time_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/frontend/fuse_rerank_worker.html#FuseRerankWorker.match_node_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.frontend.FuseRerankWorker.match_node_time" title="Link to this definition"></a></dt>
+<dd><p>Determines whether the node is relevant.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.PrintMemoryWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.frontend.</span></span><span class="sig-name descname"><span class="pre">PrintMemoryWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/frontend/print_memory_worker.html#PrintMemoryWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.frontend.PrintMemoryWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>Formats the memories to print.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.PrintMemoryWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/frontend/print_memory_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.frontend.PrintMemoryWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.ReadMessageWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.frontend.</span></span><span class="sig-name descname"><span class="pre">ReadMessageWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/frontend/read_message_worker.html#ReadMessageWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.frontend.ReadMessageWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>Fetches unmemorized chat messages.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.RetrieveMemoryWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.frontend.</span></span><span class="sig-name descname"><span class="pre">RetrieveMemoryWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/frontend/retrieve_memory_worker.html#RetrieveMemoryWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.frontend.RetrieveMemoryWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>Retrieves memories based on specified criteria such as status, type, and timestamp.
+Processes these memories concurrently, sorts them by similarity, and logs the activity,
+facilitating efficient memory retrieval operations within a given scope.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.RetrieveMemoryWorker.retrieve_from_observation">
+<span class="sig-name descname"><span class="pre">retrieve_from_observation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#memoryscope.core.worker.frontend.RetrieveMemoryWorker.retrieve_from_observation" title="Link to this definition"></a></dt>
+<dd><p>The wrapper function that manages the timing of the original function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – Variable length argument list for the decorated function.</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments for the decorated function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the decorated function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.RetrieveMemoryWorker.retrieve_from_insight">
+<span class="sig-name descname"><span class="pre">retrieve_from_insight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#memoryscope.core.worker.frontend.RetrieveMemoryWorker.retrieve_from_insight" title="Link to this definition"></a></dt>
+<dd><p>The wrapper function that manages the timing of the original function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – Variable length argument list for the decorated function.</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments for the decorated function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the decorated function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.RetrieveMemoryWorker.retrieve_expired_memory">
+<span class="sig-name descname"><span class="pre">retrieve_expired_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#memoryscope.core.worker.frontend.RetrieveMemoryWorker.retrieve_expired_memory" title="Link to this definition"></a></dt>
+<dd><p>The wrapper function that manages the timing of the original function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – Variable length argument list for the decorated function.</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments for the decorated function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the decorated function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.SemanticRankWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.frontend.</span></span><span class="sig-name descname"><span class="pre">SemanticRankWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/frontend/semantic_rank_worker.html#SemanticRankWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.frontend.SemanticRankWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>The <cite>SemanticRankWorker</cite> class processes queries by retrieving memory nodes,
+removing duplicates, ranking them based on semantic relevance using a model,
+assigning scores, sorting the nodes, and storing the ranked nodes back,
+while logging relevant information.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.frontend.SetQueryWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.frontend.</span></span><span class="sig-name descname"><span class="pre">SetQueryWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/frontend/set_query_worker.html#SetQueryWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.frontend.SetQueryWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>The <cite>SetQueryWorker</cite> class is responsible for setting a query and its associated timestamp
+into the context, utilizing either provided chat parameters or details from the most recent
+chat message.</p>
+</dd></dl>
+
 </section>
 </section>
 

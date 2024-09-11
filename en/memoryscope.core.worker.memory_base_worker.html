@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,305 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-worker-memory-base-worker-module">
-<h1>memoryscope.core.worker.memory_base_worker module<a class="headerlink" href="#memoryscope-core-worker-memory-base-worker-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.worker.memory_base_worker">
+<span id="memoryscope-core-worker-memory-base-worker-module"></span><h1>memoryscope.core.worker.memory_base_worker module<a class="headerlink" href="#module-memoryscope.core.worker.memory_base_worker" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.memory_base_worker.</span></span><span class="sig-name descname"><span class="pre">MemoryBaseWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/memory_base_worker.html#MemoryBaseWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.base_worker.html#memoryscope.core.worker.base_worker.BaseWorker" title="memoryscope.core.worker.base_worker.BaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseWorker</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/memory_base_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/memory_base_worker.html#MemoryBaseWorker.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the MemoryBaseWorker with specified models and configurations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embedding_model</strong> (<em>str</em>) – Identifier or instance of the embedding model used for transforming text.</p></li>
+<li><p><strong>generation_model</strong> (<em>str</em>) – Identifier or instance of the text generation model.</p></li>
+<li><p><strong>rank_model</strong> (<em>str</em>) – Identifier or instance of the ranking model for sorting the retrieved memories
+wrt. the semantic similarities.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments passed to the parent class initializer.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The constructor also initializes key attributes related to memory store, monitoring,
+user and target identification, and a prompt handler, setting them up for later use.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.chat_messages">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">chat_messages</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.chat_messages" title="Link to this definition"></a></dt>
+<dd><p>Property to get the chat messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of chat messages.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.chat_messages_scatter">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">chat_messages_scatter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.chat_messages_scatter" title="Link to this definition"></a></dt>
+<dd><p>Property to get the chat messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of chat messages.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.chat_kwargs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">chat_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.chat_kwargs" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the chat keyword arguments from the context.</p>
+<p>This property getter fetches the chat-related parameters stored in the context,
+which are used to configure how chat interactions are handled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing the chat keyword arguments.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.user_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">user_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.user_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.target_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.target_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.workflow_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">workflow_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.workflow_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.language">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">language</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.language" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.embedding_model">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">embedding_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.embedding_model" title="Link to this definition"></a></dt>
+<dd><p>Property to get the embedding model. If the model is currently stored as a string,
+it will be replaced with the actual model instance from the global context’s model dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The embedding model used for converting text into vector representations.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="memoryscope.core.models.html#memoryscope.core.models.BaseModel" title="memoryscope.core.models.BaseModel">BaseModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.generation_model">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generation_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.generation_model" title="Link to this definition"></a></dt>
+<dd><p>Property to access the generation model. If the model is stored as a string,
+it retrieves the actual model instance from the global context’s model dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The model used for text generation.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="memoryscope.core.models.html#memoryscope.core.models.BaseModel" title="memoryscope.core.models.BaseModel">BaseModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.rank_model">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rank_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.rank_model" title="Link to this definition"></a></dt>
+<dd><p>Property to access the rank model. If the stored rank model is a string, it fetches the actual model instance
+from the global context’s model dictionary before returning it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The rank model instance used for ranking tasks.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="memoryscope.core.models.html#memoryscope.core.models.BaseModel" title="memoryscope.core.models.BaseModel">BaseModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.memory_store">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">memory_store</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.storage.base_memory_store.html#memoryscope.core.storage.base_memory_store.BaseMemoryStore" title="memoryscope.core.storage.base_memory_store.BaseMemoryStore"><span class="pre">BaseMemoryStore</span></a></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.memory_store" title="Link to this definition"></a></dt>
+<dd><p>Property to access the memory vector store. If not initialized, it fetches
+the global memory store.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The memory store instance used for inserting, updating, retrieving and deleting operations.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="memoryscope.core.storage.html#memoryscope.core.storage.BaseMemoryStore" title="memoryscope.core.storage.BaseMemoryStore">BaseMemoryStore</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.monitor">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">monitor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.storage.base_monitor.html#memoryscope.core.storage.base_monitor.BaseMonitor" title="memoryscope.core.storage.base_monitor.BaseMonitor"><span class="pre">BaseMonitor</span></a></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.monitor" title="Link to this definition"></a></dt>
+<dd><p>Property to access the monitoring component. If not initialized, it fetches
+the global monitor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The monitoring component instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="memoryscope.core.storage.html#memoryscope.core.storage.BaseMonitor" title="memoryscope.core.storage.BaseMonitor">BaseMonitor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.prompt_handler">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prompt_handler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.prompt_handler.PromptHandler" title="memoryscope.core.utils.prompt_handler.PromptHandler"><span class="pre">PromptHandler</span></a></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.prompt_handler" title="Link to this definition"></a></dt>
+<dd><p>Lazily initializes and returns the PromptHandler instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An instance of PromptHandler initialized with specific file path and keyword arguments.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="memoryscope.core.utils.html#memoryscope.core.utils.PromptHandler" title="memoryscope.core.utils.PromptHandler">PromptHandler</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.memory_manager">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">memory_manager</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.worker.memory_manager.html#memoryscope.core.worker.memory_manager.MemoryManager" title="memoryscope.core.worker.memory_manager.MemoryManager"><span class="pre">MemoryManager</span></a></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.memory_manager" title="Link to this definition"></a></dt>
+<dd><p>Lazily initializes and returns the MemoryHandler instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An instance of MemoryHandler.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>MemoryHandler</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.get_language_value">
+<span class="sig-name descname"><span class="pre">get_language_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">languages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/memory_base_worker.html#MemoryBaseWorker.get_language_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.get_language_value" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the value(s) corresponding to the current language context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>languages</strong> (<em>dict</em><em> | </em><em>list</em><em>[</em><em>dict</em><em>]</em>) – A dictionary or list of dictionaries containing language-keyed values.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value or list of values matching the current language setting.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any | list[Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.prompt_to_msg">
+<span class="sig-name descname"><span class="pre">prompt_to_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concat_system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/memory_base_worker.html#MemoryBaseWorker.prompt_to_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.prompt_to_msg" title="Link to this definition"></a></dt>
+<dd><p>Converts input strings into a structured list of message objects suitable for AI interactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system_prompt</strong> (<em>str</em>) – The system-level instruction or context.</p></li>
+<li><p><strong>few_shot</strong> (<em>str</em>) – An example or demonstration input, often used for illustrating expected behavior.</p></li>
+<li><p><strong>user_query</strong> (<em>str</em>) – The actual user query or prompt to be processed.</p></li>
+<li><p><strong>concat_system_prompt</strong> (<em>bool</em>) – Concat system prompt again or not in the user message.
+A simple method to improve the effectiveness for some LLMs. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of Message objects, each representing a part of the conversation setup.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.workflow_context">
+<span class="sig-name descname"><span class="pre">workflow_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.workflow_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.memoryscope_context">
+<span class="sig-name descname"><span class="pre">memoryscope_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">MemoryscopeContext</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.memoryscope_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.raise_exception">
+<span class="sig-name descname"><span class="pre">raise_exception</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.raise_exception" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.is_multi_thread">
+<span class="sig-name descname"><span class="pre">is_multi_thread</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.is_multi_thread" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.thread_pool">
+<span class="sig-name descname"><span class="pre">thread_pool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ThreadPoolExecutor</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.thread_pool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.enable_parallel">
+<span class="sig-name descname"><span class="pre">enable_parallel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.enable_parallel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.kwargs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.continue_run">
+<span class="sig-name descname"><span class="pre">continue_run</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.continue_run" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.async_task_list">
+<span class="sig-name descname"><span class="pre">async_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.async_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.thread_task_list">
+<span class="sig-name descname"><span class="pre">thread_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.thread_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.utils.html#memoryscope.core.utils.Logger" title="memoryscope.core.utils.Logger"><span class="pre">Logger</span></a></em><a class="headerlink" href="#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,144 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-config-arguments-module">
-<h1>memoryscope.core.config.arguments module<a class="headerlink" href="#memoryscope-core-config-arguments-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.config.arguments">
+<span id="memoryscope-core-config-arguments-module"></span><h1>memoryscope.core.config.arguments module<a class="headerlink" href="#module-memoryscope.core.config.arguments" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.config.arguments.</span></span><span class="sig-name descname"><span class="pre">Arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language:</span> <span class="pre">Literal['cn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'en']</span> <span class="pre">=</span> <span class="pre">'cn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_pool_max_workers:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_chat_class:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'cli_memory_chat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat_stream:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">human_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assistant_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'AI'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consolidate_memory_interval_time:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reflect_and_reconsolidate_interval_time:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker_params:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_backend:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dashscope_generation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'qwen-max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_params:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_backend:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dashscope_generation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'text-embedding-v2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_params:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_backend:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dashscope_rank'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'gte-rerank'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_params:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_index_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'memory_index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_url:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'http://localhost:9200'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieve_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_ranker:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_today_contra_repeat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_long_contra_repeat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_memory_max_count:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/config/arguments.html#Arguments"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.language">
+<span class="sig-name descname"><span class="pre">language</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'cn'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'en'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cn'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.language" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.thread_pool_max_workers">
+<span class="sig-name descname"><span class="pre">thread_pool_max_workers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.thread_pool_max_workers" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.memory_chat_class">
+<span class="sig-name descname"><span class="pre">memory_chat_class</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cli_memory_chat'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.memory_chat_class" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.chat_stream">
+<span class="sig-name descname"><span class="pre">chat_stream</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.chat_stream" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.human_name">
+<span class="sig-name descname"><span class="pre">human_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'user'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.human_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.assistant_name">
+<span class="sig-name descname"><span class="pre">assistant_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'AI'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.assistant_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.consolidate_memory_interval_time">
+<span class="sig-name descname"><span class="pre">consolidate_memory_interval_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.consolidate_memory_interval_time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.reflect_and_reconsolidate_interval_time">
+<span class="sig-name descname"><span class="pre">reflect_and_reconsolidate_interval_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.reflect_and_reconsolidate_interval_time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.worker_params">
+<span class="sig-name descname"><span class="pre">worker_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.worker_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.generation_backend">
+<span class="sig-name descname"><span class="pre">generation_backend</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dashscope_generation'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.generation_backend" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.generation_model">
+<span class="sig-name descname"><span class="pre">generation_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'qwen-max'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.generation_model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.generation_params">
+<span class="sig-name descname"><span class="pre">generation_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.generation_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.embedding_backend">
+<span class="sig-name descname"><span class="pre">embedding_backend</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dashscope_generation'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.embedding_backend" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.embedding_model">
+<span class="sig-name descname"><span class="pre">embedding_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'text-embedding-v2'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.embedding_model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.embedding_params">
+<span class="sig-name descname"><span class="pre">embedding_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.embedding_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.rank_backend">
+<span class="sig-name descname"><span class="pre">rank_backend</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dashscope_rank'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.rank_backend" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.rank_model">
+<span class="sig-name descname"><span class="pre">rank_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gte-rerank'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.rank_model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.rank_params">
+<span class="sig-name descname"><span class="pre">rank_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.rank_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.es_index_name">
+<span class="sig-name descname"><span class="pre">es_index_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'memory_index'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.es_index_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.es_url">
+<span class="sig-name descname"><span class="pre">es_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://localhost:9200'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.es_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.retrieve_mode">
+<span class="sig-name descname"><span class="pre">retrieve_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dense'</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.retrieve_mode" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.enable_ranker">
+<span class="sig-name descname"><span class="pre">enable_ranker</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.enable_ranker" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.enable_today_contra_repeat">
+<span class="sig-name descname"><span class="pre">enable_today_contra_repeat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.enable_today_contra_repeat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.enable_long_contra_repeat">
+<span class="sig-name descname"><span class="pre">enable_long_contra_repeat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.enable_long_contra_repeat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.output_memory_max_count">
+<span class="sig-name descname"><span class="pre">output_memory_max_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">20</span></em><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.output_memory_max_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language:</span> <span class="pre">~typing.Literal['cn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'en']</span> <span class="pre">=</span> <span class="pre">'cn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_pool_max_workers:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_chat_class:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'cli_memory_chat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat_stream:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">human_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assistant_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'AI'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consolidate_memory_interval_time:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reflect_and_reconsolidate_interval_time:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker_params:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_backend:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dashscope_generation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'qwen-max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_params:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_backend:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dashscope_generation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'text-embedding-v2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_params:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_backend:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dashscope_rank'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'gte-rerank'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_params:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_index_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'memory_index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_url:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'http://localhost:9200'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieve_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_ranker:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_today_contra_repeat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_long_contra_repeat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_memory_max_count:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

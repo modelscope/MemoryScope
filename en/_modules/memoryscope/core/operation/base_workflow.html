@@ -1,0 +1,353 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.operation.base_workflow &mdash; MemoryScope  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/operation/base_workflow.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/operation/base_workflow.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">About MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README.html">Cli Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages.html">Simple Usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator.html">Advanced usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">Contribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.operation.base_workflow</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for memoryscope.core.operation.base_workflow</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.constants.common_constants</span> <span class="kn">import</span> <span class="n">WORKFLOW_NAME</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.memoryscope_context</span> <span class="kn">import</span> <span class="n">MemoryscopeContext</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.timer</span> <span class="kn">import</span> <span class="n">Timer</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.tool_functions</span> <span class="kn">import</span> <span class="n">init_instance_by_config</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.worker.base_worker</span> <span class="kn">import</span> <span class="n">BaseWorker</span>
+
+<div class="viewcode-block" id="BaseWorkflow">
+<a class="viewcode-back" href="../../../../memoryscope.core.operation.base_workflow.html#memoryscope.core.operation.BaseWorkflow">[docs]</a>
+<span class="k">class</span> <span class="nc">BaseWorkflow</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BaseWorkflow.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.operation.base_workflow.html#memoryscope.core.operation.BaseWorkflow.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">memoryscope_context</span><span class="p">:</span> <span class="n">MemoryscopeContext</span><span class="p">,</span>
+                 <span class="n">workflow</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="p">:</span> <span class="n">MemoryscopeContext</span> <span class="o">=</span> <span class="n">memoryscope_context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_pool</span><span class="p">:</span> <span class="n">ThreadPoolExecutor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">thread_pool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workflow</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">workflow</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">workflow_worker_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">worker_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseWorker</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workflow_context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="s2">&quot;workflow&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">workflow</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workflow_worker_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_workflow</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_workflow</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BaseWorkflow.workflow_print_console">
+<a class="viewcode-back" href="../../../../memoryscope.core.operation.base_workflow.html#memoryscope.core.operation.BaseWorkflow.workflow_print_console">[docs]</a>
+    <span class="k">def</span> <span class="nf">workflow_print_console</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">print_workflow_dynamic</span><span class="p">:</span>
+            <span class="n">Console</span><span class="p">()</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_parse_workflow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parses the workflow string to configure worker threads and organizes them into execution order.</span>
+
+<span class="sd">        The workflow string format supports complex configurations with optional multi-threading indications.</span>
+<span class="sd">        E.g., `[task1,task2|task3],task4` denotes task1 and task2 can run in parallel to task3, followed by task4.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[List[List[str]]]: A nested list representing the execution plan, including parallel groups and tasks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Regular expression to match components of the workflow, handling both plain items and grouped items.</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(\[[^\]]*\]|[^,]+)&quot;</span>
+        <span class="c1"># Find all matches in the workflow string based on the pattern.</span>
+        <span class="n">workflow_split</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">workflow</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">workflow_part</span> <span class="ow">in</span> <span class="n">workflow_split</span><span class="p">:</span>
+            <span class="c1"># e.g., [d,e,f|g,h]</span>
+            <span class="n">workflow_part</span> <span class="o">=</span> <span class="n">workflow_part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39;[&#39;</span> <span class="ow">in</span> <span class="n">workflow_part</span> <span class="ow">or</span> <span class="s1">&#39;]&#39;</span> <span class="ow">in</span> <span class="n">workflow_part</span><span class="p">:</span>
+                <span class="n">workflow_part</span> <span class="o">=</span> <span class="n">workflow_part</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Split the part by &#39;|&#39; to identify potential parallel task groups.</span>
+            <span class="n">line_split</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">workflow_part</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
+
+            <span class="c1"># Skip if no valid tasks are identified after splitting.</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_split</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Determine if the current part involves multi-threading based on the number of groups.</span>
+            <span class="n">is_multi_thread</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_split</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+            <span class="c1"># e.g., [&quot;d&quot;,&quot;e&quot;,&quot;f&quot;]</span>
+            <span class="n">line_split_split</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">sub_line_split</span> <span class="ow">in</span> <span class="n">line_split</span><span class="p">:</span>
+                <span class="n">sub_split</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sub_line_split</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
+                <span class="n">line_split_split</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_split</span><span class="p">)</span>
+                <span class="c1"># add workers</span>
+                <span class="k">for</span> <span class="n">sub_item</span> <span class="ow">in</span> <span class="n">sub_split</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">worker_dict</span><span class="p">[</span><span class="n">sub_item</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_multi_thread</span>
+
+            <span class="c1"># Append the parsed and structured tasks to the workflow execution plan.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workflow_worker_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line_split_split</span><span class="p">)</span>
+
+        <span class="c1"># Return the fully constructed workflow execution plan.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">workflow_worker_list</span>
+
+    <span class="k">def</span> <span class="nf">_print_workflow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the workflow stages in a structured format. Each stage of the workflow</span>
+<span class="sd">        is detailed with its constituent parts, either single elements or grouped</span>
+<span class="sd">        elements separated by &#39; | &#39;.</span>
+
+<span class="sd">        The method iterates over the workflow parts, handling both singular steps</span>
+<span class="sd">        and parallel steps (where elements are zipped together).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;----- workflow.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.print.begin -----&quot;</span><span class="p">)</span>
+        <span class="n">i</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">workflow_part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workflow_worker_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workflow_part</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Handles workflow parts with single elements</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">workflow_part</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stage</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Handles workflow parts with multiple parallel elements (zipped)</span>
+                <span class="k">for</span> <span class="n">w_zip</span> <span class="ow">in</span> <span class="n">zip_longest</span><span class="p">(</span><span class="o">*</span><span class="n">workflow_part</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stage</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">w_zip</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="c1"># Skips placeholder &#39;-&#39; used for uneven lists in zip_longest</span>
+                    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">w_zip</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">w</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span>
+                            <span class="k">continue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;----- workflow.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.print.end -----&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseWorkflow.init_workers">
+<a class="viewcode-back" href="../../../../memoryscope.core.operation.base_workflow.html#memoryscope.core.operation.BaseWorkflow.init_workers">[docs]</a>
+    <span class="k">def</span> <span class="nf">init_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes worker instances based on the configuration for each worker defined in `G_CONTEXT.worker_config`.</span>
+<span class="sd">        Each worker can be set to run in a multithreaded mode depending on the `is_backend` flag or the worker&#39;s</span>
+<span class="sd">        individual configuration.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            is_backend (bool, optional): A flag indicating whether the workers should be initialized in a</span>
+<span class="sd">            backend context. Defaults to False.</span>
+<span class="sd">            **kwargs: Additional keyword arguments to be passed during worker initialization.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If a worker mentioned in `self.worker_dict` does not exist in `G_CONTEXT.worker_config`.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method modifies `self.worker_dict` in-place, replacing the keys with actual worker instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">worker_conf_dict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;worker=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not exists in worker config!&quot;</span><span class="p">)</span>
+
+            <span class="c1"># note: shared context object in all workers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">worker_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">init_instance_by_config</span><span class="p">(</span>
+                <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">worker_conf_dict</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">is_multi_thread</span><span class="o">=</span><span class="n">is_backend</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_dict</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workflow_context</span><span class="p">,</span>
+                <span class="n">memoryscope_context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="p">,</span>
+                <span class="n">context_lock</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context_lock</span><span class="p">,</span>
+                <span class="n">thread_pool</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_pool</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_run_sub_workflow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">worker_list</span><span class="p">:</span>
+            <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">worker</span><span class="o">.</span><span class="n">continue_run</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;worker=</span><span class="si">{</span><span class="n">worker</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> stop workflow!&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="BaseWorkflow.run_workflow">
+<a class="viewcode-back" href="../../../../memoryscope.core.operation.base_workflow.html#memoryscope.core.operation.BaseWorkflow.run_workflow">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_workflow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes the workflow by orchestrating the steps defined in `self.workflow_worker_list`.</span>
+<span class="sd">        This method supports both sequential and parallel execution of sub-workflows based on the structure</span>
+<span class="sd">        of `self.workflow_worker_list`.</span>
+
+<span class="sd">        If a workflow part consists of a single item, it is executed sequentially. For parts with multiple items,</span>
+<span class="sd">        they are submitted for parallel execution using a thread pool. The workflow will stop if any sub-workflow</span>
+<span class="sd">        returns False.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs: Additional keyword arguments to be passed to context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">Timer</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;workflow.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_log_type</span><span class="o">=</span><span class="s2">&quot;wrap&quot;</span><span class="p">):</span>
+            <span class="n">log_buf</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Operation: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">log_buf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workflow_print_console</span><span class="p">(</span><span class="n">log_buf</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;bold red&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workflow_context</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workflow_context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">WORKFLOW_NAME</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
+            <span class="n">n_stage</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workflow_worker_list</span><span class="p">)</span>
+            <span class="c1"># Iterate over each part of the workflow</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">workflow_part</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workflow_worker_list</span><span class="p">):</span>
+                <span class="c1"># self.logger.info(self.logger.format_current_context(self.workflow_context))</span>
+                <span class="c1"># Sequential execution for single-item parts</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workflow_part</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">log_buf</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">- Operation: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_stage</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">workflow_part</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">log_buf</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">workflow_print_console</span><span class="p">(</span><span class="n">log_buf</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;bold red&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_sub_workflow</span><span class="p">(</span><span class="n">workflow_part</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">break</span>
+                <span class="c1"># Parallel execution for multi-item parts</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">t_list</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="c1"># Submit tasks to the thread pool</span>
+                    <span class="n">n_sub_stage</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">workflow_part</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">sub_index</span><span class="p">,</span> <span class="n">sub_workflow</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">workflow_part</span><span class="p">):</span>
+                        <span class="n">log_buf</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">- Operation: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_stage</span><span class="si">}</span><span class="s2"> | sub workflow </span><span class="si">{</span><span class="n">sub_index</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_sub_stage</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">sub_workflow</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">log_buf</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">workflow_print_console</span><span class="p">(</span><span class="n">log_buf</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+                        <span class="n">t_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_run_sub_workflow</span><span class="p">,</span> <span class="n">sub_workflow</span><span class="p">))</span>
+
+                    <span class="c1"># Check results; if any task returns False, stop the workflow</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">t_list</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">():</span>
+                            <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">flag</span><span class="p">:</span>
+                        <span class="k">break</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alibaba Tongyi Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

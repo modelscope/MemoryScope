@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -102,20 +102,632 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html">memoryscope.core.worker.backend.contra_repeat_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html">memoryscope.core.worker.backend.get_observation_with_time_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html">memoryscope.core.worker.backend.get_observation_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html">memoryscope.core.worker.backend.get_reflection_subject_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html">memoryscope.core.worker.backend.info_filter_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.load_memory_worker.html">memoryscope.core.worker.backend.load_memory_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html">memoryscope.core.worker.backend.long_contra_repeat_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html">memoryscope.core.worker.backend.update_insight_worker module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.update_memory_worker.html">memoryscope.core.worker.backend.update_memory_worker module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html">memoryscope.core.worker.backend.contra_repeat_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.FILE_PATH"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.FILE_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.name"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.workflow_context"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.workflow_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.memoryscope_context"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.memoryscope_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.raise_exception"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.raise_exception</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.is_multi_thread"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.is_multi_thread</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.thread_pool"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.thread_pool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.enable_parallel"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.enable_parallel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.kwargs"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.continue_run"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.continue_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.async_task_list"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.async_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.thread_task_list"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.thread_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.contra_repeat_worker.html#memoryscope.core.worker.backend.contra_repeat_worker.ContraRepeatWorker.logger"><code class="docutils literal notranslate"><span class="pre">ContraRepeatWorker.logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html">memoryscope.core.worker.backend.get_observation_with_time_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.FILE_PATH"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.FILE_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.OBS_STORE_KEY"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.OBS_STORE_KEY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.filter_messages"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.filter_messages</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.build_message"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.build_message</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.name"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.workflow_context"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.workflow_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.memoryscope_context"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.memoryscope_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.raise_exception"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.raise_exception</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.is_multi_thread"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.is_multi_thread</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.thread_pool"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.thread_pool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.enable_parallel"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.enable_parallel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.kwargs"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.continue_run"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.continue_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.async_task_list"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.async_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.thread_task_list"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.thread_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_with_time_worker.html#memoryscope.core.worker.backend.get_observation_with_time_worker.GetObservationWithTimeWorker.logger"><code class="docutils literal notranslate"><span class="pre">GetObservationWithTimeWorker.logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html">memoryscope.core.worker.backend.get_observation_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.FILE_PATH"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.FILE_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.OBS_STORE_KEY"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.OBS_STORE_KEY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.add_observation"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.add_observation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.filter_messages"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.filter_messages</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.build_message"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.build_message</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.name"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.workflow_context"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.workflow_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.memoryscope_context"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.memoryscope_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.raise_exception"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.raise_exception</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.is_multi_thread"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.is_multi_thread</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.thread_pool"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.thread_pool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.enable_parallel"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.enable_parallel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.kwargs"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.continue_run"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.continue_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.async_task_list"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.async_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.thread_task_list"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.thread_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker.logger"><code class="docutils literal notranslate"><span class="pre">GetObservationWorker.logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html">memoryscope.core.worker.backend.get_reflection_subject_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.FILE_PATH"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.FILE_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.new_insight_node"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.new_insight_node</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.name"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.workflow_context"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.workflow_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.memoryscope_context"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.memoryscope_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.raise_exception"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.raise_exception</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.is_multi_thread"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.is_multi_thread</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.thread_pool"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.thread_pool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.enable_parallel"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.enable_parallel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.kwargs"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.continue_run"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.continue_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.async_task_list"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.async_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.thread_task_list"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.thread_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.get_reflection_subject_worker.html#memoryscope.core.worker.backend.get_reflection_subject_worker.GetReflectionSubjectWorker.logger"><code class="docutils literal notranslate"><span class="pre">GetReflectionSubjectWorker.logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html">memoryscope.core.worker.backend.info_filter_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.FILE_PATH"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.FILE_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.name"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.workflow_context"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.workflow_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.memoryscope_context"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.memoryscope_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.raise_exception"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.raise_exception</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.is_multi_thread"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.is_multi_thread</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.thread_pool"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.thread_pool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.enable_parallel"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.enable_parallel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.kwargs"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.continue_run"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.continue_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.async_task_list"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.async_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.thread_task_list"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.thread_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.info_filter_worker.html#memoryscope.core.worker.backend.info_filter_worker.InfoFilterWorker.logger"><code class="docutils literal notranslate"><span class="pre">InfoFilterWorker.logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.load_memory_worker.html">memoryscope.core.worker.backend.load_memory_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.backend.load_memory_worker.html#memoryscope.core.worker.backend.load_memory_worker.LoadMemoryWorker"><code class="docutils literal notranslate"><span class="pre">LoadMemoryWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.load_memory_worker.html#memoryscope.core.worker.backend.load_memory_worker.LoadMemoryWorker.retrieve_not_reflected_memory"><code class="docutils literal notranslate"><span class="pre">LoadMemoryWorker.retrieve_not_reflected_memory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.load_memory_worker.html#memoryscope.core.worker.backend.load_memory_worker.LoadMemoryWorker.retrieve_not_updated_memory"><code class="docutils literal notranslate"><span class="pre">LoadMemoryWorker.retrieve_not_updated_memory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.load_memory_worker.html#memoryscope.core.worker.backend.load_memory_worker.LoadMemoryWorker.retrieve_insight_memory"><code class="docutils literal notranslate"><span class="pre">LoadMemoryWorker.retrieve_insight_memory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.load_memory_worker.html#memoryscope.core.worker.backend.load_memory_worker.LoadMemoryWorker.retrieve_today_memory"><code class="docutils literal notranslate"><span class="pre">LoadMemoryWorker.retrieve_today_memory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html">memoryscope.core.worker.backend.long_contra_repeat_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.FILE_PATH"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.FILE_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.retrieve_similar_content"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.retrieve_similar_content</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.name"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.workflow_context"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.workflow_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.memoryscope_context"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.memoryscope_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.raise_exception"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.raise_exception</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.is_multi_thread"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.is_multi_thread</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.thread_pool"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.thread_pool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.enable_parallel"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.enable_parallel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.kwargs"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.continue_run"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.continue_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.async_task_list"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.async_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.thread_task_list"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.thread_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.long_contra_repeat_worker.html#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.logger"><code class="docutils literal notranslate"><span class="pre">LongContraRepeatWorker.logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html">memoryscope.core.worker.backend.update_insight_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.FILE_PATH"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.FILE_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.filter_obs_nodes"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.filter_obs_nodes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.update_insight_node"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.update_insight_node</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.update_insight"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.update_insight</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.name"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.workflow_context"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.workflow_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.memoryscope_context"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.memoryscope_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.raise_exception"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.raise_exception</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.is_multi_thread"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.is_multi_thread</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.thread_pool"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.thread_pool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.enable_parallel"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.enable_parallel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.kwargs"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.continue_run"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.continue_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.async_task_list"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.async_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.thread_task_list"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.thread_task_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.update_insight_worker.UpdateInsightWorker.logger"><code class="docutils literal notranslate"><span class="pre">UpdateInsightWorker.logger</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.worker.backend.update_memory_worker.html">memoryscope.core.worker.backend.update_memory_worker module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.worker.backend.update_memory_worker.html#memoryscope.core.worker.backend.update_memory_worker.UpdateMemoryWorker"><code class="docutils literal notranslate"><span class="pre">UpdateMemoryWorker</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_memory_worker.html#memoryscope.core.worker.backend.update_memory_worker.UpdateMemoryWorker.from_query"><code class="docutils literal notranslate"><span class="pre">UpdateMemoryWorker.from_query</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_memory_worker.html#memoryscope.core.worker.backend.update_memory_worker.UpdateMemoryWorker.from_memory_key"><code class="docutils literal notranslate"><span class="pre">UpdateMemoryWorker.from_memory_key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_memory_worker.html#memoryscope.core.worker.backend.update_memory_worker.UpdateMemoryWorker.delete_all"><code class="docutils literal notranslate"><span class="pre">UpdateMemoryWorker.delete_all</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.worker.backend.update_memory_worker.html#memoryscope.core.worker.backend.update_memory_worker.UpdateMemoryWorker.delete_memory"><code class="docutils literal notranslate"><span class="pre">UpdateMemoryWorker.delete_memory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-memoryscope.core.worker.backend">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-memoryscope.core.worker.backend" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.ContraRepeatWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.</span></span><span class="sig-name descname"><span class="pre">ContraRepeatWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/contra_repeat_worker.html#ContraRepeatWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.ContraRepeatWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>The <cite>ContraRepeatWorker</cite> class specializes in processing memory nodes to identify and handle
+contradictory and repetitive information. It extends the base functionality of <cite>MemoryBaseWorker</cite>.</p>
+<p>Responsibilities:
+- Collects observation nodes from various memory categories.
+- Constructs a prompt with these observations for language model analysis.
+- Parses the model's response to detect contradictions or redundancies.
+- Adjusts the status of memory nodes based on the analysis.
+- Persists the updated node statuses back into memory.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.ContraRepeatWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/contra_repeat_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.ContraRepeatWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWithTimeWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.</span></span><span class="sig-name descname"><span class="pre">GetObservationWithTimeWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_with_time_worker.html#GetObservationWithTimeWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWithTimeWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.backend.get_observation_worker.html#memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker" title="memoryscope.core.worker.backend.get_observation_worker.GetObservationWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetObservationWorker</span></code></a></p>
+<p>A specialized worker class that extends GetObservationWorker functionality to handle
+retrieval of observations which include associated timestamp information from chat messages.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWithTimeWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/get_observation_with_time_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWithTimeWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWithTimeWorker.OBS_STORE_KEY">
+<span class="sig-name descname"><span class="pre">OBS_STORE_KEY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'new_obs_with_time_nodes'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWithTimeWorker.OBS_STORE_KEY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWithTimeWorker.filter_messages">
+<span class="sig-name descname"><span class="pre">filter_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_with_time_worker.html#GetObservationWithTimeWorker.filter_messages"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWithTimeWorker.filter_messages" title="Link to this definition"></a></dt>
+<dd><p>Filters the chat messages to only include those which contain time-related keywords.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of filtered messages that mention time.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWithTimeWorker.build_message">
+<span class="sig-name descname"><span class="pre">build_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_with_time_worker.html#GetObservationWithTimeWorker.build_message"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWithTimeWorker.build_message" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Constructs a prompt message for obtaining observations with timestamp information</dt><dd><p>based on filtered chat messages.</p>
+</dd>
+</dl>
+<p>This method processes each filtered message with the timestamp information.
+It then organizes these timestamped messages into a structured prompt that includes a system prompt,
+few-shot examples, and the concatenated user queries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filter_messages</strong> (<em>List</em><em>[</em><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message"><em>Message</em></a><em>]</em>) -- A list of Message objects that have been filtered for processing.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list containing the newly constructed Message object for further interaction.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.</span></span><span class="sig-name descname"><span class="pre">GetObservationWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_worker.html#GetObservationWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>A specialized worker class to generate the observations from the original chat histories.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/get_observation_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWorker.OBS_STORE_KEY">
+<span class="sig-name descname"><span class="pre">OBS_STORE_KEY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'new_obs_nodes'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWorker.OBS_STORE_KEY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWorker.add_observation">
+<span class="sig-name descname"><span class="pre">add_observation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_infer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_worker.html#GetObservationWorker.add_observation"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWorker.add_observation" title="Link to this definition"></a></dt>
+<dd><p>Builds a MemoryNode containing the observation details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message"><em>Message</em></a>) -- The source message from which the observation is derived.</p></li>
+<li><p><strong>time_infer</strong> (<em>str</em>) -- The inferred time if available.</p></li>
+<li><p><strong>obs_content</strong> (<em>str</em>) -- The content of the observation.</p></li>
+<li><p><strong>keywords</strong> (<em>str</em>) -- Keywords associated with the observation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The constructed MemoryNode containing the observation.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWorker.filter_messages">
+<span class="sig-name descname"><span class="pre">filter_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_worker.html#GetObservationWorker.filter_messages"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWorker.filter_messages" title="Link to this definition"></a></dt>
+<dd><p>Filters the chat messages to only include those which not contain time-related keywords.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of filtered messages that mention time.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetObservationWorker.build_message">
+<span class="sig-name descname"><span class="pre">build_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_observation_worker.html#GetObservationWorker.build_message"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.GetObservationWorker.build_message" title="Link to this definition"></a></dt>
+<dd><p>Constructs a formatted message for observation based on input messages, incorporating system prompts,
+few-shot examples, and user queries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filter_messages</strong> (<em>List</em><em>[</em><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message"><em>Message</em></a><em>]</em>) -- A list of messages filtered for observation processing.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list containing the constructed message ready for observation.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.Message" title="memoryscope.scheme.Message">Message</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetReflectionSubjectWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.</span></span><span class="sig-name descname"><span class="pre">GetReflectionSubjectWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_reflection_subject_worker.html#GetReflectionSubjectWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.GetReflectionSubjectWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>A specialized worker class responsible for retrieving unreflected memory nodes,
+generating reflection prompts with current insights, invoking an LLM for fresh insights,
+parsing the LLM responses, forming new insight nodes, and updating memory statuses accordingly.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetReflectionSubjectWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/get_reflection_subject_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.GetReflectionSubjectWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.GetReflectionSubjectWorker.new_insight_node">
+<span class="sig-name descname"><span class="pre">new_insight_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">insight_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/get_reflection_subject_worker.html#GetReflectionSubjectWorker.new_insight_node"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.GetReflectionSubjectWorker.new_insight_node" title="Link to this definition"></a></dt>
+<dd><p>Creates a new MemoryNode for an insight with the given key, enriched with current datetime metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>insight_key</strong> (<em>str</em>) -- The unique identifier for the insight.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new MemoryNode instance representing the insight, marked as new and of type INSIGHT.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.InfoFilterWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.</span></span><span class="sig-name descname"><span class="pre">InfoFilterWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/info_filter_worker.html#InfoFilterWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.InfoFilterWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>This worker filters and modifies the chat message history (<cite>self.chat_messages</cite>) by retaining only the messages
+that include significant information. It then constructs a prompt from these filtered messages, utilizes an AI
+model to process this prompt, parses the AI's generated response to allocate scores, and ultimately retains
+messages in <cite>self.chat_messages</cite> based on these assigned scores.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.InfoFilterWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/info_filter_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.InfoFilterWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.LoadMemoryWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.</span></span><span class="sig-name descname"><span class="pre">LoadMemoryWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/load_memory_worker.html#LoadMemoryWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.LoadMemoryWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.LoadMemoryWorker.retrieve_not_reflected_memory">
+<span class="sig-name descname"><span class="pre">retrieve_not_reflected_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#memoryscope.core.worker.backend.LoadMemoryWorker.retrieve_not_reflected_memory" title="Link to this definition"></a></dt>
+<dd><p>The wrapper function that manages the timing of the original function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> -- Variable length argument list for the decorated function.</p></li>
+<li><p><strong>**kwargs</strong> -- Arbitrary keyword arguments for the decorated function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the decorated function.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.LoadMemoryWorker.retrieve_not_updated_memory">
+<span class="sig-name descname"><span class="pre">retrieve_not_updated_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#memoryscope.core.worker.backend.LoadMemoryWorker.retrieve_not_updated_memory" title="Link to this definition"></a></dt>
+<dd><p>The wrapper function that manages the timing of the original function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> -- Variable length argument list for the decorated function.</p></li>
+<li><p><strong>**kwargs</strong> -- Arbitrary keyword arguments for the decorated function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the decorated function.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.LoadMemoryWorker.retrieve_insight_memory">
+<span class="sig-name descname"><span class="pre">retrieve_insight_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#memoryscope.core.worker.backend.LoadMemoryWorker.retrieve_insight_memory" title="Link to this definition"></a></dt>
+<dd><p>The wrapper function that manages the timing of the original function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> -- Variable length argument list for the decorated function.</p></li>
+<li><p><strong>**kwargs</strong> -- Arbitrary keyword arguments for the decorated function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the decorated function.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.LoadMemoryWorker.retrieve_today_memory">
+<span class="sig-name descname"><span class="pre">retrieve_today_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#memoryscope.core.worker.backend.LoadMemoryWorker.retrieve_today_memory" title="Link to this definition"></a></dt>
+<dd><p>The wrapper function that manages the timing of the original function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> -- Variable length argument list for the decorated function.</p></li>
+<li><p><strong>**kwargs</strong> -- Arbitrary keyword arguments for the decorated function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the decorated function.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.LongContraRepeatWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.</span></span><span class="sig-name descname"><span class="pre">LongContraRepeatWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/long_contra_repeat_worker.html#LongContraRepeatWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.LongContraRepeatWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>Manages and updates memory entries within a conversation scope by identifying
+and handling contradictions or redundancies. It extends the base MemoryBaseWorker
+to provide specialized functionality for long conversations with potential
+contradictory or repetitive statements.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.LongContraRepeatWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/long_contra_repeat_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.LongContraRepeatWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.LongContraRepeatWorker.retrieve_similar_content">
+<span class="sig-name descname"><span class="pre">retrieve_similar_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">node:</span> <span class="pre">~memoryscope.scheme.memory_node.MemoryNode)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'memoryscope.scheme.memory_node.MemoryNode'&gt;,</span> <span class="pre">typing.List[memoryscope.scheme.memory_node.MemoryNode]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/long_contra_repeat_worker.html#LongContraRepeatWorker.retrieve_similar_content"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.LongContraRepeatWorker.retrieve_similar_content" title="Link to this definition"></a></dt>
+<dd><p>Retrieves memory nodes with content similar to the given node, filtering by user/target/status/memory_type.
+Only returns nodes whose similarity score meets or exceeds the predefined threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a>) -- The reference node used to find similar content in memory.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the original node and a list of similar nodes
+that passed the similarity threshold.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>, List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateInsightWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.</span></span><span class="sig-name descname"><span class="pre">UpdateInsightWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_insight_worker.html#UpdateInsightWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateInsightWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>This class is responsible for updating insight value in a memory system. It filters insight nodes
+based on their association with observed nodes, utilizes a ranking model to prioritize them,
+generates refreshed insights via an LLM, and manages node statuses and content updates,
+incorporating features for concurrent execution and logging.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateInsightWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/update_insight_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateInsightWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateInsightWorker.filter_obs_nodes">
+<span class="sig-name descname"><span class="pre">filter_obs_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">insight_node:</span> <span class="pre">~memoryscope.scheme.memory_node.MemoryNode,</span> <span class="pre">obs_nodes:</span> <span class="pre">~typing.List[~memoryscope.scheme.memory_node.MemoryNode])</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'memoryscope.scheme.memory_node.MemoryNode'&gt;,</span> <span class="pre">typing.List[memoryscope.scheme.memory_node.MemoryNode],</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_insight_worker.html#UpdateInsightWorker.filter_obs_nodes"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateInsightWorker.filter_obs_nodes" title="Link to this definition"></a></dt>
+<dd><p>Filters observed nodes based on their relevance to a given insight node using a ranking model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insight_node</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a>) -- The insight node used as the basis for filtering.</p></li>
+<li><p><strong>obs_nodes</strong> (<em>List</em><em>[</em><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a><em>]</em>) -- A list of observed nodes to be filtered.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A tuple containing:</dt><dd><ul class="simple">
+<li><p>The original insight node.</p></li>
+<li><p>A list of filtered observed nodes that are relevant to the insight node.</p></li>
+<li><p>The maximum relevance score among the filtered nodes.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateInsightWorker.update_insight_node">
+<span class="sig-name descname"><span class="pre">update_insight_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">insight_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">insight_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_insight_worker.html#UpdateInsightWorker.update_insight_node"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateInsightWorker.update_insight_node" title="Link to this definition"></a></dt>
+<dd><p>Updates the MemoryNode with the new insight value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insight_node</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a>) -- The MemoryNode whose insight value needs to be updated.</p></li>
+<li><p><strong>insight_value</strong> (<em>str</em>) -- The new insight value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated MemoryNode with potentially revised insight value.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateInsightWorker.update_insight">
+<span class="sig-name descname"><span class="pre">update_insight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">insight_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtered_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="memoryscope.scheme.memory_node.html#memoryscope.scheme.memory_node.MemoryNode" title="memoryscope.scheme.memory_node.MemoryNode"><span class="pre">MemoryNode</span></a></span></span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_insight_worker.html#UpdateInsightWorker.update_insight"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateInsightWorker.update_insight" title="Link to this definition"></a></dt>
+<dd><p>Updates the insight value of a given MemoryNode based on the context from a list of filtered MemoryNodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insight_node</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a>) -- The MemoryNode whose insight value needs to be updated.</p></li>
+<li><p><strong>filtered_nodes</strong> (<em>List</em><em>[</em><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a><em>]</em>) -- A list of MemoryNodes used as context for updating the insight.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated MemoryNode with potentially revised insight value.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateMemoryWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.</span></span><span class="sig-name descname"><span class="pre">UpdateMemoryWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_memory_worker.html#UpdateMemoryWorker"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateMemoryWorker" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateMemoryWorker.from_query">
+<span class="sig-name descname"><span class="pre">from_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_memory_worker.html#UpdateMemoryWorker.from_query"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateMemoryWorker.from_query" title="Link to this definition"></a></dt>
+<dd><p>Creates a MemoryNode from the provided query if present in chat_kwargs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list containing a single MemoryNode created from the query.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateMemoryWorker.from_memory_key">
+<span class="sig-name descname"><span class="pre">from_memory_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_memory_worker.html#UpdateMemoryWorker.from_memory_key"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateMemoryWorker.from_memory_key" title="Link to this definition"></a></dt>
+<dd><p>Retrieves memories based on the memory key if it exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of MemoryNode objects retrieved using the memory key.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateMemoryWorker.delete_all">
+<span class="sig-name descname"><span class="pre">delete_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_memory_worker.html#UpdateMemoryWorker.delete_all"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateMemoryWorker.delete_all" title="Link to this definition"></a></dt>
+<dd><p>Marks all memories for deletion by setting their action_status to 'DELETE'.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of all MemoryNode objects marked for deletion.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.UpdateMemoryWorker.delete_memory">
+<span class="sig-name descname"><span class="pre">delete_memory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/update_memory_worker.html#UpdateMemoryWorker.delete_memory"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.UpdateMemoryWorker.delete_memory" title="Link to this definition"></a></dt>
+<dd><p>Marks specific memories for deletion based on query or memory_id present in chat_kwargs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of MemoryNode objects marked for deletion based on the query or memory_id.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 

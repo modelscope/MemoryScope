@@ -1,0 +1,378 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.utils.tool_functions &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/utils/tool_functions.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/utils/tool_functions.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">模块代码</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.utils.tool_functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>memoryscope.core.utils.tool_functions 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pyfiglet</span>
+<span class="kn">from</span> <span class="nn">termcolor</span> <span class="kn">import</span> <span class="n">colored</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.message_role_enum</span> <span class="kn">import</span> <span class="n">MessageRoleEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.scheme.message</span> <span class="kn">import</span> <span class="n">Message</span>
+
+<span class="n">ALL_COLORS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;magenta&quot;</span><span class="p">,</span> <span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="s2">&quot;light_grey&quot;</span><span class="p">,</span> <span class="s2">&quot;light_red&quot;</span><span class="p">,</span> <span class="s2">&quot;light_green&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;light_yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;light_blue&quot;</span><span class="p">,</span> <span class="s2">&quot;light_magenta&quot;</span><span class="p">,</span> <span class="s2">&quot;light_cyan&quot;</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="underscore_to_camelcase">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.underscore_to_camelcase">[文档]</a>
+<span class="k">def</span> <span class="nf">underscore_to_camelcase</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_first_title</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an underscore_notation string to CamelCase.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): The underscore_notation string to be converted.</span>
+<span class="sd">        is_first_title (bool): Title the first word or not. Defaults to True</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: A CamelCase formatted string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name_split</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_first_title</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">title</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">name_split</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">name_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">title</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">name_split</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
+
+
+
+<div class="viewcode-block" id="camelcase_to_underscore">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.camelcase_to_underscore">[文档]</a>
+<span class="k">def</span> <span class="nf">camelcase_to_underscore</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a CamelCase string to underscore_notation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): The CamelCase formatted string to be converted.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: A converted string in underscore_notation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?&lt;!^)(?=[A-Z])&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="init_instance_by_config">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.init_instance_by_config">[文档]</a>
+<span class="k">def</span> <span class="nf">init_instance_by_config</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">default_class_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;memoryscope&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize an instance of a class specified in the configuration dictionary.</span>
+
+<span class="sd">    This function dynamically imports a class from a module path, allowing for</span>
+<span class="sd">    user-defined classes or default paths. It supports adding a suffix to the</span>
+<span class="sd">    class name, merging additional keyword arguments with the config, and handling</span>
+<span class="sd">    nested module paths.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config (dict): A dictionary containing the configuration, including</span>
+<span class="sd">                       the &#39;class&#39; key that specifies the class&#39;s module path.</span>
+<span class="sd">        default_class_dir (str, optional): The default module path prefix</span>
+<span class="sd">                                            to use if not explicitly defined in</span>
+<span class="sd">                                            &#39;config&#39;. Defaults to &quot;memory_scope&quot;.</span>
+<span class="sd">        **kwargs: Additional keyword arguments to pass to the class constructor.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        instance: An instance initialized with the provided config and kwargs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">config_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">origin_class_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">config_copy</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">origin_class_path</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;empty class path!&quot;</span><span class="p">)</span>
+    <span class="n">user_defined</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">config_copy</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;user_defined&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">class_path_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user_defined</span> <span class="ow">and</span> <span class="n">default_class_dir</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">origin_class_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">default_class_dir</span><span class="p">):</span>
+        <span class="n">class_path_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">default_class_dir</span><span class="p">)</span>
+
+    <span class="n">class_path_split</span> <span class="o">=</span> <span class="n">origin_class_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">class_file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">class_path_split</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">class_name</span> <span class="o">=</span> <span class="n">underscore_to_camelcase</span><span class="p">(</span><span class="n">class_file_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="n">class_file_name</span><span class="p">:</span>
+        <span class="n">class_path_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">class_path_split</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">class_path_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">class_path_split</span><span class="p">)</span>
+
+    <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">class_path_list</span><span class="p">))</span>
+    <span class="n">config_copy</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)(</span><span class="o">**</span><span class="n">config_copy</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="prompt_to_msg">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.prompt_to_msg">[文档]</a>
+<span class="k">def</span> <span class="nf">prompt_to_msg</span><span class="p">(</span><span class="n">system_prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                  <span class="n">few_shot</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                  <span class="n">user_query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                  <span class="n">concat_system_prompt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts input strings into a structured list of message objects suitable for AI interactions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        system_prompt (str): The system-level instruction or context.</span>
+<span class="sd">        few_shot (str): An example or demonstration input, often used for illustrating expected behavior.</span>
+<span class="sd">        user_query (str): The actual user query or prompt to be processed.</span>
+<span class="sd">        concat_system_prompt(bool): Concat system prompt again or not in the user message.</span>
+<span class="sd">            A simple method to improve the effectiveness for some LLMs. Defaults to True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Message]: A list of Message objects, each representing a part of the conversation setup.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">system_message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="n">MessageRoleEnum</span><span class="o">.</span><span class="n">SYSTEM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">system_prompt</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">concat_system_prompt</span><span class="p">:</span>
+        <span class="n">user_content_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">system_prompt</span><span class="p">,</span> <span class="n">few_shot</span><span class="p">,</span> <span class="n">user_query</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">user_content_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">few_shot</span><span class="p">,</span> <span class="n">user_query</span><span class="p">]</span>
+    <span class="n">user_message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="n">MessageRoleEnum</span><span class="o">.</span><span class="n">USER</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">user_content_list</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">system_message</span><span class="p">,</span> <span class="n">user_message</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="char_logo">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.char_logo">[文档]</a>
+<span class="k">def</span> <span class="nf">char_logo</span><span class="p">(</span><span class="n">words</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time_ns</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Render the context of logo with colors</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        words: The context of logo.</span>
+<span class="sd">        seed: The random seed which generates colors if there is no specific color. Defaults to the current timestamp.</span>
+<span class="sd">        color: The specific color. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A rendered logo</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">pyfiglet</span><span class="o">.</span><span class="n">Figlet</span><span class="p">()</span>
+    <span class="n">rendered_text</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">renderText</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+    <span class="n">colored_lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">all_colors</span> <span class="o">=</span> <span class="n">ALL_COLORS</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">rendered_text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+        <span class="n">line_color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="k">if</span> <span class="n">line_color</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">all_colors</span><span class="p">)</span>
+            <span class="n">line_color</span> <span class="o">=</span> <span class="n">all_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">colored_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">colored_char</span> <span class="o">=</span> <span class="n">colored</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">line_color</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">])</span>
+            <span class="n">colored_line</span> <span class="o">+=</span> <span class="n">colored_char</span>
+        <span class="n">colored_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colored_line</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">colored_lines</span></div>
+
+
+
+<div class="viewcode-block" id="md5_hash">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.md5_hash">[文档]</a>
+<span class="k">def</span> <span class="nf">md5_hash</span><span class="p">(</span><span class="n">input_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes a MD5 hash of the given input string.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_string (str): The string for which the MD5 hash needs to be computed.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: A hexadecimal MD5 hash representation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">input_string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="contains_keyword">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.contains_keyword">[文档]</a>
+<span class="k">def</span> <span class="nf">contains_keyword</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">keywords</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if the given text contains any of the specified keywords, ignoring case.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text (str): The text to search within.</span>
+<span class="sd">        keywords (List[str]): A list of keywords to look for in the text.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if any keyword is found in the text, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">escaped_keywords</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">,</span> <span class="n">keywords</span><span class="p">)</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">escaped_keywords</span><span class="p">),</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="cosine_similarity">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.cosine_similarity">[文档]</a>
+<span class="k">def</span> <span class="nf">cosine_similarity</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">documents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="n">documents</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+
+    <span class="n">query_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">query_norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Query vector norm is zero, which will result in a division by zero&quot;</span><span class="p">)</span>
+
+    <span class="n">documents_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">documents_norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;One of the document vectors has zero norm, which will result in a division by zero&quot;</span><span class="p">)</span>
+
+    <span class="n">dot_product</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+
+    <span class="n">cosine_similarities</span> <span class="o">=</span> <span class="n">dot_product</span> <span class="o">/</span> <span class="p">(</span><span class="n">query_norm</span> <span class="o">*</span> <span class="n">documents_norm</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cosine_similarities</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="cosine_similarity_matrix">
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.tool_functions.html#memoryscope.core.utils.cosine_similarity_matrix">[文档]</a>
+<span class="k">def</span> <span class="nf">cosine_similarity_matrix</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="n">documents_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">documents_norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;One of the document vectors has zero norm, which will result in a division by zero&quot;</span><span class="p">)</span>
+    
+    <span class="n">n_query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">query_expanded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">query_triplicated</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">query_expanded</span><span class="p">,</span> <span class="n">repeats</span><span class="o">=</span><span class="n">n_query</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">query_transpose</span> <span class="o">=</span> <span class="n">query_triplicated</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">documents_norm</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">norm_dot</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="o">*</span> <span class="n">q</span>
+    <span class="n">dot_product</span> <span class="o">=</span> <span class="p">(</span><span class="n">query_triplicated</span><span class="o">*</span><span class="n">query_transpose</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm_dot</span>
+
+    <span class="k">return</span> <span class="n">dot_product</span></div>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

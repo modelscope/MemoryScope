@@ -1,0 +1,396 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.worker.backend.update_insight_worker &mdash; MemoryScope  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../../en/_modules/memoryscope/core/worker/backend/update_insight_worker.html">English</a></li> |
+    <a href="../../../../../../zh/_modules/memoryscope/core/worker/backend/update_insight_worker.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../README.html">About MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/cli/CLI_README.html">Cli Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/api/simple_usages.html">Simple Usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/advance/custom_operator.html">Advanced usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/contribution.html">Contribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.worker.backend.update_insight_worker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for memoryscope.core.worker.backend.update_insight_worker</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">memoryscope.constants.common_constants</span> <span class="kn">import</span> <span class="n">INSIGHT_NODES</span><span class="p">,</span> <span class="n">NOT_UPDATED_NODES</span><span class="p">,</span> <span class="n">NOT_REFLECTED_NODES</span>
+<span class="kn">from</span> <span class="nn">memoryscope.constants.language_constants</span> <span class="kn">import</span> <span class="n">COLON_WORD</span><span class="p">,</span> <span class="n">NONE_WORD</span><span class="p">,</span> <span class="n">REPEATED_WORD</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.datetime_handler</span> <span class="kn">import</span> <span class="n">DatetimeHandler</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.response_text_parser</span> <span class="kn">import</span> <span class="n">ResponseTextParser</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.tool_functions</span> <span class="kn">import</span> <span class="n">cosine_similarity</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.worker.memory_base_worker</span> <span class="kn">import</span> <span class="n">MemoryBaseWorker</span>
+<span class="kn">from</span> <span class="nn">memoryscope.enumeration.action_status_enum</span> <span class="kn">import</span> <span class="n">ActionStatusEnum</span>
+<span class="kn">from</span> <span class="nn">memoryscope.scheme.memory_node</span> <span class="kn">import</span> <span class="n">MemoryNode</span>
+
+
+<div class="viewcode-block" id="UpdateInsightWorker">
+<a class="viewcode-back" href="../../../../../memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.UpdateInsightWorker">[docs]</a>
+<span class="k">class</span> <span class="nc">UpdateInsightWorker</span><span class="p">(</span><span class="n">MemoryBaseWorker</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is responsible for updating insight value in a memory system. It filters insight nodes</span>
+<span class="sd">    based on their association with observed nodes, utilizes a ranking model to prioritize them,</span>
+<span class="sd">    generates refreshed insights via an LLM, and manages node statuses and content updates,</span>
+<span class="sd">    incorporating features for concurrent execution and logging.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">FILE_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="vm">__file__</span>
+
+    <span class="k">def</span> <span class="nf">_parse_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_insight_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;update_insight_threshold&quot;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generation_model_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;generation_model_kwargs&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_insight_max_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;update_insight_max_count&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enable_ranker</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memoryscope_context</span><span class="o">.</span><span class="n">meta_data</span><span class="p">[</span><span class="s2">&quot;enable_ranker&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="UpdateInsightWorker.filter_obs_nodes">
+<a class="viewcode-back" href="../../../../../memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.UpdateInsightWorker.filter_obs_nodes">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_obs_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">insight_node</span><span class="p">:</span> <span class="n">MemoryNode</span><span class="p">,</span>
+                         <span class="n">obs_nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">MemoryNode</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">],</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filters observed nodes based on their relevance to a given insight node using a ranking model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            insight_node (MemoryNode): The insight node used as the basis for filtering.</span>
+<span class="sd">            obs_nodes (List[MemoryNode]): A list of observed nodes to be filtered.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A tuple containing:</span>
+<span class="sd">                - The original insight node.</span>
+<span class="sd">                - A list of filtered observed nodes that are relevant to the insight node.</span>
+<span class="sd">                - The maximum relevance score among the filtered nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">max_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">filtered_nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Check if insight node key or value is empty and log a warning</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;insight_key=</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> is empty!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">insight_node</span><span class="p">,</span> <span class="n">filtered_nodes</span><span class="p">,</span> <span class="n">max_score</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_nodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;obs_nodes is empty!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">insight_node</span><span class="p">,</span> <span class="n">filtered_nodes</span><span class="p">,</span> <span class="n">max_score</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_ranker</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">insight_node</span><span class="o">.</span><span class="n">key_vector</span><span class="p">:</span>
+                <span class="n">key_vector</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">embedding_results</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">key_vector</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;embedding call </span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> failed!&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">insight_node</span><span class="p">,</span> <span class="n">filtered_nodes</span><span class="p">,</span> <span class="n">max_score</span>
+
+                <span class="n">insight_node</span><span class="o">.</span><span class="n">key_vector</span> <span class="o">=</span> <span class="n">key_vector</span>
+
+            <span class="n">score_recall_list</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key_vector</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">vector</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">obs_nodes</span><span class="p">])</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">score_recall_list</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">obs_nodes</span><span class="p">),</span> \
+                <span class="sa">f</span><span class="s2">&quot;size is not as excepted. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">score_recall_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> v.s. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">obs_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">score_recall_list</span><span class="p">,</span> <span class="n">obs_nodes</span><span class="p">):</span>
+                <span class="n">keep_flag</span> <span class="o">=</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_insight_threshold</span>
+                <span class="k">if</span> <span class="n">keep_flag</span><span class="p">:</span>
+                    <span class="n">filtered_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+                    <span class="n">max_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_score</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+
+                <span class="c1"># Log information about each node&#39;s processing</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;insight_key=</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> content=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;score=</span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2"> keep_flag=</span><span class="si">{</span><span class="n">keep_flag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Call the ranking model to get scores for each observed node&#39;s content against the insight key</span>
+            <span class="n">documents</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">content</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">obs_nodes</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;update.insight.rank key=</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> docs=</span><span class="si">{</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank_model</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">documents</span><span class="o">=</span><span class="n">documents</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">insight_node</span><span class="p">,</span> <span class="n">filtered_nodes</span><span class="p">,</span> <span class="n">max_score</span>
+
+            <span class="c1"># Iterate over the ranked scores to filter nodes</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">rank_scores</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">obs_nodes</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                <span class="c1"># Determine if the node should be kept based on the threshold</span>
+                <span class="n">keep_flag</span> <span class="o">=</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_insight_threshold</span>
+                <span class="k">if</span> <span class="n">keep_flag</span><span class="p">:</span>
+                    <span class="n">filtered_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+                    <span class="n">max_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_score</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+                <span class="c1"># Log information about each node&#39;s processing</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;insight_key=</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> content=</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;score=</span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2"> keep_flag=</span><span class="si">{</span><span class="n">keep_flag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Warn if no nodes were filtered</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filtered_nodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;update_insight=</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> filtered_nodes is empty!&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Return the original insight node, the list of filtered nodes, and the highest score</span>
+        <span class="k">return</span> <span class="n">insight_node</span><span class="p">,</span> <span class="n">filtered_nodes</span><span class="p">,</span> <span class="n">max_score</span></div>
+
+
+<div class="viewcode-block" id="UpdateInsightWorker.update_insight_node">
+<a class="viewcode-back" href="../../../../../memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.UpdateInsightWorker.update_insight_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_insight_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">insight_node</span><span class="p">:</span> <span class="n">MemoryNode</span><span class="p">,</span> <span class="n">insight_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the MemoryNode with the new insight value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            insight_node (MemoryNode): The MemoryNode whose insight value needs to be updated.</span>
+<span class="sd">            insight_value (str): The new insight value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MemoryNode: The updated MemoryNode with potentially revised insight value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dt_handler</span> <span class="o">=</span> <span class="n">DatetimeHandler</span><span class="p">()</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_handler</span><span class="o">.</span><span class="n">insight_string_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_name</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_language_value</span><span class="p">(</span><span class="n">COLON_WORD</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">insight_value</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">insight_node</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">content</span>
+        <span class="n">insight_node</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">insight_value</span>
+        <span class="n">insight_node</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dt_handler</span><span class="o">.</span><span class="n">get_dt_info_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="n">insight_node</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">dt_handler</span><span class="o">.</span><span class="n">timestamp</span>
+        <span class="n">insight_node</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt_handler</span><span class="o">.</span><span class="n">datetime_format</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">insight_node</span><span class="o">.</span><span class="n">action_status</span> <span class="o">==</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">NONE</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="n">insight_node</span><span class="o">.</span><span class="n">action_status</span> <span class="o">=</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">CONTENT_MODIFIED</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;after_update_</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> value=</span><span class="si">{</span><span class="n">insight_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">insight_node</span></div>
+
+
+<div class="viewcode-block" id="UpdateInsightWorker.update_insight">
+<a class="viewcode-back" href="../../../../../memoryscope.core.worker.backend.update_insight_worker.html#memoryscope.core.worker.backend.UpdateInsightWorker.update_insight">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_insight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">insight_node</span><span class="p">:</span> <span class="n">MemoryNode</span><span class="p">,</span> <span class="n">filtered_nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MemoryNode</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the insight value of a given MemoryNode based on the context from a list of filtered MemoryNodes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            insight_node (MemoryNode): The MemoryNode whose insight value needs to be updated.</span>
+<span class="sd">            filtered_nodes (List[MemoryNode]): A list of MemoryNodes used as context for updating the insight.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MemoryNode: The updated MemoryNode with potentially revised insight value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updating insight for key=</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2">, old_value=</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> documents considered.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Generate the prompt for updating insight</span>
+        <span class="n">user_query_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">content</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">filtered_nodes</span><span class="p">]</span>
+        <span class="n">system_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_handler</span><span class="o">.</span><span class="n">update_insight_system</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_name</span><span class="p">)</span>
+        <span class="n">few_shot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_handler</span><span class="o">.</span><span class="n">update_insight_few_shot</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_name</span><span class="p">)</span>
+        <span class="n">user_query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_handler</span><span class="o">.</span><span class="n">update_insight_user_query</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">user_query</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_query_list</span><span class="p">),</span>
+            <span class="n">insight_key</span><span class="o">=</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="p">,</span>
+            <span class="n">insight_key_value</span><span class="o">=</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_language_value</span><span class="p">(</span><span class="n">COLON_WORD</span><span class="p">)</span> <span class="o">+</span> <span class="n">insight_node</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="c1"># Construct the message for LLM interaction</span>
+        <span class="n">update_insight_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_to_msg</span><span class="p">(</span><span class="n">system_prompt</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">,</span> <span class="n">few_shot</span><span class="o">=</span><span class="n">few_shot</span><span class="p">,</span>
+                                                    <span class="n">user_query</span><span class="o">=</span><span class="n">user_query</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated insight update message: </span><span class="si">{</span><span class="n">update_insight_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Call the Language Model for insight update</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generation_model</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">messages</span><span class="o">=</span><span class="n">update_insight_message</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">generation_model_kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Handle empty or invalid responses</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">insight_node</span>
+
+        <span class="n">insight_value_list</span> <span class="o">=</span> <span class="n">ResponseTextParser</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">,</span>
+                                                <span class="sa">f</span><span class="s2">&quot;update_</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">parse_v1</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">insight_value_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;update_</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> insight_value_list is empty!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">insight_node</span>
+
+        <span class="n">insight_value_list</span> <span class="o">=</span> <span class="n">insight_value_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">insight_value_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;update_</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> insight_value_list is empty!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">insight_node</span>
+
+        <span class="n">insight_value</span> <span class="o">=</span> <span class="n">insight_value_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">insight_value</span> <span class="ow">or</span> <span class="n">insight_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_language_value</span><span class="p">([</span><span class="n">NONE_WORD</span><span class="p">,</span> <span class="n">REPEATED_WORD</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;update_</span><span class="si">{</span><span class="n">insight_node</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2"> insight_value=</span><span class="si">{</span><span class="n">insight_value</span><span class="si">}</span><span class="s2"> is invalid.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">insight_node</span>
+
+        <span class="k">if</span> <span class="n">insight_node</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">insight_value</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;value=</span><span class="si">{</span><span class="n">insight_value</span><span class="si">}</span><span class="s2"> is same!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">insight_node</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_insight_node</span><span class="p">(</span><span class="n">insight_node</span><span class="o">=</span><span class="n">insight_node</span><span class="p">,</span> <span class="n">insight_value</span><span class="o">=</span><span class="n">insight_value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">insight_node</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes the main routine of the UpdateInsightWorker. This involves filtering and updating insight nodes</span>
+<span class="sd">        based on their association with observed nodes. It processes nodes in batches, selects the top nodes</span>
+<span class="sd">        according to a scoring mechanism, and then initiates tasks to update these insights using an LLM. Finally,</span>
+<span class="sd">        it updates the status of processed nodes and gathers the results from all threads.</span>
+
+<span class="sd">        Steps include:</span>
+<span class="sd">        1. Get lists of insight node.</span>
+<span class="sd">        2. Get not updated, and not reflected observation nodes from memory.</span>
+<span class="sd">        3. Filter and process active insight nodes with respective not updated observation nodes.</span>
+<span class="sd">        4. Sort processed results by score and select the top N.</span>
+<span class="sd">        5. Submit tasks to update insight value for the selected nodes.</span>
+<span class="sd">        6. Gather the results of all update tasks.</span>
+<span class="sd">        7. Mark processed nodes as updated in memory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">insight_nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_manager</span><span class="o">.</span><span class="n">get_memories</span><span class="p">(</span><span class="n">INSIGHT_NODES</span><span class="p">)</span>
+        <span class="n">not_updated_nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_manager</span><span class="o">.</span><span class="n">get_memories</span><span class="p">(</span><span class="n">NOT_UPDATED_NODES</span><span class="p">)</span>
+        <span class="n">not_reflected_nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryNode</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_manager</span><span class="o">.</span><span class="n">get_memories</span><span class="p">(</span><span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="n">NOT_REFLECTED_NODES</span><span class="p">,</span>
+                                                                                       <span class="n">NOT_UPDATED_NODES</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">insight_nodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;insight_nodes is empty, stopping processing.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Process active insight nodes with corresponding not updated nodes</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">insight_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_parallel</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">action_status</span> <span class="o">==</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">NEW</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread_task</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_obs_nodes</span><span class="p">,</span>
+                                        <span class="n">insight_node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                        <span class="n">obs_nodes</span><span class="o">=</span><span class="n">not_reflected_nodes</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread_task</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_obs_nodes</span><span class="p">,</span>
+                                        <span class="n">insight_node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                        <span class="n">obs_nodes</span><span class="o">=</span><span class="n">not_updated_nodes</span><span class="p">)</span>
+
+        <span class="c1"># select top n</span>
+        <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gather_thread_result</span><span class="p">():</span>
+            <span class="n">insight_node</span><span class="p">,</span> <span class="n">filtered_nodes</span><span class="p">,</span> <span class="n">max_score</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">filtered_nodes</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">result_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_insight_max_count</span><span class="p">]</span>
+
+        <span class="c1"># Submit tasks to update insights for the top nodes</span>
+        <span class="k">for</span> <span class="n">insight_node</span><span class="p">,</span> <span class="n">filtered_nodes</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">result_sorted</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_parallel</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread_task</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_insight</span><span class="p">,</span>
+                                    <span class="n">insight_node</span><span class="o">=</span><span class="n">insight_node</span><span class="p">,</span>
+                                    <span class="n">filtered_nodes</span><span class="o">=</span><span class="n">filtered_nodes</span><span class="p">)</span>
+
+        <span class="c1"># Gather the final results from all update tasks</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gather_thread_result</span><span class="p">():</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># delete empty nodes</span>
+        <span class="n">empty_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">insight_nodes</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory_manager</span><span class="o">.</span><span class="n">delete_memories</span><span class="p">(</span><span class="n">empty_nodes</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">not_updated_nodes</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">obs_updated</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">action_status</span> <span class="o">=</span> <span class="n">ActionStatusEnum</span><span class="o">.</span><span class="n">MODIFIED</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alibaba Tongyi Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

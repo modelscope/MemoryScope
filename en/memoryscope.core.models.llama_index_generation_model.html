@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,100 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-models-llama-index-generation-model-module">
-<h1>memoryscope.core.models.llama_index_generation_model module<a class="headerlink" href="#memoryscope-core-models-llama-index-generation-model-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.models.llama_index_generation_model">
+<span id="memoryscope-core-models-llama-index-generation-model-module"></span><h1>memoryscope.core.models.llama_index_generation_model module<a class="headerlink" href="#module-memoryscope.core.models.llama_index_generation_model" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.models.llama_index_generation_model.</span></span><span class="sig-name descname"><span class="pre">LlamaIndexGenerationModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/models/llama_index_generation_model.html#LlamaIndexGenerationModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>This class represents a generation model within the LlamaIndex framework,
+capable of processing input prompts or message histories, selecting an appropriate
+language model service from a registry, and generating text responses, with support
+for both streaming and non-streaming modes. It encapsulates logic for formatting
+these interactions within the context of a memory scope management system.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.m_type">
+<span class="sig-name descname"><span class="pre">m_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.enumeration.model_enum.html#memoryscope.enumeration.model_enum.ModelEnum" title="memoryscope.enumeration.model_enum.ModelEnum"><span class="pre">ModelEnum</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'generation_model'</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.m_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/models/llama_index_generation_model.html#LlamaIndexGenerationModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.before_call">
+<span class="sig-name descname"><span class="pre">before_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.model_response.html#memoryscope.scheme.model_response.ModelResponse" title="memoryscope.scheme.model_response.ModelResponse"><span class="pre">ModelResponse</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/models/llama_index_generation_model.html#LlamaIndexGenerationModel.before_call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.before_call" title="Link to this definition"></a></dt>
+<dd><p>Prepares the input data before making a call to the language model.
+It accepts either a ‘prompt’ directly or a list of ‘messages’.
+If ‘prompt’ is provided, it sets the data accordingly.
+If ‘messages’ are provided, it constructs a list of ChatMessage objects from the list.
+Raises an error if neither ‘prompt’ nor ‘messages’ are supplied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_response</strong> – model_response</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments including ‘prompt’ and ‘messages’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – When both ‘prompt’ and ‘messages’ inputs are not provided.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.after_call">
+<span class="sig-name descname"><span class="pre">after_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.model_response.html#memoryscope.scheme.model_response.ModelResponse" title="memoryscope.scheme.model_response.ModelResponse"><span class="pre">ModelResponse</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="memoryscope.scheme.model_response.html#memoryscope.scheme.model_response.ModelResponse" title="memoryscope.scheme.model_response.ModelResponse"><span class="pre">ModelResponse</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.model_response.html#memoryscope.scheme.model_response.ModelResponse" title="memoryscope.scheme.model_response.ModelResponse"><span class="pre">ModelResponse</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/models/llama_index_generation_model.html#LlamaIndexGenerationModel.after_call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.after_call" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.module_name">
+<span class="sig-name descname"><span class="pre">module_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.module_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.timeout" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.max_retries">
+<span class="sig-name descname"><span class="pre">max_retries</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.max_retries" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.retry_interval">
+<span class="sig-name descname"><span class="pre">retry_interval</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.retry_interval" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.kwargs_filter">
+<span class="sig-name descname"><span class="pre">kwargs_filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.kwargs_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.raise_exception">
+<span class="sig-name descname"><span class="pre">raise_exception</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.raise_exception" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.context">
+<span class="sig-name descname"><span class="pre">context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">MemoryscopeContext</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.kwargs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

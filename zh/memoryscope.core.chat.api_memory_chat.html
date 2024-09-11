@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,135 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-chat-api-memory-chat-module">
-<h1>memoryscope.core.chat.api_memory_chat module<a class="headerlink" href="#memoryscope-core-chat-api-memory-chat-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.chat.api_memory_chat">
+<span id="memoryscope-core-chat-api-memory-chat-module"></span><h1>memoryscope.core.chat.api_memory_chat module<a class="headerlink" href="#module-memoryscope.core.chat.api_memory_chat" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.chat.api_memory_chat.ApiMemoryChat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.chat.api_memory_chat.</span></span><span class="sig-name descname"><span class="pre">ApiMemoryChat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_service:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context:</span> <span class="pre">~memoryscope.core.utils.singleton.singleton.&lt;locals&gt;._singleton</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/chat/api_memory_chat.html#ApiMemoryChat"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.chat.api_memory_chat.ApiMemoryChat" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.chat.base_memory_chat.html#memoryscope.core.chat.base_memory_chat.BaseMemoryChat" title="memoryscope.core.chat.base_memory_chat.BaseMemoryChat"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMemoryChat</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.chat.api_memory_chat.ApiMemoryChat.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_service:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context:</span> <span class="pre">~memoryscope.core.utils.singleton.singleton.&lt;locals&gt;._singleton</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/chat/api_memory_chat.html#ApiMemoryChat.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.chat.api_memory_chat.ApiMemoryChat.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.chat.api_memory_chat.ApiMemoryChat.prompt_handler">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prompt_handler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.utils.prompt_handler.html#memoryscope.core.utils.prompt_handler.PromptHandler" title="memoryscope.core.utils.prompt_handler.PromptHandler"><span class="pre">PromptHandler</span></a></em><a class="headerlink" href="#memoryscope.core.chat.api_memory_chat.ApiMemoryChat.prompt_handler" title="Link to this definition"></a></dt>
+<dd><p>Lazy initialization property for the prompt handler.</p>
+<p>This property ensures that the <cite>_prompt_handler</cite> attribute is only instantiated when it is first accessed.
+It uses the current file's path and additional keyword arguments for configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An instance of the PromptHandler configured for this CLI session.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="memoryscope.core.utils.html#memoryscope.core.utils.PromptHandler" title="memoryscope.core.utils.PromptHandler">PromptHandler</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.chat.api_memory_chat.ApiMemoryChat.memory_service">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">memory_service</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.service.base_memory_service.html#memoryscope.core.service.base_memory_service.BaseMemoryService" title="memoryscope.core.service.base_memory_service.BaseMemoryService"><span class="pre">BaseMemoryService</span></a></em><a class="headerlink" href="#memoryscope.core.chat.api_memory_chat.ApiMemoryChat.memory_service" title="Link to this definition"></a></dt>
+<dd><p>Property to access the memory service. If the service is initially set as a string,
+it will be looked up in the memory service dictionary of context, initialized,
+and then returned as an instance of <cite>BaseMemoryService</cite>. Ensures the memory service
+is properly started before use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An active memory service instance.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="memoryscope.core.service.html#memoryscope.core.service.BaseMemoryService" title="memoryscope.core.service.BaseMemoryService">BaseMemoryService</a></p>
+</dd>
+<dt class="field-odd">抛出<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> -- If the declaration of memory service is not found in the memory service dictionary of context.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.chat.api_memory_chat.ApiMemoryChat.human_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">human_name</span></span><a class="headerlink" href="#memoryscope.core.chat.api_memory_chat.ApiMemoryChat.human_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.chat.api_memory_chat.ApiMemoryChat.assistant_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assistant_name</span></span><a class="headerlink" href="#memoryscope.core.chat.api_memory_chat.ApiMemoryChat.assistant_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.chat.api_memory_chat.ApiMemoryChat.generation_model">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generation_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel" title="memoryscope.core.models.base_model.BaseModel"><span class="pre">BaseModel</span></a></em><a class="headerlink" href="#memoryscope.core.chat.api_memory_chat.ApiMemoryChat.generation_model" title="Link to this definition"></a></dt>
+<dd><p>Property to get the generation model. If the model is set as a string, it will be resolved from the global
+context's model dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">抛出<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> -- If the declaration of generation model is not found in the model dictionary of context .</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>An actual generation model instance.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="memoryscope.core.models.html#memoryscope.core.models.BaseModel" title="memoryscope.core.models.BaseModel">BaseModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.chat.api_memory_chat.ApiMemoryChat.iter_response">
+<span class="sig-name descname"><span class="pre">iter_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remember_response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.model_response.html#memoryscope.scheme.model_response.ModelResponse" title="memoryscope.scheme.model_response.ModelResponse"><span class="pre">ModelResponse</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.scheme.message.html#memoryscope.scheme.message.Message" title="memoryscope.scheme.message.Message"><span class="pre">Message</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="memoryscope.scheme.model_response.html#memoryscope.scheme.model_response.ModelResponse" title="memoryscope.scheme.model_response.ModelResponse"><span class="pre">ModelResponse</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/memoryscope/core/chat/api_memory_chat.html#ApiMemoryChat.iter_response"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.chat.api_memory_chat.ApiMemoryChat.iter_response" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.chat.api_memory_chat.ApiMemoryChat.chat_with_memory">
+<span class="sig-name descname"><span class="pre">chat_with_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporary_memories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history_message_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'auto'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remember_response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/chat/api_memory_chat.html#ApiMemoryChat.chat_with_memory"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.chat.api_memory_chat.ApiMemoryChat.chat_with_memory" title="Link to this definition"></a></dt>
+<dd><p>The core function that carries out conversation with memory accepts user queries through query and returns the
+conversation results through model_response. The retrieved memories are stored in the memories within meta_data.
+:param query: User's query, includes the user's question.
+:type query: str
+:param role_name: User's role name.
+:type role_name: str, optional
+:param system_prompt: System prompt. Defaults to the system_prompt in &quot;memory_chat_prompt.yaml&quot;.
+:type system_prompt: str, optional
+:param memory_prompt: Memory prompt, It takes effect when there is a memory and will be placed in</p>
+<blockquote>
+<div><p>front of the retrieved memory. Defaults to the memory_prompt in &quot;memory_chat_prompt.yaml&quot;.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>temporary_memories</strong> (<em>str</em><em>, </em><em>optional</em>) -- Manually added user memory in this function.</p></li>
+<li><p><strong>history_message_strategy</strong> (<em>&quot;auto&quot;</em><em>, </em><em>None</em><em>, </em><em>int</em>) -- <ul>
+<li><dl class="simple">
+<dt>If it is set to &quot;auto&quot;， the history messages in the conversation will retain those that have not</dt><dd><p>yet been summarized. Default to &quot;auto&quot;.</p>
+</dd>
+</dl>
+</li>
+<li><p>If it is set to None， no conversation history will be saved.</p></li>
+<li><p>If it is set to an integer value &quot;n&quot;, recent &quot;n&quot; message-pair[user, assistant] will be retained.</p></li>
+</ul>
+</p></li>
+<li><p><strong>remember_response</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Flag indicating whether to save the AI's response to memory.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>In non-streaming mode, returns a complete AI response.
+- ModelResponseGen: In streaming mode, returns a generator yielding AI response parts.
+- Memories: To obtain the memory by invoking the method of model_response.meta_data[MEMORIES]</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>ModelResponse</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

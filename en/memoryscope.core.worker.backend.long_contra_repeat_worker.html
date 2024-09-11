@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,102 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-worker-backend-long-contra-repeat-worker-module">
-<h1>memoryscope.core.worker.backend.long_contra_repeat_worker module<a class="headerlink" href="#memoryscope-core-worker-backend-long-contra-repeat-worker-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.worker.backend.long_contra_repeat_worker">
+<span id="memoryscope-core-worker-backend-long-contra-repeat-worker-module"></span><h1>memoryscope.core.worker.backend.long_contra_repeat_worker module<a class="headerlink" href="#module-memoryscope.core.worker.backend.long_contra_repeat_worker" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.worker.backend.long_contra_repeat_worker.</span></span><span class="sig-name descname"><span class="pre">LongContraRepeatWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/long_contra_repeat_worker.html#LongContraRepeatWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.worker.memory_base_worker.html#memoryscope.core.worker.memory_base_worker.MemoryBaseWorker" title="memoryscope.core.worker.memory_base_worker.MemoryBaseWorker"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryBaseWorker</span></code></a></p>
+<p>Manages and updates memory entries within a conversation scope by identifying
+and handling contradictions or redundancies. It extends the base MemoryBaseWorker
+to provide specialized functionality for long conversations with potential
+contradictory or repetitive statements.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.FILE_PATH">
+<span class="sig-name descname"><span class="pre">FILE_PATH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/MemoryScope/MemoryScope/memoryscope/core/worker/backend/long_contra_repeat_worker.py'</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.FILE_PATH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.retrieve_similar_content">
+<span class="sig-name descname"><span class="pre">retrieve_similar_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">node:</span> <span class="pre">~memoryscope.scheme.memory_node.MemoryNode)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'memoryscope.scheme.memory_node.MemoryNode'&gt;,</span> <span class="pre">typing.List[memoryscope.scheme.memory_node.MemoryNode]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/worker/backend/long_contra_repeat_worker.html#LongContraRepeatWorker.retrieve_similar_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.retrieve_similar_content" title="Link to this definition"></a></dt>
+<dd><p>Retrieves memory nodes with content similar to the given node, filtering by user/target/status/memory_type.
+Only returns nodes whose similarity score meets or exceeds the predefined threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode"><em>MemoryNode</em></a>) – The reference node used to find similar content in memory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the original node and a list of similar nodes
+that passed the similarity threshold.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>, List[<a class="reference internal" href="memoryscope.scheme.html#memoryscope.scheme.MemoryNode" title="memoryscope.scheme.MemoryNode">MemoryNode</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.workflow_context">
+<span class="sig-name descname"><span class="pre">workflow_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.workflow_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.memoryscope_context">
+<span class="sig-name descname"><span class="pre">memoryscope_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">MemoryscopeContext</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.memoryscope_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.raise_exception">
+<span class="sig-name descname"><span class="pre">raise_exception</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.raise_exception" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.is_multi_thread">
+<span class="sig-name descname"><span class="pre">is_multi_thread</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.is_multi_thread" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.thread_pool">
+<span class="sig-name descname"><span class="pre">thread_pool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ThreadPoolExecutor</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.thread_pool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.enable_parallel">
+<span class="sig-name descname"><span class="pre">enable_parallel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.enable_parallel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.kwargs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.continue_run">
+<span class="sig-name descname"><span class="pre">continue_run</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.continue_run" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.async_task_list">
+<span class="sig-name descname"><span class="pre">async_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.async_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.thread_task_list">
+<span class="sig-name descname"><span class="pre">thread_task_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.thread_task_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="memoryscope.core.utils.html#memoryscope.core.utils.Logger" title="memoryscope.core.utils.Logger"><span class="pre">Logger</span></a></em><a class="headerlink" href="#memoryscope.core.worker.backend.long_contra_repeat_worker.LongContraRepeatWorker.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

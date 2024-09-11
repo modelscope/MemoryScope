@@ -1,0 +1,215 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.config.arguments &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/config/arguments.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/config/arguments.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">模块代码</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.config.arguments</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>memoryscope.core.config.arguments 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Dict</span>
+
+
+<div class="viewcode-block" id="Arguments">
+<a class="viewcode-back" href="../../../../memoryscope.core.config.arguments.html#memoryscope.core.config.Arguments">[文档]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Arguments</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">language</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;cn&quot;</span><span class="p">,</span> <span class="s2">&quot;en&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;cn&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;support en &amp; cn now&quot;</span><span class="p">})</span>
+
+    <span class="n">thread_pool_max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;thread pool max workers&quot;</span><span class="p">})</span>
+
+    <span class="n">memory_chat_class</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;cli_memory_chat&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;cli_memory_chat(Command-line interaction), api_memory_chat(API interface interaction), etc.&quot;</span><span class="p">})</span>
+
+    <span class="n">chat_stream</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;In the case of cli_memory_chat, stream mode is recommended. For api_memory_chat mode, &quot;</span>
+                <span class="s2">&quot;please use non-stream. If set to None, the value will be automatically determined.&quot;</span><span class="p">})</span>
+
+    <span class="n">human_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Human user&#39;s name&quot;</span><span class="p">})</span>
+
+    <span class="n">assistant_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;AI&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&#39; name&quot;</span><span class="p">})</span>
+
+    <span class="n">consolidate_memory_interval_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Memory backend service: If you feel that the token consumption is relatively high, &quot;</span>
+                <span class="s2">&quot;please increase the time interval. When set to None, the value will not be updated.&quot;</span><span class="p">})</span>
+
+    <span class="n">reflect_and_reconsolidate_interval_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Memory backend service: If you feel that the token consumption is relatively high, &quot;</span>
+                <span class="s2">&quot;please increase the time interval. When set to None, the value will not be updated.&quot;</span><span class="p">})</span>
+
+    <span class="n">worker_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{},</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;dict format: worker_name -&gt; param_key -&gt; param_value&quot;</span><span class="p">})</span>
+
+    <span class="n">generation_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;dashscope_generation&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;global generation backend: openai_generation, dashscope_generation, etc.&quot;</span><span class="p">})</span>
+
+    <span class="n">generation_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;qwen-max&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;global generation model: gpt-4o, gpt-4o-mini, gpt-4-turbo, qwen-max, etc.&quot;</span><span class="p">})</span>
+
+    <span class="n">generation_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{},</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;global generation params: max_tokens, top_p, temperature, etc.&quot;</span><span class="p">})</span>
+
+    <span class="n">embedding_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;dashscope_generation&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;global embedding backend: openai_embedding, dashscope_embedding, etc.&quot;</span><span class="p">})</span>
+
+    <span class="n">embedding_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;text-embedding-v2&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;global embedding model: text-embedding-3-large, text-embedding-3-small, text-embedding-ada-002, &quot;</span>
+                <span class="s2">&quot;text-embedding-v2, etc.&quot;</span><span class="p">})</span>
+
+    <span class="n">embedding_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{})</span>
+
+    <span class="n">rank_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;dashscope_rank&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;global rank backend: dashscope_rank, etc.&quot;</span><span class="p">})</span>
+
+    <span class="n">rank_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;gte-rerank&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;global rank model: gte-rerank, etc.&quot;</span><span class="p">})</span>
+
+    <span class="n">rank_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{})</span>
+
+    <span class="n">es_index_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;memory_index&quot;</span><span class="p">)</span>
+
+    <span class="n">es_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;http://localhost:9200&quot;</span><span class="p">)</span>
+
+    <span class="n">retrieve_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;dense&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;retrieve_mode: dense, sparse(not implemented), hybrid(not implemented)&quot;</span><span class="p">})</span>
+
+    <span class="n">enable_ranker</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;If a semantic ranking model is not available, MemoryScope will use cosine similarity scoring as a &quot;</span>
+                <span class="s2">&quot;substitute. However, the ranking effectiveness will be somewhat compromised.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;map_yaml&quot;</span><span class="p">:</span> <span class="s2">&quot;global-&gt;enable_ranker&quot;</span><span class="p">})</span>
+
+    <span class="n">enable_today_contra_repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether enable conflict resolution and deduplication for the day? &quot;</span>
+                <span class="s2">&quot;Note that enabling this will increase token consumption.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;map_yaml&quot;</span><span class="p">:</span> <span class="s2">&quot;global-&gt;enable_today_contra_repeat&quot;</span><span class="p">})</span>
+
+    <span class="n">enable_long_contra_repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether to enable long-term conflict resolution and deduplication. &quot;</span>
+                <span class="s2">&quot;Note that enabling this will increase token consumption.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;map_yaml&quot;</span><span class="p">:</span> <span class="s2">&quot;global-&gt;enable_long_contra_repeat&quot;</span><span class="p">})</span>
+
+    <span class="n">output_memory_max_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The maximum number of memories retrieved during memory recall.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;map_yaml&quot;</span><span class="p">:</span> <span class="s2">&quot;global-&gt;output_memory_max_count&quot;</span><span class="p">})</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

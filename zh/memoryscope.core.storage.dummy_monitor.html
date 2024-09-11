@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-storage-dummy-monitor-module">
-<h1>memoryscope.core.storage.dummy_monitor module<a class="headerlink" href="#memoryscope-core-storage-dummy-monitor-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.storage.dummy_monitor">
+<span id="memoryscope-core-storage-dummy-monitor-module"></span><h1>memoryscope.core.storage.dummy_monitor module<a class="headerlink" href="#module-memoryscope.core.storage.dummy_monitor" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_monitor.DummyMonitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.storage.dummy_monitor.</span></span><span class="sig-name descname"><span class="pre">DummyMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_monitor.html#DummyMonitor"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_monitor.DummyMonitor" title="Link to this definition"></a></dt>
+<dd><p>基类：<a class="reference internal" href="memoryscope.core.storage.base_monitor.html#memoryscope.core.storage.base_monitor.BaseMonitor" title="memoryscope.core.storage.base_monitor.BaseMonitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMonitor</span></code></a></p>
+<p>DummyMonitor serves as a placeholder or mock class extending BaseMonitor,
+providing empty method bodies for 'add', 'add_token', and 'close' operations.
+This can be used for testing or in situations where a full monitor implementation is not required.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_monitor.DummyMonitor.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_monitor.html#DummyMonitor.add"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_monitor.DummyMonitor.add" title="Link to this definition"></a></dt>
+<dd><p>Placeholder for adding data to the monitor.
+This method currently does nothing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_monitor.DummyMonitor.add_token">
+<span class="sig-name descname"><span class="pre">add_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_monitor.html#DummyMonitor.add_token"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_monitor.DummyMonitor.add_token" title="Link to this definition"></a></dt>
+<dd><p>Placeholder for adding a token to the monitored data.
+This method currently does nothing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.storage.dummy_monitor.DummyMonitor.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/storage/dummy_monitor.html#DummyMonitor.close"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.storage.dummy_monitor.DummyMonitor.close" title="Link to this definition"></a></dt>
+<dd><p>Placeholder for closing the monitor and performing any necessary cleanup.
+This method currently does nothing.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

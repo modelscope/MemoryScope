@@ -62,14 +62,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -96,8 +96,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-operation-consolidate-memory-op-module">
-<h1>memoryscope.core.operation.consolidate_memory_op module<a class="headerlink" href="#memoryscope-core-operation-consolidate-memory-op-module" title="Link to this heading"></a></h1>
+  <section id="module-memoryscope.core.operation.consolidate_memory_op">
+<span id="memoryscope-core-operation-consolidate-memory-op-module"></span><h1>memoryscope.core.operation.consolidate_memory_op module<a class="headerlink" href="#module-memoryscope.core.operation.consolidate_memory_op" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.operation.consolidate_memory_op.ConsolidateMemoryOp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.operation.consolidate_memory_op.</span></span><span class="sig-name descname"><span class="pre">ConsolidateMemoryOp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_lock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contextual_msg_min_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/operation/consolidate_memory_op.html#ConsolidateMemoryOp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.operation.consolidate_memory_op.ConsolidateMemoryOp" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="memoryscope.core.operation.backend_operation.html#memoryscope.core.operation.backend_operation.BackendOperation" title="memoryscope.core.operation.backend_operation.BackendOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackendOperation</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.operation.consolidate_memory_op.ConsolidateMemoryOp.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_lock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contextual_msg_min_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/operation/consolidate_memory_op.html#ConsolidateMemoryOp.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.operation.consolidate_memory_op.ConsolidateMemoryOp.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes a new instance of the BaseOperation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.operation.consolidate_memory_op.ConsolidateMemoryOp.run_operation">
+<span class="sig-name descname"><span class="pre">run_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/operation/consolidate_memory_op.html#ConsolidateMemoryOp.run_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.operation.consolidate_memory_op.ConsolidateMemoryOp.run_operation" title="Link to this definition"></a></dt>
+<dd><p>Executes an operation after preparing the chat context, checking message memory status,
+and updating workflow status accordingly.</p>
+<p>If the number of not-memorized messages is less than the contextual message count,
+the operation is skipped. Otherwise, it sets up the chat context, runs the workflow,
+captures the result, and updates the memory status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_name</strong> (<em>str</em>) – target_name(human name).</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments for chat operation configuration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result obtained from running the workflow.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

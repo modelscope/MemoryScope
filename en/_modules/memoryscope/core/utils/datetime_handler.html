@@ -63,14 +63,14 @@
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#scheme">Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#config">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#models">Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#operation">Operation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#service">Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#chat">Chat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
 </ul>
 
         </div>
@@ -88,6 +88,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
       <li class="breadcrumb-item active">memoryscope.core.utils.datetime_handler</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -107,7 +108,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">DatetimeHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handles operations related to datetime such as parsing, extraction, and formatting,</span>
@@ -117,7 +118,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler.__init__">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.__init__">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the DatetimeHandler instance with a datetime object, string, integer, or float representation</span>
@@ -166,7 +167,7 @@
         <span class="p">}</span>
 
 <div class="viewcode-block" id="DatetimeHandler.get_dt_info_dict">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.get_dt_info_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.get_dt_info_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">get_dt_info_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="n">LanguageEnum</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Property method to get the dictionary containing parsed datetime information.</span>
@@ -181,7 +182,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler.extract_date_parts_cn">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.extract_date_parts_cn">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.extract_date_parts_cn">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">extract_date_parts_cn</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -226,7 +227,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler.extract_date_parts_en">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.extract_date_parts_en">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.extract_date_parts_en">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">extract_date_parts_en</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -319,7 +320,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler.extract_date_parts">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.extract_date_parts">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.extract_date_parts">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">extract_date_parts</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="n">LanguageEnum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -344,7 +345,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler.has_time_word_cn">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.has_time_word_cn">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.has_time_word_cn">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">has_time_word_cn</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">datetime_word_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -367,7 +368,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler.has_time_word_en">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.has_time_word_en">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.has_time_word_en">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">has_time_word_en</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">datetime_word_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -392,7 +393,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler.has_time_word">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.has_time_word">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.has_time_word">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">has_time_word</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="n">LanguageEnum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">func_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;has_time_word_</span><span class="si">{</span><span class="n">language</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -409,7 +410,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler.datetime_format">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.datetime_format">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.datetime_format">[docs]</a>
     <span class="k">def</span> <span class="nf">datetime_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Format the stored datetime object into a string based on the provided format.</span>
@@ -424,7 +425,7 @@
 
 
 <div class="viewcode-block" id="DatetimeHandler.string_format">
-<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.datetime_handler.DatetimeHandler.string_format">[docs]</a>
+<a class="viewcode-back" href="../../../../memoryscope.core.utils.datetime_handler.html#memoryscope.core.utils.DatetimeHandler.string_format">[docs]</a>
     <span class="k">def</span> <span class="nf">string_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="n">LanguageEnum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Format the datetime information stored in the instance using a custom string format.</span>

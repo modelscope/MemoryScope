@@ -1,0 +1,986 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memoryscope.core.storage.llama_index_sync_elasticsearch &mdash; MemoryScope  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../../../en/_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html">English</a></li> |
+    <a href="../../../../../zh/_modules/memoryscope/core/storage/llama_index_sync_elasticsearch.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">About MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/cli/CLI_README.html">Cli Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/api/simple_usages.html">Simple Usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/advance/custom_operator.html">Advanced usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/contribution.html">Contribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docs/api.html#module-memoryscope.core.chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../memoryscope.html">memoryscope</a></li>
+      <li class="breadcrumb-item active">memoryscope.core.storage.llama_index_sync_elasticsearch</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for memoryscope.core.storage.llama_index_sync_elasticsearch</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Elasticsearch vector store.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">import</span> <span class="nn">nest_asyncio</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.utils.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">memoryscope.core.memoryscope_context</span> <span class="kn">import</span> <span class="n">get_memoryscope_context</span>
+
+<span class="kn">from</span> <span class="nn">elasticsearch</span> <span class="kn">import</span> <span class="n">AsyncElasticsearch</span><span class="p">,</span> <span class="n">Elasticsearch</span>
+<span class="kn">from</span> <span class="nn">elasticsearch.helpers.vectorstore</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AsyncBM25Strategy</span><span class="p">,</span>
+    <span class="n">AsyncSparseVectorStrategy</span><span class="p">,</span>
+    <span class="n">AsyncDenseVectorStrategy</span><span class="p">,</span>
+    <span class="n">AsyncRetrievalStrategy</span><span class="p">,</span>
+    <span class="n">DistanceMetric</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">elasticsearch.helpers.vectorstore</span> <span class="kn">import</span> <span class="n">VectorStore</span>
+<span class="kn">from</span> <span class="nn">llama_index.core.bridge.pydantic</span> <span class="kn">import</span> <span class="n">PrivateAttr</span>
+<span class="kn">from</span> <span class="nn">llama_index.core.schema</span> <span class="kn">import</span> <span class="n">BaseNode</span><span class="p">,</span> <span class="n">MetadataMode</span><span class="p">,</span> <span class="n">TextNode</span>
+<span class="kn">from</span> <span class="nn">llama_index.core.vector_stores.types</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BasePydanticVectorStore</span><span class="p">,</span>
+    <span class="n">VectorStoreQuery</span><span class="p">,</span>
+    <span class="n">VectorStoreQueryMode</span><span class="p">,</span>
+    <span class="n">VectorStoreQueryResult</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">llama_index.core.vector_stores.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">metadata_dict_to_node</span><span class="p">,</span>
+    <span class="n">node_to_metadata_dict</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">llama_index.vector_stores.elasticsearch.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_user_agent</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">DISTANCE_STRATEGIES</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;COSINE&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DOT_PRODUCT&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EUCLIDEAN_DISTANCE&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_elasticsearch_client">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.get_elasticsearch_client">[docs]</a>
+<span class="k">def</span> <span class="nf">get_elasticsearch_client</span><span class="p">(</span>
+        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cloud_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">password</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_async</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncElasticsearch</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">url</span> <span class="ow">and</span> <span class="n">cloud_id</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Both es_url and cloud_id are defined. Please provide only one.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">connection_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="n">url</span><span class="p">:</span>
+        <span class="n">connection_params</span><span class="p">[</span><span class="s2">&quot;hosts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">url</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">cloud_id</span><span class="p">:</span>
+        <span class="n">connection_params</span><span class="p">[</span><span class="s2">&quot;cloud_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cloud_id</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please provide either elasticsearch_url or cloud_id.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">api_key</span><span class="p">:</span>
+        <span class="n">connection_params</span><span class="p">[</span><span class="s2">&quot;api_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">api_key</span>
+    <span class="k">elif</span> <span class="n">username</span> <span class="ow">and</span> <span class="n">password</span><span class="p">:</span>
+        <span class="n">connection_params</span><span class="p">[</span><span class="s2">&quot;basic_auth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">use_async</span><span class="p">:</span>
+        <span class="n">es_client</span> <span class="o">=</span> <span class="n">AsyncElasticsearch</span><span class="p">(</span>
+            <span class="o">**</span><span class="n">connection_params</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;user-agent&quot;</span><span class="p">:</span> <span class="n">get_user_agent</span><span class="p">()}</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">es_client</span> <span class="o">=</span> <span class="n">Elasticsearch</span><span class="p">(</span>
+            <span class="o">**</span><span class="n">connection_params</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;user-agent&quot;</span><span class="p">:</span> <span class="n">get_user_agent</span><span class="p">()}</span>
+        <span class="p">)</span>
+
+    <span class="n">es_client</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>  <span class="c1"># use sync client so don&#39;t have to &#39;await&#39; to just get info</span>
+
+    <span class="k">return</span> <span class="n">es_client</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_to_llama_similarities</span><span class="p">(</span><span class="n">scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a list of similarity scores into a normalized form for LlamaIndex compatibility.</span>
+<span class="sd">    The normalization involves an exponential transformation based on the maximum score in the list.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scores (List[float]): A list of raw similarity scores.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[float]: A list of normalized similarity scores suitable for LlamaIndex.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">scores</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">scores_to_norm</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+    <span class="c1"># Normalize scores by subtracting the max score and applying the exponential function</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">scores_to_norm</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">scores_to_norm</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_mode_must_match_retrieval_strategy</span><span class="p">(</span>
+        <span class="n">mode</span><span class="p">:</span> <span class="n">VectorStoreQueryMode</span><span class="p">,</span> <span class="n">retrieval_strategy</span><span class="p">:</span> <span class="n">AsyncRetrievalStrategy</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Different retrieval strategies require different ways of indexing that must be known at the</span>
+<span class="sd">    time of adding data. The query mode is known at query time. This function checks if the</span>
+<span class="sd">    retrieval strategy (and way of indexing) is compatible with the query mode and raises and</span>
+<span class="sd">    exception in the case of a mismatch.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">VectorStoreQueryMode</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">:</span>
+        <span class="c1"># it&#39;s fine to not specify an explicit other mode</span>
+        <span class="k">return</span>
+
+    <span class="n">mode_retrieval_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">VectorStoreQueryMode</span><span class="o">.</span><span class="n">SPARSE</span><span class="p">:</span> <span class="n">AsyncSparseVectorStrategy</span><span class="p">,</span>
+        <span class="n">VectorStoreQueryMode</span><span class="o">.</span><span class="n">TEXT_SEARCH</span><span class="p">:</span> <span class="n">AsyncBM25Strategy</span><span class="p">,</span>
+        <span class="n">VectorStoreQueryMode</span><span class="o">.</span><span class="n">HYBRID</span><span class="p">:</span> <span class="n">AsyncDenseVectorStrategy</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">required_strategy</span> <span class="o">=</span> <span class="n">mode_retrieval_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">required_strategy</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;query mode </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2"> currently not supported&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">retrieval_strategy</span><span class="p">,</span> <span class="n">required_strategy</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;query mode </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2"> incompatible with retrieval strategy </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">retrieval_strategy</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">required_strategy</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">VectorStoreQueryMode</span><span class="o">.</span><span class="n">HYBRID</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">retrieval_strategy</span><span class="o">.</span><span class="n">hybrid</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;to enable hybrid mode, it must be set in retrieval strategy&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ESCombinedRetrieveStrategy">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.ESCombinedRetrieveStrategy">[docs]</a>
+<span class="k">class</span> <span class="nc">ESCombinedRetrieveStrategy</span><span class="p">(</span><span class="n">AsyncDenseVectorStrategy</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ESCombinedRetrieveStrategy.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.ESCombinedRetrieveStrategy.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">distance</span><span class="p">:</span> <span class="n">DistanceMetric</span> <span class="o">=</span> <span class="n">DistanceMetric</span><span class="o">.</span><span class="n">COSINE</span><span class="p">,</span>
+            <span class="n">model_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">retrieve_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dense&quot;</span><span class="p">,</span>
+            <span class="n">rrf</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">text_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;text_field&quot;</span><span class="p">,</span>
+            <span class="n">hybrid_alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">retrieve_mode</span> <span class="o">==</span> <span class="s2">&quot;dense&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">elif</span> <span class="n">retrieve_mode</span> <span class="o">==</span> <span class="s2">&quot;sparse&quot;</span><span class="p">:</span>
+            <span class="c1"># self.alpha = 0.0</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">elif</span> <span class="n">retrieve_mode</span> <span class="o">==</span> <span class="s2">&quot;hybrid&quot;</span><span class="p">:</span>
+            <span class="c1"># self.alpha = hybrid_alpha</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">distance</span><span class="o">=</span><span class="n">distance</span><span class="p">,</span> <span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">,</span> <span class="n">hybrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rrf</span><span class="o">=</span><span class="n">rrf</span><span class="p">,</span> <span class="n">text_field</span><span class="o">=</span><span class="n">text_field</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_hybrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">knn</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="c1"># Add a query to the knn query.</span>
+        <span class="c1"># RRF is used to even the score from the knn query and text query</span>
+        <span class="c1"># RRF has two optional parameters: {&#39;rank_constant&#39;:int, &#39;window_size&#39;:int}</span>
+        <span class="c1"># https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">query</span><span class="p">:</span>
+            <span class="n">query_body</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;bool&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="nb">filter</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query_body</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;knn&quot;</span><span class="p">:</span> <span class="n">knn</span><span class="p">,</span>
+                <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;bool&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;must&quot;</span><span class="p">:</span> <span class="p">[</span>
+                            <span class="p">{</span>
+                                <span class="s2">&quot;match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">text_field</span><span class="p">:</span> <span class="p">{</span>
+                                        <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>
+                                        <span class="s2">&quot;boost&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">,</span>
+                                    <span class="p">}</span>
+                                <span class="p">},</span>
+                            <span class="p">}</span>
+                        <span class="p">],</span>
+                        <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="nb">filter</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rrf</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
+                <span class="n">query_body</span><span class="p">[</span><span class="s2">&quot;rank&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;rrf&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rrf</span><span class="p">}</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rrf</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">rrf</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">query_body</span><span class="p">[</span><span class="s2">&quot;rank&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;rrf&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;window_size&quot;</span><span class="p">:</span> <span class="n">top_k</span><span class="p">}}</span>
+
+        <span class="k">return</span> <span class="n">query_body</span>
+
+<div class="viewcode-block" id="ESCombinedRetrieveStrategy.es_query">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.ESCombinedRetrieveStrategy.es_query">[docs]</a>
+    <span class="k">def</span> <span class="nf">es_query</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+            <span class="n">query_vector</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+            <span class="n">text_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">vector_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">num_candidates</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="nb">filter</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nb">filter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">filter</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">knn</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="nb">filter</span><span class="p">,</span>
+            <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">vector_field</span><span class="p">,</span>
+            <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
+            <span class="s2">&quot;num_candidates&quot;</span><span class="p">:</span> <span class="n">num_candidates</span><span class="p">,</span>
+            <span class="s2">&quot;boost&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">query_vector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">knn</span><span class="p">[</span><span class="s2">&quot;query_vector&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">query_vector</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Inference in Elasticsearch. When initializing we make sure to always have</span>
+            <span class="c1"># a model_id if we don&#39;t have an embedding_service.</span>
+            <span class="n">knn</span><span class="p">[</span><span class="s2">&quot;query_vector_builder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;text_embedding&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;model_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_id</span><span class="p">,</span>
+                    <span class="s2">&quot;model_text&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hybrid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hybrid</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">query</span><span class="p">),</span> <span class="n">knn</span><span class="o">=</span><span class="n">knn</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;knn&quot;</span><span class="p">:</span> <span class="n">knn</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="ESCombinedRetrieveStrategy.before_index_creation">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.ESCombinedRetrieveStrategy.before_index_creation">[docs]</a>
+    <span class="k">def</span> <span class="nf">before_index_creation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">AsyncElasticsearch</span><span class="p">,</span> <span class="n">text_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vector_field</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_id</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">elasticsearch.helpers.vectorstore._async._utils</span> <span class="kn">import</span> <span class="n">model_must_be_deployed</span>
+            <span class="kn">import</span> <span class="nn">asyncio</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;before_index_creation&#39;</span><span class="p">)</span>
+            <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model_must_be_deployed</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_id</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;before_index_creation 2&#39;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span> <span class="nf">_to_elasticsearch_filter</span><span class="p">(</span><span class="n">standard_filters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts standard Llama-index filters into a format compatible with Elasticsearch.</span>
+
+<span class="sd">    This function transforms dictionary-based filters, where each key represents a field and</span>
+<span class="sd">    the value is a list of strings, into an Elasticsearch query structure. It supports both</span>
+<span class="sd">    list values (interpreted as &#39;should&#39; clauses for OR logic) and single values (interpreted</span>
+<span class="sd">    as &#39;must&#39; clauses for AND logic).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        standard_filters (Dict[str, List[str]]): A dictionary containing filter criteria,</span>
+<span class="sd">            where keys are field names and values are lists of strings or single string values</span>
+<span class="sd">            representing filter values.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict[str, Any]: A dictionary structured as an Elasticsearch filter query.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;bool&quot;</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">standard_filters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">operands</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">key_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;metadata.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.keyword&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;metadata.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;term&quot;</span><span class="p">:</span>
+                            <span class="p">{</span>
+                                <span class="n">key_str</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">}</span>
+                            <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;should&quot;</span><span class="p">:</span> <span class="n">operands</span><span class="p">})</span>  <span class="c1"># Add &#39;should&#39; clause for OR logic</span>
+            <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;minimum_should_match&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>  <span class="c1"># Ensure at least one &#39;should&#39; match</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">key_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;metadata.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.keyword&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;metadata.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">operand</span> <span class="o">=</span> <span class="p">[{</span>
+                <span class="s2">&quot;term&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="n">key_str</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}]</span>
+            <span class="k">if</span> <span class="s2">&quot;must&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bool&#39;</span><span class="p">]:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bool&#39;</span><span class="p">][</span><span class="s1">&#39;must&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">operand</span><span class="p">)</span>  <span class="c1"># Extend existing &#39;must&#39; clause for AND logic</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;must&quot;</span><span class="p">:</span> <span class="n">operand</span><span class="p">})</span>  <span class="c1"># Initialize &#39;must&#39; clause if not present</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore">[docs]</a>
+<span class="k">class</span> <span class="nc">SyncElasticsearchStore</span><span class="p">(</span><span class="n">BasePydanticVectorStore</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Elasticsearch vector store.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index_name: Name of the Elasticsearch index.</span>
+<span class="sd">        es_client: Optional. Pre-existing AsyncElasticsearch client.</span>
+<span class="sd">        es_url: Optional. Elasticsearch URL.</span>
+<span class="sd">        es_cloud_id: Optional. Elasticsearch cloud ID.</span>
+<span class="sd">        es_api_key: Optional. Elasticsearch API key.</span>
+<span class="sd">        es_user: Optional. Elasticsearch username.</span>
+<span class="sd">        es_password: Optional. Elasticsearch password.</span>
+<span class="sd">        text_field: Optional. Name of the Elasticsearch field that stores the text.</span>
+<span class="sd">        vector_field: Optional. Name of the Elasticsearch field that stores the</span>
+<span class="sd">                    embedding.</span>
+<span class="sd">        batch_size: Optional. Batch size for bulk indexing. Defaults to 200.</span>
+<span class="sd">        distance_strategy: Optional. Distance strategy to use for similarity search.</span>
+<span class="sd">                        Defaults to &quot;COSINE&quot;.</span>
+<span class="sd">        retrieval_strategy: Retrieval strategy to use. AsyncBM25Strategy /</span>
+<span class="sd">            AsyncSparseVectorStrategy / AsyncDenseVectorStrategy / AsyncRetrievalStrategy.</span>
+<span class="sd">            Defaults to AsyncDenseVectorStrategy.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ConnectionError: If AsyncElasticsearch client cannot connect to Elasticsearch.</span>
+<span class="sd">        ValueError: If neither es_client nor es_url nor es_cloud_id is provided.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        `pip install llama-index-vector-stores-elasticsearch`</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        from llama_index.vector_stores import ElasticsearchStore</span>
+
+<span class="sd">        # Additional setup for ElasticsearchStore class</span>
+<span class="sd">        index_name = &quot;my_index&quot;</span>
+<span class="sd">        es_url = &quot;http://localhost:9200&quot;</span>
+<span class="sd">        es_cloud_id = &quot;&lt;cloud-id&gt;&quot;  # Found within the deployment page</span>
+<span class="sd">        es_user = &quot;elastic&quot;</span>
+<span class="sd">        es_password = &quot;&lt;password&gt;&quot;  # Provided when creating deployment or can be reset</span>
+<span class="sd">        es_api_key = &quot;&lt;api-key&gt;&quot;  # Create an API key within Kibana (Security -&gt; API Keys)</span>
+
+<span class="sd">        # Connecting to ElasticsearchStore locally</span>
+<span class="sd">        es_local = ElasticsearchStore(</span>
+<span class="sd">            index_name=index_name,</span>
+<span class="sd">            es_url=es_url)</span>
+
+<span class="sd">        # Connecting to Elastic Cloud with username and password</span>
+<span class="sd">        es_cloud_user_pass = ElasticsearchStore(</span>
+<span class="sd">            index_name=index_name,</span>
+<span class="sd">            es_cloud_id=es_cloud_id,</span>
+<span class="sd">            es_user=es_user,</span>
+<span class="sd">            es_password=es_password)</span>
+
+<span class="sd">        # Connecting to Elastic Cloud with API Key</span>
+<span class="sd">        es_cloud_api_key = ElasticsearchStore(</span>
+<span class="sd">            index_name=index_name,</span>
+<span class="sd">            es_cloud_id=es_cloud_id,</span>
+<span class="sd">            es_api_key=es_api_key,</span>
+<span class="sd">        )</span>
+<span class="sd">        ```</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SyncElasticsearchStore.Config">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.Config">[docs]</a>
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="c1"># allow pydantic to tolarate its inability to validate AsyncRetrievalStrategy</span>
+        <span class="n">arbitrary_types_allowed</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+    <span class="n">stores_text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">index_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">es_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+    <span class="n">es_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">es_cloud_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">es_api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">es_user</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">es_password</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">text_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;content&quot;</span>
+    <span class="n">vector_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;embedding&quot;</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">distance_strategy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DISTANCE_STRATEGIES</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;COSINE&quot;</span>
+    <span class="n">retrieval_strategy</span><span class="p">:</span> <span class="n">AsyncRetrievalStrategy</span>
+    <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">log_elasticsearch_dynamic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">_store</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SyncElasticsearchStore.__init__">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">es_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">es_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">es_cloud_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">es_api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">es_user</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">es_password</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">text_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;content&quot;</span><span class="p">,</span>
+            <span class="n">vector_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;embedding&quot;</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+            <span class="n">distance_strategy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DISTANCE_STRATEGIES</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;COSINE&quot;</span><span class="p">,</span>
+            <span class="n">retrieval_strategy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AsyncRetrievalStrategy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nest_asyncio</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">es_client</span><span class="p">:</span>
+            <span class="n">es_client</span> <span class="o">=</span> <span class="n">get_elasticsearch_client</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">es_url</span><span class="p">,</span>
+                <span class="n">cloud_id</span><span class="o">=</span><span class="n">es_cloud_id</span><span class="p">,</span>
+                <span class="n">api_key</span><span class="o">=</span><span class="n">es_api_key</span><span class="p">,</span>
+                <span class="n">username</span><span class="o">=</span><span class="n">es_user</span><span class="p">,</span>
+                <span class="n">password</span><span class="o">=</span><span class="n">es_password</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">retrieval_strategy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">retrieval_strategy</span> <span class="o">=</span> <span class="n">AsyncDenseVectorStrategy</span><span class="p">(</span>
+                <span class="n">distance</span><span class="o">=</span><span class="n">DistanceMetric</span><span class="p">[</span><span class="n">distance_strategy</span><span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="n">metadata_mappings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;document_id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;ref_doc_id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword&quot;</span><span class="p">},</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store</span> <span class="o">=</span> <span class="n">VectorStore</span><span class="p">(</span>
+            <span class="n">user_agent</span><span class="o">=</span><span class="n">get_user_agent</span><span class="p">(),</span>
+            <span class="n">client</span><span class="o">=</span><span class="n">es_client</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index_name</span><span class="p">,</span>
+            <span class="n">retrieval_strategy</span><span class="o">=</span><span class="n">retrieval_strategy</span><span class="p">,</span>
+            <span class="n">text_field</span><span class="o">=</span><span class="n">text_field</span><span class="p">,</span>
+            <span class="n">vector_field</span><span class="o">=</span><span class="n">vector_field</span><span class="p">,</span>
+            <span class="n">metadata_mappings</span><span class="o">=</span><span class="n">metadata_mappings</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">index_name</span><span class="o">=</span><span class="n">index_name</span><span class="p">,</span>
+            <span class="n">es_client</span><span class="o">=</span><span class="n">es_client</span><span class="p">,</span>
+            <span class="n">es_url</span><span class="o">=</span><span class="n">es_url</span><span class="p">,</span>
+            <span class="n">es_cloud_id</span><span class="o">=</span><span class="n">es_cloud_id</span><span class="p">,</span>
+            <span class="n">es_api_key</span><span class="o">=</span><span class="n">es_api_key</span><span class="p">,</span>
+            <span class="n">es_user</span><span class="o">=</span><span class="n">es_user</span><span class="p">,</span>
+            <span class="n">es_password</span><span class="o">=</span><span class="n">es_password</span><span class="p">,</span>
+            <span class="n">text_field</span><span class="o">=</span><span class="n">text_field</span><span class="p">,</span>
+            <span class="n">vector_field</span><span class="o">=</span><span class="n">vector_field</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">distance_strategy</span><span class="o">=</span><span class="n">distance_strategy</span><span class="p">,</span>
+            <span class="n">retrieval_strategy</span><span class="o">=</span><span class="n">retrieval_strategy</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="s2">&quot;elastic_search&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_elasticsearch_dynamic</span> <span class="o">=</span> <span class="n">get_memoryscope_context</span><span class="p">()</span><span class="o">.</span><span class="n">log_elasticsearch_dynamic</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the asynchronous Elasticsearch client.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Any: The asynchronous Elasticsearch client instance configured for this store.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="o">.</span><span class="n">client</span>
+
+<div class="viewcode-block" id="SyncElasticsearchStore.close">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.add">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseNode</span><span class="p">],</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">create_index_if_not_exists</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">add_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a list of nodes, each containing embeddings, to an Elasticsearch index.</span>
+<span class="sd">        Optionally creates the index if it does not already exist.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nodes (List[BaseNode]): A list of node objects, each encapsulating an embedding.</span>
+<span class="sd">            create_index_if_not_exists (bool, optional):</span>
+<span class="sd">                A flag indicating whether to create the Elasticsearch index if it&#39;s not present.</span>
+<span class="sd">                Defaults to True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[str]: A list of node IDs that have been successfully added to the index.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ImportError: If the &#39;elasticsearch[async]&#39; Python package is not installed.</span>
+<span class="sd">            BulkIndexError: If there is a failure during the asynchronous bulk indexing with AsyncElasticsearch.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method delegates the actual operation to the `sync_add` method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">add_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_add</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">create_index_if_not_exists</span><span class="o">=</span><span class="n">create_index_if_not_exists</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_vector_store_brief</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;after add&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">add_res</span></div>
+
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.sync_add">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.sync_add">[docs]</a>
+    <span class="k">def</span> <span class="nf">sync_add</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseNode</span><span class="p">],</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">create_index_if_not_exists</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">add_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronously adds a list of nodes, each containing an embedding, to the Elasticsearch index.</span>
+
+<span class="sd">        This method processes each node to extract its ID, embedding, text content, and metadata,</span>
+<span class="sd">        preparing them for batch insertion into the index. It ensures the index is created if not present</span>
+<span class="sd">        and respects the dimensionality of the embeddings for consistency.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nodes (List[BaseNode]): A list of node objects, each encapsulating an embedding.</span>
+<span class="sd">            create_index_if_not_exists (bool, optional): A flag indicating whether to create the Elasticsearch</span>
+<span class="sd">                                                          index if it does not already exist. Defaults to True.</span>
+<span class="sd">            **add_kwargs (Any): Additional keyword arguments passed to the underlying add_texts method</span>
+<span class="sd">                                for customization during the indexing process.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          List[str]: A list of node IDs that were successfully added to the index.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ImportError: If the Elasticsearch Python client is not installed.</span>
+<span class="sd">            BulkIndexError: If there&#39;s a failure during the asynchronous bulk indexing operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Extract necessary components from each node</span>
+        <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Embedding vectors</span>
+        <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Textual contents of nodes</span>
+        <span class="n">metadatas</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Metadata associated with nodes</span>
+        <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Unique identifiers for nodes</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span>  <span class="c1"># Node identifier</span>
+            <span class="n">embeddings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get_embedding</span><span class="p">())</span>  <span class="c1"># Node&#39;s embedding vector</span>
+            <span class="n">texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get_content</span><span class="p">(</span><span class="n">metadata_mode</span><span class="o">=</span><span class="n">MetadataMode</span><span class="o">.</span><span class="n">NONE</span><span class="p">))</span>  <span class="c1"># Node&#39;s raw text content</span>
+            <span class="n">metadatas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_to_metadata_dict</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">remove_text</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># Convert node to metadata dictionary</span>
+
+        <span class="c1"># Initialize the number of dimensions in the store if not set</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="o">.</span><span class="n">num_dimensions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="o">.</span><span class="n">num_dimensions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Set based on the first node&#39;s embedding size</span>
+
+        <span class="c1"># Add the prepared data to the Elasticsearch index asynchronously</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="o">.</span><span class="n">add_texts</span><span class="p">(</span>
+            <span class="n">texts</span><span class="o">=</span><span class="n">texts</span><span class="p">,</span>
+            <span class="n">metadatas</span><span class="o">=</span><span class="n">metadatas</span><span class="p">,</span>
+            <span class="n">vectors</span><span class="o">=</span><span class="n">embeddings</span><span class="p">,</span>
+            <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+            <span class="n">create_index_if_not_exists</span><span class="o">=</span><span class="n">create_index_if_not_exists</span><span class="p">,</span>
+            <span class="n">bulk_kwargs</span><span class="o">=</span><span class="n">add_kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.delete">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_doc_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">delete_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a node from the Elasticsearch index using the provided reference document ID.</span>
+
+<span class="sd">        Optionally, extra keyword arguments can be supplied to customize the deletion behavior,</span>
+<span class="sd">        which are passed directly to Elasticsearch&#39;s `delete_by_query` operation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ref_doc_id (str): The unique identifier of the node/document to be deleted.</span>
+<span class="sd">            delete_kwargs (Any): Additional keyword arguments for Elasticsearch&#39;s</span>
+<span class="sd">                                 `delete_by_query`. These might include query filters,</span>
+<span class="sd">                                 timeouts, or other operational configurations.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: If the deletion operation via Elasticsearch&#39;s `delete_by_query` fails.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method internally calls a synchronous delete method (`sync_delete`)</span>
+<span class="sd">            to execute the deletion operation against Elasticsearch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">del_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_delete</span><span class="p">(</span><span class="n">ref_doc_id</span><span class="p">,</span> <span class="o">**</span><span class="n">delete_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_vector_store_brief</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;after delete&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">del_res</span></div>
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.sync_delete">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.sync_delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">sync_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_doc_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">delete_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Synchronously deletes a node from the Elasticsearch index based on the reference document ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ref_doc_id (str): The unique identifier of the node/document to be deleted.</span>
+<span class="sd">            delete_kwargs (Any): Optional keyword arguments to be passed</span>
+<span class="sd">                                 to the delete_by_query operation of AsyncElasticsearch,</span>
+<span class="sd">                                 allowing for additional customization of the deletion process.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: If the deletion operation via AsyncElasticsearch&#39;s delete_by_query fails.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The function directly uses &#39;_id&#39; field to match the document for deletion instead of &#39;metadata.ref_doc_id&#39;,</span>
+<span class="sd">            ensuring targeted removal based on the document&#39;s unique identifier within Elasticsearch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># The original commented line suggests an alternative query using &#39;metadata.ref_doc_id&#39;,</span>
+        <span class="c1"># but the active code line performs the deletion based on &#39;_id&#39;, which typically aligns with &#39;ref_doc_id&#39;.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;term&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">ref_doc_id</span><span class="p">}},</span> <span class="o">**</span><span class="n">delete_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.query">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.query">[docs]</a>
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">query</span><span class="p">:</span> <span class="n">VectorStoreQuery</span><span class="p">,</span>
+            <span class="n">custom_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+                <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">VectorStoreQuery</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">]</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">es_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorStoreQueryResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes a query against the Elasticsearch index to retrieve the top k most similar nodes</span>
+<span class="sd">        based on the input query embedding. Supports customization of the query process and</span>
+<span class="sd">        application of Elasticsearch filters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query (VectorStoreQuery): The query containing the embedding and other parameters.</span>
+<span class="sd">            custom_query (Callable[[Dict, Union[VectorStoreQuery, None]], Dict], optional):</span>
+<span class="sd">                An optional custom function to modify the Elasticsearch query body, allowing for</span>
+<span class="sd">                additional query parameters or logic. Defaults to None.</span>
+<span class="sd">            es_filter (Optional[List[Dict]], optional): An optional Elasticsearch filter list to</span>
+<span class="sd">                apply to the query. If a filter is directly included in the `query`, this argument</span>
+<span class="sd">                will not be used. Defaults to None.</span>
+<span class="sd">            **kwargs (Any): Additional keyword arguments that might be used in the query process.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            VectorStoreQueryResult: The result of the query operation, including the most similar nodes.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: If an error occurs during the Elasticsearch query execution.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">q_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">custom_query</span><span class="p">,</span> <span class="n">es_filter</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_dictionary_info</span><span class="p">({</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;query&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">query_str</span><span class="p">,</span>
+            <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">tn</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">tn</span> <span class="ow">in</span> <span class="n">q_res</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span>
+        <span class="p">})</span>
+        <span class="k">return</span> <span class="n">q_res</span></div>
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.sync_delete_all">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.sync_delete_all">[docs]</a>
+    <span class="k">def</span> <span class="nf">sync_delete_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">delete_by_query</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index_name</span><span class="p">],</span> <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;match_all&quot;</span><span class="p">:</span> <span class="p">{}}})</span>
+        <span class="k">except</span><span class="p">:</span> <span class="c1"># elasticsearch.NotFoundError</span>
+            <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.sync_search_all">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.sync_search_all">[docs]</a>
+    <span class="k">def</span> <span class="nf">sync_search_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">search_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index_name</span><span class="p">],</span> <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;match_all&quot;</span><span class="p">:</span> <span class="p">{}}})</span>
+        <span class="k">return</span> <span class="n">search_res</span></div>
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.log_vector_store_brief">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.log_vector_store_brief">[docs]</a>
+    <span class="k">def</span> <span class="nf">log_vector_store_brief</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;current vector store content&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_elasticsearch_dynamic</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Dynamic elasticsearch logging is disabled to enhance performance.&quot;</span>
+        <span class="n">search_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_search_all</span><span class="p">()</span>
+
+        <span class="n">brief</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="s1">&#39;memory_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="s1">&#39;user_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="s1">&#39;target_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="s1">&#39;memory_type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">:</span> 
+            <span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">search_res</span><span class="p">[</span><span class="s2">&quot;hits&quot;</span><span class="p">][</span><span class="s2">&quot;hits&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_dictionary_info</span><span class="p">(</span><span class="n">brief</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">brief</span></div>
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.sync_search_all_with_filter">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.sync_search_all_with_filter">[docs]</a>
+    <span class="k">def</span> <span class="nf">sync_search_all_with_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">es_filter</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
+        <span class="n">query_body</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;bool&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="n">es_filter</span><span class="p">}}}</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;embedding&#39;</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;content&#39;</span><span class="p">]</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+            <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">index_name</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">query_body</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+            <span class="n">source</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">source_includes</span><span class="o">=</span><span class="n">fields</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;hits&quot;</span><span class="p">][</span><span class="s2">&quot;hits&quot;</span><span class="p">]:</span>
+            <span class="n">tn</span> <span class="o">=</span> <span class="n">TextNode</span><span class="p">(</span>
+                    <span class="n">id_</span><span class="o">=</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span>
+                    <span class="n">text</span><span class="o">=</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">],</span>
+                    <span class="n">embedding</span><span class="o">=</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;embedding&#39;</span><span class="p">],</span>
+                    <span class="n">text_template</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{content}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">metadata</span><span class="o">=</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">tn</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+    
+<div class="viewcode-block" id="SyncElasticsearchStore.sync_query">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.sync_query">[docs]</a>
+    <span class="k">def</span> <span class="nf">sync_query</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">query</span><span class="p">:</span> <span class="n">VectorStoreQuery</span><span class="p">,</span>
+            <span class="n">custom_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+                <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">VectorStoreQuery</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">]</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">es_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">fields</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorStoreQueryResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronously queries the Elasticsearch index for the top k most similar nodes</span>
+<span class="sd">        based on the provided query embedding. Supports custom query modifications</span>
+<span class="sd">        and application of Elasticsearch filters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query (VectorStoreQuery): The query containing the embedding and other details.</span>
+<span class="sd">            custom_query (Callable[[Dict, Union[VectorStoreQuery, None]], Dict], optional):</span>
+<span class="sd">                A custom function to modify the Elasticsearch query body. Defaults to None.</span>
+<span class="sd">            es_filter (List[Dict], optional): Additional filters to apply during the query.</span>
+<span class="sd">                If filters are present in the query, these filters will not be used. Defaults to None.</span>
+<span class="sd">            fields (List[str], optional): .</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            VectorStoreQueryResult: The result of the query, including nodes, their IDs,</span>
+<span class="sd">                                    and similarity scores.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: If the Elasticsearch query encounters an error.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The mode of the query must align with the retrieval strategy set for this store.</span>
+<span class="sd">            In case of legacy metadata, a warning is logged and nodes are constructed accordingly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_mode_must_match_retrieval_strategy</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieval_strategy</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">filters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">legacy_filters</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">filter</span> <span class="o">=</span> <span class="p">[</span><span class="n">_to_elasticsearch_filter</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">filters</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">filter</span> <span class="o">=</span> <span class="n">es_filter</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">num_candidates</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">similarity_top_k</span> <span class="o">*</span> <span class="mi">10</span> <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">similarity_top_k</span> <span class="o">&lt;=</span> <span class="mi">1000</span> <span class="k">else</span> <span class="n">query</span><span class="o">.</span><span class="n">similarity_top_k</span>
+
+        <span class="n">hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+            <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">query_str</span><span class="p">,</span>
+            <span class="n">query_vector</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">query_embedding</span><span class="p">,</span>
+            <span class="n">k</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">similarity_top_k</span><span class="p">,</span>
+            <span class="n">num_candidates</span><span class="o">=</span><span class="n">num_candidates</span><span class="p">,</span>  <span class="c1"># query.similarity_top_k * 10,</span>
+            <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span>
+            <span class="n">custom_query</span><span class="o">=</span><span class="n">custom_query</span><span class="p">,</span>
+            <span class="n">fields</span><span class="o">=</span><span class="n">fields</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_hits</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SyncElasticsearchStore.post_process_hits">
+<a class="viewcode-back" href="../../../../memoryscope.core.storage.llama_index_sync_elasticsearch.html#memoryscope.core.storage.SyncElasticsearchStore.post_process_hits">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_process_hits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">VectorStoreQueryResult</span><span class="p">:</span>
+        <span class="n">top_k_nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">top_k_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">top_k_scores</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">:</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">hit</span><span class="p">[</span><span class="s2">&quot;_source&quot;</span><span class="p">]</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">embedding</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">node_id</span> <span class="o">=</span> <span class="n">hit</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Attempt to parse metadata using the standard method</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">metadata_dict_to_node</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="c1"># Legacy support for old metadata format</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Could not parse metadata from hit </span><span class="si">{</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="n">node_info</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;node_info&quot;</span><span class="p">)</span>
+                <span class="n">relationships</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;relationships&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">start_char_idx</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">end_char_idx</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node_info</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">start_char_idx</span> <span class="o">=</span> <span class="n">node_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">end_char_idx</span> <span class="o">=</span> <span class="n">node_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                <span class="n">node</span> <span class="o">=</span> <span class="n">TextNode</span><span class="p">(</span>
+                    <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+                    <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+                    <span class="n">id_</span><span class="o">=</span><span class="n">node_id</span><span class="p">,</span>
+                    <span class="n">embedding</span><span class="o">=</span><span class="n">embedding</span><span class="p">,</span>
+                    <span class="n">start_char_idx</span><span class="o">=</span><span class="n">start_char_idx</span><span class="p">,</span>
+                    <span class="n">end_char_idx</span><span class="o">=</span><span class="n">end_char_idx</span><span class="p">,</span>
+                    <span class="n">relationships</span><span class="o">=</span><span class="n">relationships</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">top_k_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">top_k_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+            <span class="n">top_k_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_rank&quot;</span><span class="p">,</span> <span class="n">hit</span><span class="p">[</span><span class="s2">&quot;_score&quot;</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retrieval_strategy</span><span class="p">,</span> <span class="n">AsyncDenseVectorStrategy</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieval_strategy</span><span class="o">.</span><span class="n">hybrid</span>
+        <span class="p">):</span>
+            <span class="c1"># total_rank = sum(top_k_scores)</span>
+            <span class="n">top_k_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">rank</span> <span class="k">for</span> <span class="n">rank</span> <span class="ow">in</span> <span class="n">top_k_scores</span><span class="p">]</span>
+            <span class="c1"># top_k_scores = [(total_rank - rank) / total_rank for rank in top_k_scores]</span>
+            <span class="c1"># top_k_scores = [total_rank - rank / total_rank for rank in top_k_scores]</span>
+
+        <span class="k">return</span> <span class="n">VectorStoreQueryResult</span><span class="p">(</span>
+            <span class="n">nodes</span><span class="o">=</span><span class="n">top_k_nodes</span><span class="p">,</span>
+            <span class="n">ids</span><span class="o">=</span><span class="n">top_k_ids</span><span class="p">,</span>
+            <span class="c1"># similarities=_to_llama_similarities(top_k_scores),</span>
+            <span class="n">similarities</span><span class="o">=</span><span class="n">top_k_scores</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alibaba Tongyi Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
