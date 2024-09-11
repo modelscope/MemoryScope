@@ -38,7 +38,7 @@
     DASHSCOPE_API_KEY: "sk-0000000000"
     ```
 
-3. 运行 `docker-compose up` 命令来构建并启动 MemoryScope CLI 界面。
+3. 运行 `docker-compose run memory_scope_main` 命令来构建并启动 MemoryScope CLI 界面。
 
 
 ## 三、通过 PYPI 安装

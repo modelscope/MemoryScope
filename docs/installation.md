@@ -38,7 +38,7 @@
     OPENAI_API_KEY: "sk-0000000000"
     ```
 
-3. Run `docker-compose up` to build and launch the memory-scope cli interface.
+3. Run `docker-compose run memory_scope_main` to build and launch the memory-scope cli interface.
 
 
 ## III. Install from PyPI
