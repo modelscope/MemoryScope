@@ -19,21 +19,64 @@ jobs:
       uses: actions/setup-python@master
       with:
         python_version: ${{ matrix.python-version }}
+    - name: 'Choose which installer to use'
+      shell: bash
+      run: |
+        case $RUNNER_OS in
+          "Linux")
+              printf 'INSTALLER_SUFFIX=1-amd64.deb' >> $GITHUB_ENV
+              ;;
+           "macOS")
+              printf 'INSTALLER_SUFFIX=macOS.pkg' >> $GITHUB_ENV
+              ;;
+            *)
+              printf 'Do not know how to install pandoc on %s\n' "$RUNNER_OS"
+              exit 1
+              ;;
+        esac
+    - name: 'Download installer'
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        REPO: jgm/pandoc
+        DOWNLOAD_URL: 'https://github.com/jgm/pandoc/releases/download/'
+      run: |
+        gh release download ${{ inputs.version }} \
+            --repo "$REPO" \
+            --pattern '*'${{ env.INSTALLER_SUFFIX }}
+        printf 'INSTALLER_VERSION=%s' \
+               "$(ls pandoc-*-${{ env.INSTALLER_SUFFIX }} | \
+                      sed 's/pandoc-\([0-9.]*\)-.*/\1/')" \
+               >> $GITHUB_ENV
+
+    - name: 'Install pandoc'
+      shell: bash
+      env:
+        INSTALLER: pandoc-${{ env.INSTALLER_VERSION }}-${{ env.INSTALLER_SUFFIX }}
+      run: |
+        case $RUNNER_OS in
+          "Linux")
+              sudo apt install ./$INSTALLER
+              ;;
+           "macOS")
+              sudo installer -pkg ./$INSTALLER -target '/'
+              ;;
+            *)
+              echo "$RUNNER_OS not supported"
+              exit 1
+              ;;
+        esac
+        rm $INSTALLER
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r docs/sphinx_doc/requirements.txt
-    - name: Install
-      uses: pandoc/actions/setup@{main}
-      with:
-        version: 2.19
-    - id: build
       name: Build Documentation
       run: |
         cd docs/sphinx_doc
         bash build_sphinx_doc.sh
     - name: Upload Documentation
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: SphinxDoc
         path: 'docs/sphinx_doc/build/html'
