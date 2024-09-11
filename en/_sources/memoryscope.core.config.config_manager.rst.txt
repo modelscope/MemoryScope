@@ -1,5 +1,6 @@
-memoryscope.core.config.config_manager
-======================================
+memoryscope.core.config.config\_manager module
+==============================================
+
 .. automodule:: memoryscope.core.config.config_manager
    :members:
    :undoc-members:

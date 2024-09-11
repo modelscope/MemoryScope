@@ -1,5 +1,6 @@
-memoryscope.core.memoryscope
-============================
+memoryscope.core.memoryscope module
+===================================
+
 .. automodule:: memoryscope.core.memoryscope
    :members:
    :undoc-members:

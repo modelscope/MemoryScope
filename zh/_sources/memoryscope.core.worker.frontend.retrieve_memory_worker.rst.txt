@@ -1,5 +1,6 @@
-memoryscope.core.worker.frontend.retrieve_memory_worker
-=======================================================
+memoryscope.core.worker.frontend.retrieve\_memory\_worker module
+================================================================
+
 .. automodule:: memoryscope.core.worker.frontend.retrieve_memory_worker
    :members:
    :undoc-members:

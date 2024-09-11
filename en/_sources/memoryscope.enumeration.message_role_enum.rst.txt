@@ -1,5 +1,6 @@
-memoryscope.enumeration.message_role_enum
-=========================================
+memoryscope.enumeration.message\_role\_enum module
+==================================================
+
 .. automodule:: memoryscope.enumeration.message_role_enum
    :members:
    :undoc-members:

@@ -1,5 +1,23 @@
-memoryscope.core.utils
-======================
+memoryscope.core.utils package
+==============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   memoryscope.core.utils.datetime_handler
+   memoryscope.core.utils.logger
+   memoryscope.core.utils.prompt_handler
+   memoryscope.core.utils.registry
+   memoryscope.core.utils.response_text_parser
+   memoryscope.core.utils.singleton
+   memoryscope.core.utils.timer
+   memoryscope.core.utils.tool_functions
+
+Module contents
+---------------
 
 .. automodule:: memoryscope.core.utils
    :members:

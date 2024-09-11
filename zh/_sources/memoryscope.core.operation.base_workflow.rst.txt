@@ -1,5 +1,6 @@
-memoryscope.core.operation.base_workflow
-========================================
+memoryscope.core.operation.base\_workflow module
+================================================
+
 .. automodule:: memoryscope.core.operation.base_workflow
    :members:
    :undoc-members:

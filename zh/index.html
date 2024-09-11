@@ -1,6 +1,6 @@
 <!-- layout.html -->
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh">
+<html class="writer-html5" lang="zh" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -18,10 +18,12 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c65c79b5"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
@@ -99,15 +101,15 @@
            <div itemprop="articleBody">
              
   <section id="memoryscope">
-<h1>MemoryScope 文档<a class="headerlink" href="#memoryscope" title="此标题的永久链接"></a></h1>
+<h1>MemoryScope 文档<a class="headerlink" href="#memoryscope" title="Link to this heading"></a></h1>
 <section id="id1">
-<h2>欢迎浏览MemoryScope相关文档<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<h2>欢迎浏览MemoryScope相关文档<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <img alt="_images/logo.png" class="align-center" src="_images/logo.png" />
 <p>MemoryScope可以为LLM聊天机器人提供强大且灵活的长期记忆能力，并提供了构建长期记忆能力的框架。
 MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期记忆能力来不断学习，记得用户的基础信息以及各种习惯和喜好，使得用户在使用LLM时逐渐感受到一种“默契”。</p>
 <img alt="_images/framework.png" class="align-center" src="_images/framework.png" />
 <section id="id2">
-<h3>核心框架<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h3>
+<h3>核心框架<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <p>💾 记忆数据库: MemoryScope配备了向量数据库(默认是*ElasticSearch*)，用于存储系统中记录的所有记忆片段。</p>
 <p>🔧 核心worker库: MemoryScope将长期记忆的能力原子化，抽象成单独的worker，包括query信息过滤，observation抽取，insight更新等20+worker。</p>
 <p>🛠️ 核心Op库: 并基于worker的pipeline构建了memory服务的核心operation，实现了记忆检索，记忆巩固等核心能力。</p>

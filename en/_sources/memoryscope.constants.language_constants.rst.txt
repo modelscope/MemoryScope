@@ -1,5 +1,6 @@
-memoryscope.constants.language_constants
-========================================
+memoryscope.constants.language\_constants module
+================================================
+
 .. automodule:: memoryscope.constants.language_constants
    :members:
    :undoc-members:

@@ -1,5 +1,6 @@
-memoryscope.core.worker.frontend.set_query_worker
-=================================================
+memoryscope.core.worker.frontend.set\_query\_worker module
+==========================================================
+
 .. automodule:: memoryscope.core.worker.frontend.set_query_worker
    :members:
    :undoc-members:

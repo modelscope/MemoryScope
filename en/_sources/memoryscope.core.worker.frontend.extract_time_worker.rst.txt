@@ -1,5 +1,6 @@
-memoryscope.core.worker.frontend.extract_time_worker
-====================================================
+memoryscope.core.worker.frontend.extract\_time\_worker module
+=============================================================
+
 .. automodule:: memoryscope.core.worker.frontend.extract_time_worker
    :members:
    :undoc-members:

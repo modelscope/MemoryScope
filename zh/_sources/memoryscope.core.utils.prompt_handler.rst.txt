@@ -1,5 +1,6 @@
-memoryscope.core.utils.prompt_handler
-=====================================
+memoryscope.core.utils.prompt\_handler module
+=============================================
+
 .. automodule:: memoryscope.core.utils.prompt_handler
    :members:
    :undoc-members:

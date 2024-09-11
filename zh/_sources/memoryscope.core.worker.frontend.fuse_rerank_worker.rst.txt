@@ -1,5 +1,6 @@
-memoryscope.core.worker.frontend.fuse_rerank_worker
-===================================================
+memoryscope.core.worker.frontend.fuse\_rerank\_worker module
+============================================================
+
 .. automodule:: memoryscope.core.worker.frontend.fuse_rerank_worker
    :members:
    :undoc-members:

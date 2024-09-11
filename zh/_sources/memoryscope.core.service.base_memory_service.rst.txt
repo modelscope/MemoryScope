@@ -1,5 +1,6 @@
-memoryscope.core.service.base_memory_service
-============================================
+memoryscope.core.service.base\_memory\_service module
+=====================================================
+
 .. automodule:: memoryscope.core.service.base_memory_service
    :members:
    :undoc-members:

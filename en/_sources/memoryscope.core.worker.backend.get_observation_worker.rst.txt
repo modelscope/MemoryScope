@@ -1,5 +1,6 @@
-memoryscope.core.worker.backend.get_observation_worker
-======================================================
+memoryscope.core.worker.backend.get\_observation\_worker module
+===============================================================
+
 .. automodule:: memoryscope.core.worker.backend.get_observation_worker
    :members:
    :undoc-members:

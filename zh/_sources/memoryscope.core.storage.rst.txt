@@ -1,5 +1,21 @@
-memoryscope.core.storage
-========================
+memoryscope.core.storage package
+================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   memoryscope.core.storage.base_memory_store
+   memoryscope.core.storage.base_monitor
+   memoryscope.core.storage.dummy_memory_store
+   memoryscope.core.storage.dummy_monitor
+   memoryscope.core.storage.llama_index_es_memory_store
+   memoryscope.core.storage.llama_index_sync_elasticsearch
+
+Module contents
+---------------
 
 .. automodule:: memoryscope.core.storage
    :members:

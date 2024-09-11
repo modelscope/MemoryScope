@@ -1,5 +1,6 @@
-memoryscope.core.worker.backend.get_reflection_subject_worker
-=============================================================
+memoryscope.core.worker.backend.get\_reflection\_subject\_worker module
+=======================================================================
+
 .. automodule:: memoryscope.core.worker.backend.get_reflection_subject_worker
    :members:
    :undoc-members:

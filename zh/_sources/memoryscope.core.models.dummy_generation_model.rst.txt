@@ -1,5 +1,6 @@
-memoryscope.core.models.dummy_generation_model
-==============================================
+memoryscope.core.models.dummy\_generation\_model module
+=======================================================
+
 .. automodule:: memoryscope.core.models.dummy_generation_model
    :members:
    :undoc-members:

@@ -1,5 +1,28 @@
-memoryscope.core.worker
-=======================
+memoryscope.core.worker package
+===============================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   memoryscope.core.worker.backend
+   memoryscope.core.worker.frontend
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   memoryscope.core.worker.base_worker
+   memoryscope.core.worker.dummy_worker
+   memoryscope.core.worker.memory_base_worker
+   memoryscope.core.worker.memory_manager
+
+Module contents
+---------------
 
 .. automodule:: memoryscope.core.worker
    :members:

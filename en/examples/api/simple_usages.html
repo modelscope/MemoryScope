@@ -1,6 +1,6 @@
 <!-- layout.html -->
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -19,9 +19,9 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -110,11 +110,11 @@
            <div itemprop="articleBody">
              
   <section id="Example-usages-of-chat-and-service-interfaces">
-<h1>Example usages of <strong>chat</strong> and <strong>service</strong> interfaces<a class="headerlink" href="#Example-usages-of-chat-and-service-interfaces" title="Permalink to this heading"></a></h1>
+<h1>Example usages of <strong>chat</strong> and <strong>service</strong> interfaces<a class="headerlink" href="#Example-usages-of-chat-and-service-interfaces" title="Link to this heading"></a></h1>
 <p>This notebook shows simple usages of MemoryScope’s <strong>chat</strong> and <strong>service</strong> interfaces, along with its main features.</p>
 <p>Before running this notebook, follow the <a class="reference internal" href="../../docs/installation.html#iii-install-from-pypi"><span class="std std-ref">Installation</span></a> guidelines in Readme, and start the Docker image first.</p>
 <section id="Initiate-a-MemoryScope-instance">
-<h2>Initiate a MemoryScope instance<a class="headerlink" href="#Initiate-a-MemoryScope-instance" title="Permalink to this heading"></a></h2>
+<h2>Initiate a MemoryScope instance<a class="headerlink" href="#Initiate-a-MemoryScope-instance" title="Link to this heading"></a></h2>
 <p>First, we need to specify a configuration and initiate a MemoryScope instance.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -142,7 +142,7 @@ ms = MemoryScope(arguments=arguments)
 </div>
 </section>
 <section id="Chat-without-memory">
-<h2>Chat without memory<a class="headerlink" href="#Chat-without-memory" title="Permalink to this heading"></a></h2>
+<h2>Chat without memory<a class="headerlink" href="#Chat-without-memory" title="Link to this heading"></a></h2>
 <p>MemoryScope comes with a default <strong>chat</strong> interface, so it’s very easy to start chatting, just as what you’ll do with any LLM chatbot.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -191,7 +191,7 @@ I&#39;m sorry, but as MemoryScope, I don&#39;t have access to personal informati
 </div>
 </section>
 <section id="Memory-Consolidation">
-<h2>Memory Consolidation<a class="headerlink" href="#Memory-Consolidation" title="Permalink to this heading"></a></h2>
+<h2>Memory Consolidation<a class="headerlink" href="#Memory-Consolidation" title="Link to this heading"></a></h2>
 <p>Now, we do a bit more chatting and then try out <strong>Memory Consolidation</strong>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -403,7 +403,7 @@ new observation: user doesn&#39;t like eating coconuts (valid)
 </div>
 </section>
 <section id="Reflection-and-Re-Consolidation">
-<h2>Reflection and Re-Consolidation<a class="headerlink" href="#Reflection-and-Re-Consolidation" title="Permalink to this heading"></a></h2>
+<h2>Reflection and Re-Consolidation<a class="headerlink" href="#Reflection-and-Re-Consolidation" title="Link to this heading"></a></h2>
 <p>Now, we have accumulated enough new <em>observations</em> in the system, so we can call <strong>Reflection and Re-Consolidation</strong>, let’s see what will it get.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -440,7 +440,7 @@ modified observation: user doesn&#39;t like eating coconuts (valid)
 </div>
 </section>
 <section id="Low-response-time-(RT)-for-the-user">
-<h2>Low response-time (RT) for the user<a class="headerlink" href="#Low-response-time-(RT)-for-the-user" title="Permalink to this heading"></a></h2>
+<h2>Low response-time (RT) for the user<a class="headerlink" href="#Low-response-time-(RT)-for-the-user" title="Link to this heading"></a></h2>
 <p>Finally, we test the RT of MemoryScope system for the user. Specifically, we test the difference of RT when responding with and without retrieving memory pieces from the system.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -520,7 +520,7 @@ I&#39;m sorry, but as an AI, I don&#39;t have access to personal schedules or in
 <p>We can see responding with retrieving memory pieces from MemoryScope does not increase RT.</p>
 </section>
 <section id="More-Examples">
-<h2>More Examples<a class="headerlink" href="#More-Examples" title="Permalink to this heading"></a></h2>
+<h2>More Examples<a class="headerlink" href="#More-Examples" title="Link to this heading"></a></h2>
 <p>We direct the reader to <a class="reference internal" href="../advance/custom_operator.html"><span class="doc">Advanced Customization</span></a> for guidance on customizing the various settings of the MemoryScope system. It is also possible to create or customize your own MemoryScope <strong>operations</strong> by specifying a <strong>workflow</strong> and the corresponding <strong>workers</strong> that best meet your specific needs.</p>
 <p>Additionally, you can also try out the <a class="reference internal" href="../cli/CLI_README.html"><span class="doc">CLI with a MemoryScope Chatbot</span></a>. We have implemented the chatbot so that the <strong>Memory Consolidation</strong> and <strong>Reflection and Re-Consolidation</strong> operations are always run asynchronously in the backend, ensuring that they do not incur any response time for the user.</p>
 </section>

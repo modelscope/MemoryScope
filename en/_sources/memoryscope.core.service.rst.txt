@@ -1,5 +1,17 @@
-memoryscope.core.service
-========================
+memoryscope.core.service package
+================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   memoryscope.core.service.base_memory_service
+   memoryscope.core.service.memory_scope_service
+
+Module contents
+---------------
 
 .. automodule:: memoryscope.core.service
    :members:

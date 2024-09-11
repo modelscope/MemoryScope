@@ -1,5 +1,6 @@
-memoryscope.enumeration.memory_type_enum
-========================================
+memoryscope.enumeration.memory\_type\_enum module
+=================================================
+
 .. automodule:: memoryscope.enumeration.memory_type_enum
    :members:
    :undoc-members:

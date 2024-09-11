@@ -1,5 +1,6 @@
-memoryscope.core.worker.dummy_worker
-====================================
+memoryscope.core.worker.dummy\_worker module
+============================================
+
 .. automodule:: memoryscope.core.worker.dummy_worker
    :members:
    :undoc-members:

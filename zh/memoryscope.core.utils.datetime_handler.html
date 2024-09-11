@@ -1,11 +1,11 @@
 <!-- layout.html -->
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh">
+<html class="writer-html5" lang="zh" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>memoryscope.core.utils.datetime_handler &mdash; MemoryScope  文档</title>
+  <title>memoryscope.core.utils.datetime_handler module &mdash; MemoryScope  文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
@@ -18,9 +18,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c65c79b5"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
@@ -86,7 +86,7 @@
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">memoryscope.core.utils.datetime_handler</li>
+      <li class="breadcrumb-item active">memoryscope.core.utils.datetime_handler module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/memoryscope.core.utils.datetime_handler.rst.txt" rel="nofollow"> 查看页面源码</a>
       </li>
@@ -96,8 +96,232 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-utils-datetime-handler">
-<h1>memoryscope.core.utils.datetime_handler<a class="headerlink" href="#memoryscope-core-utils-datetime-handler" title="此标题的永久链接"></a></h1>
+  <section id="module-memoryscope.core.utils.datetime_handler">
+<span id="memoryscope-core-utils-datetime-handler-module"></span><h1>memoryscope.core.utils.datetime_handler module<a class="headerlink" href="#module-memoryscope.core.utils.datetime_handler" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.utils.datetime_handler.</span></span><span class="sig-name descname"><span class="pre">DatetimeHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles operations related to datetime such as parsing, extraction, and formatting,
+with support for both Chinese and English contexts including weekday names and
+specialized text parsing for date components.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize the DatetimeHandler instance with a datetime object, string, integer, or float representation
+of a timestamp. If no argument is provided, the current time is used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> (<em>datetime.datetime</em><em> | </em><em>str</em><em> | </em><em>int</em><em> | </em><em>float</em><em>, </em><em>optional</em>) -- The datetime to be handled. Can be a datetime object, a timestamp string, or a numeric timestamp.
+Defaults to None, which sets the instance to the current datetime.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.self._dt">
+<span class="sig-prename descclassname"><span class="pre">self.</span></span><span class="sig-name descname"><span class="pre">_dt</span></span><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.self._dt" title="Link to this definition"></a></dt>
+<dd><p>The internal datetime representation of the input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime.datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.self._dt_info_dict">
+<span class="sig-prename descclassname"><span class="pre">self.</span></span><span class="sig-name descname"><span class="pre">_dt_info_dict</span></span><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.self._dt_info_dict" title="Link to this definition"></a></dt>
+<dd><p>A dictionary containing parsed datetime information, defaults to None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.get_dt_info_dict">
+<span class="sig-name descname"><span class="pre">get_dt_info_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.get_dt_info_dict"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.get_dt_info_dict" title="Link to this definition"></a></dt>
+<dd><p>Property method to get the dictionary containing parsed datetime information.
+If None, initialize using <cite>_parse_dt_info</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary with parsed datetime information.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.extract_date_parts_cn">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_date_parts_cn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.extract_date_parts_cn"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.extract_date_parts_cn" title="Link to this definition"></a></dt>
+<dd><p>Extracts various components of a date (year, month, day, etc.) from an input string based on Chinese formats.</p>
+<p>This method identifies year, month, day, weekday, and hour components within the input
+string based on predefined patterns. It supports relative terms like '每' (every) and
+translates weekday names into numeric representations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_string</strong> (<em>str</em>) -- The Chinese text containing date and time information.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A dictionary with keys 'year', 'month', 'day', 'weekday', and 'hour',</dt><dd><p>each holding the corresponding extracted value. If a component is not found,
+it will not be included in the dictionary. For relative terms like '每' (every),
+the value is set to -1.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.extract_date_parts_en">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_date_parts_en</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.extract_date_parts_en"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.extract_date_parts_en" title="Link to this definition"></a></dt>
+<dd><p>Extracts various components of a date (year, month, day, etc.) from an input string based on English formats.</p>
+<p>This method employs regex patterns to identify and parse different date and time elements within the provided
+text. It supports extraction of year, month name, day, 12-hour and 24-hour time formats, and weekdays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_string</strong> (<em>str</em>) -- The English text containing date and time information.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing the extracted date parts with default values of -1 where components are not
+found. Keys include 'year', 'month', 'day', 'hour', 'minute', 'second', and 'weekday'.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.extract_date_parts">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_date_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.extract_date_parts"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.extract_date_parts" title="Link to this definition"></a></dt>
+<dd><p>Extracts various date components from the input string based on the current language context.</p>
+<p>This method dynamically selects a language-specific function to parse the input string and extract
+date parts such as year, month, day, etc. If the function for current language context does not exist,
+a warning is logged and an empty dictionary is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_string</strong> (<em>str</em>) -- The string containing date information to be parsed.</p></li>
+<li><p><strong>language</strong> (<em>str</em>) -- current language.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing extracted date components, or an empty dictionary if parsing fails.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.has_time_word_cn">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_time_word_cn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_word_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.has_time_word_cn"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.has_time_word_cn" title="Link to this definition"></a></dt>
+<dd><p>Check if the input query contains any datetime-related words based on the cn language context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) -- The input string to check for datetime-related words.</p></li>
+<li><p><strong>datetime_word_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) -- datetime keywords</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the query contains at least one datetime-related word, False otherwise.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.has_time_word_en">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_time_word_en</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_word_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.has_time_word_en"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.has_time_word_en" title="Link to this definition"></a></dt>
+<dd><p>Check if the input query contains any datetime-related words based on the en language context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) -- The input string to check for datetime-related words.</p></li>
+<li><p><strong>datetime_word_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) -- datetime keywords</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the query contains at least one datetime-related word, False otherwise.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.has_time_word">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_time_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.has_time_word"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.has_time_word" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.datetime_format">
+<span class="sig-name descname"><span class="pre">datetime_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'%Y%m%d'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.datetime_format"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.datetime_format" title="Link to this definition"></a></dt>
+<dd><p>Format the stored datetime object into a string based on the provided format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt_format</strong> (<em>str</em><em>, </em><em>optional</em>) -- The datetime format string. Defaults to &quot;%Y%m%d&quot;.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A formatted datetime string.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.string_format">
+<span class="sig-name descname"><span class="pre">string_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memoryscope.enumeration.language_enum.html#memoryscope.enumeration.language_enum.LanguageEnum" title="memoryscope.enumeration.language_enum.LanguageEnum"><span class="pre">LanguageEnum</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/memoryscope/core/utils/datetime_handler.html#DatetimeHandler.string_format"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.string_format" title="Link to this definition"></a></dt>
+<dd><p>Format the datetime information stored in the instance using a custom string format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string_format</strong> (<em>str</em>) -- A format string where placeholders are keys from <cite>dt_info_dict</cite>.</p></li>
+<li><p><strong>language</strong> (<em>str</em>) -- current language.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A formatted datetime string.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="memoryscope.core.utils.datetime_handler.DatetimeHandler.timestamp">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#memoryscope.core.utils.datetime_handler.DatetimeHandler.timestamp" title="Link to this definition"></a></dt>
+<dd><p>Get the timestamp representation of the stored datetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A timestamp value.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

@@ -1,5 +1,32 @@
-memoryscope.core
-================
+memoryscope.core package
+========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   memoryscope.core.chat
+   memoryscope.core.config
+   memoryscope.core.models
+   memoryscope.core.operation
+   memoryscope.core.service
+   memoryscope.core.storage
+   memoryscope.core.utils
+   memoryscope.core.worker
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   memoryscope.core.memoryscope
+   memoryscope.core.memoryscope_context
+
+Module contents
+---------------
 
 .. automodule:: memoryscope.core
    :members:

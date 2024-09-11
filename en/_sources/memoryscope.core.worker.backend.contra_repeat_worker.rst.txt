@@ -1,5 +1,6 @@
-memoryscope.core.worker.backend.contra_repeat_worker
-====================================================
+memoryscope.core.worker.backend.contra\_repeat\_worker module
+=============================================================
+
 .. automodule:: memoryscope.core.worker.backend.contra_repeat_worker
    :members:
    :undoc-members:

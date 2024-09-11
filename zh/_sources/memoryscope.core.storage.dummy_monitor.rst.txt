@@ -1,5 +1,6 @@
-memoryscope.core.storage.dummy_monitor
-======================================
+memoryscope.core.storage.dummy\_monitor module
+==============================================
+
 .. automodule:: memoryscope.core.storage.dummy_monitor
    :members:
    :undoc-members:

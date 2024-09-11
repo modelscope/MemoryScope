@@ -1,5 +1,6 @@
-memoryscope.core.worker.frontend.semantic_rank_worker
-=====================================================
+memoryscope.core.worker.frontend.semantic\_rank\_worker module
+==============================================================
+
 .. automodule:: memoryscope.core.worker.frontend.semantic_rank_worker
    :members:
    :undoc-members:

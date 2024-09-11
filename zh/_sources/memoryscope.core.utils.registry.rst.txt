@@ -1,5 +1,6 @@
-memoryscope.core.utils.registry
-===============================
+memoryscope.core.utils.registry module
+======================================
+
 .. automodule:: memoryscope.core.utils.registry
    :members:
    :undoc-members:

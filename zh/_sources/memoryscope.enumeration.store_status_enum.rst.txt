@@ -1,5 +1,6 @@
-memoryscope.enumeration.store_status_enum
-=========================================
+memoryscope.enumeration.store\_status\_enum module
+==================================================
+
 .. automodule:: memoryscope.enumeration.store_status_enum
    :members:
    :undoc-members:

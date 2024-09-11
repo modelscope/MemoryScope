@@ -1,5 +1,6 @@
-memoryscope.core.storage.base_memory_store
-==========================================
+memoryscope.core.storage.base\_memory\_store module
+===================================================
+
 .. automodule:: memoryscope.core.storage.base_memory_store
    :members:
    :undoc-members:

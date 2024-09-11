@@ -1,5 +1,20 @@
-memoryscope.core.operation
-==========================
+memoryscope.core.operation package
+==================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   memoryscope.core.operation.backend_operation
+   memoryscope.core.operation.base_operation
+   memoryscope.core.operation.base_workflow
+   memoryscope.core.operation.consolidate_memory_op
+   memoryscope.core.operation.frontend_operation
+
+Module contents
+---------------
 
 .. automodule:: memoryscope.core.operation
    :members:

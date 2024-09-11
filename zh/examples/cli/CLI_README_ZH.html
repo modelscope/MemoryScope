@@ -1,6 +1,6 @@
 <!-- layout.html -->
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh">
+<html class="writer-html5" lang="zh" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -18,9 +18,9 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c65c79b5"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/documentation_options.js?v=2ccfc426"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
@@ -106,20 +106,20 @@
            <div itemprop="articleBody">
              
   <section id="memoryscope">
-<h1>MemoryScope 的命令行接口<a class="headerlink" href="#memoryscope" title="此标题的永久链接"></a></h1>
+<h1>MemoryScope 的命令行接口<a class="headerlink" href="#memoryscope" title="Link to this heading"></a></h1>
 <section id="id1">
-<h2>使用方法<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<h2>使用方法<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <p>在运行之前，请先按照 Readme 中的 <a class="reference internal" href="#../../docs/installation_zh.md#%E4%B8%89%E9%80%9A%E8%BF%87-pypi-%E5%AE%89%E8%A3%85"><span class="xref myst"><strong>Installation</strong></span></a> 指南进行安装，并启动 Docker 镜像。
 MemoryScope 可以通过两种不同的方式启动：</p>
 <section id="yaml">
-<h3>1. 使用 YAML 配置文件<a class="headerlink" href="#yaml" title="此标题的永久链接"></a></h3>
+<h3>1. 使用 YAML 配置文件<a class="headerlink" href="#yaml" title="Link to this heading"></a></h3>
 <p>如果您更喜欢通过 YAML 文件配置设置，可以通过提供配置文件的路径来实现：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>memoryscope<span class="w"> </span>--config_path<span class="o">=</span>memoryscope/core/config/demo_config_zh.yaml
 </pre></div>
 </div>
 </section>
 <section id="id2">
-<h3>2. 使用命令行参数<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h3>
+<h3>2. 使用命令行参数<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <p>或者，您可以直接在命令行上指定所有参数：</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 中文</span>
 <span class="n">memoryscope</span> <span class="o">--</span><span class="n">language</span><span class="o">=</span><span class="s2">&quot;cn&quot;</span> \

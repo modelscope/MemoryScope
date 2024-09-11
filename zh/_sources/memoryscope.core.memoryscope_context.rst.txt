@@ -1,5 +1,6 @@
-memoryscope.core.memoryscope_context
-====================================
+memoryscope.core.memoryscope\_context module
+============================================
+
 .. automodule:: memoryscope.core.memoryscope_context
    :members:
    :undoc-members:

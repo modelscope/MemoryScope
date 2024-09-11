@@ -1,5 +1,6 @@
-memoryscope.enumeration.language_enum
-=====================================
+memoryscope.enumeration.language\_enum module
+=============================================
+
 .. automodule:: memoryscope.enumeration.language_enum
    :members:
    :undoc-members:

@@ -1,6 +1,6 @@
 <!-- layout.html -->
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -111,10 +111,10 @@
            <div itemprop="articleBody">
              
   <section id="contribute-to-memoryscope">
-<h1>Contribute to MemoryScope<a class="headerlink" href="#contribute-to-memoryscope" title="Permalink to this heading"></a></h1>
+<h1>Contribute to MemoryScope<a class="headerlink" href="#contribute-to-memoryscope" title="Link to this heading"></a></h1>
 <p>Our community thrives on the diverse ideas and contributions of its members. Whether you’re fixing a bug, adding a new feature, improving the documentation,  or adding examples, your help is welcome. Here’s how you can contribute:</p>
 <section id="report-bugs-and-ask-for-new-features">
-<h2>Report Bugs and Ask For New Features?<a class="headerlink" href="#report-bugs-and-ask-for-new-features" title="Permalink to this heading"></a></h2>
+<h2>Report Bugs and Ask For New Features?<a class="headerlink" href="#report-bugs-and-ask-for-new-features" title="Link to this heading"></a></h2>
 <p>Did you find a bug or have a feature request? Please first check the issue tracker to see if it has already been reported. If not, feel free to open a new issue. Include as much detail as possible:</p>
 <ul class="simple">
 <li><p>A descriptive title</p></li>
@@ -125,9 +125,9 @@
 </ul>
 </section>
 <section id="contribute-to-codebase">
-<h2>Contribute to Codebase<a class="headerlink" href="#contribute-to-codebase" title="Permalink to this heading"></a></h2>
+<h2>Contribute to Codebase<a class="headerlink" href="#contribute-to-codebase" title="Link to this heading"></a></h2>
 <section id="fork-and-clone-the-repository">
-<h3>Fork and Clone the Repository<a class="headerlink" href="#fork-and-clone-the-repository" title="Permalink to this heading"></a></h3>
+<h3>Fork and Clone the Repository<a class="headerlink" href="#fork-and-clone-the-repository" title="Link to this heading"></a></h3>
 <p>To work on an issue or a new feature, start by forking the MemoryScope repository and then cloning your fork locally.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/your-username/memoryscope.git
 <span class="nb">cd</span><span class="w"> </span>memoryscope
@@ -135,14 +135,14 @@
 </div>
 </section>
 <section id="create-a-new-branch">
-<h3>Create a New Branch<a class="headerlink" href="#create-a-new-branch" title="Permalink to this heading"></a></h3>
+<h3>Create a New Branch<a class="headerlink" href="#create-a-new-branch" title="Link to this heading"></a></h3>
 <p>Create a new branch for your work. This helps keep proposed changes organized and separate from the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>your-feature-branch-name
 </pre></div>
 </div>
 </section>
 <section id="making-changes">
-<h3>Making Changes<a class="headerlink" href="#making-changes" title="Permalink to this heading"></a></h3>
+<h3>Making Changes<a class="headerlink" href="#making-changes" title="Link to this heading"></a></h3>
 <p>With your new branch checked out, you can now make your changes to the code. Remember to keep your changes as focused as possible. If you’re addressing multiple issues or features, it’s better to create separate branches and pull requests for each.
 We provide a developer version with additional <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> hooks to perform format checks compared to the official version:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install the developer version</span>
@@ -153,7 +153,7 @@ pre-commit<span class="w"> </span>install
 </div>
 </section>
 <section id="commit-your-changes">
-<h3>Commit Your Changes<a class="headerlink" href="#commit-your-changes" title="Permalink to this heading"></a></h3>
+<h3>Commit Your Changes<a class="headerlink" href="#commit-your-changes" title="Link to this heading"></a></h3>
 <p>Once you’ve made your changes, it’s time to commit them. Write clear and concise commit messages that explain your changes.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>-A
 git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;A brief description of the changes&quot;</span>
@@ -162,12 +162,12 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <p>You might get some error messages raised by <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code>. Please resolve them according to the error code and commit again.</p>
 </section>
 <section id="submit-a-pull-request">
-<h3>Submit a Pull Request<a class="headerlink" href="#submit-a-pull-request" title="Permalink to this heading"></a></h3>
+<h3>Submit a Pull Request<a class="headerlink" href="#submit-a-pull-request" title="Link to this heading"></a></h3>
 <p>When you’re ready for feedback, submit a pull request to the MemoryScope <code class="docutils literal notranslate"><span class="pre">main</span></code> branch. In your pull request description, explain the changes you’ve made and any other relevant context.
 We will review your pull request. This process might involve some discussion, additional changes on your part, or both.</p>
 </section>
 <section id="code-review">
-<h3>Code Review<a class="headerlink" href="#code-review" title="Permalink to this heading"></a></h3>
+<h3>Code Review<a class="headerlink" href="#code-review" title="Link to this heading"></a></h3>
 <p>Wait for us to review your pull request. We may suggest some changes or improvements. Keep an eye on your GitHub notifications and be responsive to any feedback.</p>
 </section>
 </section>

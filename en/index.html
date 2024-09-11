@@ -1,6 +1,6 @@
 <!-- layout.html -->
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -18,10 +18,12 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -99,16 +101,16 @@
            <div itemprop="articleBody">
              
   <section id="memoryscope-documentation">
-<h1>MemoryScope Documentation<a class="headerlink" href="#memoryscope-documentation" title="Permalink to this heading"></a></h1>
+<h1>MemoryScope Documentation<a class="headerlink" href="#memoryscope-documentation" title="Link to this heading"></a></h1>
 <section id="welcome-to-memoryscope-tutorial">
-<h2>Welcome to MemoryScope Tutorial<a class="headerlink" href="#welcome-to-memoryscope-tutorial" title="Permalink to this heading"></a></h2>
+<h2>Welcome to MemoryScope Tutorial<a class="headerlink" href="#welcome-to-memoryscope-tutorial" title="Link to this heading"></a></h2>
 <img alt="_images/logo.png" class="align-center" src="_images/logo.png" />
 <p>MemoryScope provides LLM chatbots with powerful and flexible long-term memory capabilities, offering a framework for building such abilities.
 It can be applied to scenarios like personal assistants and emotional companions, continuously learning through long-term memory to remember users’ basic information as well as various habits and preferences.
 This allows users to gradually experience a sense of “understanding” when using the LLM.</p>
 <img alt="_images/framework.png" class="align-center" src="_images/framework.png" />
 <section id="framework">
-<h3>Framework<a class="headerlink" href="#framework" title="Permalink to this heading"></a></h3>
+<h3>Framework<a class="headerlink" href="#framework" title="Link to this heading"></a></h3>
 <p>💾 Memory Database: MemoryScope is equipped with a vector database (default is <em>ElasticSearch</em>) to store all memory fragments recorded in the system.</p>
 <p>🔧 Worker Library: MemoryScope atomizes the capabilities of long-term memory into individual workers, including over 20 workers for tasks such as query information filtering, observation extraction, and insight updating.</p>
 <p>🛠️ Operation Library: Based on the worker pipeline, it constructs the operations for memory services, realizing key capabilities such as memory retrieval and memory consolidation.</p>

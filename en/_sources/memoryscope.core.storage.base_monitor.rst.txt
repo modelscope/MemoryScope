@@ -1,5 +1,6 @@
-memoryscope.core.storage.base_monitor
-=====================================
+memoryscope.core.storage.base\_monitor module
+=============================================
+
 .. automodule:: memoryscope.core.storage.base_monitor
    :members:
    :undoc-members:

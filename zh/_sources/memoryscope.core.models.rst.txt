@@ -1,5 +1,20 @@
-memoryscope.core.models
-=======================
+memoryscope.core.models package
+===============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   memoryscope.core.models.base_model
+   memoryscope.core.models.dummy_generation_model
+   memoryscope.core.models.llama_index_embedding_model
+   memoryscope.core.models.llama_index_generation_model
+   memoryscope.core.models.llama_index_rank_model
+
+Module contents
+---------------
 
 .. automodule:: memoryscope.core.models
    :members:

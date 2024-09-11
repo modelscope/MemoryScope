@@ -1,6 +1,6 @@
 <!-- layout.html -->
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -19,9 +19,9 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -100,11 +100,11 @@
            <div itemprop="articleBody">
              
   <section id="chat-和-service-接口的示例用法">
-<h1>chat 和 service 接口的示例用法<a class="headerlink" href="#chat-和-service-接口的示例用法" title="Permalink to this heading"></a></h1>
+<h1>chat 和 service 接口的示例用法<a class="headerlink" href="#chat-和-service-接口的示例用法" title="Link to this heading"></a></h1>
 <p>这个笔记本展示了 MemoryScope 的 <strong>chat</strong> 和 <strong>service</strong> 接口的简单用法，以及它的主要功能。</p>
 <p>在运行这个笔记本之前，请先按照 Readme 中的 <a class="reference external" href="../../docs/installation_zh.md#三通过-pypi-安装">Installation</a> 指南进行安装，并启动 Docker 镜像。</p>
 <section id="初始化一个-MemoryScope-实例">
-<h2>初始化一个 MemoryScope 实例<a class="headerlink" href="#初始化一个-MemoryScope-实例" title="Permalink to this heading"></a></h2>
+<h2>初始化一个 MemoryScope 实例<a class="headerlink" href="#初始化一个-MemoryScope-实例" title="Link to this heading"></a></h2>
 <p>首先，我们需要指定一个配置并初始化一个 MemoryScope 实例。</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -130,7 +130,7 @@ ms = MemoryScope(arguments=arguments)
 </div>
 </section>
 <section id="聊天（不含记忆）">
-<h2>聊天（不含记忆）<a class="headerlink" href="#聊天（不含记忆）" title="Permalink to this heading"></a></h2>
+<h2>聊天（不含记忆）<a class="headerlink" href="#聊天（不含记忆）" title="Link to this heading"></a></h2>
 <p>MemoryScope 配有默认的 chat 接口，因此开始聊天非常容易，就像使用任何大型语言模型聊天机器人一样。</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -179,7 +179,7 @@ print(&quot;回答3：\n&quot; + response.message.content)
 </div>
 </section>
 <section id="记忆巩固">
-<h2><strong>记忆巩固</strong><a class="headerlink" href="#记忆巩固" title="Permalink to this heading"></a></h2>
+<h2><strong>记忆巩固</strong><a class="headerlink" href="#记忆巩固" title="Link to this heading"></a></h2>
 <p>现在，我们再聊多几句，然后尝试<strong>记忆巩固</strong>功能。</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -378,7 +378,7 @@ modified observation: 用户最近跳槽至美团。 (expired)
 </div>
 </section>
 <section id="反思与再巩固">
-<h2><strong>反思与再巩固</strong><a class="headerlink" href="#反思与再巩固" title="Permalink to this heading"></a></h2>
+<h2><strong>反思与再巩固</strong><a class="headerlink" href="#反思与再巩固" title="Link to this heading"></a></h2>
 <p>现在，我们在系统中已经积累了足够多的新的 <em>observations</em> ，因此我们可以调用<strong>反思与再巩固</strong>功能，让我们看看会得到什么。</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -411,7 +411,7 @@ modified observation: 用户的同学李亚平下个月回上海，用户将与�
 </div>
 </section>
 <section id="低用户时延（RT）">
-<h2>低用户时延（RT）<a class="headerlink" href="#低用户时延（RT）" title="Permalink to this heading"></a></h2>
+<h2>低用户时延（RT）<a class="headerlink" href="#低用户时延（RT）" title="Link to this heading"></a></h2>
 <p>最后，我们测试 MemoryScope 系统对用户的响应时间 (RT)。具体来说，我们测试在有和没有从系统中检索记忆片段时聊天的响应时间的差异。</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -489,7 +489,7 @@ print(&quot;不使用记忆检索\n回答21：\n&quot; + response.message.conten
 <p>我们可以看到，从 MemoryScope 检索记忆片段不会增加聊天的响应时间。</p>
 </section>
 <section id="更多用法">
-<h2>更多用法<a class="headerlink" href="#更多用法" title="Permalink to this heading"></a></h2>
+<h2>更多用法<a class="headerlink" href="#更多用法" title="Link to this heading"></a></h2>
 <p>我们建议读者参考<a class="reference internal" href="../advance/custom_operator_zh.html"><span class="doc">进阶自定义用法</span></a>来对MemoryScope系统进行各种自定义设置。您还可以通过自定义<strong>workflow</strong>和对应的<strong>worker</strong>来创建或定制满足您特定需求的<strong>operation</strong>。</p>
 <p>此外，您还可以尝试使用<a class="reference internal" href="../cli/CLI_README_ZH.html"><span class="doc">在命令行与MemoryScope聊天机器人交互</span></a>。我们在这里实现了始终在后台异步运行<strong>记忆巩固</strong>和<strong>反思与再巩固</strong>这两个操作，从而使得它们不会增加聊天的响应时间。</p>
 </section>
