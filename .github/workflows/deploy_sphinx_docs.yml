@@ -7,7 +7,7 @@ on:
       - 'docs/sphinx_doc/**/*'
   push:
     branches:
-      - main
+      - sphinxdoc_page
 
 jobs:
   pages:
@@ -23,6 +23,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r docs/sphinx_doc/requirements.txt
+    - name: Install
+      uses: pandoc/actions/setup@{main}
+      with:
+        version: 2.19
     - id: build
       name: Build Documentation
       run: |
