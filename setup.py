@@ -54,7 +54,7 @@ authors = [
 
 setuptools.setup(
     name="memoryscope",
-    version="0.1.0.10",
+    version="0.1.1.0",
     author=', '.join([author['name'] for author in authors]),
     author_email=', '.join([author['email'] for author in authors]),
     description="MemoryScope is a powerful and flexible long term memory system for LLM chatbots. It consists of a "
