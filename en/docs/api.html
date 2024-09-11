@@ -24,7 +24,8 @@
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Contribute to MemoryScope" href="contribution.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -60,8 +61,29 @@
 <li class="toctree-l1"><a class="reference internal" href="contribution.html">Contribution</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../memoryscope.html">memoryscope</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Enumeration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#memoryscope.enumeration.ActionStatusEnum"><code class="docutils literal notranslate"><span class="pre">ActionStatusEnum</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#memoryscope.enumeration.LanguageEnum"><code class="docutils literal notranslate"><span class="pre">LanguageEnum</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#memoryscope.enumeration.MemoryTypeEnum"><code class="docutils literal notranslate"><span class="pre">MemoryTypeEnum</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#memoryscope.enumeration.MessageRoleEnum"><code class="docutils literal notranslate"><span class="pre">MessageRoleEnum</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#memoryscope.enumeration.ModelEnum"><code class="docutils literal notranslate"><span class="pre">ModelEnum</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#memoryscope.enumeration.StoreStatusEnum"><code class="docutils literal notranslate"><span class="pre">StoreStatusEnum</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#worker">Worker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#base">Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#frontend">Frontend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend">Backend</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#chat">Chat</a></li>
 </ul>
 
         </div>
@@ -89,8 +111,74 @@
            <div itemprop="articleBody">
              
   <p id="api">MemoryScope API Documentation</p>
-<section id="enumeration">
-<h1>Enumeration<a class="headerlink" href="#enumeration" title="Permalink to this heading"></a></h1>
+<section id="module-memoryscope.enumeration">
+<span id="enumeration"></span><h1>Enumeration<a class="headerlink" href="#module-memoryscope.enumeration" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ActionStatusEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">ActionStatusEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/memoryscope/enumeration/action_status_enum.html#ActionStatusEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.ActionStatusEnum" title="Permalink to this definition"></a></dt>
+<dd><p>Enumeration representing various statuses of a memory node.</p>
+<p>Each status reflects a different state of the node in terms of its lifecycle or content:
+- NEW: Indicates a newly created node.
+- MODIFIED: Signifies that the node has been altered.
+- CONTENT_MODIFIED: Specifies changes in the actual content of the node.
+- NONE: do nothing.
+- DELETE: delete memories.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.LanguageEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">LanguageEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/memoryscope/enumeration/language_enum.html#LanguageEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.LanguageEnum" title="Permalink to this definition"></a></dt>
+<dd><p>An enumeration representing supported languages.</p>
+<dl class="simple">
+<dt>Members:</dt><dd><ul class="simple">
+<li><p>CN: Represents the Chinese language.</p></li>
+<li><p>EN: Represents the English language.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MemoryTypeEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">MemoryTypeEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/memoryscope/enumeration/memory_type_enum.html#MemoryTypeEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.MemoryTypeEnum" title="Permalink to this definition"></a></dt>
+<dd><p>Defines an enumeration for different types of memory categories.</p>
+<p>Each member represents a distinct type of memory content:
+- CONVERSATION: Represents conversation-based memories.
+- OBSERVATION: Denotes observational memories.
+- INSIGHT: Indicates insightful memories derived from analysis.
+- OBS_CUSTOMIZED: Customized observational memories.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MessageRoleEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">MessageRoleEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/memoryscope/enumeration/message_role_enum.html#MessageRoleEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.MessageRoleEnum" title="Permalink to this definition"></a></dt>
+<dd><p>Enumeration for different message roles within a conversation context.</p>
+<p>This enumeration includes predefined roles such as User, Assistant, and System,
+which can be used to categorize messages in chat interfaces, AI interactions, or
+any system that involves distinct participant roles.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ModelEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">ModelEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/memoryscope/enumeration/model_enum.html#ModelEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.ModelEnum" title="Permalink to this definition"></a></dt>
+<dd><p>An enumeration representing different types of models used within the system.</p>
+<dl>
+<dt>Members:</dt><dd><p>GENERATION_MODEL: Represents a model responsible for generating content.
+EMBEDDING_MODEL: Represents a model tasked with creating embeddings, typically used for transforming data into a</p>
+<blockquote>
+<div><p>numerical form suitable for machine learning tasks.</p>
+</div></blockquote>
+<p>RANK_MODEL: Denotes a model that specializes in ranking, often used to order items based on relevance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.StoreStatusEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">StoreStatusEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/memoryscope/enumeration/store_status_enum.html#StoreStatusEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.StoreStatusEnum" title="Permalink to this definition"></a></dt>
+<dd><p>An enumeration.</p>
+</dd></dl>
+
 </section>
 <section id="scheme">
 <h1>Scheme<a class="headerlink" href="#scheme" title="Permalink to this heading"></a></h1>
@@ -129,7 +217,9 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="contribution.html" class="btn btn-neutral float-left" title="Contribute to MemoryScope" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

@@ -61,7 +61,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.html">memoryscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
 </ul>
 
         </div>
@@ -88,8 +96,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-enumeration-model-enum">
-<h1>memoryscope.enumeration.model_enum<a class="headerlink" href="#memoryscope-enumeration-model-enum" title="Permalink to this heading"></a></h1>
+  <section id="module-memoryscope.enumeration.model_enum">
+<span id="memoryscope-enumeration-model-enum"></span><h1>memoryscope.enumeration.model_enum<a class="headerlink" href="#module-memoryscope.enumeration.model_enum" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.model_enum.ModelEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.model_enum.</span></span><span class="sig-name descname"><span class="pre">ModelEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/enumeration/model_enum.html#ModelEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.model_enum.ModelEnum" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration representing different types of models used within the system.</p>
+<dl>
+<dt>Members:</dt><dd><p>GENERATION_MODEL: Represents a model responsible for generating content.
+EMBEDDING_MODEL: Represents a model tasked with creating embeddings, typically used for transforming data into a</p>
+<blockquote>
+<div><p>numerical form suitable for machine learning tasks.</p>
+</div></blockquote>
+<p>RANK_MODEL: Denotes a model that specializes in ranking, often used to order items based on relevance.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.model_enum.ModelEnum.GENERATION_MODEL">
+<span class="sig-name descname"><span class="pre">GENERATION_MODEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'generation_model'</span></em><a class="headerlink" href="#memoryscope.enumeration.model_enum.ModelEnum.GENERATION_MODEL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.model_enum.ModelEnum.EMBEDDING_MODEL">
+<span class="sig-name descname"><span class="pre">EMBEDDING_MODEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'embedding_model'</span></em><a class="headerlink" href="#memoryscope.enumeration.model_enum.ModelEnum.EMBEDDING_MODEL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.model_enum.ModelEnum.RANK_MODEL">
+<span class="sig-name descname"><span class="pre">RANK_MODEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'rank_model'</span></em><a class="headerlink" href="#memoryscope.enumeration.model_enum.ModelEnum.RANK_MODEL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

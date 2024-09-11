@@ -61,7 +61,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.html">memoryscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
 </ul>
 
         </div>
@@ -88,8 +96,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-enumeration-action-status-enum">
-<h1>memoryscope.enumeration.action_status_enum<a class="headerlink" href="#memoryscope-enumeration-action-status-enum" title="Permalink to this heading"></a></h1>
+  <section id="module-memoryscope.enumeration.action_status_enum">
+<span id="memoryscope-enumeration-action-status-enum"></span><h1>memoryscope.enumeration.action_status_enum<a class="headerlink" href="#module-memoryscope.enumeration.action_status_enum" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.action_status_enum.ActionStatusEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.action_status_enum.</span></span><span class="sig-name descname"><span class="pre">ActionStatusEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/enumeration/action_status_enum.html#ActionStatusEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.action_status_enum.ActionStatusEnum" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Enumeration representing various statuses of a memory node.</p>
+<p>Each status reflects a different state of the node in terms of its lifecycle or content:
+- NEW: Indicates a newly created node.
+- MODIFIED: Signifies that the node has been altered.
+- CONTENT_MODIFIED: Specifies changes in the actual content of the node.
+- NONE: do nothing.
+- DELETE: delete memories.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.action_status_enum.ActionStatusEnum.NEW">
+<span class="sig-name descname"><span class="pre">NEW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'new'</span></em><a class="headerlink" href="#memoryscope.enumeration.action_status_enum.ActionStatusEnum.NEW" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.action_status_enum.ActionStatusEnum.MODIFIED">
+<span class="sig-name descname"><span class="pre">MODIFIED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'modified'</span></em><a class="headerlink" href="#memoryscope.enumeration.action_status_enum.ActionStatusEnum.MODIFIED" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.action_status_enum.ActionStatusEnum.CONTENT_MODIFIED">
+<span class="sig-name descname"><span class="pre">CONTENT_MODIFIED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'content_modified'</span></em><a class="headerlink" href="#memoryscope.enumeration.action_status_enum.ActionStatusEnum.CONTENT_MODIFIED" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.action_status_enum.ActionStatusEnum.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></em><a class="headerlink" href="#memoryscope.enumeration.action_status_enum.ActionStatusEnum.NONE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.action_status_enum.ActionStatusEnum.DELETE">
+<span class="sig-name descname"><span class="pre">DELETE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'delete'</span></em><a class="headerlink" href="#memoryscope.enumeration.action_status_enum.ActionStatusEnum.DELETE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

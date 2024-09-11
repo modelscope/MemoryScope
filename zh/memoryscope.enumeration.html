@@ -96,8 +96,175 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-enumeration">
-<h1>memoryscope.enumeration<a class="headerlink" href="#memoryscope-enumeration" title="此标题的永久链接"></a></h1>
+  <section id="module-memoryscope.enumeration">
+<span id="memoryscope-enumeration"></span><h1>memoryscope.enumeration<a class="headerlink" href="#module-memoryscope.enumeration" title="此标题的永久链接"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ActionStatusEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">ActionStatusEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/enumeration/action_status_enum.html#ActionStatusEnum"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.ActionStatusEnum" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Enumeration representing various statuses of a memory node.</p>
+<p>Each status reflects a different state of the node in terms of its lifecycle or content:
+- NEW: Indicates a newly created node.
+- MODIFIED: Signifies that the node has been altered.
+- CONTENT_MODIFIED: Specifies changes in the actual content of the node.
+- NONE: do nothing.
+- DELETE: delete memories.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ActionStatusEnum.NEW">
+<span class="sig-name descname"><span class="pre">NEW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'new'</span></em><a class="headerlink" href="#memoryscope.enumeration.ActionStatusEnum.NEW" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ActionStatusEnum.MODIFIED">
+<span class="sig-name descname"><span class="pre">MODIFIED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'modified'</span></em><a class="headerlink" href="#memoryscope.enumeration.ActionStatusEnum.MODIFIED" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ActionStatusEnum.CONTENT_MODIFIED">
+<span class="sig-name descname"><span class="pre">CONTENT_MODIFIED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'content_modified'</span></em><a class="headerlink" href="#memoryscope.enumeration.ActionStatusEnum.CONTENT_MODIFIED" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ActionStatusEnum.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></em><a class="headerlink" href="#memoryscope.enumeration.ActionStatusEnum.NONE" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ActionStatusEnum.DELETE">
+<span class="sig-name descname"><span class="pre">DELETE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'delete'</span></em><a class="headerlink" href="#memoryscope.enumeration.ActionStatusEnum.DELETE" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.LanguageEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">LanguageEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/enumeration/language_enum.html#LanguageEnum"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.LanguageEnum" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration representing supported languages.</p>
+<dl class="simple">
+<dt>Members:</dt><dd><ul class="simple">
+<li><p>CN: Represents the Chinese language.</p></li>
+<li><p>EN: Represents the English language.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.LanguageEnum.CN">
+<span class="sig-name descname"><span class="pre">CN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cn'</span></em><a class="headerlink" href="#memoryscope.enumeration.LanguageEnum.CN" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.LanguageEnum.EN">
+<span class="sig-name descname"><span class="pre">EN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'en'</span></em><a class="headerlink" href="#memoryscope.enumeration.LanguageEnum.EN" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MemoryTypeEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">MemoryTypeEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/enumeration/memory_type_enum.html#MemoryTypeEnum"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.MemoryTypeEnum" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Defines an enumeration for different types of memory categories.</p>
+<p>Each member represents a distinct type of memory content:
+- CONVERSATION: Represents conversation-based memories.
+- OBSERVATION: Denotes observational memories.
+- INSIGHT: Indicates insightful memories derived from analysis.
+- OBS_CUSTOMIZED: Customized observational memories.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MemoryTypeEnum.CONVERSATION">
+<span class="sig-name descname"><span class="pre">CONVERSATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'conversation'</span></em><a class="headerlink" href="#memoryscope.enumeration.MemoryTypeEnum.CONVERSATION" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MemoryTypeEnum.OBSERVATION">
+<span class="sig-name descname"><span class="pre">OBSERVATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'observation'</span></em><a class="headerlink" href="#memoryscope.enumeration.MemoryTypeEnum.OBSERVATION" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MemoryTypeEnum.INSIGHT">
+<span class="sig-name descname"><span class="pre">INSIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'insight'</span></em><a class="headerlink" href="#memoryscope.enumeration.MemoryTypeEnum.INSIGHT" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MemoryTypeEnum.OBS_CUSTOMIZED">
+<span class="sig-name descname"><span class="pre">OBS_CUSTOMIZED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'obs_customized'</span></em><a class="headerlink" href="#memoryscope.enumeration.MemoryTypeEnum.OBS_CUSTOMIZED" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MessageRoleEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">MessageRoleEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/enumeration/message_role_enum.html#MessageRoleEnum"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.MessageRoleEnum" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Enumeration for different message roles within a conversation context.</p>
+<p>This enumeration includes predefined roles such as User, Assistant, and System,
+which can be used to categorize messages in chat interfaces, AI interactions, or
+any system that involves distinct participant roles.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MessageRoleEnum.USER">
+<span class="sig-name descname"><span class="pre">USER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'user'</span></em><a class="headerlink" href="#memoryscope.enumeration.MessageRoleEnum.USER" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MessageRoleEnum.ASSISTANT">
+<span class="sig-name descname"><span class="pre">ASSISTANT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'assistant'</span></em><a class="headerlink" href="#memoryscope.enumeration.MessageRoleEnum.ASSISTANT" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.MessageRoleEnum.SYSTEM">
+<span class="sig-name descname"><span class="pre">SYSTEM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'system'</span></em><a class="headerlink" href="#memoryscope.enumeration.MessageRoleEnum.SYSTEM" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ModelEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">ModelEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/enumeration/model_enum.html#ModelEnum"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.ModelEnum" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration representing different types of models used within the system.</p>
+<dl>
+<dt>Members:</dt><dd><p>GENERATION_MODEL: Represents a model responsible for generating content.
+EMBEDDING_MODEL: Represents a model tasked with creating embeddings, typically used for transforming data into a</p>
+<blockquote>
+<div><p>numerical form suitable for machine learning tasks.</p>
+</div></blockquote>
+<p>RANK_MODEL: Denotes a model that specializes in ranking, often used to order items based on relevance.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ModelEnum.GENERATION_MODEL">
+<span class="sig-name descname"><span class="pre">GENERATION_MODEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'generation_model'</span></em><a class="headerlink" href="#memoryscope.enumeration.ModelEnum.GENERATION_MODEL" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ModelEnum.EMBEDDING_MODEL">
+<span class="sig-name descname"><span class="pre">EMBEDDING_MODEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'embedding_model'</span></em><a class="headerlink" href="#memoryscope.enumeration.ModelEnum.EMBEDDING_MODEL" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.ModelEnum.RANK_MODEL">
+<span class="sig-name descname"><span class="pre">RANK_MODEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'rank_model'</span></em><a class="headerlink" href="#memoryscope.enumeration.ModelEnum.RANK_MODEL" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memoryscope.enumeration.StoreStatusEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.enumeration.</span></span><span class="sig-name descname"><span class="pre">StoreStatusEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/enumeration/store_status_enum.html#StoreStatusEnum"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.enumeration.StoreStatusEnum" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.StoreStatusEnum.VALID">
+<span class="sig-name descname"><span class="pre">VALID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'valid'</span></em><a class="headerlink" href="#memoryscope.enumeration.StoreStatusEnum.VALID" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memoryscope.enumeration.StoreStatusEnum.EXPIRED">
+<span class="sig-name descname"><span class="pre">EXPIRED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'expired'</span></em><a class="headerlink" href="#memoryscope.enumeration.StoreStatusEnum.EXPIRED" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 
