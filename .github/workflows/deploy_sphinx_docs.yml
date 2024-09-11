@@ -76,7 +76,7 @@ jobs:
         cd docs/sphinx_doc
         bash build_sphinx_doc.sh
     - name: Upload Documentation
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: SphinxDoc
         path: 'docs/sphinx_doc/build/html'
