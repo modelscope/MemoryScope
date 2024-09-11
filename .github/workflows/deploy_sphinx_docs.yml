@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-python@master
       with:
         python_version: ${{ matrix.python-version }}
-    - name: 'Choose which installer to use'
+    - name: Choose which pandoc to use
       shell: bash
       run: |
         case $RUNNER_OS in
@@ -34,7 +34,7 @@ jobs:
               exit 1
               ;;
         esac
-    - name: 'Download installer'
+    - name: Download pandoc installer
       shell: bash
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -49,7 +49,7 @@ jobs:
                       sed 's/pandoc-\([0-9.]*\)-.*/\1/')" \
                >> $GITHUB_ENV
 
-    - name: 'Install pandoc'
+    - name: Install pandoc
       shell: bash
       env:
         INSTALLER: pandoc-${{ env.INSTALLER_VERSION }}-${{ env.INSTALLER_SUFFIX }}
@@ -67,15 +67,15 @@ jobs:
               ;;
         esac
         rm $INSTALLER
-    - name: Install dependencies
+    - name: Install sphinx dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r docs/sphinx_doc/requirements.txt
-    - name: Build Documentation
+    - name: Build documentation
       run: |
         cd docs/sphinx_doc
         bash build_sphinx_doc.sh
-    - name: Upload Documentation
+    - name: Upload documentation
       uses: actions/upload-artifact@v3
       with:
         name: SphinxDoc
