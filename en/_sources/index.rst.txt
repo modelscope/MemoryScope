@@ -54,4 +54,4 @@ among memory pieces are properly handled.
    :maxdepth: 6
    :caption: MemoryScope API Reference
 
-   API <docs/api.rst>
+   memoryscope
