@@ -48,7 +48,6 @@ jobs:
                "$(ls pandoc-*-${{ env.INSTALLER_SUFFIX }} | \
                       sed 's/pandoc-\([0-9.]*\)-.*/\1/')" \
                >> $GITHUB_ENV
-
     - name: Install pandoc
       shell: bash
       env:
@@ -70,6 +69,7 @@ jobs:
     - name: Install sphinx dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install -r requirements.txt
         pip install -r docs/sphinx_doc/requirements.txt
     - name: Build documentation
       run: |

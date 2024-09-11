@@ -11,4 +11,3 @@ sphinxcontrib-mermaid
 myst-parser
 autodoc_pydantic
 nbsphinx
-fire
