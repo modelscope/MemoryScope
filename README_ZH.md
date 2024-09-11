@@ -1,9 +1,9 @@
 [**English**](./README.md) | 中文
 
 # MemoryScope
-
-![MemoryScope Logo](./docs/images/logo.png)
-
+<p align="center">
+ <img src="./docs/images/logo.png" alt="MemoryScopeLogo" width="75%">
+</p>
 为您的大语言模型聊天机器人配备强大且灵活的长期记忆系统。
 
 [![](https://img.shields.io/badge/python-3.10+-blue)](https://pypi.org/project/memoryscope/)
@@ -21,7 +21,7 @@
 ----
 ## 📰 新闻
 
-- **[2024-09-10]** 我们现在发布了 MemoryScope v0.1.1，该版本也可以在 [PyPI](https://pypi.org/simple/memoryscope/) 上获取！
+- **[2024-09-10]** 我们现在发布了 MemoryScope v0.1.1.0，该版本也可以在 [PyPI](https://pypi.org/simple/memoryscope/) 上获取！
 ----
 
 ## 🌟 什么是MemoryScope？
@@ -29,10 +29,15 @@ MemoryScope可以为LLM聊天机器人提供强大且灵活的长期记忆能力
 MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期记忆能力来不断学习，记得用户的基础信息以及各种习惯和喜好，使得用户在使用LLM时逐渐感受到一种“默契”。
 
 ### Demo
-![chinese-gif](https://github.com/user-attachments/assets/57519274-8c01-4d88-bcd2-0ebce3551e5d)
+<p align="center">
+ <img src="https://github.com/user-attachments/assets/57519274-8c01-4d88-bcd2-0ebce3551e5d" alt="zh_demo" width="75%">
+</p>
+
 
 ### 核心框架：
-![Framework](./docs/images/framework.png)
+<p align="center">
+ <img src="./docs/images/framework.png" alt="Framework" width="75%">
+</p>
 
 💾 记忆数据库: MemoryScope配备了向量数据库(默认是*ElasticSearch*)，用于存储系统中记录的所有记忆片段。
 

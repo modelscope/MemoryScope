@@ -1,13 +1,13 @@
 English | [**中文**](./README_ZH.md)
 
 # MemoryScope
-
-![MemoryScope Logo](./docs/images/logo.png)
-
+<p align="center">
+ <img src="./docs/images/logo.png" alt="MemoryScopeLogo" width="75%">
+</p>
 Equip your LLM chatbot with a powerful and flexible long term memory system.
 
 [![](https://img.shields.io/badge/python-3.10+-blue)](https://pypi.org/project/memoryscope/)
-[![](https://img.shields.io/badge/pypi-v0.1.1-blue?logo=pypi)](https://pypi.org/project/memoryscope/)
+[![](https://img.shields.io/badge/pypi-v0.1.1.0-blue?logo=pypi)](https://pypi.org/project/memoryscope/)
 [![](https://img.shields.io/badge/license-Apache--2.0-black)](./LICENSE)
 [![](https://img.shields.io/badge/Docs-English%7C%E4%B8%AD%E6%96%87-blue?logo=markdown)](https://modelscope.github.io/memoryscope/#welcome-to-memoryscope-tutorial-hub)
 [![](https://img.shields.io/badge/Docs-API_Reference-blue?logo=markdown)](https://modelscope.github.io/memoryscope/)
@@ -16,7 +16,7 @@ Equip your LLM chatbot with a powerful and flexible long term memory system.
 ----
 ## 📰 News
 
-- **[2024-09-10]** We release MemoryScope v0.1.1 now, which is also available in [PyPI](https://pypi.org/simple/memoryscope/)!
+- **[2024-09-10]** We release MemoryScope v0.1.1.0 now, which is also available in [PyPI](https://pypi.org/simple/memoryscope/)!
 ----
 ## 🌟 What is MemoryScope？
 MemoryScope provides LLM chatbots with powerful and flexible long-term memory capabilities, offering a framework for building such abilities. 
@@ -24,10 +24,14 @@ It can be applied to scenarios like personal assistants and emotional companions
 This allows users to gradually experience a sense of "understanding" when using the LLM.
 
 ### Demo
-![english-gif](https://github.com/user-attachments/assets/1754c814-1342-4288-a8a3-74d0b40f59a6)
+<p align="center">
+ <img src="https://github.com/user-attachments/assets/1754c814-1342-4288-a8a3-74d0b40f59a6" alt="en_demo" width="75%">
+</p>
 
 ### Framework
-![Framework](./docs/images/framework.png)
+<p align="center">
+ <img src="./docs/images/framework.png" alt="Framework" width="75%">
+</p>
 
 💾 Memory Database: MemoryScope is equipped with a vector database (default is *ElasticSearch*) to store all memory fragments recorded in the system.
 
