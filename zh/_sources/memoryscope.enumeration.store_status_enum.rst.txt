@@ -1,0 +1,6 @@
+memoryscope.enumeration.store_status_enum
+=========================================
+.. automodule:: memoryscope.enumeration.store_status_enum
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,509 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Example usages of **chat** and **service** interfaces\n",
+    "This notebook shows simple usages of MemoryScope's **chat** and **service** interfaces, along with its main features.\n",
+    "\n",
+    "Before running this notebook, follow the [**Installation**](../../docs/installation.md#iii-install-from-pypi) guidelines in Readme, and start the Docker image first."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Initiate a MemoryScope instance\n",
+    "First, we need to specify a configuration and initiate a MemoryScope instance."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from memoryscope import MemoryScope, Arguments\n",
+    "arguments = Arguments(\n",
+    "    language=\"en\",\n",
+    "    human_name=\"User\",\n",
+    "    assistant_name=\"AI\",\n",
+    "    memory_chat_class=\"api_memory_chat\",\n",
+    "    generation_backend=\"dashscope_generation\",\n",
+    "    generation_model=\"qwen2-72b-instruct\",\n",
+    "    embedding_backend=\"dashscope_embedding\",\n",
+    "    embedding_model=\"text-embedding-v2\",\n",
+    "    rank_backend=\"dashscope_rank\",\n",
+    "    rank_model=\"gte-rerank\",\n",
+    "    enable_ranker=True,\n",
+    "    worker_params={\"get_reflection_subject\": {\"reflect_num_questions\": 3}}\n",
+    ")\n",
+    "\n",
+    "ms = MemoryScope(arguments=arguments)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Chat without memory\n",
+    "MemoryScope comes with a default **chat** interface, so it's very easy to start chatting, just as what you'll do with any LLM chatbot."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Response 1: \n",
+      "That's wonderful! Playing the piano is a beautiful and expressive hobby that can bring joy, relaxation, and a sense of achievement. It engages both the creative and technical aspects of your mind, enhancing cognitive skills and fostering emotional expression. Whether you enjoy classical pieces, modern compositions, or improvisation, the piano offers a vast repertoire to explore. Keep practicing and enjoying your musical journey!\n"
+     ]
+    }
+   ],
+   "source": [
+    "memory_chat = ms.default_memory_chat\n",
+    "memory_chat.run_service_operation(\"delete_all\")\n",
+    "response = memory_chat.chat_with_memory(query=\"My hobby is to play piano.\")\n",
+    "print(\"Response 1: \\n\" + response.message.content)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "----\n",
+    "You can choose to chat with or without multi-round conversation contexts. However, since **Memory Consolidation** has not been called, there's no memory pieces in the system yet."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Response 2: \n",
+      "Based on our conversation, you have mentioned that your hobby is to play the piano. Therefore, yes, you play a musical instrument – the piano.\n",
+      "Response 3: \n",
+      "I'm sorry, but as MemoryScope, I don't have access to personal information about individuals unless it has been shared with me during our conversation. Therefore, I cannot determine if you play any musical instruments. If you do play an instrument, feel free to share that information with me!\n"
+     ]
+    }
+   ],
+   "source": [
+    "response = memory_chat.chat_with_memory(query=\"Do you know if I play any musical instruments?\")\n",
+    "print(\"Response 2: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"Do you know if I play any musical instruments?\",\n",
+    "                                        history_message_strategy=None)\n",
+    "print(\"Response 3: \\n\" + response.message.content)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Memory Consolidation\n",
+    "Now, we do a bit more chatting and then try out **Memory Consolidation**."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Response 4: \n",
+      "Thank you for letting me know! Working for Meta (formerly known as Facebook) implies that you're part of a company at the forefront of technology, social media, and innovation. Meta is known for its influential platforms like Facebook, Instagram, and WhatsApp, as well as its work in virtual reality with Oculus and efforts towards building the metaverse. It's exciting to be part of a company shaping the future of digital communication and interaction.\n",
+      "Response 5: \n",
+      "Eating fruit is a great way to nourish your body and satisfy your taste buds. For this afternoon, consider having a refreshing and nutritious option like a juicy orange, a sweet apple, a handful of berries (such as strawberries, blueberries, or raspberries), or a slice of refreshing watermelon. These fruits are not only delicious but also packed with vitamins, antioxidants, and fiber to keep you energized throughout the day. Choose the one that appeals to you most or mix a few for a colorful fruit salad!\n",
+      "Response 6: \n",
+      "Watermelon is an excellent choice! It's hydrating, low in calories, and rich in nutrients like vitamin C, vitamin A, and lycopene. Its high water content makes it perfect for a refreshing snack on a warm day. Enjoy your watermelon; it's a tasty and healthy way to treat yourself this afternoon.\n",
+      "Response 7: \n",
+      "\"Happy Birthday, dear [friend's name]! May your special day be filled with love, laughter, and unforgettable moments. May the coming year bring you joy, success, and adventures that make your heart sing. Cheers to another year of friendship and wonderful memories. Enjoy your day to the fullest!\"\n"
+     ]
+    }
+   ],
+   "source": [
+    "response = memory_chat.chat_with_memory(query=\"I work for Meta\")\n",
+    "print(\"Response 4: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"What fruit should I eat this afternoon?\")\n",
+    "print(\"Response 5: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"I like watermelon。\")\n",
+    "print(\"Response 6: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"Help me write a short birthday wish for a friend.\")\n",
+    "print(\"Response 7: \\n\" + response.message.content)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "consolidate_memory result=[MEMORY ACTIONS]:\n",
+      "new observation: user's hobby is playing the piano (valid)\n",
+      "new observation: user works for meta (valid)\n",
+      "new observation: user likes watermelon (valid)\n"
+     ]
+    }
+   ],
+   "source": [
+    "memory_service = ms.default_memory_service\n",
+    "memory_service.init_service()\n",
+    "result = memory_service.consolidate_memory()\n",
+    "print(f\"consolidate_memory result={result}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "----\n",
+    "**Memory Consolidation** extracted 3 *observations* out of the 7 chat messages from the user, with the uninformative ones being filtered out.\n",
+    "\n",
+    "We try more cases to test its time awareness and the ability to filter out fictitious contents from the user."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Response 8: \n",
+      "Prospects at Amazon can be quite promising, given its status as one of the world's leading tech companies. You can expect competitive compensation, career growth opportunities, a dynamic work environment, and the chance to work on innovative projects. However, actual experiences may vary based on role, team, and individual performance. It's always a good idea to research specific positions, company culture, and employee reviews to get a more comprehensive understanding.\n",
+      "Response 9: \n",
+      "Great, planning a business trip to Seattle can be exciting. Some key points to consider for your trip:\n",
+      "\n",
+      "1. **Weather**: Check the weather forecast for Seattle to pack appropriately. Seattle is known for its mild, marine climate with possible rainfall throughout the year.\n",
+      "\n",
+      "2. **Transportation**: Familiarize yourself with transportation options like Sea-Tac Airport, light rail, buses, and ride-sharing services for getting around.\n",
+      "\n",
+      "3. **Accommodation**: Book a hotel near your meeting location or in a convenient area like Downtown Seattle for easy access to amenities.\n",
+      "\n",
+      "4. **Meetings**: Confirm all meeting schedules and locations in advance. Consider any time differences if coming from outside the Pacific Time Zone.\n",
+      "\n",
+      "5. **Business Etiquette**: Brush up on general business etiquette, especially if you're meeting with new clients or partners.\n",
+      "\n",
+      "6. **Networking**: Look out for industry events or networking opportunities during your stay.\n",
+      "\n",
+      "7. **Dining**: Research dining options for client meetings or personal meals, Seattle offers a diverse culinary scene.\n",
+      "\n",
+      "8. **Leisure**: If time permits, plan to explore local attractions like Pike Place Market, Space Needle, or take a stroll along Puget Sound.\n",
+      "\n",
+      "Safe travels and have a productive trip!\n",
+      "Response 10: \n",
+      "That sounds like a nice plan! Catching up with Liam over a meal after his return from Google in New York will likely be an opportunity to exchange experiences and stories. Here are a few tips for your meet-up:\n",
+      "\n",
+      "1. **Choose a Venue**: Pick a restaurant that suits both your tastes and preferences, perhaps somewhere central or with a special significance to your friendship.\n",
+      "\n",
+      "2. **Schedule**: Coordinate a date and time that works well for both of your schedules, considering Liam might need time to adjust after his return.\n",
+      "\n",
+      "3. **Conversation Topics**: Prepare some conversation starters about his experience at Google, life in New York, and any shared interests or memories from your time in class together.\n",
+      "\n",
+      "4. **Professional Insights**: Liam might have valuable insights from his work at Google that could be beneficial for your own career growth, especially considering your interest in the tech industry.\n",
+      "\n",
+      "5. **Personal Updates**: Share your own updates too – your work at Meta, your love for watermelon, and your piano hobby could spark interesting discussions.\n",
+      "\n",
+      "Enjoy your reunion and the chance to learn from each other's experiences!\n",
+      "Response 11: \n",
+      "As Cynthia hugged her tightly, User felt a bittersweet pang. \"Promise we'll stay close,\" User whispered, staring at the luggage adorned with University of Iowa stickers. Cynthia smiled, eyes glistening, \"Distance means nothing when hearts are intertwined.\" They laughed, remembering late-night study sessions fueled by watermelon slices, and the echoes of piano melodies that filled User's apartment. As the cab honked, their hands reluctantly parted, but their dreams intertwined, ready for chapters anew.\n",
+      "Response 12: \n",
+      "I'm unable to provide real-time information or look up specific companies without prior data. If SMCI is a hypothetical or fictional company within our conversation context, I don't have details on it. For actual companies, it would be best to search online or refer to official sources for the most accurate and up-to-date information on their nature and activities.\n"
+     ]
+    }
+   ],
+   "source": [
+    "response = memory_chat.chat_with_memory(query=\"What are the prospects like if I go to work at Amazon?\")\n",
+    "print(\"Response 8: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"Note: I am planning a business trip to Seattle next week.\")\n",
+    "print(\"Response 9: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"My classmate Liam is currently working at Google. He will return to New York next month, and I plan to have a meal with him.\")\n",
+    "print(\"Response 10: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"Cynthia is my best friend, and she has decided to go to university in Iowa. Write an 80-word micro drama starting with this.\")\n",
+    "print(\"Response 11: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"What kind of company is SMCI, and what do they do?\")\n",
+    "print(\"Response 12: \\n\" + response.message.content)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "consolidate_memory result=[MEMORY ACTIONS]:\n",
+      "new observation: user is interested in career prospects at amazon (valid)\n",
+      "new observation: user is inquiring about smci's nature and business (valid)\n",
+      "new observation: user is planning a business trip to seattle next week (Inference time: next week after august 2, 2024) (valid)\n",
+      "new observation: user plans to meet classmate liam in new york next month (Inference time: next month after august 2, 2024) (valid)\n"
+     ]
+    }
+   ],
+   "source": [
+    "result = memory_service.consolidate_memory()\n",
+    "print(f\"consolidate_memory result={result}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "----\n",
+    "We can see **Memory Consolidation** successfully filtered out fictitious contents, and shows good time sensitivity.\n",
+    "\n",
+    "We try more cases to test its resolution of conflicting contents."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Response 13: \n",
+      "You might enjoy eating watermelon this afternoon since you like it.\n",
+      "Response 14: \n",
+      "Great choice! Enjoy your mangoes today.\n",
+      "Response 15: \n",
+      "Congratulations on your new job at Apple! How are you finding the experience so far?\n",
+      "Response 16: \n",
+      "That's wonderful! Peaches and apples are both delicious and nutritious choices. Enjoy snacking on them whenever you like.\n",
+      "Response 17: \n",
+      "No problem at all, everyone has their preferences. If you don't like coconuts, there are plenty of other fruits to enjoy.\n",
+      "Response 18: \n",
+      "Sounds like an exciting plan! Florida offers great surfing spots with its warm waters and waves. Have a fantastic time surfing next month.\n",
+      "Response 19：\n",
+      "Happy Birthday for tomorrow! May your day be filled with joy, laughter, and memorable moments.\n"
+     ]
+    }
+   ],
+   "source": [
+    "response = memory_chat.chat_with_memory(query=\"What fruit should I eat this afternoon?\")\n",
+    "print(\"Response 13: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"Watermelon is really good, but I also like mangoes. Today, I want to eat mangoes.\")\n",
+    "print(\"Response 14: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"I recently switched jobs and joined Apple.\")\n",
+    "print(\"Response 15: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"I also like eating peaches and apples.\")\n",
+    "print(\"Response 16: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"I don't like eating coconuts.\")\n",
+    "print(\"Response 17: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"I am planning to go surfing in Florida next month.\")\n",
+    "print(\"Response 18: \\n\" + response.message.content)\n",
+    "response = memory_chat.chat_with_memory(query=\"Tomorrow is my birthday\")\n",
+    "print(\"Response 19：\\n\" + response.message.content)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "consolidate_memory result=[MEMORY ACTIONS]:\n",
+      "new observation: user likes mangoes and wants to eat them today (valid)\n",
+      "new observation: user is planning to go surfing in florida next month (valid)\n",
+      "new observation: user's birthday is tomorrow (valid)\n",
+      "new observation: user recently switched jobs and joined apple (valid)\n",
+      "new observation: user likes eating peaches and apples (valid)\n",
+      "new observation: user doesn't like eating coconuts (valid)\n"
+     ]
+    }
+   ],
+   "source": [
+    "result = memory_service.consolidate_memory()\n",
+    "print(f\"consolidate_memory result={result}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Reflection and Re-Consolidation\n",
+    "Now, we have accumulated enough new *observations* in the system, so we can call **Reflection and Re-Consolidation**, let's see what will it get."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "consolidate_memory result=[MEMORY ACTIONS]:\n",
+      "new insight: The Travel plans of User: travel plans include a business trip to seattle next week after august 2, 2024, meeting a classmate in new york next month after august 2, 2024, and going surfing in florida next month (valid)\n",
+      "new insight: The Fruit preferences of User: fruit preferences: watermelon, peaches, apples, mangoes; dislikes coconuts (valid)\n",
+      "new insight: The Career interest of User: amazon (valid)\n",
+      "modified observation: user is planning a business trip to seattle next week (Inference time: next week after august 2, 2024) (valid)\n",
+      "modified observation: user likes mangoes and wants to eat them today (valid)\n",
+      "modified observation: user is interested in career prospects at amazon (valid)\n",
+      "modified observation: user is inquiring about smci's nature and business (valid)\n",
+      "modified observation: user recently switched jobs and joined apple (valid)\n",
+      "modified observation: user's hobby is playing the piano (valid)\n",
+      "modified observation: user is planning to go surfing in florida next month (valid)\n",
+      "modified observation: user's birthday is tomorrow (valid)\n",
+      "modified observation: user likes watermelon (valid)\n",
+      "modified observation: user works for meta (valid)\n",
+      "modified observation: user plans to meet classmate liam in new york next month (Inference time: next month after august 2, 2024) (valid)\n",
+      "modified observation: user likes eating peaches and apples (valid)\n",
+      "modified observation: user doesn't like eating coconuts (valid)\n"
+     ]
+    }
+   ],
+   "source": [
+    "result = memory_service.reflect_and_reconsolidate()\n",
+    "print(f\"consolidate_memory result={result}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Low response-time (RT) for the user\n",
+    "Finally, we test the RT of MemoryScope system for the user. Specifically, we test the difference of RT when responding with and without retrieving memory pieces from the system."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import time\n",
+    "\n",
+    "start_time = time.time()\n",
+    "response = memory_chat.chat_with_memory(query=\"Do you know if I play any musical instruments?\",\n",
+    "                                        history_message_strategy=None)\n",
+    "end_time = time.time()\n",
+    "total_time = end_time - start_time\n",
+    "print(\"With memory retrieval\\nResponse 20: \\n\" + response.message.content + f\"\\n RT: {total_time} seconds\\n\")\n",
+    "\n",
+    "start_time = time.time()\n",
+    "response = memory_chat.chat_with_memory(query=\"Do you know if I have any plans in the next month?\",\n",
+    "                                        history_message_strategy=None)\n",
+    "end_time = time.time()\n",
+    "total_time = end_time - start_time\n",
+    "print(\"With memory retrieval\\nResponse 21: \\n\" + response.message.content + f\"\\n RT: {total_time} seconds\\n\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "With memory retrieval\n",
+      "Response 20: \n",
+      "Yes, you play the piano.\n",
+      " RT: 1.494797706604004 seconds\n",
+      "\n",
+      "With memory retrieval\n",
+      "Response 21: \n",
+      "Yes, you have the following plans in the next month:\n",
+      "\n",
+      "1. A business trip to Seattle sometime after August 2, 2024.\n",
+      "2. Meeting a classmate in New York next month, also after August 2, 2024.\n",
+      "3. Going surfing in Florida next month.\n",
+      " RT: 6.400442123413086 seconds\n",
+      "\n",
+      "Without memory retrieval\n",
+      "Response 22: \n",
+      "I'm sorry, but as MemoryScope, I don't have access to personal information about individuals unless it has been shared with me during our conversation. Therefore, I cannot determine if you play any musical instruments without you providing that information. Have you mentioned anything about your musical abilities before?\n",
+      " RT: 3.8412117958068848 seconds\n",
+      "\n",
+      "Without memory retrieval\n",
+      "Response 23: \n",
+      "I'm sorry, but as an AI, I don't have access to personal schedules or information unless it has been shared with me during our conversation, which we haven't had. I cannot access external databases or personal calendars. I'm here to provide general information and assistance based on the knowledge I've been trained on.\n",
+      " RT: 6.7565529346466064 seconds\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "memory_chat.run_service_operation(\"delete_all\")\n",
+    "start_time = time.time()\n",
+    "response = memory_chat.chat_with_memory(query=\"Do you know if I play any musical instruments?\",\n",
+    "                                        history_message_strategy=None)\n",
+    "end_time = time.time()\n",
+    "total_time = end_time - start_time\n",
+    "print(\"Without memory retrieval\\nResponse 22: \\n\" + response.message.content + f\"\\n RT: {total_time} seconds\\n\")\n",
+    "\n",
+    "start_time = time.time()\n",
+    "response = memory_chat.chat_with_memory(query=\"Do you know if I have any plans in the next month?\\n\",\n",
+    "                                        history_message_strategy=None)\n",
+    "end_time = time.time()\n",
+    "total_time = end_time - start_time\n",
+    "print(\"Without memory retrieval\\nResponse 23: \\n\" + response.message.content + f\"\\n RT: {total_time} seconds\\n\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "----\n",
+    "We can see responding with retrieving memory pieces from MemoryScope does not increase RT."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## More Examples\n",
+    "We direct the reader to [Advanced Customization](../advance/custom_operator.md) for guidance on customizing the various settings of the MemoryScope system. It is also possible to create or customize your own MemoryScope **operations** by specifying a **workflow** and the corresponding **workers** that best meet your specific needs.\n",
+    "\n",
+    "Additionally, you can also try out the [CLI with a MemoryScope Chatbot](../cli/CLI_README.md). We have implemented the chatbot so that the **Memory Consolidation** and **Reflection and Re-Consolidation** operations are always run asynchronously in the backend, ensuring that they do not incur any response time for the user.\n",
+    "\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 2
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython2"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 0
+}

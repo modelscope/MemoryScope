@@ -1,0 +1,547 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example usages of chat and service interfaces &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c65c79b5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../en/examples/api/simple_usages.html">English</a></li> |
+    <a href="../../../zh/examples/api/simple_usages.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Example usages of <strong>chat</strong> and <strong>service</strong> interfaces</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/api/simple_usages.ipynb.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Example-usages-of-chat-and-service-interfaces">
+<h1>Example usages of <strong>chat</strong> and <strong>service</strong> interfaces<a class="headerlink" href="#Example-usages-of-chat-and-service-interfaces" title="此标题的永久链接"></a></h1>
+<p>This notebook shows simple usages of MemoryScope’s <strong>chat</strong> and <strong>service</strong> interfaces, along with its main features.</p>
+<p>Before running this notebook, follow the Installation guidelines in Readme, and start the Docker image first.</p>
+<section id="Initiate-a-MemoryScope-instance">
+<h2>Initiate a MemoryScope instance<a class="headerlink" href="#Initiate-a-MemoryScope-instance" title="此标题的永久链接"></a></h2>
+<p>First, we need to specify a configuration and initiate a MemoryScope instance.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from memoryscope import MemoryScope, Arguments
+arguments = Arguments(
+    language=&quot;en&quot;,
+    human_name=&quot;User&quot;,
+    assistant_name=&quot;AI&quot;,
+    memory_chat_class=&quot;api_memory_chat&quot;,
+    generation_backend=&quot;dashscope_generation&quot;,
+    generation_model=&quot;qwen2-72b-instruct&quot;,
+    embedding_backend=&quot;dashscope_embedding&quot;,
+    embedding_model=&quot;text-embedding-v2&quot;,
+    rank_backend=&quot;dashscope_rank&quot;,
+    rank_model=&quot;gte-rerank&quot;,
+    enable_ranker=True,
+    worker_params={&quot;get_reflection_subject&quot;: {&quot;reflect_num_questions&quot;: 3}}
+)
+
+ms = MemoryScope(arguments=arguments)
+<br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Chat-without-memory">
+<h2>Chat without memory<a class="headerlink" href="#Chat-without-memory" title="此标题的永久链接"></a></h2>
+<p>MemoryScope comes with a default <strong>chat</strong> interface, so it’s very easy to start chatting, just as what you’ll do with any LLM chatbot.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>memory_chat = ms.default_memory_chat
+memory_chat.run_service_operation(&quot;delete_all&quot;)
+response = memory_chat.chat_with_memory(query=&quot;My hobby is to play piano.&quot;)
+print(&quot;Response 1: \n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Response 1:
+That&#39;s wonderful! Playing the piano is a beautiful and expressive hobby that can bring joy, relaxation, and a sense of achievement. It engages both the creative and technical aspects of your mind, enhancing cognitive skills and fostering emotional expression. Whether you enjoy classical pieces, modern compositions, or improvisation, the piano offers a vast repertoire to explore. Keep practicing and enjoying your musical journey!
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<p>You can choose to chat with or without multi-round conversation contexts. However, since <strong>Memory Consolidation</strong> has not been called, there’s no memory pieces in the system yet.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>response = memory_chat.chat_with_memory(query=&quot;Do you know if I play any musical instruments?&quot;)
+print(&quot;Response 2: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;Do you know if I play any musical instruments?&quot;,
+                                        history_message_strategy=None)
+print(&quot;Response 3: \n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Response 2:
+Based on our conversation, you have mentioned that your hobby is to play the piano. Therefore, yes, you play a musical instrument – the piano.
+Response 3:
+I&#39;m sorry, but as MemoryScope, I don&#39;t have access to personal information about individuals unless it has been shared with me during our conversation. Therefore, I cannot determine if you play any musical instruments. If you do play an instrument, feel free to share that information with me!
+</pre></div></div>
+</div>
+</section>
+<section id="Memory-Consolidation">
+<h2>Memory Consolidation<a class="headerlink" href="#Memory-Consolidation" title="此标题的永久链接"></a></h2>
+<p>Now, we do a bit more chatting and then try out <strong>Memory Consolidation</strong>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>response = memory_chat.chat_with_memory(query=&quot;I work for Meta&quot;)
+print(&quot;Response 4: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;What fruit should I eat this afternoon?&quot;)
+print(&quot;Response 5: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;I like watermelon。&quot;)
+print(&quot;Response 6: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;Help me write a short birthday wish for a friend.&quot;)
+print(&quot;Response 7: \n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Response 4:
+Thank you for letting me know! Working for Meta (formerly known as Facebook) implies that you&#39;re part of a company at the forefront of technology, social media, and innovation. Meta is known for its influential platforms like Facebook, Instagram, and WhatsApp, as well as its work in virtual reality with Oculus and efforts towards building the metaverse. It&#39;s exciting to be part of a company shaping the future of digital communication and interaction.
+Response 5:
+Eating fruit is a great way to nourish your body and satisfy your taste buds. For this afternoon, consider having a refreshing and nutritious option like a juicy orange, a sweet apple, a handful of berries (such as strawberries, blueberries, or raspberries), or a slice of refreshing watermelon. These fruits are not only delicious but also packed with vitamins, antioxidants, and fiber to keep you energized throughout the day. Choose the one that appeals to you most or mix a few for a colorful fruit salad!
+Response 6:
+Watermelon is an excellent choice! It&#39;s hydrating, low in calories, and rich in nutrients like vitamin C, vitamin A, and lycopene. Its high water content makes it perfect for a refreshing snack on a warm day. Enjoy your watermelon; it&#39;s a tasty and healthy way to treat yourself this afternoon.
+Response 7:
+&#34;Happy Birthday, dear [friend&#39;s name]! May your special day be filled with love, laughter, and unforgettable moments. May the coming year bring you joy, success, and adventures that make your heart sing. Cheers to another year of friendship and wonderful memories. Enjoy your day to the fullest!&#34;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>memory_service = ms.default_memory_service
+memory_service.init_service()
+result = memory_service.consolidate_memory()
+print(f&quot;consolidate_memory result={result}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+consolidate_memory result=[MEMORY ACTIONS]:
+new observation: user&#39;s hobby is playing the piano (valid)
+new observation: user works for meta (valid)
+new observation: user likes watermelon (valid)
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<p><strong>Memory Consolidation</strong> extracted 3 <em>observations</em> out of the 7 chat messages from the user, with the uninformative ones being filtered out.</p>
+<p>We try more cases to test its time awareness and the ability to filter out fictitious contents from the user.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>response = memory_chat.chat_with_memory(query=&quot;What are the prospects like if I go to work at Amazon?&quot;)
+print(&quot;Response 8: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;Note: I am planning a business trip to Seattle next week.&quot;)
+print(&quot;Response 9: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;My classmate Liam is currently working at Google. He will return to New York next month, and I plan to have a meal with him.&quot;)
+print(&quot;Response 10: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;Cynthia is my best friend, and she has decided to go to university in Iowa. Write an 80-word micro drama starting with this.&quot;)
+print(&quot;Response 11: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;What kind of company is SMCI, and what do they do?&quot;)
+print(&quot;Response 12: \n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Response 8:
+Prospects at Amazon can be quite promising, given its status as one of the world&#39;s leading tech companies. You can expect competitive compensation, career growth opportunities, a dynamic work environment, and the chance to work on innovative projects. However, actual experiences may vary based on role, team, and individual performance. It&#39;s always a good idea to research specific positions, company culture, and employee reviews to get a more comprehensive understanding.
+Response 9:
+Great, planning a business trip to Seattle can be exciting. Some key points to consider for your trip:
+
+1. **Weather**: Check the weather forecast for Seattle to pack appropriately. Seattle is known for its mild, marine climate with possible rainfall throughout the year.
+
+2. **Transportation**: Familiarize yourself with transportation options like Sea-Tac Airport, light rail, buses, and ride-sharing services for getting around.
+
+3. **Accommodation**: Book a hotel near your meeting location or in a convenient area like Downtown Seattle for easy access to amenities.
+
+4. **Meetings**: Confirm all meeting schedules and locations in advance. Consider any time differences if coming from outside the Pacific Time Zone.
+
+5. **Business Etiquette**: Brush up on general business etiquette, especially if you&#39;re meeting with new clients or partners.
+
+6. **Networking**: Look out for industry events or networking opportunities during your stay.
+
+7. **Dining**: Research dining options for client meetings or personal meals, Seattle offers a diverse culinary scene.
+
+8. **Leisure**: If time permits, plan to explore local attractions like Pike Place Market, Space Needle, or take a stroll along Puget Sound.
+
+Safe travels and have a productive trip!
+Response 10:
+That sounds like a nice plan! Catching up with Liam over a meal after his return from Google in New York will likely be an opportunity to exchange experiences and stories. Here are a few tips for your meet-up:
+
+1. **Choose a Venue**: Pick a restaurant that suits both your tastes and preferences, perhaps somewhere central or with a special significance to your friendship.
+
+2. **Schedule**: Coordinate a date and time that works well for both of your schedules, considering Liam might need time to adjust after his return.
+
+3. **Conversation Topics**: Prepare some conversation starters about his experience at Google, life in New York, and any shared interests or memories from your time in class together.
+
+4. **Professional Insights**: Liam might have valuable insights from his work at Google that could be beneficial for your own career growth, especially considering your interest in the tech industry.
+
+5. **Personal Updates**: Share your own updates too – your work at Meta, your love for watermelon, and your piano hobby could spark interesting discussions.
+
+Enjoy your reunion and the chance to learn from each other&#39;s experiences!
+Response 11:
+As Cynthia hugged her tightly, User felt a bittersweet pang. &#34;Promise we&#39;ll stay close,&#34; User whispered, staring at the luggage adorned with University of Iowa stickers. Cynthia smiled, eyes glistening, &#34;Distance means nothing when hearts are intertwined.&#34; They laughed, remembering late-night study sessions fueled by watermelon slices, and the echoes of piano melodies that filled User&#39;s apartment. As the cab honked, their hands reluctantly parted, but their dreams intertwined, ready for chapters anew.
+Response 12:
+I&#39;m unable to provide real-time information or look up specific companies without prior data. If SMCI is a hypothetical or fictional company within our conversation context, I don&#39;t have details on it. For actual companies, it would be best to search online or refer to official sources for the most accurate and up-to-date information on their nature and activities.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>result = memory_service.consolidate_memory()
+print(f&quot;consolidate_memory result={result}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+consolidate_memory result=[MEMORY ACTIONS]:
+new observation: user is interested in career prospects at amazon (valid)
+new observation: user is inquiring about smci&#39;s nature and business (valid)
+new observation: user is planning a business trip to seattle next week (Inference time: next week after august 2, 2024) (valid)
+new observation: user plans to meet classmate liam in new york next month (Inference time: next month after august 2, 2024) (valid)
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<p>We can see <strong>Memory Consolidation</strong> successfully filtered out fictitious contents, and shows good time sensitivity.</p>
+<p>We try more cases to test its resolution of conflicting contents.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>response = memory_chat.chat_with_memory(query=&quot;What fruit should I eat this afternoon?&quot;)
+print(&quot;Response 13: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;Watermelon is really good, but I also like mangoes. Today, I want to eat mangoes.&quot;)
+print(&quot;Response 14: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;I recently switched jobs and joined Apple.&quot;)
+print(&quot;Response 15: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;I also like eating peaches and apples.&quot;)
+print(&quot;Response 16: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;I don&#39;t like eating coconuts.&quot;)
+print(&quot;Response 17: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;I am planning to go surfing in Florida next month.&quot;)
+print(&quot;Response 18: \n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;Tomorrow is my birthday&quot;)
+print(&quot;Response 19：\n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Response 13:
+You might enjoy eating watermelon this afternoon since you like it.
+Response 14:
+Great choice! Enjoy your mangoes today.
+Response 15:
+Congratulations on your new job at Apple! How are you finding the experience so far?
+Response 16:
+That&#39;s wonderful! Peaches and apples are both delicious and nutritious choices. Enjoy snacking on them whenever you like.
+Response 17:
+No problem at all, everyone has their preferences. If you don&#39;t like coconuts, there are plenty of other fruits to enjoy.
+Response 18:
+Sounds like an exciting plan! Florida offers great surfing spots with its warm waters and waves. Have a fantastic time surfing next month.
+Response 19：
+Happy Birthday for tomorrow! May your day be filled with joy, laughter, and memorable moments.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>result = memory_service.consolidate_memory()
+print(f&quot;consolidate_memory result={result}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+consolidate_memory result=[MEMORY ACTIONS]:
+new observation: user likes mangoes and wants to eat them today (valid)
+new observation: user is planning to go surfing in florida next month (valid)
+new observation: user&#39;s birthday is tomorrow (valid)
+new observation: user recently switched jobs and joined apple (valid)
+new observation: user likes eating peaches and apples (valid)
+new observation: user doesn&#39;t like eating coconuts (valid)
+</pre></div></div>
+</div>
+</section>
+<section id="Reflection-and-Re-Consolidation">
+<h2>Reflection and Re-Consolidation<a class="headerlink" href="#Reflection-and-Re-Consolidation" title="此标题的永久链接"></a></h2>
+<p>Now, we have accumulated enough new <em>observations</em> in the system, so we can call <strong>Reflection and Re-Consolidation</strong>, let’s see what will it get.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>result = memory_service.reflect_and_reconsolidate()
+print(f&quot;consolidate_memory result={result}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+consolidate_memory result=[MEMORY ACTIONS]:
+new insight: The Travel plans of User: travel plans include a business trip to seattle next week after august 2, 2024, meeting a classmate in new york next month after august 2, 2024, and going surfing in florida next month (valid)
+new insight: The Fruit preferences of User: fruit preferences: watermelon, peaches, apples, mangoes; dislikes coconuts (valid)
+new insight: The Career interest of User: amazon (valid)
+modified observation: user is planning a business trip to seattle next week (Inference time: next week after august 2, 2024) (valid)
+modified observation: user likes mangoes and wants to eat them today (valid)
+modified observation: user is interested in career prospects at amazon (valid)
+modified observation: user is inquiring about smci&#39;s nature and business (valid)
+modified observation: user recently switched jobs and joined apple (valid)
+modified observation: user&#39;s hobby is playing the piano (valid)
+modified observation: user is planning to go surfing in florida next month (valid)
+modified observation: user&#39;s birthday is tomorrow (valid)
+modified observation: user likes watermelon (valid)
+modified observation: user works for meta (valid)
+modified observation: user plans to meet classmate liam in new york next month (Inference time: next month after august 2, 2024) (valid)
+modified observation: user likes eating peaches and apples (valid)
+modified observation: user doesn&#39;t like eating coconuts (valid)
+</pre></div></div>
+</div>
+</section>
+<section id="Low-response-time-(RT)-for-the-user">
+<h2>Low response-time (RT) for the user<a class="headerlink" href="#Low-response-time-(RT)-for-the-user" title="此标题的永久链接"></a></h2>
+<p>Finally, we test the RT of MemoryScope system for the user. Specifically, we test the difference of RT when responding with and without retrieving memory pieces from the system.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import time
+
+start_time = time.time()
+response = memory_chat.chat_with_memory(query=&quot;Do you know if I play any musical instruments?&quot;,
+                                        history_message_strategy=None)
+end_time = time.time()
+total_time = end_time - start_time
+print(&quot;With memory retrieval\nResponse 20: \n&quot; + response.message.content + f&quot;\n RT: {total_time} seconds\n&quot;)
+
+start_time = time.time()
+response = memory_chat.chat_with_memory(query=&quot;Do you know if I have any plans in the next month?&quot;,
+                                        history_message_strategy=None)
+end_time = time.time()
+total_time = end_time - start_time
+print(&quot;With memory retrieval\nResponse 21: \n&quot; + response.message.content + f&quot;\n RT: {total_time} seconds\n&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>memory_chat.run_service_operation(&quot;delete_all&quot;)
+start_time = time.time()
+response = memory_chat.chat_with_memory(query=&quot;Do you know if I play any musical instruments?&quot;,
+                                        history_message_strategy=None)
+end_time = time.time()
+total_time = end_time - start_time
+print(&quot;Without memory retrieval\nResponse 22: \n&quot; + response.message.content + f&quot;\n RT: {total_time} seconds\n&quot;)
+
+start_time = time.time()
+response = memory_chat.chat_with_memory(query=&quot;Do you know if I have any plans in the next month?\n&quot;,
+                                        history_message_strategy=None)
+end_time = time.time()
+total_time = end_time - start_time
+print(&quot;Without memory retrieval\nResponse 23: \n&quot; + response.message.content + f&quot;\n RT: {total_time} seconds\n&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+With memory retrieval
+Response 20:
+Yes, you play the piano.
+ RT: 1.494797706604004 seconds
+
+With memory retrieval
+Response 21:
+Yes, you have the following plans in the next month:
+
+1. A business trip to Seattle sometime after August 2, 2024.
+2. Meeting a classmate in New York next month, also after August 2, 2024.
+3. Going surfing in Florida next month.
+ RT: 6.400442123413086 seconds
+
+Without memory retrieval
+Response 22:
+I&#39;m sorry, but as MemoryScope, I don&#39;t have access to personal information about individuals unless it has been shared with me during our conversation. Therefore, I cannot determine if you play any musical instruments without you providing that information. Have you mentioned anything about your musical abilities before?
+ RT: 3.8412117958068848 seconds
+
+Without memory retrieval
+Response 23:
+I&#39;m sorry, but as an AI, I don&#39;t have access to personal schedules or information unless it has been shared with me during our conversation, which we haven&#39;t had. I cannot access external databases or personal calendars. I&#39;m here to provide general information and assistance based on the knowledge I&#39;ve been trained on.
+ RT: 6.7565529346466064 seconds
+
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<p>We can see responding with retrieving memory pieces from MemoryScope does not increase RT.</p>
+</section>
+<section id="More-Examples">
+<h2>More Examples<a class="headerlink" href="#More-Examples" title="此标题的永久链接"></a></h2>
+<p>We direct the reader to <a class="reference internal" href="../advance/custom_operator.html"><span class="doc">Advanced Customization</span></a> for guidance on customizing the various settings of the MemoryScope system. It is also possible to create or customize your own MemoryScope <strong>operations</strong> by specifying a <strong>workflow</strong> and the corresponding <strong>workers</strong> that best meet your specific needs.</p>
+<p>Additionally, you can also try out the <a class="reference internal" href="../cli/CLI_README.html"><span class="doc">CLI with a MemoryScope Chatbot</span></a>. We have implemented the chatbot so that the <strong>Memory Consolidation</strong> and <strong>Reflection and Re-Consolidation</strong> operations are always run asynchronously in the backend, ensuring that they do not incur any response time for the user.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

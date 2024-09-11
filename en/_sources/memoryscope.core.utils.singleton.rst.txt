@@ -1,0 +1,6 @@
+memoryscope.core.utils.singleton
+================================
+.. automodule:: memoryscope.core.utils.singleton
+   :members:
+   :undoc-members:
+   :show-inheritance:

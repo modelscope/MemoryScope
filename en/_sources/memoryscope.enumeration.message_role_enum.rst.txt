@@ -1,0 +1,6 @@
+memoryscope.enumeration.message_role_enum
+=========================================
+.. automodule:: memoryscope.enumeration.message_role_enum
+   :members:
+   :undoc-members:
+   :show-inheritance:

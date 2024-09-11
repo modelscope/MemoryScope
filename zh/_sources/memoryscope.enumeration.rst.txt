@@ -1,0 +1,7 @@
+memoryscope.enumeration
+=======================
+
+.. automodule:: memoryscope.enumeration
+   :members:
+   :undoc-members:
+   :show-inheritance:

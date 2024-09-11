@@ -1,0 +1,6 @@
+memoryscope.core.utils.registry
+===============================
+.. automodule:: memoryscope.core.utils.registry
+   :members:
+   :undoc-members:
+   :show-inheritance:

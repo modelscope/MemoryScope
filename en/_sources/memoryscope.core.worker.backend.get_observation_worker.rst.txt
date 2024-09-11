@@ -1,0 +1,6 @@
+memoryscope.core.worker.backend.get_observation_worker
+======================================================
+.. automodule:: memoryscope.core.worker.backend.get_observation_worker
+   :members:
+   :undoc-members:
+   :show-inheritance:

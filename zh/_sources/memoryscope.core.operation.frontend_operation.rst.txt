@@ -1,0 +1,6 @@
+memoryscope.core.operation.frontend_operation
+=============================================
+.. automodule:: memoryscope.core.operation.frontend_operation
+   :members:
+   :undoc-members:
+   :show-inheritance:

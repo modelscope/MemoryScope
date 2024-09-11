@@ -1,0 +1,6 @@
+memoryscope.enumeration.memory_type_enum
+========================================
+.. automodule:: memoryscope.enumeration.memory_type_enum
+   :members:
+   :undoc-members:
+   :show-inheritance:

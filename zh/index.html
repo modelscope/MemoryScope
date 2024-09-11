@@ -1,0 +1,217 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MemoryScope 文档 &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c65c79b5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="MemoryScope" href="README.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="#" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../en/index.html">English</a></li> |
+    <a href="../zh/index.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">MemoryScope 文档</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/modelscope/memoryscope" class="fa fa-github"> 在 GitHub 上编辑</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memoryscope">
+<h1>MemoryScope 文档<a class="headerlink" href="#memoryscope" title="此标题的永久链接"></a></h1>
+<section id="id1">
+<h2>欢迎浏览MemoryScope相关文档<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<img alt="_images/logo.png" class="align-center" src="_images/logo.png" />
+<p>MemoryScope可以为LLM聊天机器人提供强大且灵活的长期记忆能力，并提供了构建长期记忆能力的框架。
+MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期记忆能力来不断学习，记得用户的基础信息以及各种习惯和喜好，使得用户在使用LLM时逐渐感受到一种“默契”。</p>
+<img alt="_images/framework.png" class="align-center" src="_images/framework.png" />
+<section id="id2">
+<h3>核心框架<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h3>
+<p>💾 记忆数据库: MemoryScope配备了向量数据库(默认是*ElasticSearch*)，用于存储系统中记录的所有记忆片段。</p>
+<p>🔧 核心worker库: MemoryScope将长期记忆的能力原子化，抽象成单独的worker，包括query信息过滤，observation抽取，insight更新等20+worker。</p>
+<p>🛠️ 核心Op库: 并基于worker的pipeline构建了memory服务的核心operation，实现了记忆检索，记忆巩固等核心能力。</p>
+<ul class="simple">
+<li><p>记忆检索：当用户输入对话，此操作返回语义相关的记忆片段。如果输入对话包含对时间的指涉，则同时返回相应时间中的记忆片段。</p></li>
+<li><p>记忆巩固：此操作接收一批用户的输入对话，并从对话中提取重要的用户信息，将其作为 <em>observation</em> 形式的记忆片段存储在记忆数据库中。</p></li>
+<li><dl class="simple">
+<dt>反思与再巩固：每隔一段时间，此操作对新记录的 <em>observations</em> 进行反思，以形成和更新 <em>insight</em></dt><dd><p>形式的记忆片段。然后执行记忆再巩固，以确保记忆片段之间的矛盾和重复得到妥善处理。</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">关于 MemoryScope</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#id1">📰 新闻</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#id2">🌟 什么是MemoryScope？</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#api">💼 支持的模型API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#id5">🚀 安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#id6">🍕 快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#id7">💡 代码贡献</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#id8">📖 引用</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/installation.html">安装</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/installation.html#docker">一、使用 Docker 安装 [推荐]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/installation.html#docker-compose">二、使用 Docker Compose 安装 [推荐]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/installation.html#pypi">三、通过 PYPI 安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/installation.html#id1">四、从源码安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/cli/CLI_README_ZH.html">命令行终端</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/cli/CLI_README_ZH.html#id1">使用方法</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/api/simple_usages_zh.html">简单案例</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/api/simple_usages_zh.html#初始化一个-MemoryScope-实例">初始化一个 MemoryScope 实例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/api/simple_usages_zh.html#聊天（不含记忆）">聊天（不含记忆）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/api/simple_usages_zh.html#记忆巩固"><strong>记忆巩固</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/api/simple_usages_zh.html#反思与再巩固"><strong>反思与再巩固</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/api/simple_usages_zh.html#低用户时延（RT）">低用户时延（RT）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/api/simple_usages_zh.html#更多用法">更多用法</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/contribution.html">贡献</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/contribution.html#id1">报告错误和提出新功能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/contribution.html#id2">对代码库做出贡献</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/api.html#base">Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/api.html#frontend">Frontend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/api.html#backend">Backend</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+</ul>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="README.html" class="btn btn-neutral float-right" title="MemoryScope" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

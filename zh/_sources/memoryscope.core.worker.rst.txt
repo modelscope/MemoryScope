@@ -1,0 +1,7 @@
+memoryscope.core.worker
+=======================
+
+.. automodule:: memoryscope.core.worker
+   :members:
+   :undoc-members:
+   :show-inheritance:

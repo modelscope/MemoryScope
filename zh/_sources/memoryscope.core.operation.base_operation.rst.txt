@@ -1,0 +1,6 @@
+memoryscope.core.operation.base_operation
+=========================================
+.. automodule:: memoryscope.core.operation.base_operation
+   :members:
+   :undoc-members:
+   :show-inheritance:

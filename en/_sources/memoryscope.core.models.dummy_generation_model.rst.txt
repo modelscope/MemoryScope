@@ -1,0 +1,6 @@
+memoryscope.core.models.dummy_generation_model
+==============================================
+.. automodule:: memoryscope.core.models.dummy_generation_model
+   :members:
+   :undoc-members:
+   :show-inheritance:

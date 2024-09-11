@@ -1,0 +1,271 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MemoryScope 安装指南 &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c65c79b5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="MemoryScope 的命令行接口" href="../examples/cli/CLI_README_ZH.html" />
+    <link rel="prev" title="MemoryScope" href="../README.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../en/docs/installation.html">English</a></li> |
+    <a href="../../zh/docs/installation.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">安装</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#docker">一、使用 Docker 安装 [推荐]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-compose">二、使用 Docker Compose 安装 [推荐]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pypi">三、通过 PYPI 安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">四、从源码安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/api/simple_usages_zh.html">简单案例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html#chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">MemoryScope 安装指南</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/installation.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memoryscope">
+<h1>MemoryScope 安装指南<a class="headerlink" href="#memoryscope" title="此标题的永久链接"></a></h1>
+<section id="docker">
+<h2>一、使用 Docker 安装 [推荐]<a class="headerlink" href="#docker" title="此标题的永久链接"></a></h2>
+<ol class="arabic">
+<li><p>克隆仓库并编辑配置</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 克隆项目</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/modelscope/memoryscope
+<span class="nb">cd</span><span class="w"> </span>memoryscope
+<span class="c1"># 编辑配置，例如添加 API 密钥</span>
+vim<span class="w"> </span>memoryscope/core/config/demo_config_zh.yaml
+</pre></div>
+</div>
+</li>
+<li><p>构建 Docker 镜像</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>-t<span class="w"> </span>memoryscope<span class="w"> </span>.
+</pre></div>
+</div>
+</li>
+<li><p>启动 Docker 容器</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>--net<span class="o">=</span>host<span class="w"> </span>memoryscope
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="docker-compose">
+<h2>二、使用 Docker Compose 安装 [推荐]<a class="headerlink" href="#docker-compose" title="此标题的永久链接"></a></h2>
+<ol class="arabic">
+<li><p>克隆仓库并编辑配置</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 克隆项目</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/modelscope/memoryscope
+<span class="nb">cd</span><span class="w"> </span>memoryscope
+<span class="c1"># 编辑配置，例如添加 API 密钥</span>
+vim<span class="w"> </span>memoryscope/core/config/demo_config_zh.yaml
+</pre></div>
+</div>
+</li>
+<li><p>编辑 <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> 文件以更改环境变量。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DASHSCOPE_API_KEY</span><span class="p">:</span> <span class="s2">&quot;sk-0000000000&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>运行 <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">run</span> <span class="pre">memory_scope_main</span></code> 命令来构建并启动 MemoryScope CLI 界面。</p></li>
+</ol>
+</section>
+<section id="pypi">
+<h2>三、通过 PYPI 安装<a class="headerlink" href="#pypi" title="此标题的永久链接"></a></h2>
+<ol class="arabic">
+<li><p>从 PyPI 安装：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>memoryscope
+</pre></div>
+</div>
+</li>
+<li><p>运行 Elasticsearch 服务，参照 <a class="reference external" href="https://www.elastic.co/guide/cn/elasticsearch/reference/current/getting-started.html">Elasticsearch 文档</a>。
+推荐使用 Docker 方法：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">p</span> <span class="mi">9200</span><span class="p">:</span><span class="mi">9200</span> \
+<span class="o">-</span><span class="n">e</span> <span class="s2">&quot;discovery.type=single-node&quot;</span> \
+<span class="o">-</span><span class="n">e</span> <span class="s2">&quot;xpack.security.enabled=false&quot;</span> \
+<span class="o">-</span><span class="n">e</span> <span class="s2">&quot;xpack.license.self_generated.type=trial&quot;</span> \
+<span class="n">docker</span><span class="o">.</span><span class="n">elastic</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">elasticsearch</span><span class="o">/</span><span class="n">elasticsearch</span><span class="p">:</span><span class="mf">8.13.2</span>
+</pre></div>
+</div>
+</li>
+<li><p>测试中文 / Dashscope 对话配置：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DASHSCOPE_API_KEY</span><span class="o">=</span><span class="s2">&quot;sk-0000000000&quot;</span>
+memoryscope<span class="w"> </span>--language<span class="o">=</span><span class="s2">&quot;cn&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--memory_chat_class<span class="o">=</span><span class="s2">&quot;cli_memory_chat&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--human_name<span class="o">=</span><span class="s2">&quot;用户&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--assistant_name<span class="o">=</span><span class="s2">&quot;AI&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--generation_backend<span class="o">=</span><span class="s2">&quot;dashscope_generation&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--generation_model<span class="o">=</span><span class="s2">&quot;qwen-max&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--embedding_backend<span class="o">=</span><span class="s2">&quot;dashscope_embedding&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--embedding_model<span class="o">=</span><span class="s2">&quot;text-embedding-v2&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--enable_ranker<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--rank_backend<span class="o">=</span><span class="s2">&quot;dashscope_rank&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--rank_model<span class="o">=</span><span class="s2">&quot;gte-rerank&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>测试英文 / OpenAI 对话配置：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span><span class="s2">&quot;sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;</span>
+memoryscope<span class="w"> </span>--language<span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--memory_chat_class<span class="o">=</span><span class="s2">&quot;cli_memory_chat&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--human_name<span class="o">=</span><span class="s2">&quot;User&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--assistant_name<span class="o">=</span><span class="s2">&quot;AI&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--generation_backend<span class="o">=</span><span class="s2">&quot;openai_generation&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--generation_model<span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--embedding_backend<span class="o">=</span><span class="s2">&quot;openai_embedding&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--embedding_model<span class="o">=</span><span class="s2">&quot;text-embedding-3-small&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--enable_ranker<span class="o">=</span>False
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="id1">
+<h2>四、从源码安装<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<ol class="arabic">
+<li><p>克隆仓库并编辑设置</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 克隆项目</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/modelscope/memoryscope
+<span class="nb">cd</span><span class="w"> </span>memoryscope
+<span class="c1"># 编辑配置，例如添加 API 密钥</span>
+vim<span class="w"> </span>memoryscope/core/config/demo_config_zh.yaml
+</pre></div>
+</div>
+</li>
+<li><p>安装依赖</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</li>
+<li><p>运行 Elasticsearch 服务，参照 <a class="reference external" href="https://www.elastic.co/guide/cn/elasticsearch/reference/current/getting-started.html">Elasticsearch 文档</a>。
+推荐使用 Docker 方法：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">p</span> <span class="mi">9200</span><span class="p">:</span><span class="mi">9200</span> \
+<span class="o">-</span><span class="n">e</span> <span class="s2">&quot;discovery.type=single-node&quot;</span> \
+<span class="o">-</span><span class="n">e</span> <span class="s2">&quot;xpack.security.enabled=false&quot;</span> \
+<span class="o">-</span><span class="n">e</span> <span class="s2">&quot;xpack.license.self_generated.type=trial&quot;</span> \
+<span class="n">docker</span><span class="o">.</span><span class="n">elastic</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">elasticsearch</span><span class="o">/</span><span class="n">elasticsearch</span><span class="p">:</span><span class="mf">8.13.2</span>
+</pre></div>
+</div>
+</li>
+<li><p>启动 MemoryScope，同时参考 <a class="reference internal" href="../examples/cli/CLI_README_ZH.html"><span class="std std-doc">CLI 文档</span></a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DASHSCOPE_API_KEY</span><span class="o">=</span><span class="s2">&quot;sk-0000000000&quot;</span>
+python<span class="w"> </span>quick-start-demo.py<span class="w"> </span>--config_path<span class="o">=</span>memoryscope/core/config/demo_config_zh.yaml
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../README.html" class="btn btn-neutral float-left" title="MemoryScope" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../examples/cli/CLI_README_ZH.html" class="btn btn-neutral float-right" title="MemoryScope 的命令行接口" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

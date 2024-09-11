@@ -1,0 +1,539 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>chat 和 service 接口的示例用法 &mdash; MemoryScope  文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c65c79b5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="自定义 Operator 和 Worker" href="../advance/custom_operator_zh.html" />
+    <link rel="prev" title="MemoryScope 的命令行接口" href="../cli/CLI_README_ZH.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../../../en/examples/api/simple_usages_zh.html">English</a></li> |
+    <a href="../../../zh/examples/api/simple_usages_zh.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope 教程</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">关于 MemoryScope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/CLI_README_ZH.html">命令行终端</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">简单案例</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#初始化一个-MemoryScope-实例">初始化一个 MemoryScope 实例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#聊天（不含记忆）">聊天（不含记忆）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#记忆巩固"><strong>记忆巩固</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#反思与再巩固"><strong>反思与再巩固</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#低用户时延（RT）">低用户时延（RT）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#更多用法">更多用法</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../advance/custom_operator_zh.html">高级用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/contribution.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope 接口</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/api.html#chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">chat 和 service 接口的示例用法</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/api/simple_usages_zh.ipynb.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="chat-和-service-接口的示例用法">
+<h1>chat 和 service 接口的示例用法<a class="headerlink" href="#chat-和-service-接口的示例用法" title="此标题的永久链接"></a></h1>
+<p>这个笔记本展示了 MemoryScope 的 <strong>chat</strong> 和 <strong>service</strong> 接口的简单用法，以及它的主要功能。</p>
+<p>在运行这个笔记本之前，请先按照 Readme 中的 <a class="reference external" href="../../docs/installation_zh.md#三通过-pypi-安装">Installation</a> 指南进行安装，并启动 Docker 镜像。</p>
+<section id="初始化一个-MemoryScope-实例">
+<h2>初始化一个 MemoryScope 实例<a class="headerlink" href="#初始化一个-MemoryScope-实例" title="此标题的永久链接"></a></h2>
+<p>首先，我们需要指定一个配置并初始化一个 MemoryScope 实例。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from memoryscope import MemoryScope, Arguments
+arguments = Arguments(
+    language=&quot;cn&quot;,
+    human_name=&quot;用户&quot;,
+    assistant_name=&quot;AI&quot;,
+    memory_chat_class=&quot;api_memory_chat&quot;,
+    generation_backend=&quot;dashscope_generation&quot;,
+    generation_model=&quot;qwen-max&quot;,
+    embedding_backend=&quot;dashscope_embedding&quot;,
+    embedding_model=&quot;text-embedding-v2&quot;,
+    rank_backend=&quot;dashscope_rank&quot;,
+    rank_model=&quot;gte-rerank&quot;,
+    enable_ranker=True)
+
+ms = MemoryScope(arguments=arguments)
+<br/></pre></div>
+</div>
+</div>
+</section>
+<section id="聊天（不含记忆）">
+<h2>聊天（不含记忆）<a class="headerlink" href="#聊天（不含记忆）" title="此标题的永久链接"></a></h2>
+<p>MemoryScope 配有默认的 chat 接口，因此开始聊天非常容易，就像使用任何大型语言模型聊天机器人一样。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>memory_chat = ms.default_memory_chat
+memory_chat.run_service_operation(&quot;delete_all&quot;)
+response = memory_chat.chat_with_memory(query=&quot;我的爱好是弹琴。&quot;)
+print(&quot;回答1：\n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+回答1：
+很高兴了解到您的爱好是弹琴，这是一种既能陶冶情操又能提升音乐技能的美妙艺术形式。无论是古典钢琴、爵士乐还是现代流行曲目，每一种风格都能带来不同的享受和挑战。希望您在弹琴的过程中能够持续发现乐趣，创造出更多动人的旋律。
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<p>你可以选择进行含有或不含有多轮对话上下文的聊天。然而，由于尚未调用<strong>记忆巩固</strong>功能，系统中还没有任何记忆片段。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>response = memory_chat.chat_with_memory(query=&quot;你知道我有什么乐器爱好吗？&quot;)
+print(&quot;回答2：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;你知道我有什么乐器爱好吗？&quot;,
+                                        history_message_strategy=None)
+print(&quot;回答3：\n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+回答2：
+是的，您提到过您的爱好是弹琴，所以我认为您对键盘乐器，特别是钢琴有一定的爱好。
+回答3：
+作为基于当前对话的MemoryScope智能助理，我没有之前关于您乐器爱好的信息。请告诉我，您喜欢哪种乐器？这样我就可以记住并提供相关帮助了。
+</pre></div></div>
+</div>
+</section>
+<section id="记忆巩固">
+<h2><strong>记忆巩固</strong><a class="headerlink" href="#记忆巩固" title="此标题的永久链接"></a></h2>
+<p>现在，我们再聊多几句，然后尝试<strong>记忆巩固</strong>功能。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>response = memory_chat.chat_with_memory(query=&quot;我在阿里巴巴干活&quot;)
+print(&quot;回答4：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;今天下午吃什么水果好？&quot;)
+print(&quot;回答5：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;我喜欢吃西瓜。&quot;)
+print(&quot;回答6：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;帮我写一句给朋友的生日祝福语，简短一点。&quot;)
+print(&quot;回答7：\n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+回答4：
+了解，您在阿里巴巴工作。阿里巴巴集团是一家总部位于中国杭州的全球领先的电子商务和科技公司，以其电子商务平台如淘宝、天猫闻名，同时在云计算、数字媒体及娱乐、金融科技等领域也有广泛布局。如果您有关于工作、技术或公司文化方面的问题，欢迎随时询问。
+回答5：
+选择水果可以根据个人口味、营养需求以及季节来决定。夏天，一些清爽解暑的水果会是不错的选择，比如西瓜、哈密瓜、葡萄、桃子或者李子，它们都含有丰富的水分和维生素，有助于消暑降温。如果您想要补充纤维素，火龙果或者猕猴桃也是很好的选择。最终，选择哪种水果，还是要看您自己的喜好和身体状况。
+回答6：
+西瓜是夏季的理想选择，它不仅清凉解渴，还含有大量的水分和电解质，可以帮助身体补充流失的水分。西瓜还富含维生素C、A和抗氧化剂，如番茄红素，对皮肤健康和心血管系统都有益处。享用美味的西瓜时，记得切块后冷藏一下，口感会更加清爽哦！
+回答7：
+&#34;生日快乐，愿你的每一天都如蛋糕般甜蜜，笑容比烛光更灿烂！&#34;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>memory_service = ms.default_memory_service
+memory_service.init_service()
+result = memory_service.consolidate_memory()
+print(f&quot;consolidate_memory result={result}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+consolidate_memory result=[MEMORY ACTIONS]:
+new observation: 用户爱好弹琴。 (valid)
+new observation: 用户在阿里巴巴工作。 (valid)
+new observation: 用户喜欢吃西瓜。 (valid)
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<p><strong>记忆巩固</strong>从用户的7条聊天消息中提取了3条 <em>observations</em> ，其余无效的信息被过滤掉了。</p>
+<p>我们尝试更多的情况，以测试其时间感知能力和过滤用户虚构的内容的能力。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>response = memory_chat.chat_with_memory(query=&quot;假如我去京东工作，前景怎么样？&quot;)
+print(&quot;回答8：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;记一下，下周我准备去北京出差&quot;)
+print(&quot;回答9：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;我同学李亚平现在在亚马逊工作，他下个月回上海，我要和他吃个饭&quot;)
+print(&quot;回答10：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;小亮是我最好的朋友，他决定去山西上大学。以这个为开头写一个80字的微剧本。&quot;)
+print(&quot;回答11：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;SMCI是什么公司，做什么的？&quot;)
+print(&quot;回答12：\n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+回答8：
+京东作为中国领先的电商平台之一，拥有广泛的业务范围和良好的行业声誉。加入京东工作，您可能会享受到以下几方面的前景优势：
+
+1. **职业发展**：京东提供多元化的职业路径和晋升机会，您可以在电商、物流、科技、金融等多个领域找到适合自己的位置和发展空间。
+
+2. **技术与创新**：京东持续投入于技术创新，尤其是在人工智能、大数据、云计算等方面，为员工提供了接触和学习前沿技术的机会。
+
+3. **企业文化**：京东强调“正道成功”的企业文化，注重诚信、团队合作与社会责任，有利于塑造积极向上的工作氛围。
+
+4. **福利待遇**：京东通常为员工提供有竞争力的薪酬福利体系，包括但不限于健康保险、员工培训、股权激励等。
+
+5. **行业影响力**：作为行业巨头，京东的从业经历对您的职业生涯将是一大亮点，有助于提升个人品牌和未来的职业选择灵活性。
+
+当然，具体前景还取决于您的职位、个人能力、行业趋势及个人职业规划等因素。建议您深入了解目标岗位的具体要求，评估个人与岗位的匹配度，并关注行业动态，为自己的职业发展做出合理规划。
+回答9：
+好的，已记录您计划下周去北京出差。请随时告诉我如果您需要关于北京的出行建议、天气预报或是其他相关信息。祝您出差顺利！
+回答10：
+已记录您的安排，您将于下个月与在亚马逊工作的同学李亚平在上海共进晚餐。临近日期时，不妨提前联系李亚平确认具体时间和地点，以便愉快地进行聚会。希望你们有个美好的重聚！
+回答11：
+【场景：傍晚，公园长椅】
+小亮是我最好的朋友，他决定去山西上大学。夕阳下，我们肩并肩坐着。
+我：“山西的面食可出名了，你这小吃货有福了！”
+小亮笑：“那必须的，说好你放假就来找我，咱们一起吃遍山西！”
+我点头，心中泛起不舍：“一言为定，别忘了，那里还有千年古城等你探索。”
+小亮看向远方，眼里闪烁着梦想的光：“新旅程，我们一起加油！”
+【画面渐暗，友情的力量温暖而坚定】
+回答12：
+SMCI可能指代的是Super Micro Computer, Inc.（超微电脑股份有限公司），简称Supermicro。这是一家总部位于美国加利福尼亚州圣何塞的公司，成立于1993年。Supermicro主要设计、制造和销售高性能服务器和技术解决方案，包括服务器、存储系统、主板以及支持云计算、数据中心、企业IT、高性能计算（HPC）和嵌入式系统的其他硬件组件。它们的产品以高效率、灵活性和定制化选项著称，在全球范围内服务于各种规模的企业和组织。
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>result = memory_service.consolidate_memory()
+print(f&quot;consolidate_memory result={result}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+consolidate_memory result=[MEMORY ACTIONS]:
+new observation: 用户计划2024年8月9日去北京出差。 (推断时间： 2024年8月9日) (valid)
+new observation: 用户的同学李亚平下个月回上海，用户将与其见面吃饭。 (推断时间： 2024年9月) (valid)
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<p>我们可以看到，<strong>记忆巩固</strong>成功过滤掉了虚假内容，并展示了良好的时间敏感性。</p>
+<p>我们尝试更多的情况，以测试其解决冲突内容的能力。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>response = memory_chat.chat_with_memory(query=&quot;今天下午吃什么水果好？&quot;)
+print(&quot;回答13：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;西瓜确实不错，但是我也喜欢吃芒果。我今天想吃芒果。&quot;)
+print(&quot;回答14：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;我最近跳槽去了美团。&quot;)
+print(&quot;回答15：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;我还喜欢吃桃子和苹果。&quot;)
+print(&quot;回答16：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;我不喜欢吃椰子。&quot;)
+print(&quot;回答17：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;我准备下个月去海南冲浪。&quot;)
+print(&quot;回答18：\n&quot; + response.message.content)
+response = memory_chat.chat_with_memory(query=&quot;明天是我生日。&quot;)
+print(&quot;回答19：\n&quot; + response.message.content)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+回答13：
+既然您喜欢吃西瓜，今天下午吃西瓜是个不错的选择。
+回答14：
+那太好了，如果您今天想换换口味，吃芒果也是很好的选择，享受它的香甜吧！
+回答15：
+恭喜您加入美团！希望您的新工作一切顺利，有新的挑战和机遇。
+回答16：
+了解了，桃子和苹果都是既营养又美味的选择，多吃水果对身体有益，您可以根据季节和个人喜好来挑选。
+回答17：
+好的，知道您不喜欢椰子，以后在推荐水果时会留意这一点。
+回答18：
+听起来很有趣！去海南冲浪是个很棒的计划，下个月那边的天气应该很适合水上活动，祝您玩得开心！别忘了做好防晒哦。
+回答19：
+生日快乐！希望您明天能度过一个特别且难忘的一天，满满的祝福给您！有任何庆祝计划吗？
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>result = memory_service.consolidate_memory()
+print(f&quot;consolidate_memory result={result}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+consolidate_memory result=[MEMORY ACTIONS]:
+new observation: 用户喜欢吃桃子和苹果。 (valid)
+new observation: 用户不喜欢吃椰子。 (valid)
+new observation: 用户喜欢吃芒果。 (valid)
+new observation: 用户计划2024年9月去海南冲浪。 (推断时间： 2024年9月) (valid)
+new observation: 用户的生日是每年8月3日。 (推断时间： 每年8月3日) (valid)
+modified observation: 用户在阿里巴巴工作。 (expired)
+modified observation: 用户最近跳槽至美团。 (expired)
+</pre></div></div>
+</div>
+</section>
+<section id="反思与再巩固">
+<h2><strong>反思与再巩固</strong><a class="headerlink" href="#反思与再巩固" title="此标题的永久链接"></a></h2>
+<p>现在，我们在系统中已经积累了足够多的新的 <em>observations</em> ，因此我们可以调用<strong>反思与再巩固</strong>功能，让我们看看会得到什么。</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>result = memory_service.reflect_and_reconsolidate()
+print(f&quot;consolidate_memory result={result}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+consolidate_memory result=[MEMORY ACTIONS]:
+new insight: 用户的出差计划： 2024年8月9日去北京出差 (valid)
+new insight: 用户的生日： 每年8月3日 (valid)
+new insight: 用户的水果偏好： 喜欢桃子、苹果、西瓜、芒果，不喜欢吃椰子 (valid)
+modified observation: 用户计划2024年8月9日去北京出差。 (推断时间： 2024年8月9日) (valid)
+modified observation: 用户的生日是每年8月3日。 (推断时间： 每年8月3日) (valid)
+modified observation: 用户计划2024年9月去海南冲浪。 (推断时间： 2024年9月) (valid)
+modified observation: 用户喜欢吃芒果。 (valid)
+modified observation: 用户喜欢吃桃子和苹果。 (valid)
+modified observation: 用户爱好弹琴。 (valid)
+modified observation: 用户喜欢吃西瓜。 (valid)
+modified observation: 用户不喜欢吃椰子。 (valid)
+modified observation: 用户的同学李亚平下个月回上海，用户将与其见面吃饭。 (推断时间： 2024年9月) (valid)
+</pre></div></div>
+</div>
+</section>
+<section id="低用户时延（RT）">
+<h2>低用户时延（RT）<a class="headerlink" href="#低用户时延（RT）" title="此标题的永久链接"></a></h2>
+<p>最后，我们测试 MemoryScope 系统对用户的响应时间 (RT)。具体来说，我们测试在有和没有从系统中检索记忆片段时聊天的响应时间的差异。</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import time
+
+start_time = time.time()
+response = memory_chat.chat_with_memory(query=&quot;你知道我的乐器爱好是什么吗？&quot;,
+                                        history_message_strategy=None)
+end_time = time.time()
+total_time = end_time - start_time
+print(&quot;使用记忆检索\n回答20：\n&quot; + response.message.content + f&quot;\n 耗时：{total_time}秒\n&quot;)
+
+start_time = time.time()
+response = memory_chat.chat_with_memory(query=&quot;你知道我接下去的一个月内有什么计划吗？&quot;,
+                                        history_message_strategy=None)
+end_time = time.time()
+total_time = end_time - start_time
+print(&quot;使用记忆检索\n回答21：\n&quot; + response.message.content + f&quot;\n 耗时：{total_time}秒\n&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>memory_chat.run_service_operation(&quot;delete_all&quot;)
+start_time = time.time()
+response = memory_chat.chat_with_memory(query=&quot;你知道我的乐器爱好是什么吗？&quot;,
+                                        history_message_strategy=None)
+end_time = time.time()
+total_time = end_time - start_time
+print(&quot;不使用记忆检索\n回答20：\n&quot; + response.message.content + f&quot;\n 耗时：{total_time}秒\n&quot;)
+
+start_time = time.time()
+response = memory_chat.chat_with_memory(query=&quot;你知道我接下去的一个月内有什么计划吗？\n&quot;,
+                                        history_message_strategy=None)
+end_time = time.time()
+total_time = end_time - start_time
+print(&quot;不使用记忆检索\n回答21：\n&quot; + response.message.content + f&quot;\n 耗时：{total_time}秒&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+使用记忆检索
+回答20：
+您喜欢弹琴。
+ 耗时：1.3783161640167236秒
+
+使用记忆检索
+回答21：
+您接下来一个月内的计划包括：
+- 2024年8月9日去北京出差。
+- 计划在2024年9月去海南冲浪。
+- 2024年9月，您的同学李亚平回上海，您将与他见面吃饭。
+ 耗时：6.538439035415649秒
+
+不使用记忆检索
+回答20：
+对不起，我没有记录您的个人信息，包括您的乐器爱好。如果您告诉我，我可以帮您记住。
+ 耗时：2.597784996032715秒
+
+不使用记忆检索
+回答21：
+对不起，作为基于当前会话的MemoryScope智能助理，我无法获取或存储您的个人日程信息。如果您需要查询自己的计划，建议您查看自己的日历或者备忘录。
+ 耗时：5.246160984039307秒
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<p>我们可以看到，从 MemoryScope 检索记忆片段不会增加聊天的响应时间。</p>
+</section>
+<section id="更多用法">
+<h2>更多用法<a class="headerlink" href="#更多用法" title="此标题的永久链接"></a></h2>
+<p>我们建议读者参考<a class="reference internal" href="../advance/custom_operator_zh.html"><span class="doc">进阶自定义用法</span></a>来对MemoryScope系统进行各种自定义设置。您还可以通过自定义<strong>workflow</strong>和对应的<strong>worker</strong>来创建或定制满足您特定需求的<strong>operation</strong>。</p>
+<p>此外，您还可以尝试使用<a class="reference internal" href="../cli/CLI_README_ZH.html"><span class="doc">在命令行与MemoryScope聊天机器人交互</span></a>。我们在这里实现了始终在后台异步运行<strong>记忆巩固</strong>和<strong>反思与再巩固</strong>这两个操作，从而使得它们不会增加聊天的响应时间。</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../cli/CLI_README_ZH.html" class="btn btn-neutral float-left" title="MemoryScope 的命令行接口" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../advance/custom_operator_zh.html" class="btn btn-neutral float-right" title="自定义 Operator 和 Worker" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alibaba Tongyi Lab。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

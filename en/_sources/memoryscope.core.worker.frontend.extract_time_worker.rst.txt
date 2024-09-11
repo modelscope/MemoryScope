@@ -1,0 +1,6 @@
+memoryscope.core.worker.frontend.extract_time_worker
+====================================================
+.. automodule:: memoryscope.core.worker.frontend.extract_time_worker
+   :members:
+   :undoc-members:
+   :show-inheritance:

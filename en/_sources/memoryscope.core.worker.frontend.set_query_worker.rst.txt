@@ -1,0 +1,6 @@
+memoryscope.core.worker.frontend.set_query_worker
+=================================================
+.. automodule:: memoryscope.core.worker.frontend.set_query_worker
+   :members:
+   :undoc-members:
+   :show-inheritance:

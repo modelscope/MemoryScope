@@ -1,0 +1,305 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MemoryScope &mdash; MemoryScope  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c9484b72" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installing MemoryScope" href="docs/installation.html" />
+    <link rel="prev" title="MemoryScope Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" > 
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MemoryScope
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div> <!-- language_selector.html -->
+<div class="language-selector">
+    <a href="../en/README.html">English</a></li> |
+    <a href="../zh/README.html">中文</a></li>
+</div> 
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">MemoryScope Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">About MemoryScope</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#news">📰 News</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-memoryscope">🌟 What is MemoryScope？</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#demo">Demo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#framework">Framework</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-features">Main Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-model-api">💼 Supported Model API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">🚀 Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">🍕 Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contribute">💡 Contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#citation">📖 Citation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/cli/CLI_README.html">Cli Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/api/simple_usages.html">Simple Usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/advance/custom_operator.html">Advanced usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/contribution.html">Contribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MemoryScope API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html">Enumeration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#scheme">Scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#config">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#models">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#storage">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#worker">Worker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#operation">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#service">Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/api.html#chat">Chat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MemoryScope</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">MemoryScope</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>English | <a class="reference internal" href="#./README_ZH.md"><span class="xref myst"><strong>中文</strong></span></a></p>
+<section id="memoryscope">
+<h1>MemoryScope<a class="headerlink" href="#memoryscope" title="Permalink to this heading"></a></h1>
+<p align="center">
+ <img src="./docs/images/logo.png" alt="MemoryScopeLogo" width="75%">
+</p>
+Equip your LLM chatbot with a powerful and flexible long term memory system.
+<p><a class="reference external" href="https://pypi.org/project/memoryscope/"><img alt="" src="https://img.shields.io/badge/python-3.10+-blue" /></a>
+<a class="reference external" href="https://pypi.org/project/memoryscope/"><img alt="" src="https://img.shields.io/badge/pypi-v0.1.1.0-blue?logo=pypi" /></a>
+<a class="reference internal" href="#./LICENSE"><span class="xref myst"><img alt="" src="https://img.shields.io/badge/license-Apache--2.0-black" /></span></a>
+<a class="reference external" href="https://modelscope.github.io/memoryscope/#welcome-to-memoryscope-tutorial-hub"><img alt="" src="https://img.shields.io/badge/Docs-English%7C%E4%B8%AD%E6%96%87-blue?logo=markdown" /></a>
+<a class="reference external" href="https://modelscope.github.io/memoryscope/"><img alt="" src="https://img.shields.io/badge/Docs-API_Reference-blue?logo=markdown" /></a>
+<a class="reference external" href="https://modelscope.github.io/memoryscope/tutorial/contribute.html"><img alt="" src="https://img.shields.io/badge/Contribute-Welcome-green" /></a></p>
+<hr class="docutils" />
+<section id="news">
+<h2>📰 News<a class="headerlink" href="#news" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>[2024-09-10]</strong> We release MemoryScope v0.1.1.0 now, which is also available in <a class="reference external" href="https://pypi.org/simple/memoryscope/">PyPI</a>!</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="what-is-memoryscope">
+<h2>🌟 What is MemoryScope？<a class="headerlink" href="#what-is-memoryscope" title="Permalink to this heading"></a></h2>
+<p>MemoryScope provides LLM chatbots with powerful and flexible long-term memory capabilities, offering a framework for building such abilities.
+It can be applied to scenarios like personal assistants and emotional companions, continuously learning through long-term memory to remember users’ basic information as well as various habits and preferences.
+This allows users to gradually experience a sense of “understanding” when using the LLM.</p>
+<section id="demo">
+<h3>Demo<a class="headerlink" href="#demo" title="Permalink to this heading"></a></h3>
+<p align="center">
+ <img src="https://github.com/user-attachments/assets/1754c814-1342-4288-a8a3-74d0b40f59a6" alt="en_demo" width="75%">
+</p>
+</section>
+<section id="framework">
+<h3>Framework<a class="headerlink" href="#framework" title="Permalink to this heading"></a></h3>
+<p align="center">
+ <img src="./docs/images/framework.png" alt="Framework" width="75%">
+</p>
+<p>💾 Memory Database: MemoryScope is equipped with a vector database (default is <em>ElasticSearch</em>) to store all memory fragments recorded in the system.</p>
+<p>🔧 Worker Library: MemoryScope atomizes the capabilities of long-term memory into individual workers, including over 20 workers for tasks such as query information filtering, observation extraction, and insight updating.</p>
+<p>🛠️ Operation Library: Based on the worker pipeline, it constructs the operations for memory services, realizing key capabilities such as memory retrieval and memory consolidation.</p>
+<ul class="simple">
+<li><p>Memory Retrieval: Upon arrival of a user query, this operation returns the semantically related memory pieces
+and/or those from the corresponding time if the query involves reference to time.</p></li>
+<li><p>Memory Consolidation: This operation takes in a batch of user queries and returns important user information
+extracted from the queries as consolidated <em>observations</em> to be stored in the memory database.</p></li>
+<li><p>Reflection and Re-consolidation: At regular intervals, this operation performs reflection upon newly recorded <em>observations</em>
+to form and update <em>insights</em>. Then, memory re-consolidation is performed to ensure contradictions and repetitions
+among memory pieces are properly handled.</p></li>
+</ul>
+<p>⚙️ Best Practices:</p>
+<ul class="simple">
+<li><p>Based on the core capabilities of long-term memory, MemoryScope has implemented a dialogue interface (API) with long-term memory and a command-line dialogue practice (CLI) with long-term memory.</p></li>
+<li><p>MemoryScope combines currently popular agent frameworks (AutoGen, AgentScope) to provide best practices.</p></li>
+</ul>
+</section>
+<section id="main-features">
+<h3>Main Features<a class="headerlink" href="#main-features" title="Permalink to this heading"></a></h3>
+<p>⚡ Low response-time (RT) for the user:</p>
+<ul class="simple">
+<li><p>Backend operations (Memory Consolidation, Reflection and Re-consolidation) are decoupled from the frontend operation
+(Memory Retrieval) in the system.</p></li>
+<li><p>While backend operations are usually (and are recommended to be) queued or executed at regular intervals, the
+system’s response time (RT) for the user depends solely on the frontend operation, which is only ~500ms.</p></li>
+</ul>
+<p>🌲 Hierarchical and coherent memory:</p>
+<ul class="simple">
+<li><p>The memory pieces stored in the system are in a hierarchical structure, with <em>insights</em> being the high level information
+from the aggregation of similarly-themed <em>observations</em>.</p></li>
+<li><p>Contradictions and repetitions among memory pieces are handled periodically to ensure coherence of memory.</p></li>
+<li><p>Fictitious contents from the user are filtered out to avoid hallucinations by the LLM.</p></li>
+</ul>
+<p>⏰ Time awareness:</p>
+<ul class="simple">
+<li><p>The system is time sensitive when performing both Memory Retrieval and Memory Consolidation. Therefore, it can retrieve
+accurate relevant information when the query involves reference to time.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="supported-model-api">
+<h2>💼 Supported Model API<a class="headerlink" href="#supported-model-api" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>Task</p></th>
+<th class="head"><p>Some Supported Models</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>openai_backend</p></td>
+<td><p>Generation</p></td>
+<td><p>gpt-4o, gpt-4o-mini, gpt-4, gpt-3.5-turbo</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Embedding</p></td>
+<td><p>text-embedding-ada-002, text-embedding-3-large, text-embedding-3-small</p></td>
+</tr>
+<tr class="row-even"><td><p>dashscope_backend</p></td>
+<td><p>Generation</p></td>
+<td><p>qwen-max, qwen-plus, qwen-plus, qwen2-72b-instruct</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Embedding</p></td>
+<td><p>text-embedding-v1, text-embedding-v2</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Reranker</p></td>
+<td><p>gte-rerank</p></td>
+</tr>
+</tbody>
+</table>
+<p>In the future, we will support more model interfaces and local deployment of LLM and embedding services.</p>
+</section>
+<section id="installation">
+<h2>🚀 Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<p>For installation, please refer to <a class="reference internal" href="docs/installation.html"><span class="std std-doc">Installation.md</span></a>.</p>
+</section>
+<section id="quick-start">
+<h2>🍕 Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="examples/api/simple_usages.html"><span class="std std-doc">Simple Usages (Quick Start)</span></a></p></li>
+<li><p><a class="reference internal" href="examples/api/autogen_example.html"><span class="std std-doc">With AutoGen</span></a></p></li>
+<li><p><a class="reference internal" href="#./examples/cli/README.md"><span class="xref myst">CLI with a MemoryScope Chatbot</span></a></p></li>
+<li><p><a class="reference internal" href="examples/advance/custom_operator.html"><span class="std std-doc">Advanced Customization</span></a></p></li>
+</ul>
+</section>
+<section id="contribute">
+<h2>💡 Contribute<a class="headerlink" href="#contribute" title="Permalink to this heading"></a></h2>
+<p>Contributions are always encouraged!</p>
+<p>We highly recommend install pre-commit hooks in this repo before committing pull requests.
+These hooks are small house-keeping scripts executed every time you make a git commit,
+which will take care of the formatting and linting automatically.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+<p>Please refer to our <a class="reference internal" href="docs/contribution.html"><span class="std std-doc">Contribution Guide</span></a> for more details.</p>
+</section>
+<section id="citation">
+<h2>📖 Citation<a class="headerlink" href="#citation" title="Permalink to this heading"></a></h2>
+<p>Reference to cite if you use MemoryScope in a paper:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@software</span><span class="p">{</span><span class="n">MemoryScope</span><span class="p">,</span>
+<span class="n">author</span> <span class="o">=</span> <span class="p">{</span><span class="n">Li</span> <span class="n">Yu</span> <span class="ow">and</span> 
+          <span class="n">Tiancheng</span> <span class="n">Qin</span> <span class="ow">and</span>
+          <span class="n">Qingxu</span> <span class="n">Fu</span> <span class="ow">and</span>
+          <span class="n">Sen</span> <span class="n">Huang</span> <span class="ow">and</span>
+          <span class="n">Xianzhe</span> <span class="n">Xu</span> <span class="ow">and</span>
+          <span class="n">Zhaoyang</span> <span class="n">Liu</span> <span class="ow">and</span>
+          <span class="n">Boyin</span> <span class="n">Liu</span><span class="p">},</span>
+<span class="n">month</span> <span class="o">=</span> <span class="p">{</span><span class="mi">09</span><span class="p">},</span>
+<span class="n">title</span> <span class="o">=</span> <span class="p">{{</span><span class="n">MemoryScope</span><span class="p">}},</span>
+<span class="n">url</span> <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">modelscope</span><span class="o">/</span><span class="n">MemoryScope</span><span class="p">},</span>
+<span class="n">year</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2024</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="MemoryScope Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="docs/installation.html" class="btn btn-neutral float-right" title="Installing MemoryScope" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Alibaba Tongyi Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

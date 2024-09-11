@@ -1,0 +1,6 @@
+memoryscope.core.storage.base_monitor
+=====================================
+.. automodule:: memoryscope.core.storage.base_monitor
+   :members:
+   :undoc-members:
+   :show-inheritance:

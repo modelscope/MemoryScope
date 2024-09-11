@@ -1,0 +1,6 @@
+memoryscope.core.worker.frontend.fuse_rerank_worker
+===================================================
+.. automodule:: memoryscope.core.worker.frontend.fuse_rerank_worker
+   :members:
+   :undoc-members:
+   :show-inheritance:
