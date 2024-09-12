@@ -1,5 +1,5 @@
 """ Version of MemoryScope."""
-__version__ = "0.1.0.10"
+__version__ = "0.1.1.0"
 import fire
 
 from memoryscope.core.config.arguments import Arguments  # noqa: F401

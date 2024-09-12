@@ -1,17 +1,17 @@
 [**English**](./README.md) | 中文
 
 # MemoryScope
-
-![MemoryScope Logo](./docs/images/logo.png)
-
+<p align="center">
+ <img src="./docs/images/logo.png" alt="MemoryScopeLogo" width="75%">
+</p>
 为您的大语言模型聊天机器人配备强大且灵活的长期记忆系统。
 
 [![](https://img.shields.io/badge/python-3.10+-blue)](https://pypi.org/project/memoryscope/)
 [![](https://img.shields.io/badge/pypi-v0.1.1-blue?logo=pypi)](https://pypi.org/project/memoryscope/)
 [![](https://img.shields.io/badge/license-Apache--2.0-black)](./LICENSE)
-[![](https://img.shields.io/badge/Docs-English%7C%E4%B8%AD%E6%96%87-blue?logo=markdown)](https://modelscope.github.io/memoryscope/#welcome-to-memoryscope-tutorial-hub)
-[![](https://img.shields.io/badge/Docs-API_Reference-blue?logo=markdown)](https://modelscope.github.io/memoryscope/)
-[![](https://img.shields.io/badge/Contribute-Welcome-green)](https://modelscope.github.io/memoryscope/tutorial/contribute.html)
+[![](https://img.shields.io/badge/Docs-English%7C%E4%B8%AD%E6%96%87-blue?logo=markdown)](https://modelscope.github.io/MemoryScope/zh/index.html#id1)
+[![](https://img.shields.io/badge/Docs-API_Reference-blue?logo=markdown)](https://modelscope.github.io/MemoryScope/zh/docs/api.html)
+[![](https://img.shields.io/badge/Contribute-Welcome-green)](https://modelscope.github.io/MemoryScope/zh/docs/contribution.html)
 
 <!-- 创空间
 [![](https://img.shields.io/badge/ModelScope-Demos-4e29ff.svg?logo=data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjI0IDEyMS4zMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCTxwYXRoIGQ9Im0wIDQ3Ljg0aDI1LjY1djI1LjY1aC0yNS42NXoiIGZpbGw9IiM2MjRhZmYiIC8+Cgk8cGF0aCBkPSJtOTkuMTQgNzMuNDloMjUuNjV2MjUuNjVoLTI1LjY1eiIgZmlsbD0iIzYyNGFmZiIgLz4KCTxwYXRoIGQ9Im0xNzYuMDkgOTkuMTRoLTI1LjY1djIyLjE5aDQ3Ljg0di00Ny44NGgtMjIuMTl6IiBmaWxsPSIjNjI0YWZmIiAvPgoJPHBhdGggZD0ibTEyNC43OSA0Ny44NGgyNS42NXYyNS42NWgtMjUuNjV6IiBmaWxsPSIjMzZjZmQxIiAvPgoJPHBhdGggZD0ibTAgMjIuMTloMjUuNjV2MjUuNjVoLTI1LjY1eiIgZmlsbD0iIzM2Y2ZkMSIgLz4KCTxwYXRoIGQ9Im0xOTguMjggNDcuODRoMjUuNjV2MjUuNjVoLTI1LjY1eiIgZmlsbD0iIzYyNGFmZiIgLz4KCTxwYXRoIGQ9Im0xOTguMjggMjIuMTloMjUuNjV2MjUuNjVoLTI1LjY1eiIgZmlsbD0iIzM2Y2ZkMSIgLz4KCTxwYXRoIGQ9Im0xNTAuNDQgMHYyMi4xOWgyNS42NXYyNS42NWgyMi4xOXYtNDcuODR6IiBmaWxsPSIjNjI0YWZmIiAvPgoJPHBhdGggZD0ibTczLjQ5IDQ3Ljg0aDI1LjY1djI1LjY1aC0yNS42NXoiIGZpbGw9IiMzNmNmZDEiIC8+Cgk8cGF0aCBkPSJtNDcuODQgMjIuMTloMjUuNjV2LTIyLjE5aC00Ny44NHY0Ny44NGgyMi4xOXoiIGZpbGw9IiM2MjRhZmYiIC8+Cgk8cGF0aCBkPSJtNDcuODQgNzMuNDloLTIyLjE5djQ3Ljg0aDQ3Ljg0di0yMi4xOWgtMjUuNjV6IiBmaWxsPSIjNjI0YWZmIiAvPgo8L3N2Zz4K)](https://modelscope.cn/studios?name=memoryscope&page=1&sort=latest)
@@ -21,7 +21,7 @@
 ----
 ## 📰 新闻
 
-- **[2024-09-10]** 我们现在发布了 MemoryScope v0.1.1，该版本也可以在 [PyPI](https://pypi.org/simple/memoryscope/) 上获取！
+- **[2024-09-10]** 我们现在发布了 MemoryScope v0.1.1.0，该版本也可以在 [PyPI](https://pypi.org/simple/memoryscope/) 上获取！
 ----
 
 ## 🌟 什么是MemoryScope？
@@ -29,10 +29,15 @@ MemoryScope可以为LLM聊天机器人提供强大且灵活的长期记忆能力
 MemoryScope可以用于个人助理、情感陪伴等记忆场景，通过长期记忆能力来不断学习，记得用户的基础信息以及各种习惯和喜好，使得用户在使用LLM时逐渐感受到一种“默契”。
 
 ### Demo
-![chinese-gif](https://github.com/user-attachments/assets/57519274-8c01-4d88-bcd2-0ebce3551e5d)
+<p align="center">
+ <img src="https://github.com/user-attachments/assets/57519274-8c01-4d88-bcd2-0ebce3551e5d" alt="zh_demo" width="75%">
+</p>
+
 
 ### 核心框架：
-![Framework](./docs/images/framework.png)
+<p align="center">
+ <img src="./docs/images/framework.png" alt="Framework" width="75%">
+</p>
 
 💾 记忆数据库: MemoryScope配备了向量数据库(默认是*ElasticSearch*)，用于存储系统中记录的所有记忆片段。
 

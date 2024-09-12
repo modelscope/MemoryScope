@@ -1,0 +1,88 @@
+name: deploy-sphinx-documentation-to-pages
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'docs/sphinx_doc/**/*'
+  push:
+    branches:
+      - main
+
+jobs:
+  pages:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Python
+      uses: actions/setup-python@master
+      with:
+        python-version: '3.10'
+    - name: Choose Pandoc
+      shell: bash
+      run: |
+        case $RUNNER_OS in
+          "Linux")
+              printf 'INSTALLER_SUFFIX=1-amd64.deb' >> $GITHUB_ENV
+              ;;
+           "macOS")
+              printf 'INSTALLER_SUFFIX=macOS.pkg' >> $GITHUB_ENV
+              ;;
+            *)
+              printf 'Do not know how to install pandoc on %s\n' "$RUNNER_OS"
+              exit 1
+              ;;
+        esac
+    - name: Download Pandoc
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        REPO: jgm/pandoc
+        DOWNLOAD_URL: 'https://github.com/jgm/pandoc/releases/download/'
+      run: |
+        gh release download ${{ inputs.version }} \
+            --repo "$REPO" \
+            --pattern '*'${{ env.INSTALLER_SUFFIX }}
+        printf 'INSTALLER_VERSION=%s' \
+               "$(ls pandoc-*-${{ env.INSTALLER_SUFFIX }} | \
+                      sed 's/pandoc-\([0-9.]*\)-.*/\1/')" \
+               >> $GITHUB_ENV
+    - name: Install Pandoc
+      shell: bash
+      env:
+        INSTALLER: pandoc-${{ env.INSTALLER_VERSION }}-${{ env.INSTALLER_SUFFIX }}
+      run: |
+        case $RUNNER_OS in
+          "Linux")
+              sudo apt install ./$INSTALLER
+              ;;
+           "macOS")
+              sudo installer -pkg ./$INSTALLER -target '/'
+              ;;
+            *)
+              echo "$RUNNER_OS not supported"
+              exit 1
+              ;;
+        esac
+        rm $INSTALLER
+    - name: Install Sphinx Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r docs/sphinx_doc/requirements.txt
+    - name: Build Documentation
+      run: |
+        cd docs/sphinx_doc
+        bash build_sphinx_doc.sh
+    - name: Upload Documentation
+      uses: actions/upload-artifact@v3
+      with:
+        name: SphinxDoc
+        path: 'docs/sphinx_doc/build/html'
+    - name: Push Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: 'docs/sphinx_doc/build/html'

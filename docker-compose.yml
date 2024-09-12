@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   memory_scope_main:
     build:
-      context: ./
+      context: ghcr.io/modelscope/memoryscope:main
     environment:
       DASHSCOPE_API_KEY: "sk-0000000000"
       # OPENAI_API_KEY: "sk-0000000000"
