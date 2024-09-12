@@ -1,6 +1,6 @@
 # Installing MemoryScope
 
-## I. Install with docker [Recommended]
+## I. Install with docker [Recommended] [x86_64]
 
 1. Clone the repository and edit settings
     ```bash
@@ -16,13 +16,13 @@
     sudo docker build --network=host -t memoryscope .
     ```
 
-3. Launch Docker container
+3. Launch Docker container (ARM architecture not yet supported)
     ```bash
     sudo docker run -it --rm --net=host memoryscope
     ```
 
 
-## II. Install with docker compose [Recommended]
+## II. Install with docker compose [Recommended] [x86_64]
 
 1. Clone the repository and edit settings
     ```bash
@@ -38,7 +38,7 @@
     OPENAI_API_KEY: "sk-0000000000"
     ```
 
-3. Run `docker-compose run memory_scope_main` to build and launch the memory-scope cli interface.
+3. Run `docker-compose run memory_scope_main` to build and launch the memory-scope cli interface. (ARM architecture not yet supported)
 
 
 ## III. Install from PyPI
