@@ -66,6 +66,7 @@ from viztracer import VizTracer
 tracer = VizTracer()
 tracer.start()
 
+ms._context.memory_store.inject_from_checkpoint("checkpoint_test_dir")
 for index, tweet in enumerate(tweet_list):
     query = tweet["content"]
     response = memory_chat.inject_memory(query)
@@ -75,6 +76,6 @@ for index, tweet in enumerate(tweet_list):
         res = memory_chat.run_service_operation("list_memory")
         logger.error(res)
         tracer.save(output_file='result.json')
-    
+        ms._context.memory_store.save_checkpoint("checkpoint_test_dir")
 tracer.stop()
 tracer.save(output_file='result.json')

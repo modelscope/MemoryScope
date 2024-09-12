@@ -149,3 +149,5 @@ cradle*
 # sphinx docs
 
 memoryscope*.rst
+result.json
+checkpoint_test_dir

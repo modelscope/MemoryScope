@@ -1,5 +1,6 @@
 import random
 import pickle
+import os
 from typing import Dict, List
 
 from llama_index.core import VectorStoreIndex
@@ -39,14 +40,15 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
         self.logger = Logger.get_logger("es_memory_store")
 
-    def save_checkpoint(self):
-        # ???
+    def save_checkpoint(self, checkpoint_dir):
         search_res = self.retrieve_memories("", top_k=9999)
-        print(search_res)
+        os.makedirs(checkpoint_dir)
+        with open(os.path.join(checkpoint_dir, "checkpoint.pkl"), "wb") as f:
+            pickle.dump(search_res, f)
 
-    def inject_from_checkpoint(self):
-        search_res = self.sync_search_all()
-        # ???
+    def inject_from_checkpoint(self, checkpoint_dir):
+        with open(os.path.join(checkpoint_dir, "checkpoint.pkl"), "rb") as f:
+            self.batch_insert(pickle.load(f))
 
     def retrieve_memories(self,
                           query: str = "",

@@ -658,7 +658,7 @@ class SyncElasticsearchStore(BasePydanticVectorStore):
 
     def sync_search_all_with_filter(self, es_filter, fields):
         query_body = {'query': {'bool': {'filter': es_filter}}}
-        k = 1000
+        k = 9999
         fields = ['embedding', 'metadata', 'content']
         response = self.client.search(
             index=self.index_name,
