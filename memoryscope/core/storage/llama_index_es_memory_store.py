@@ -39,6 +39,15 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
         self.logger = Logger.get_logger("es_memory_store")
 
+    def save_checkpoint(self):
+        # ???
+        search_res = self.retrieve_memories("", top_k=9999)
+        print(search_res)
+
+    def inject_from_checkpoint(self):
+        search_res = self.sync_search_all()
+        # ???
+
     def retrieve_memories(self,
                           query: str = "",
                           top_k: int = 3,
@@ -148,8 +157,6 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
                         embedding=embedding,
                         text_template="{content}",
                         metadata=metadatas)
-        
-
 
     @staticmethod
     def _text_node_2_memory_node(text_node: NodeWithScore) -> MemoryNode:

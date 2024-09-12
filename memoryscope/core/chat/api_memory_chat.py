@@ -199,3 +199,92 @@ class ApiMemoryChat(BaseMemoryChat):
                 else:
                     self.logger.warning("model_response or model_response.message is empty!")
             return model_response
+
+
+
+    def inject_memory(self,
+                      query: str,
+                      role_name: Optional[str] = None,
+                      system_prompt: Optional[str] = None,
+                      memory_prompt: Optional[str] = None,
+                      temporary_memories: Optional[str] = None,
+                      history_message_strategy: Literal["auto", None] | int = "auto",
+                      remember_response: bool = True,
+                      **kwargs):
+
+        chat_messages: List[Message] = []
+
+        # prepare query message
+        if not role_name:
+            role_name = self.human_name
+        query_message = Message(role=MessageRoleEnum.USER.value, role_name=role_name, content=query)
+
+        # To retrieve memory, prepare the query timestamp and role name by adding query_message.
+        # memories: str = self.memory_service.retrieve_memory(query=query_message.content,
+        #                                                     role_name=query_message.role_name,
+        #                                                     timestamp=query_message.time_created)
+        memories: str = " "
+
+        # format system_message with memories
+        system_prompt_list = []
+        if system_prompt:
+            system_prompt_list.append(system_prompt)
+        else:
+            dt_handler = DatetimeHandler()
+            date_time = dt_handler.datetime_format("%Y-%m-%d %H:%M:%S")
+            weekday = dt_handler.get_dt_info_dict(self.context.language)["weekday"]
+            system_prompt_list.append(self.prompt_handler.system_prompt.format(date_time=f"{date_time} {weekday}"))
+
+        if memories:
+            # add memory prompt
+            if memory_prompt:
+                system_prompt_list.append(memory_prompt)
+            else:
+                system_prompt_list.append(self.prompt_handler.memory_prompt)
+
+            if self.human_name != DEFAULT_HUMAN_NAME[self.context.language]:
+                system_prompt_list.append(USER_NAME_EXPRESSION[self.context.language].format(name=self.human_name))
+            system_prompt_list.append(memories)
+
+        if temporary_memories:
+            system_prompt_list.extend(temporary_memories)
+
+        system_prompt_join = "\n".join([x.strip() for x in system_prompt_list])
+        system_message = Message(role=MessageRoleEnum.SYSTEM, content=system_prompt_join)
+        chat_messages.append(system_message)
+
+        # Include past conversation history in the message list
+        if history_message_strategy:
+            history_messages = []
+
+            if history_message_strategy == "auto":
+                history_messages = self.memory_service.read_message()
+
+            elif isinstance(history_message_strategy, int):
+                history_messages = self.memory_service.get_chat_messages_scatter(history_message_strategy)
+
+            if history_messages:
+                assert isinstance(history_messages[0], Message)
+                chat_messages.extend(history_messages)
+
+        # Append the current user's message to the conversation context
+        chat_messages.append(query_message)
+        self.logger.info(f"chat_messages={chat_messages}")
+
+        # resp = self.generation_model.call(messages=chat_messages, stream=self.stream, **self.generation_model_kwargs)
+        resp = ModelResponse(message=Message(content="", role=MessageRoleEnum.ASSISTANT.value))
+        if self.stream:
+            return self.iter_response(remember_response, resp, memories, query_message)
+
+        else:
+            model_response: ModelResponse = resp
+            if remember_response:
+                if model_response and model_response.message:
+                    model_response.message.role_name = self.assistant_name
+                    model_response.meta_data[MEMORIES] = memories
+                    self.memory_service.add_messages_pair([query_message, model_response.message])
+                else:
+                    self.logger.warning("model_response or model_response.message is empty!")
+            return model_response
+
+

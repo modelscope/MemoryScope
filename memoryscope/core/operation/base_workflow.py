@@ -1,5 +1,6 @@
 import re
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from itertools import zip_longest
 from typing import Dict, Any, List
@@ -182,18 +183,32 @@ class BaseWorkflow(object):
                 # self.logger.info(self.logger.format_current_context(self.workflow_context))
                 # Sequential execution for single-item parts
                 if len(workflow_part) == 1:
+
+                    # log start event
                     log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage}: {workflow_part[0]}"
                     self.logger.info(log_buf)
                     self.workflow_print_console(log_buf, style="bold red")
-                    if not self._run_sub_workflow(workflow_part[0]):
+                    submit_time = time.time()
+
+                    # run workflow
+                    result = self._run_sub_workflow(workflow_part[0])
+
+                    # log finish event
+                    log_buf = f"\t- (Operation Complete): {self.name} | {index+1}/{n_stage}: {workflow_part[0]} | time consume {time.time() - submit_time}"
+                    self.logger.info(log_buf)
+                    self.workflow_print_console(log_buf, style="bold red")
+
+                    # break workflow
+                    if not result:
                         break
                 # Parallel execution for multi-item parts
                 else:
                     t_list = []
+                    submit_time = time.time()
                     # Submit tasks to the thread pool
                     n_sub_stage = len(workflow_part)
                     for sub_index, sub_workflow in enumerate(workflow_part):
-                        log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage} | sub workflow {sub_index+1}/{n_sub_stage}: {str(sub_workflow)}"
+                        log_buf = f"\t- Operation: {self.name} | {index+1}/{n_stage} | sub workflow start {sub_index+1}/{n_sub_stage}: {str(sub_workflow)}"
                         self.logger.info(log_buf)
                         self.workflow_print_console(log_buf, style="red")
                         t_list.append(self.thread_pool.submit(self._run_sub_workflow, sub_workflow))
@@ -201,6 +216,12 @@ class BaseWorkflow(object):
                     # Check results; if any task returns False, stop the workflow
                     flag = True
                     for future in as_completed(t_list):
+
+                        sub_index = t_list.index(future)
+                        log_buf = f"\t- (Operation Complete): {self.name} | {index+1}/{n_stage} | sub workflow done {sub_index+1}/{n_sub_stage}: {str(workflow_part[sub_index])} | time consume {time.time() - submit_time}"
+                        self.logger.info(log_buf)
+                        self.workflow_print_console(log_buf, style="red")
+
                         if not future.result():
                             flag = False
                     if not flag:
