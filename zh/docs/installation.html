@@ -56,8 +56,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../README.html">关于 MemoryScope</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">安装</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#docker">一、使用 Docker 安装 [推荐]</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#docker-compose">二、使用 Docker Compose 安装 [推荐]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-x86-64">一、使用 Docker 安装 [推荐] [x86_64]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-compose-x86-64">二、使用 Docker Compose 安装 [推荐] [x86_64]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pypi">三、通过 PYPI 安装</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">四、从源码安装</a></li>
 </ul>
@@ -106,8 +106,8 @@
              
   <section id="memoryscope">
 <h1>MemoryScope 安装指南<a class="headerlink" href="#memoryscope" title="Link to this heading"></a></h1>
-<section id="docker">
-<h2>一、使用 Docker 安装 [推荐]<a class="headerlink" href="#docker" title="Link to this heading"></a></h2>
+<section id="docker-x86-64">
+<h2>一、使用 Docker 安装 [推荐] [x86_64]<a class="headerlink" href="#docker-x86-64" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><p>克隆仓库并编辑配置</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 克隆项目</span>
@@ -123,15 +123,15 @@ vim<span class="w"> </span>memoryscope/core/config/demo_config_zh.yaml
 </pre></div>
 </div>
 </li>
-<li><p>启动 Docker 容器</p>
+<li><p>启动 Docker 容器 (备注：ARM架构暂不支持)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>--net<span class="o">=</span>host<span class="w"> </span>memoryscope
 </pre></div>
 </div>
 </li>
 </ol>
 </section>
-<section id="docker-compose">
-<h2>二、使用 Docker Compose 安装 [推荐]<a class="headerlink" href="#docker-compose" title="Link to this heading"></a></h2>
+<section id="docker-compose-x86-64">
+<h2>二、使用 Docker Compose 安装 [推荐] [x86_64]<a class="headerlink" href="#docker-compose-x86-64" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><p>克隆仓库并编辑配置</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 克隆项目</span>
@@ -147,7 +147,7 @@ vim<span class="w"> </span>memoryscope/core/config/demo_config_zh.yaml
 </pre></div>
 </div>
 </li>
-<li><p>运行 <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">run</span> <span class="pre">memory_scope_main</span></code> 命令来构建并启动 MemoryScope CLI 界面。</p></li>
+<li><p>运行 <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">run</span> <span class="pre">memory_scope_main</span></code> 命令来构建并启动 MemoryScope CLI 界面。 (备注：ARM架构暂不支持)</p></li>
 </ol>
 </section>
 <section id="pypi">
