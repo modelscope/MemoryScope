@@ -49,7 +49,7 @@ arguments = Arguments(
     worker_params={"get_reflection_subject": {"reflect_num_questions": 3}}
 )
 
-ms = MemoryScope(arguments=arguments)
+ms = MemoryScope(config_path="benchmark/benchmark_config.yaml", arguments=arguments)
 msms = ms._context.memory_store.es_store
 try: msms.sync_delete_all()
 except: pass
@@ -66,16 +66,25 @@ from viztracer import VizTracer
 tracer = VizTracer()
 tracer.start()
 
+print("1")
 ms._context.memory_store.inject_from_checkpoint("checkpoint_test_dir")
+print("2")
+print(memory_chat.chat_with_memory("我对于omicron的态度").message.content)
+print("3")
+
 for index, tweet in enumerate(tweet_list):
     query = tweet["content"]
     response = memory_chat.inject_memory(query)
     logger.info(query)
+
     if index % 20 == 0:
         result = memory_service.consolidate_memory()
         res = memory_chat.run_service_operation("list_memory")
         logger.error(res)
+
+    if index % 200 == 0:
         tracer.save(output_file='result.json')
         ms._context.memory_store.save_checkpoint("checkpoint_test_dir")
+
 tracer.stop()
 tracer.save(output_file='result.json')

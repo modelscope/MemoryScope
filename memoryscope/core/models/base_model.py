@@ -92,7 +92,9 @@ class BaseModel(metaclass=ABCMeta):
                                         f"details={model_response.details}", stacklevel=2)
                     time.sleep(i * self.retry_interval)
                 else:
-                    return self.after_call(stream=stream, model_response=model_response, **kwargs)
+                    break
+                
+        return self.after_call(stream=stream, model_response=model_response, cost_time=t.cost_str, **kwargs)
 
     @abstractmethod
     async def _async_call(self, model_response: ModelResponse, **kwargs) -> ModelResponse:

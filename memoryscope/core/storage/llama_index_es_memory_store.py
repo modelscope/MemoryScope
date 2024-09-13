@@ -42,7 +42,7 @@ class LlamaIndexEsMemoryStore(BaseMemoryStore):
 
     def save_checkpoint(self, checkpoint_dir):
         search_res = self.retrieve_memories("", top_k=9999)
-        os.makedirs(checkpoint_dir)
+        os.makedirs(checkpoint_dir, exist_ok=True)
         with open(os.path.join(checkpoint_dir, "checkpoint.pkl"), "wb") as f:
             pickle.dump(search_res, f)
 

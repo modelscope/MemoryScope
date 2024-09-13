@@ -63,6 +63,7 @@ class LlamaIndexGenerationModel(BaseModel):
     def after_call(self,
                    model_response: ModelResponse,
                    stream: bool = False,
+                   cost_time: str = "",
                    **kwargs) -> ModelResponse | ModelResponseGen:
         model_response.message = Message(role=MessageRoleEnum.ASSISTANT, content="")
 
@@ -84,6 +85,7 @@ class LlamaIndexGenerationModel(BaseModel):
             else:
                 raise NotImplementedError
             self.logger.info(self.logger.format_chat_message(model_response))
+            self.logger.info(f"Time cost: {cost_time}")
             return model_response
 
     def _call(self, model_response: ModelResponse, stream: bool = False, **kwargs):
