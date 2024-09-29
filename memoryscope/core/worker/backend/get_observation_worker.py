@@ -66,6 +66,9 @@ class GetObservationWorker(MemoryBaseWorker):
             List[Message]: A list of filtered messages that mention time.
         """
         filter_messages = []
+        if hasattr(GetObservationWorker, "cache_bank"):
+            pass
+            # self.logger.info("get obs filter_messages from cache")
         for msg in self.chat_messages_scatter:
             if not DatetimeHandler.has_time_word(query=msg.content, language=self.language):
                 filter_messages.append(msg)

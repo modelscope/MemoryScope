@@ -63,14 +63,14 @@ except: pass
 
 from viztracer import VizTracer
 
-tracer = VizTracer()
-tracer.start()
+# tracer = VizTracer()
+# tracer.start()
 
-print("1")
-ms._context.memory_store.inject_from_checkpoint("checkpoint_test_dir")
-print("2")
-print(memory_chat.chat_with_memory("我对于omicron的态度").message.content)
-print("3")
+# print("1")
+# ms._context.memory_store.inject_from_checkpoint("checkpoint_test_dir")
+# print("2")
+# print(memory_chat.chat_with_memory("我对于omicron的态度").message.content)
+# print("3")
 
 for index, tweet in enumerate(tweet_list):
     query = tweet["content"]
@@ -83,8 +83,8 @@ for index, tweet in enumerate(tweet_list):
         logger.error(res)
 
     if index % 200 == 0:
-        tracer.save(output_file='result.json')
+        # tracer.save(output_file='result.json')
         ms._context.memory_store.save_checkpoint("checkpoint_test_dir")
 
-tracer.stop()
-tracer.save(output_file='result.json')
+# tracer.stop()
+# tracer.save(output_file='result.json')
