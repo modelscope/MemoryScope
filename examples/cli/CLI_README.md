@@ -53,3 +53,12 @@ Here are the available options that can be set through either method:
 - `--enable_ranker`: A boolean indicating whether to use a dummy ranker (default is `False`).
 - `--rank_backend`: The backend used for ranking responses.
 - `--rank_model`: The model used for ranking responses.
+
+### 3. View Memory
+You can open two command line windows following the method in the second step. 
+In one command line window, you can have a conversation with the AI, while in the other, you can check the AI's long-term memory about the user.
+Use /help to open the command line help, and find the command /list_memory along with the corresponding auto-refresh instruction.
+```
+/list_memory refresh_time=5
+```
+Then you can enjoy a pleasant conversation with the AI!
