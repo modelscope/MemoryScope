@@ -22,8 +22,9 @@
     ```
 
 > [!Important]
-> To inspect memory shift during the conversation, modify command in step 3 to `sudo docker run -it --name=memoryscope_container --rm --net=host memoryscope`; Then start a new terminal window and execute `sudo docker exec -it memoryscope_container python quick-start-demo.py --config_path=memoryscope/core/config/demo_config_zh.yaml`
-
+> To inspect memory shift during the conversation, modify command in step 3 to `sudo docker run -it --name=memoryscope_container --rm --net=host memoryscope`;<br/>
+> Then start a new terminal window and execute `sudo docker exec -it memoryscope_container python quick-start-demo.py --config_path=memoryscope/core/config/demo_config_zh.yaml`;<br/>
+> In the second window, input `/list_memory refresh_time=5` to inspect memory
 
 ## II. Install with docker compose [Recommended] [x86_64]
 
