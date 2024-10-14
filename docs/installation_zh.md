@@ -22,6 +22,8 @@
     ```
 
 
+> [!Important]
+> 如果需要观察Memory的变化请调整第3步的运行命令。首先执行 `sudo docker run -it --name=memoryscope_container --rm --net=host memoryscope`启动memoryscope；然后新建命令行窗口，运行`sudo docker exec -it memoryscope_container python quick-start-demo.py --config_path=memoryscope/core/config/demo_config_zh.yaml`
 
 ## 二、使用 Docker Compose 安装 [推荐] [x86_64]
 
