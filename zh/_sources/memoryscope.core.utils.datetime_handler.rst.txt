@@ -1,6 +1,5 @@
-memoryscope.core.utils.datetime\_handler module
-===============================================
-
+memoryscope.core.utils.datetime_handler
+=======================================
 .. automodule:: memoryscope.core.utils.datetime_handler
    :members:
    :undoc-members:

@@ -1,4 +1,6 @@
 <!-- layout.html -->
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -7,21 +9,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Installing MemoryScope &mdash; MemoryScope  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c9484b72" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -129,6 +127,12 @@ vim<span class="w"> </span>memoryscope/core/config/demo_config.yaml
 </div>
 </li>
 </ol>
+<blockquote>
+<div><p>[!Important]
+To inspect memory shift during the conversation, modify command in step 3 to <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">docker</span> <span class="pre">run</span> <span class="pre">-it</span> <span class="pre">--name=memoryscope_container</span> <span class="pre">--rm</span> <span class="pre">--net=host</span> <span class="pre">memoryscope</span></code>;<br/>
+Then start a new terminal window and execute <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">docker</span> <span class="pre">exec</span> <span class="pre">-it</span> <span class="pre">memoryscope_container</span> <span class="pre">python</span> <span class="pre">quick-start-demo.py</span> <span class="pre">--config_path=memoryscope/core/config/demo_config_zh.yaml</span></code>;<br/>
+In the second window, input <code class="docutils literal notranslate"><span class="pre">/list_memory</span> <span class="pre">refresh_time=5</span></code> to inspect memory</p>
+</div></blockquote>
 </section>
 <section id="ii-install-with-docker-compose-recommended-x86-64">
 <h2>II. Install with docker compose [Recommended] [x86_64]<a class="headerlink" href="#ii-install-with-docker-compose-recommended-x86-64" title="Link to this heading"></a></h2>

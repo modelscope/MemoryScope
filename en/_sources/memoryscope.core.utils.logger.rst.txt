@@ -1,6 +1,5 @@
-memoryscope.core.utils.logger module
-====================================
-
+memoryscope.core.utils.logger
+=============================
 .. automodule:: memoryscope.core.utils.logger
    :members:
    :undoc-members:

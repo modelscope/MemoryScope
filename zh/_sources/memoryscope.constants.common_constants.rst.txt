@@ -1,6 +1,5 @@
-memoryscope.constants.common\_constants module
-==============================================
-
+memoryscope.constants.common_constants
+======================================
 .. automodule:: memoryscope.constants.common_constants
    :members:
    :undoc-members:

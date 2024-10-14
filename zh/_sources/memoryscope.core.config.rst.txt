@@ -1,17 +1,5 @@
-memoryscope.core.config package
-===============================
-
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 4
-
-   memoryscope.core.config.arguments
-   memoryscope.core.config.config_manager
-
-Module contents
----------------
+memoryscope.core.config
+=======================
 
 .. automodule:: memoryscope.core.config
    :members:

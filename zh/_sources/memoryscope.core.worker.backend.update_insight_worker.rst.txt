@@ -1,6 +1,5 @@
-memoryscope.core.worker.backend.update\_insight\_worker module
-==============================================================
-
+memoryscope.core.worker.backend.update_insight_worker
+=====================================================
 .. automodule:: memoryscope.core.worker.backend.update_insight_worker
    :members:
    :undoc-members:

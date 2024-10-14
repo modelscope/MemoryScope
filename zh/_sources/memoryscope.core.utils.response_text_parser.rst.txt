@@ -1,6 +1,5 @@
-memoryscope.core.utils.response\_text\_parser module
-====================================================
-
+memoryscope.core.utils.response_text_parser
+===========================================
 .. automodule:: memoryscope.core.utils.response_text_parser
    :members:
    :undoc-members:

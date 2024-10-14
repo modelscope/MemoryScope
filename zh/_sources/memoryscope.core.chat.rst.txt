@@ -1,18 +1,5 @@
-memoryscope.core.chat package
-=============================
-
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 4
-
-   memoryscope.core.chat.api_memory_chat
-   memoryscope.core.chat.base_memory_chat
-   memoryscope.core.chat.cli_memory_chat
-
-Module contents
----------------
+memoryscope.core.chat
+=====================
 
 .. automodule:: memoryscope.core.chat
    :members:

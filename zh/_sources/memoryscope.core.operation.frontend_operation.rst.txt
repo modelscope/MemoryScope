@@ -1,6 +1,5 @@
-memoryscope.core.operation.frontend\_operation module
-=====================================================
-
+memoryscope.core.operation.frontend_operation
+=============================================
 .. automodule:: memoryscope.core.operation.frontend_operation
    :members:
    :undoc-members:

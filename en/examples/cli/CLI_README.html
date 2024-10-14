@@ -1,4 +1,6 @@
 <!-- layout.html -->
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
@@ -7,21 +9,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Cli Interface of MemoryScope &mdash; MemoryScope  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=c9484b72" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -60,6 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#using-yaml-configuration-file">1. Using YAML Configuration File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-command-line-arguments">2. Using Command Line Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#view-memory">3. View Memory</a></li>
 </ul>
 </li>
 </ul>
@@ -159,6 +158,16 @@ memoryscope<span class="w"> </span>--language<span class="o">=</span><span class
 <li><p><code class="docutils literal notranslate"><span class="pre">--rank_backend</span></code>: The backend used for ranking responses.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--rank_model</span></code>: The model used for ranking responses.</p></li>
 </ul>
+</section>
+<section id="view-memory">
+<h3>3. View Memory<a class="headerlink" href="#view-memory" title="Link to this heading"></a></h3>
+<p>You can open two command line windows following the method in the second step.
+In one command line window, you can have a conversation with the AI, while in the other, you can check the AI’s long-term memory about the user.
+Use /help to open the command line help, and find the command /list_memory along with the corresponding auto-refresh instruction.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">list_memory</span> <span class="n">refresh_time</span><span class="o">=</span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>Then you can enjoy a pleasant conversation with the AI!</p>
 </section>
 </section>
 </section>

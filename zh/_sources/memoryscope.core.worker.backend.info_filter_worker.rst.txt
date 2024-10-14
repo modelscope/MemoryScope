@@ -1,6 +1,5 @@
-memoryscope.core.worker.backend.info\_filter\_worker module
-===========================================================
-
+memoryscope.core.worker.backend.info_filter_worker
+==================================================
 .. automodule:: memoryscope.core.worker.backend.info_filter_worker
    :members:
    :undoc-members:

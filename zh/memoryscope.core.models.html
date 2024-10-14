@@ -1,27 +1,25 @@
 <!-- layout.html -->
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="zh" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>memoryscope.core.models package &mdash; MemoryScope  文档</title>
+  <title>memoryscope.core.models &mdash; MemoryScope  文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c9484b72" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=2ccfc426"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2ccfc426"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" /> 
@@ -86,7 +84,7 @@
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">memoryscope.core.models package</li>
+      <li class="breadcrumb-item active">memoryscope.core.models</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/memoryscope.core.models.rst.txt" rel="nofollow"> 查看页面源码</a>
       </li>
@@ -96,115 +94,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="memoryscope-core-models-package">
-<h1>memoryscope.core.models package<a class="headerlink" href="#memoryscope-core-models-package" title="Link to this heading"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.models.base_model.html">memoryscope.core.models.base_model module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel"><code class="docutils literal notranslate"><span class="pre">BaseModel</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.m_type"><code class="docutils literal notranslate"><span class="pre">BaseModel.m_type</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.__init__"><code class="docutils literal notranslate"><span class="pre">BaseModel.__init__</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.model_name"><code class="docutils literal notranslate"><span class="pre">BaseModel.model_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.module_name"><code class="docutils literal notranslate"><span class="pre">BaseModel.module_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.timeout"><code class="docutils literal notranslate"><span class="pre">BaseModel.timeout</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.max_retries"><code class="docutils literal notranslate"><span class="pre">BaseModel.max_retries</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.retry_interval"><code class="docutils literal notranslate"><span class="pre">BaseModel.retry_interval</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.kwargs_filter"><code class="docutils literal notranslate"><span class="pre">BaseModel.kwargs_filter</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.raise_exception"><code class="docutils literal notranslate"><span class="pre">BaseModel.raise_exception</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.context"><code class="docutils literal notranslate"><span class="pre">BaseModel.context</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.kwargs"><code class="docutils literal notranslate"><span class="pre">BaseModel.kwargs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.model"><code class="docutils literal notranslate"><span class="pre">BaseModel.model</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.before_call"><code class="docutils literal notranslate"><span class="pre">BaseModel.before_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.after_call"><code class="docutils literal notranslate"><span class="pre">BaseModel.after_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.call"><code class="docutils literal notranslate"><span class="pre">BaseModel.call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.base_model.html#memoryscope.core.models.base_model.BaseModel.async_call"><code class="docutils literal notranslate"><span class="pre">BaseModel.async_call</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html">memoryscope.core.models.dummy_generation_model module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.m_type"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.m_type</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.before_call"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.before_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.after_call"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.after_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.model_name"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.model_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.module_name"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.module_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.timeout"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.timeout</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.max_retries"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.max_retries</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.retry_interval"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.retry_interval</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.kwargs_filter"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.kwargs_filter</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.raise_exception"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.raise_exception</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.context"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.context</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.dummy_generation_model.html#memoryscope.core.models.dummy_generation_model.DummyGenerationModel.kwargs"><code class="docutils literal notranslate"><span class="pre">DummyGenerationModel.kwargs</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html">memoryscope.core.models.llama_index_embedding_model module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.m_type"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.m_type</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.__init__"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.__init__</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.register_model"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.register_model</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.before_call"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.before_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.after_call"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.after_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.model_name"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.model_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.module_name"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.module_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.timeout"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.timeout</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.max_retries"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.max_retries</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.retry_interval"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.retry_interval</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.kwargs_filter"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.kwargs_filter</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.raise_exception"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.raise_exception</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.context"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.context</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_embedding_model.html#memoryscope.core.models.llama_index_embedding_model.LlamaIndexEmbeddingModel.kwargs"><code class="docutils literal notranslate"><span class="pre">LlamaIndexEmbeddingModel.kwargs</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html">memoryscope.core.models.llama_index_generation_model module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.m_type"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.m_type</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.__init__"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.__init__</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.before_call"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.before_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.after_call"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.after_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.model_name"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.model_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.module_name"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.module_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.timeout"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.timeout</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.max_retries"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.max_retries</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.retry_interval"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.retry_interval</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.kwargs_filter"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.kwargs_filter</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.raise_exception"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.raise_exception</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.context"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.context</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_generation_model.html#memoryscope.core.models.llama_index_generation_model.LlamaIndexGenerationModel.kwargs"><code class="docutils literal notranslate"><span class="pre">LlamaIndexGenerationModel.kwargs</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html">memoryscope.core.models.llama_index_rank_model module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.m_type"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.m_type</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.__init__"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.__init__</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.before_call"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.before_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.after_call"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.after_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.model_name"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.model_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.module_name"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.module_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.timeout"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.timeout</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.max_retries"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.max_retries</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.retry_interval"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.retry_interval</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.kwargs_filter"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.kwargs_filter</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.raise_exception"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.raise_exception</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.context"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.context</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="memoryscope.core.models.llama_index_rank_model.html#memoryscope.core.models.llama_index_rank_model.LlamaIndexRankModel.kwargs"><code class="docutils literal notranslate"><span class="pre">LlamaIndexRankModel.kwargs</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="module-memoryscope.core.models">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-memoryscope.core.models" title="Link to this heading"></a></h2>
+  <section id="module-memoryscope.core.models">
+<span id="memoryscope-core-models"></span><h1>memoryscope.core.models<a class="headerlink" href="#module-memoryscope.core.models" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="memoryscope.core.models.BaseModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.models.</span></span><span class="sig-name descname"><span class="pre">BaseModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_retries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/models/base_model.html#BaseModel"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#memoryscope.core.models.BaseModel" title="Link to this definition"></a></dt>
@@ -454,7 +345,6 @@ based on their index in the original document list.</p>
 
 </dd></dl>
 
-</section>
 </section>
 
 

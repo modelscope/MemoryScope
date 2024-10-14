@@ -1,6 +1,5 @@
-memoryscope.core.config.arguments module
-========================================
-
+memoryscope.core.config.arguments
+=================================
 .. automodule:: memoryscope.core.config.arguments
    :members:
    :undoc-members:

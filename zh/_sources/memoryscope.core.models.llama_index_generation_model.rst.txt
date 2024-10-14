@@ -1,6 +1,5 @@
-memoryscope.core.models.llama\_index\_generation\_model module
-==============================================================
-
+memoryscope.core.models.llama_index_generation_model
+====================================================
 .. automodule:: memoryscope.core.models.llama_index_generation_model
    :members:
    :undoc-members:

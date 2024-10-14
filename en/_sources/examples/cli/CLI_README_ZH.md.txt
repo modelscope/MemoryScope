@@ -53,3 +53,12 @@ memoryscope --language="en" \
 - `--enable_ranker`: 一个布尔值，指示是否使用排名器（默认为 False）。
 - `--rank_backend`: 用于排名回复的后端。
 - `--rank_model`: 用于排名回复的模型。
+
+### 3. 查看记忆
+按照第二步的方式可以打开两个命令行的窗口。
+其中一个命令行窗口可以和AI进行对话，另一个命令行窗口可以查看AI关于用户的长期记忆
+使用/help打开命令行帮助，找到/list_memory的命令和对应自动刷新的指令。
+```
+/list_memory refresh_time=5
+```
+接下来就可以和AI进行愉快地交流啦。

@@ -1,6 +1,5 @@
-memoryscope.core.worker.frontend.read\_message\_worker module
-=============================================================
-
+memoryscope.core.worker.frontend.read_message_worker
+====================================================
 .. automodule:: memoryscope.core.worker.frontend.read_message_worker
    :members:
    :undoc-members:

@@ -1,24 +1,5 @@
-memoryscope.core.worker.backend package
-=======================================
-
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 4
-
-   memoryscope.core.worker.backend.contra_repeat_worker
-   memoryscope.core.worker.backend.get_observation_with_time_worker
-   memoryscope.core.worker.backend.get_observation_worker
-   memoryscope.core.worker.backend.get_reflection_subject_worker
-   memoryscope.core.worker.backend.info_filter_worker
-   memoryscope.core.worker.backend.load_memory_worker
-   memoryscope.core.worker.backend.long_contra_repeat_worker
-   memoryscope.core.worker.backend.update_insight_worker
-   memoryscope.core.worker.backend.update_memory_worker
-
-Module contents
----------------
+memoryscope.core.worker.backend
+===============================
 
 .. automodule:: memoryscope.core.worker.backend
    :members:

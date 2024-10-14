@@ -1,6 +1,5 @@
-memoryscope.core.utils.timer module
-===================================
-
+memoryscope.core.utils.timer
+============================
 .. automodule:: memoryscope.core.utils.timer
    :members:
    :undoc-members:

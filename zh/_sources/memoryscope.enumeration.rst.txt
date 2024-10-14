@@ -1,21 +1,5 @@
-memoryscope.enumeration package
-===============================
-
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 4
-
-   memoryscope.enumeration.action_status_enum
-   memoryscope.enumeration.language_enum
-   memoryscope.enumeration.memory_type_enum
-   memoryscope.enumeration.message_role_enum
-   memoryscope.enumeration.model_enum
-   memoryscope.enumeration.store_status_enum
-
-Module contents
----------------
+memoryscope.enumeration
+=======================
 
 .. automodule:: memoryscope.enumeration
    :members:

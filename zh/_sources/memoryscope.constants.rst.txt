@@ -1,17 +1,5 @@
-memoryscope.constants package
-=============================
-
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 4
-
-   memoryscope.constants.common_constants
-   memoryscope.constants.language_constants
-
-Module contents
----------------
+memoryscope.constants
+=====================
 
 .. automodule:: memoryscope.constants
    :members:

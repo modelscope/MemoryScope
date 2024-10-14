@@ -1,6 +1,5 @@
-memoryscope.core.chat.base\_memory\_chat module
-===============================================
-
+memoryscope.core.chat.base_memory_chat
+======================================
 .. automodule:: memoryscope.core.chat.base_memory_chat
    :members:
    :undoc-members:

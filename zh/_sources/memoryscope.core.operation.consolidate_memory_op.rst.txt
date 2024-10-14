@@ -1,6 +1,5 @@
-memoryscope.core.operation.consolidate\_memory\_op module
-=========================================================
-
+memoryscope.core.operation.consolidate_memory_op
+================================================
 .. automodule:: memoryscope.core.operation.consolidate_memory_op
    :members:
    :undoc-members:

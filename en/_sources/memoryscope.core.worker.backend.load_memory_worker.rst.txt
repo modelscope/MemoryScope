@@ -1,6 +1,5 @@
-memoryscope.core.worker.backend.load\_memory\_worker module
-===========================================================
-
+memoryscope.core.worker.backend.load_memory_worker
+==================================================
 .. automodule:: memoryscope.core.worker.backend.load_memory_worker
    :members:
    :undoc-members:

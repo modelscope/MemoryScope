@@ -1,27 +1,25 @@
 <!-- layout.html -->
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>memoryscope.core.config.arguments module &mdash; MemoryScope  documentation</title>
+  <title>memoryscope.core.config.arguments &mdash; MemoryScope  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c9484b72" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -86,7 +84,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">memoryscope.core.config.arguments module</li>
+      <li class="breadcrumb-item active">memoryscope.core.config.arguments</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/memoryscope.core.config.arguments.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -97,7 +95,7 @@
            <div itemprop="articleBody">
              
   <section id="module-memoryscope.core.config.arguments">
-<span id="memoryscope-core-config-arguments-module"></span><h1>memoryscope.core.config.arguments module<a class="headerlink" href="#module-memoryscope.core.config.arguments" title="Link to this heading"></a></h1>
+<span id="memoryscope-core-config-arguments"></span><h1>memoryscope.core.config.arguments<a class="headerlink" href="#module-memoryscope.core.config.arguments" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="memoryscope.core.config.arguments.Arguments">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memoryscope.core.config.arguments.</span></span><span class="sig-name descname"><span class="pre">Arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language:</span> <span class="pre">Literal['cn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'en']</span> <span class="pre">=</span> <span class="pre">'cn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_pool_max_workers:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_chat_class:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'cli_memory_chat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat_stream:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">human_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assistant_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'AI'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consolidate_memory_interval_time:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reflect_and_reconsolidate_interval_time:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker_params:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_backend:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dashscope_generation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'qwen-max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generation_params:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_backend:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dashscope_generation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'text-embedding-v2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_params:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_backend:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dashscope_rank'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'gte-rerank'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_params:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_index_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'memory_index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_url:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'http://localhost:9200'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrieve_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_ranker:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_today_contra_repeat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_long_contra_repeat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_memory_max_count:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoryscope/core/config/arguments.html#Arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memoryscope.core.config.arguments.Arguments" title="Link to this definition"></a></dt>

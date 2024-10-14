@@ -1,4 +1,6 @@
 <!-- layout.html -->
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="zh" data-content_root="../../">
 <head>
@@ -7,21 +9,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MemoryScope 的命令行接口 &mdash; MemoryScope  文档</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=c9484b72" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=2ccfc426"></script>
-        <script src="../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=2ccfc426"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
     <link rel="search" title="搜索" href="../../search.html" />
@@ -60,6 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#id1">使用方法</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#yaml">1. 使用 YAML 配置文件</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id2">2. 使用命令行参数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">3. 查看记忆</a></li>
 </ul>
 </li>
 </ul>
@@ -159,6 +158,16 @@ MemoryScope 可以通过两种不同的方式启动：</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">--rank_backend</span></code>: 用于排名回复的后端。</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--rank_model</span></code>: 用于排名回复的模型。</p></li>
 </ul>
+</section>
+<section id="id3">
+<h3>3. 查看记忆<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>按照第二步的方式可以打开两个命令行的窗口。
+其中一个命令行窗口可以和AI进行对话，另一个命令行窗口可以查看AI关于用户的长期记忆
+使用/help打开命令行帮助，找到/list_memory的命令和对应自动刷新的指令。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">list_memory</span> <span class="n">refresh_time</span><span class="o">=</span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>接下来就可以和AI进行愉快地交流啦。</p>
 </section>
 </section>
 </section>

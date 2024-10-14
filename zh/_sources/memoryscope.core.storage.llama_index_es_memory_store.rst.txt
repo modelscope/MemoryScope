@@ -1,6 +1,5 @@
-memoryscope.core.storage.llama\_index\_es\_memory\_store module
-===============================================================
-
+memoryscope.core.storage.llama_index_es_memory_store
+====================================================
 .. automodule:: memoryscope.core.storage.llama_index_es_memory_store
    :members:
    :undoc-members:

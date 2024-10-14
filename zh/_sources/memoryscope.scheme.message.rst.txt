@@ -1,6 +1,5 @@
-memoryscope.scheme.message module
-=================================
-
+memoryscope.scheme.message
+==========================
 .. automodule:: memoryscope.scheme.message
    :members:
    :undoc-members:

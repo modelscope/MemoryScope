@@ -1,6 +1,5 @@
-memoryscope.scheme.memory\_node module
-======================================
-
+memoryscope.scheme.memory_node
+==============================
 .. automodule:: memoryscope.scheme.memory_node
    :members:
    :undoc-members:

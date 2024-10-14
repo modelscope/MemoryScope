@@ -1,6 +1,5 @@
-memoryscope.core.operation.backend\_operation module
-====================================================
-
+memoryscope.core.operation.backend_operation
+============================================
 .. automodule:: memoryscope.core.operation.backend_operation
    :members:
    :undoc-members:

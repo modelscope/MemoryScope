@@ -1,6 +1,5 @@
-memoryscope.core.worker.backend.get\_observation\_with\_time\_worker module
-===========================================================================
-
+memoryscope.core.worker.backend.get_observation_with_time_worker
+================================================================
 .. automodule:: memoryscope.core.worker.backend.get_observation_with_time_worker
    :members:
    :undoc-members:

@@ -1,18 +1,5 @@
-memoryscope.scheme package
-==========================
-
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 4
-
-   memoryscope.scheme.memory_node
-   memoryscope.scheme.message
-   memoryscope.scheme.model_response
-
-Module contents
----------------
+memoryscope.scheme
+==================
 
 .. automodule:: memoryscope.scheme
    :members:
