@@ -164,7 +164,7 @@ class ApiMemoryChat(BaseMemoryChat):
             system_prompt_list.extend(temporary_memories)
 
         system_prompt_join = "\n".join([x.strip() for x in system_prompt_list])
-        system_message = Message(role=MessageRoleEnum.SYSTEM, content=system_prompt_join)
+        system_message = Message(role=MessageRoleEnum.SYSTEM.value, content=system_prompt_join)
         chat_messages.append(system_message)
 
         # Include past conversation history in the message list
