@@ -26,10 +26,9 @@ RUN echo '[global]' > /etc/pip.conf && \
 RUN useradd -m elastic_search_user
 USER elastic_search_user
 WORKDIR /home/elastic_search_user/elastic_search
-# COPY elasticsearch-8.15.0-linux-arm.tar.gz ./elasticsearch-8.15.0-linux-arm.tar.gz
-RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.15.0-linux-arm.tar.gz
-RUN tar -xzf elasticsearch-8.15.0-linux-arm.tar.gz
-WORKDIR /home/elastic_search_user/elastic_search/elasticsearch-8.15.0
+RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.15.2-linux-aarch64.tar.gz
+RUN tar -xzf elasticsearch-8.15.2-linux-aarch64.tar.gz
+WORKDIR /home/elastic_search_user/elastic_search/elasticsearch-8.15.2
 ENV DISCOVERY_TYPE=single-node \
     XPACK_SECURITY_ENABLED=false \
     XPACK_LICENSE_SELF_GENERATED_TYPE=trial
