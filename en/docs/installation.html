@@ -120,8 +120,9 @@ vim<span class="w"> </span>memoryscope/core/config/demo_config.yaml
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>-t<span class="w"> </span>memoryscope<span class="w"> </span>.
 </pre></div>
 </div>
+<p>If you are using arm-based computers, modify command above into: <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">docker</span> <span class="pre">build</span> <span class="pre">-f</span> <span class="pre">DockerfileArm</span> <span class="pre">--network=host</span> <span class="pre">-t</span> <span class="pre">memoryscope</span> <span class="pre">.</span></code></p>
 </li>
-<li><p>Launch Docker container (ARM architecture not yet supported)</p>
+<li><p>Launch Docker container</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>--net<span class="o">=</span>host<span class="w"> </span>memoryscope
 </pre></div>
 </div>
@@ -151,7 +152,7 @@ vim<span class="w"> </span>memoryscope/core/config/demo_config.yaml
 </pre></div>
 </div>
 </li>
-<li><p>Run <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">run</span> <span class="pre">memory_scope_main</span></code> to build and launch the memory-scope cli interface. (ARM architecture not yet supported)</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">run</span> <span class="pre">memory_scope_main</span></code> to build and launch the memory-scope cli interface. (For ARM architecture, you should edit <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code>, changing <code class="docutils literal notranslate"><span class="pre">image:</span> <span class="pre">ghcr.io/modelscope/memoryscope:main</span></code> to <code class="docutils literal notranslate"><span class="pre">image:</span> <span class="pre">ghcr.io/modelscope/memoryscope_arm:main</span></code>)</p></li>
 </ol>
 </section>
 <section id="iii-install-from-pypi">
