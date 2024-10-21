@@ -15,8 +15,9 @@
     ```bash
     sudo docker build --network=host -t memoryscope .
     ```
+    If you are using arm-based computers, modify command above into: `sudo docker build -f DockerfileArm --network=host -t memoryscope .`
 
-3. Launch Docker container (ARM architecture not yet supported)
+3. Launch Docker container
     ```bash
     sudo docker run -it --rm --net=host memoryscope
     ```
@@ -42,7 +43,7 @@
     OPENAI_API_KEY: "sk-0000000000"
     ```
 
-3. Run `docker-compose run memory_scope_main` to build and launch the memory-scope cli interface. (ARM architecture not yet supported)
+3. Run `docker-compose run memory_scope_main` to build and launch the memory-scope cli interface. (For ARM architecture, you should edit `docker-compose.yml`, changing `image: ghcr.io/modelscope/memoryscope:main` to `image: ghcr.io/modelscope/memoryscope_arm:main`)
 
 
 ## III. Install from PyPI
