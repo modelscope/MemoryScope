@@ -1,10 +1,10 @@
 services:
   memory_scope_main:
-    build:
-      context: ghcr.io/modelscope/memoryscope:main
+    image: ghcr.io/modelscope/memoryscope_arm:main
+#    image: ghcr.io/modelscope/memoryscope_arm:main #For ARM architecture
     environment:
       DASHSCOPE_API_KEY: "sk-0000000000"
-      # OPENAI_API_KEY: "sk-0000000000"
+#      OPENAI_API_KEY: "sk-0000000000"
     volumes:
       - ./memoryscope/core/config:/memory_scope_project/memoryscope/memoryscope/core/config
     deploy:

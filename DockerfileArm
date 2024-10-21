@@ -14,7 +14,7 @@
 #    sudo docker run -it --rm --memory=4G --net=host memoryscope
 # To run docker image with arguments (refer to memoryscope/core/config/arguments.py): 
 #    sudo docker run -it --rm --memory=4G --net=host -e "OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" -e "language=en" -e "human_name=superman" -e "generation_backend=openai_generation" -e "generation_model=gpt-4o" -e "embedding_backend=openai_embedding" -e "embedding_model=text-embedding-3-small" -e "enable_ranker=False" memoryscope
-
+#docker run -it --rm ghcr.io/modelscope/memoryscope_arm /bin/bash
 FROM python:3.11
 
 # (Not necessary) Change pip source
@@ -28,7 +28,8 @@ USER elastic_search_user
 WORKDIR /home/elastic_search_user/elastic_search
 RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.15.2-linux-aarch64.tar.gz
 RUN tar -xzf elasticsearch-8.15.2-linux-aarch64.tar.gz
-WORKDIR /home/elastic_search_user/elastic_search/elasticsearch-8.15.2
+RUN mv /home/elastic_search_user/elastic_search/elasticsearch-8.15.2 /home/elastic_search_user/elastic_search/elasticsearch-8.15.0
+WORKDIR /home/elastic_search_user/elastic_search/elasticsearch-8.15.0
 ENV DISCOVERY_TYPE=single-node \
     XPACK_SECURITY_ENABLED=false \
     XPACK_LICENSE_SELF_GENERATED_TYPE=trial
@@ -52,3 +53,4 @@ RUN pip3 install -r requirements.txt
 # Launch!
 # CMD ["bash"]
 CMD ["bash", "examples/docker/entrypoint.sh"]
+
