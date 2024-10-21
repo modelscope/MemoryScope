@@ -1,6 +1,6 @@
 # MemoryScope 安装指南
 
-## 一、使用 Docker 安装 [推荐] [x86_64]
+## 一、使用 Docker 安装 [推荐]
 
 1. 克隆仓库并编辑配置
     ```bash
@@ -15,8 +15,9 @@
     ```bash
     sudo docker build --network=host -t memoryscope .
     ```
+   备注：如果是arm架构的电脑，则必须使用另一个命令：`sudo docker build -f DockerfileArm --network=host -t memoryscope .`
 
-3. 启动 Docker 容器 (备注：ARM架构暂不支持)
+3. 启动 Docker 容器
     ```bash
     sudo docker run -it --rm --net=host memoryscope
     ```
@@ -43,7 +44,7 @@
     DASHSCOPE_API_KEY: "sk-0000000000"
     ```
 
-3. 运行 `docker-compose run memory_scope_main` 命令来构建并启动 MemoryScope CLI 界面。 (备注：ARM架构暂不支持)
+3. 运行 `docker-compose run memory_scope_main` 命令来构建并启动 MemoryScope CLI 界面。(备注：如果是arm架构，还需要手动将docker-compose.yml中的`ghcr.io/modelscope/memoryscope:main`修改成`ghcr.io/modelscope/memoryscope_arm:main`)
 
 
 ## 三、通过 PYPI 安装
