@@ -1,7 +1,7 @@
 services:
   memory_scope_main:
     image: ghcr.io/modelscope/memoryscope_arm:main
-#    image: ghcr.io/modelscope/memoryscope_arm:main #For ARM architecture
+#    image: ghcr.io/modelscope/memoryscope_arm:main # For ARM architecture
     environment:
       DASHSCOPE_API_KEY: "sk-0000000000"
 #      OPENAI_API_KEY: "sk-0000000000"
