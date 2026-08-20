@@ -7,8 +7,15 @@ from .dream import (
     DreamTopic,
     DreamUnit,
     IntegrateOutcome,
-    ProactiveResult,
     TopicSelectionOutput,
+)
+from .proactive import (
+    ProactiveExtractOutput,
+    ProactiveResult,
+    ProactiveState,
+    ProactiveStateFile,
+    ProactiveTopic,
+    TopicUpdate,
 )
 from .emb_node import EmbNode
 from .file_chunk import FileChunk
@@ -39,12 +46,17 @@ __all__ = [
     "GraphSnapshotNode",
     "IntegrateOutcome",
     "JobConfig",
+    "ProactiveExtractOutput",
     "ProactiveResult",
+    "ProactiveState",
+    "ProactiveStateFile",
+    "ProactiveTopic",
     "Request",
     "Response",
     "StreamChunk",
     "TokenUsage",
     "TopicSelectionOutput",
+    "TopicUpdate",
     "TraverseGraph",
     "TraverseGraphEdge",
     "TraverseGraphNode",
