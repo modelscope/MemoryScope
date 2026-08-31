@@ -8,7 +8,14 @@ from .auto_resource import AutoResourceStep
 from .auto_text_resource import AutoTextResourceStep
 from .compressor import CompressorStep
 from .dream import DreamExtractStep, DreamFinishStep, DreamIntegrateStep, DreamTopicsStep
-from .proactive import ProactiveExtractStep, ProactiveFinishStep, ProactiveStep, ProactiveTopicsStep
+from .proactive import (
+    ProactiveAgendaStep,
+    ProactiveExtractStep,
+    ProactiveFinishStep,
+    ProactivePlanStep,
+    ProactiveStep,
+    ProactiveTopicsStep,
+)
 from .wait_for_idle import WaitForIdleStep
 
 __all__ = [
@@ -24,8 +31,10 @@ __all__ = [
     "DreamFinishStep",
     "DreamIntegrateStep",
     "DreamTopicsStep",
+    "ProactiveAgendaStep",
     "ProactiveExtractStep",
     "ProactiveFinishStep",
+    "ProactivePlanStep",
     "ProactiveStep",
     "ProactiveTopicsStep",
     "WaitForIdleStep",
