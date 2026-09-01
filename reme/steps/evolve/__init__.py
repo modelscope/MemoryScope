@@ -16,7 +16,6 @@ from .proactive import (
     ProactiveStep,
     ProactiveTopicsStep,
 )
-from .wait_for_idle import WaitForIdleStep
 
 __all__ = [
     "now",
@@ -37,5 +36,4 @@ __all__ = [
     "ProactivePlanStep",
     "ProactiveStep",
     "ProactiveTopicsStep",
-    "WaitForIdleStep",
 ]
