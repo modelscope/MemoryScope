@@ -185,8 +185,8 @@ reme auto_memory \
 ```
 
 After placing external material under `resource/YYYY-MM-DD/` or directly under `resource/`, the default background task
-watches
-`md/txt/json/jsonl/csv/yaml/html`. You can also trigger processing manually:
+watches text resources (`md/txt/json/jsonl/csv/yaml/html`) and image resources
+(`png/jpg/jpeg/webp/gif/bmp/tiff/heic`). You can also trigger processing manually:
 
 ```bash
 reme auto_resource changes='[{"path":"resource/2026-06-20/report.md","change":"added"}]'

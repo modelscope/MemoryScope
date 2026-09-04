@@ -9,9 +9,11 @@ with PIL inside a temporary workspace.
 import base64
 import hashlib
 import io
+import struct
 import subprocess
 import sys
 import tomllib
+import zlib
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -19,7 +21,7 @@ from unittest.mock import patch
 import frontmatter
 import pytest
 import yaml
-from PIL import Image
+from PIL import Image, JpegImagePlugin
 
 from reme.components import R
 from reme.components.component_registry import ComponentRegistry
@@ -28,6 +30,7 @@ from reme.components.runtime_context import RuntimeContext
 from reme.enumeration import ComponentEnum
 from reme.steps.evolve.auto_image_resource import (
     AutoImageResourceStep,
+    DEFAULT_MAX_IMAGE_PIXELS,
     _build_image_request_payload,
     _normalize_image_bytes,
     _parse_caption_json,
@@ -50,6 +53,14 @@ from .auto_resource_test_support import (
 )
 
 pytest_plugins = ("unit.auto_resource_test_plugin",)
+
+
+def _png_bytes_with_header_size(width: int, height: int) -> bytes:
+    """Change only a tiny PNG's IHDR dimensions without allocating its pixels."""
+    data = bytearray(_png_bytes())
+    data[16:24] = struct.pack(">II", width, height)
+    data[29:33] = struct.pack(">I", zlib.crc32(data[12:29]) & 0xFFFFFFFF)
+    return bytes(data)
 
 
 @pytest.mark.parametrize(
@@ -176,6 +187,197 @@ async def test_auto_image_downscales_oversized_image_for_request_only(auto_resou
         assert max(sent.size) <= 2048
     assert source.read_bytes() == stored_bytes
     assert (env.workspace / "daily/2026-01-01/huge-image.md").is_file()
+
+
+@pytest.mark.asyncio
+async def test_auto_image_uses_jpeg_decoder_downsampling_before_load(auto_resource_env):
+    """Large JPEGs lower their decoder allocation before full pixel decode."""
+    env = auto_resource_env
+    source = env.write_binary("resource/2026-01-01/large.jpg", _img_bytes("JPEG", (4096, 2048)))
+    stored_bytes = source.read_bytes()
+    model = _FakeVisionModel(_caption_json("large-jpeg", "Large", "A large JPEG."))
+    decoded_sizes = []
+    original_load = JpegImagePlugin.JpegImageFile.load
+
+    def record_decoder_size(image, *args, **kwargs):
+        decoded_sizes.append(image.size)
+        return original_load(image, *args, **kwargs)
+
+    with patch.object(JpegImagePlugin.JpegImageFile, "load", new=record_decoder_size):
+        response = await env.run(env.processor(model), [{"change": "added", "path": str(source)}])
+
+    assert response.success is True
+    assert decoded_sizes
+    assert decoded_sizes[0] == (2048, 1024)
+    data_block = model.calls[0][0].content[1]
+    with Image.open(io.BytesIO(base64.b64decode(data_block.source.data))) as sent:
+        assert max(sent.size) <= 2048
+    assert source.read_bytes() == stored_bytes
+
+
+def test_image_preprocessing_resizes_16_bit_tiff_before_rgb_conversion():
+    """Pillow 10-compatible scaling keeps large I;16 TIFF images memory-bounded."""
+    image = Image.new("I;16", (2049, 2), 1000)
+    buffer = io.BytesIO()
+    image.save(buffer, format="TIFF")
+    calls = []
+    original_thumbnail = Image.Image.thumbnail
+
+    def record_thumbnail(frame, size, resample, *args, **kwargs):
+        calls.append((frame.mode, resample))
+        return original_thumbnail(frame, size, resample, *args, **kwargs)
+
+    with patch.object(Image.Image, "thumbnail", new=record_thumbnail):
+        payload = _build_image_request_payload(buffer.getvalue(), ".tiff")
+
+    assert calls == [("I;16", Image.Resampling.NEAREST)]
+    assert payload["mime"] == "image/jpeg"
+    assert payload["source_mime"] == "image/tiff"
+    with Image.open(io.BytesIO(base64.b64decode(payload["data_b64"]))) as sent:
+        assert max(sent.size) <= 2048
+
+
+@pytest.mark.asyncio
+async def test_auto_image_applies_exif_orientation_before_resizing(auto_resource_env):
+    """A rotated phone JPEG is normalized upright for the VLM without touching its source."""
+    env = auto_resource_env
+    image = Image.new("RGB", (3000, 1000), (40, 80, 120))
+    exif = Image.Exif()
+    exif[274] = 6
+    buffer = io.BytesIO()
+    image.save(buffer, format="JPEG", exif=exif)
+    source = env.write_binary("resource/2026-01-01/phone.jpg", buffer.getvalue())
+    stored_bytes = source.read_bytes()
+    model = _FakeVisionModel(_caption_json("upright-phone-photo", "Upright", "An upright phone photo."))
+
+    response = await env.run(env.processor(model), [{"change": "added", "path": str(source)}])
+
+    assert response.success is True
+    data_block = model.calls[0][0].content[1]
+    assert data_block.source.media_type == "image/jpeg"
+    with Image.open(io.BytesIO(base64.b64decode(data_block.source.data))) as sent:
+        assert sent.size == (683, 2048)
+        assert sent.getexif().get(274) is None
+    assert source.read_bytes() == stored_bytes
+    assert (env.workspace / "daily/2026-01-01/upright-phone-photo.md").is_file()
+
+
+@pytest.mark.parametrize(
+    ("image_format", "suffix", "source_mime", "request_mime"),
+    [
+        ("JPEG", ".png", "image/jpeg", "image/jpeg"),
+        ("PNG", ".jpg", "image/png", "image/png"),
+        ("BMP", ".png", "image/bmp", "image/jpeg"),
+    ],
+)
+@pytest.mark.asyncio
+async def test_auto_image_uses_decoded_format_when_suffix_is_misleading(
+    image_format,
+    suffix,
+    source_mime,
+    request_mime,
+    auto_resource_env,
+):
+    """Request and note MIME values come from decoded bytes, with conversion when needed."""
+    env = auto_resource_env
+    source = env.write_binary(f"resource/2026-01-01/mislabeled{suffix}", _img_bytes(image_format))
+    stored_bytes = source.read_bytes()
+    model = _StructuredVisionModel(
+        content={"name": "actual-format", "description": "Decoded", "caption": "Decoded image content."},
+    )
+
+    response = await env.run(env.processor(model), [{"change": "added", "path": str(source)}])
+
+    assert response.success is True
+    data_block = model.structured_calls[0][0].content[1]
+    assert data_block.source.media_type == request_mime
+    with Image.open(io.BytesIO(base64.b64decode(data_block.source.data))) as sent:
+        assert sent.get_format_mimetype() == request_mime
+    note = frontmatter.load(env.workspace / "daily/2026-01-01/actual-format.md")
+    assert note.metadata["media_type"] == source_mime
+    assert source.read_bytes() == stored_bytes
+
+
+@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
+@pytest.mark.asyncio
+async def test_auto_image_rejects_pixel_bomb_before_decode_and_isolates_batch(routed, auto_resource_env):
+    """A small compressed file with unsafe dimensions fails without stopping the next image."""
+    env = auto_resource_env
+    unsafe = env.write_binary(
+        "resource/2026-01-01/pixel-bomb.png",
+        _png_bytes_with_header_size(8000, 6000),
+    )
+    safe = env.write_binary("resource/2026-01-01/safe.png", _png_bytes())
+    model = _FakeVisionModel(_caption_json("safe-image", "Safe", "A safe image."))
+
+    response = await env.run(
+        env.processor(model, routed=routed),
+        [
+            {"change": "added", "path": str(unsafe)},
+            {"change": "added", "path": str(safe)},
+        ],
+    )
+
+    results = response.metadata["results"]
+    assert response.success is False
+    assert [item["success"] for item in results] == [False, True]
+    assert results[0]["metadata"]["action"] == "failed"
+    assert results[0]["metadata"]["modified"] is False
+    assert f"48000000 > {DEFAULT_MAX_IMAGE_PIXELS}" in results[0]["metadata"]["error"]
+    assert len(model.calls) == 1
+    assert not (env.workspace / "daily/2026-01-01/pixel-bomb.md").exists()
+    assert (env.workspace / "daily/2026-01-01/safe-image.md").is_file()
+
+
+def test_image_pixel_limit_is_checked_before_full_decode():
+    """The explicit pixel budget is enforced from image headers before ``load``."""
+    with patch("PIL.PngImagePlugin.PngImageFile.load", side_effect=AssertionError("must not decode")) as image_load:
+        with pytest.raises(RuntimeError, match=r"8x8=64 > 63"):
+            _normalize_image_bytes(_png_bytes(), ".png", max_image_pixels=63)
+    image_load.assert_not_called()
+
+
+def test_image_decompression_bomb_warning_becomes_an_error(monkeypatch):
+    """Pillow's warning-only bomb threshold becomes a reportable processor error."""
+    monkeypatch.setattr(Image, "MAX_IMAGE_PIXELS", 32)
+
+    with pytest.raises(RuntimeError, match="decompression-bomb protection"):
+        _build_image_request_payload(_png_bytes(), ".png")
+
+
+@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
+@pytest.mark.asyncio
+async def test_decompression_bomb_warning_is_isolated_per_change(routed, auto_resource_env, monkeypatch):
+    """A Pillow bomb warning fails one resource while a safe batch peer still completes."""
+    env = auto_resource_env
+    warned = env.write_binary("resource/2026-01-01/warned.png", _png_bytes())
+    safe = env.write_binary("resource/2026-01-01/safe.png", _png_bytes(width=4, height=4))
+    model = _FakeVisionModel(_caption_json("safe-image", "Safe", "A safe image."))
+    monkeypatch.setattr(Image, "MAX_IMAGE_PIXELS", 32)
+
+    response = await env.run(
+        env.processor(model, routed=routed),
+        [
+            {"change": "added", "path": str(warned)},
+            {"change": "added", "path": str(safe)},
+        ],
+    )
+
+    results = response.metadata["results"]
+    assert response.success is False
+    assert [item["success"] for item in results] == [False, True]
+    assert "decompression-bomb protection" in results[0]["metadata"]["error"]
+    assert len(model.calls) == 1
+    assert not (env.workspace / "daily/2026-01-01/warned.md").exists()
+    assert (env.workspace / "daily/2026-01-01/safe-image.md").is_file()
+
+
+def test_auto_image_pixel_limit_cannot_be_raised_by_runtime_context():
+    """Request-scoped kwargs cannot relax the processor's deployment safety cap."""
+    step = AutoImageResourceStep(max_image_pixels=63)
+    step.context = RuntimeContext(max_image_pixels=DEFAULT_MAX_IMAGE_PIXELS)
+
+    assert step._max_image_pixels() == 63
 
 
 @pytest.mark.asyncio
@@ -334,8 +536,9 @@ def test_auto_resource_router_inherits_declared_options_with_child_override():
         prompt_dict=prompt_dict,
         max_file_bytes=4,
         max_image_bytes=8,
+        max_image_pixels=64,
         dispatch_steps=[
-            {"backend": "auto_image_resource_step", "max_image_bytes": 32},
+            {"backend": "auto_image_resource_step", "max_image_bytes": 32, "max_image_pixels": 128},
             {"backend": "auto_text_resource_step", "max_file_bytes": 16},
         ],
     )
@@ -355,7 +558,15 @@ def test_auto_resource_router_inherits_declared_options_with_child_override():
         "as_llm": vision_model,
         "language": "zh",
         "max_image_bytes": 32,
+        "max_image_pixels": 128,
     }
+
+    inherited = AutoResourceStep(
+        max_image_pixels=64,
+        dispatch_steps=["auto_image_resource_step", "auto_text_resource_step"],
+    )
+    inherited_specs = {spec["backend"]: spec for spec, _, _ in inherited._processor_routes()}
+    assert inherited_specs["auto_image_resource_step"]["max_image_pixels"] == 64
 
 
 @pytest.mark.asyncio
@@ -511,13 +722,18 @@ def test_auto_image_named_model_uses_standard_ref_resolution():
 
 
 @pytest.mark.parametrize(
-    ("blocked_module", "suffix", "error_pattern"),
+    ("blocked_module", "payload", "suffix", "error_pattern"),
     [
-        ("PIL", ".png", r"Pillow.*reme-ai\[core\]"),
-        ("pillow_heif", ".heic", r"pillow-heif.*reme-ai\[image-heif\]"),
+        ("PIL", _png_bytes(), ".png", r"Pillow.*reme-ai\[core\]"),
+        (
+            "pillow_heif",
+            b"\x00\x00\x00\x18ftypheic\x00\x00\x00\x00mif1heic",
+            ".heic",
+            r"pillow-heif.*reme-ai\[image-heif\]",
+        ),
     ],
 )
-def test_image_preprocessing_reports_dependency_errors(blocked_module, suffix, error_pattern):
+def test_image_preprocessing_reports_dependency_errors(blocked_module, payload, suffix, error_pattern):
     """Lazy image dependencies produce actionable installation errors."""
     real_import = __import__
 
@@ -528,7 +744,24 @@ def test_image_preprocessing_reports_dependency_errors(blocked_module, suffix, e
 
     with patch("builtins.__import__", side_effect=import_without_dependency):
         with pytest.raises(RuntimeError, match=error_pattern):
-            _normalize_image_bytes(_png_bytes(), suffix)
+            _normalize_image_bytes(payload, suffix)
+
+
+def test_misleading_heic_suffix_does_not_load_optional_dependency():
+    """A core image named ``.heic`` is decoded by content without loading pillow-heif."""
+    real_import = __import__
+
+    def import_without_heif(name, *args, **kwargs):
+        if name == "pillow_heif":
+            raise AssertionError("pillow-heif must not be loaded for PNG bytes")
+        return real_import(name, *args, **kwargs)
+
+    with patch("builtins.__import__", side_effect=import_without_heif):
+        payload = _build_image_request_payload(_png_bytes(), ".heic")
+
+    assert payload["mime"] == "image/png"
+    assert payload["source_mime"] == "image/png"
+    assert payload["converted"] is False
 
 
 @pytest.mark.parametrize(

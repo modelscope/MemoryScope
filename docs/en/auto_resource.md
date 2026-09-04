@@ -36,7 +36,8 @@ In short, it turns "a file was archived" into "the resource is usable."
 
 Auto Resource uses `resource/` as the entry point for source material. Date directories are recommended, and their date
 determines which daily memory layer receives the interpreted card. A file directly under `resource/` is also supported
-and uses today in the application timezone.
+and uses today in the application timezone when it is first processed. On later days, an exact `source_resource` match
+keeps updates and deletion tied to that original daily card instead of creating a new card or leaving an orphan.
 
 Example directory:
 
@@ -65,10 +66,14 @@ The card body starts with an `![[resource/...]]` embed link and the frontmatter 
 so text search reaches image content through the caption.
 
 The vision model is the `vision` instance of `as_llm` when configured, and otherwise falls back to the `default`
-instance — a multimodal default model needs no extra configuration. Images larger than the request budget or in
-provider-unfriendly formats are downscaled or re-encoded in memory for the request only; the original file under
-`resource/` is never modified. When an image changes, its card is rewritten in place; when the image is deleted, the
-card is removed with it.
+instance — a multimodal default model needs no extra configuration. Images wider or taller than 2048px are downscaled,
+and provider-unfriendly formats are re-encoded, in memory for the request only; the original file under
+`resource/` is never modified. Before a full decode, image dimensions are checked against a default limit of 40,000,000
+pixels; images over the limit and Pillow decompression-bomb warnings fail only that resource. EXIF orientation is
+applied to the in-memory request copy before resizing or conversion. Oversized JPEGs first use decoder-level
+downsampling, followed by a final thumbnail pass when needed. The VLM request MIME and the card's frontmatter
+`media_type` use the format Pillow detects from the image bytes, rather than trusting the filename extension. When an
+image changes, its card is rewritten in place; when the image is deleted, the card is removed with it.
 
 Image preprocessing uses Pillow from the `core` extra. HEIC resources additionally require the optional
 `image-heif` extra: `pip install "reme-ai[image-heif]"`. Other supported image formats do not load or require the HEIF

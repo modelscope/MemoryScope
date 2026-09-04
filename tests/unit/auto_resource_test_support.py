@@ -210,13 +210,14 @@ def caption_json(name: str, description: str, caption: str) -> str:
     return json.dumps({"name": name, "description": description, "caption": caption})
 
 
-def image_processor(app_context, file_store, model, *, routed: bool):
+def image_processor(app_context, file_store, model, *, routed: bool, **kwargs):
     """Build either the image processor or the public unified-router path."""
     if not routed:
-        return AutoImageResourceStep(app_context=app_context, file_store=file_store, as_llm=model)
+        return AutoImageResourceStep(app_context=app_context, file_store=file_store, as_llm=model, **kwargs)
     app_context.registry = R
     return AutoResourceStep(
         app_context=app_context,
+        **kwargs,
         dispatch_steps=[
             {"backend": "auto_image_resource_step", "file_store": file_store, "as_llm": model},
             {
@@ -244,9 +245,9 @@ class AutoResourceTestEnv:
         """Write a source-owned note relative to this workspace."""
         return write_note(self.workspace / relative_path, source_resource, body)
 
-    def processor(self, model, *, routed: bool = False):
+    def processor(self, model, *, routed: bool = False, **kwargs):
         """Build the direct processor or unified router for this workspace."""
-        return image_processor(self.app_context, self.file_store, model, routed=routed)
+        return image_processor(self.app_context, self.file_store, model, routed=routed, **kwargs)
 
     async def run(self, step, changes, **context_kwargs):
         """Run one processor invocation with a fresh runtime context."""

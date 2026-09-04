@@ -236,6 +236,33 @@ class BaseAutoResourceStep(BaseStep):
         notes = list_response.metadata.get("notes") or []
         return self._find_resource_note(notes, file_path)
 
+    def _daily_note_days(self) -> list[str]:
+        """Return safe, deterministic daily subdirectories available for lookup."""
+        workspace = self.workspace_path.resolve()
+        daily_dir = str(self.config_value("daily_dir"))
+        daily_root, error = resolve_path(workspace, daily_dir)
+        if error or daily_root is None:
+            raise ValueError(f"invalid daily_dir {daily_dir!r}: {error or 'cannot resolve path'}")
+        if not daily_root.is_dir():
+            return []
+        return sorted(
+            entry.name
+            for entry in daily_root.iterdir()
+            if _DATE_RE.fullmatch(entry.name) and entry.is_dir() and not entry.is_symlink()
+        )
+
+    async def _find_loose_resource_day(self, file_path: str) -> str | None:
+        """Find the single daily-card owner for a root-level resource."""
+        matches: list[tuple[str, str]] = []
+        for day in self._daily_note_days():
+            note = await self._list_resource_note(day, file_path)
+            if note is not None:
+                matches.append((day, str(note["path"])))
+        if len(matches) > 1:
+            paths = ", ".join(path for _, path in matches)
+            raise RuntimeError(f"Multiple daily resource notes claim {file_path}: {paths}")
+        return matches[0][0] if matches else None
+
     async def _prepare_resource_note(self, day: str, file_path: str, note_stem: str) -> _ResourceNoteState:
         """Find the owned note or allocate a safe path before the first write."""
         note = await self._list_resource_note(day, file_path)
@@ -492,8 +519,11 @@ class BaseAutoResourceStep(BaseStep):
 
         loose_filename = _loose_resource_filename(file_path, resource_dir)
         if loose_filename:
-            date_str, filename = self._today(), loose_filename
-            self.logger.info(f"[{self.name}] loose resource file_path={file_path} date={date_str}")
+            existing_day = await self._find_loose_resource_day(file_path)
+            date_str, filename = existing_day or self._today(), loose_filename
+            self.logger.info(
+                f"[{self.name}] loose resource file_path={file_path} date={date_str} existing={bool(existing_day)}",
+            )
         else:
             date_str, filename = _parse_resource_path(file_path, resource_dir)
 

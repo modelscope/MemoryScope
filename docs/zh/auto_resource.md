@@ -33,7 +33,8 @@ resource/[YYYY-MM-DD/]<resource_file>
 ## 原始资料入口
 
 Auto Resource 以 `resource/` 作为原始资料入口。推荐按日期放置，目录日期会决定它进入哪一天的 daily 记忆层；也支持直接放在
-`resource/` 根目录，此时使用应用时区中的今天。
+`resource/` 根目录，首次处理时使用应用时区中的今天。之后即使跨天更新或删除，也会通过精确匹配
+`source_resource` 继续操作原 daily 卡片，不会重复新建卡片或留下孤立链接。
 
 示例目录：
 
@@ -56,7 +57,13 @@ workspace/
 
 图像文件的解读方式相同：视觉模型写入一张 caption 卡片并链接原图。卡片正文以 `![[resource/...]]` 嵌入链接开头，frontmatter 携带 `kind: image` 与 `media_type`，文本检索因此可以通过 caption 命中图像内容。
 
-视觉模型优先使用配置中的 `as_llm` `vision` 实例，未配置时回退到 `default` 实例——默认模型具备视觉能力时无需额外配置。超过请求预算或格式不被模型接受的图像，仅在请求前于内存中降采样或转码；`resource/` 下的原图文件不会被修改。图像变更时卡片原地重写；图像删除时卡片随之删除。
+视觉模型优先使用配置中的 `as_llm` `vision` 实例，未配置时回退到 `default` 实例——默认模型具备视觉能力时无需额外配置。宽或高超过 2048px 的图像会降采样，格式不被模型接受的图像会转码；这些处理只发生在请求前的内存副本中，`resource/` 下的原图文件不会被修改。图像变更时卡片原地重写；图像删除时卡片随之删除。
+
+在完整解码前，系统会检查图像尺寸，默认上限为 40,000,000 像素；超限图像或 Pillow
+decompression-bomb 警告只会导致当前资源失败。缩放或转码前，会按 EXIF orientation 校正仅用于请求的内存副本。
+尺寸过大的 JPEG 会先使用 decoder-level downsampling，并在需要时再完成最终缩放。
+VLM 请求的 MIME 和卡片 frontmatter 中的 `media_type` 都使用 Pillow 根据实际图像字节识别的格式，
+而不是直接信任文件扩展名。
 
 图像预处理使用 `core` extra 中的 Pillow。HEIC 资源还需要可选的 `image-heif` extra：
 `pip install "reme-ai[image-heif]"`。其他受支持图像格式不会加载或依赖 HEIF 插件。

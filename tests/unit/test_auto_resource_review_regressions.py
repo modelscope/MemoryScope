@@ -1,7 +1,11 @@
 """Regression tests for the safety findings from the Auto Resource PR review."""
 
+from unittest.mock import patch
+
 import frontmatter
 import pytest
+
+from reme.steps.evolve.base_auto_resource import BaseAutoResourceStep
 
 from .auto_resource_test_support import (
     FakeVisionModel,
@@ -167,3 +171,120 @@ async def test_blank_plain_caption_does_not_create_or_overwrite_note(routed, pla
     assert not (env.workspace / "daily/2026-01-01/blank-new.md").exists()
     assert old_note.read_bytes() == before
     assert len(model.structured_calls) == len(model.plain_calls) == 2
+
+
+@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
+async def test_loose_root_image_keeps_original_daily_card_across_days(routed, auto_resource_env):
+    """Later updates and deletion keep a loose resource's first daily-card ownership."""
+    env = auto_resource_env
+    source = env.write_binary("resource/photo.png", image_bytes(color=(200, 30, 30)))
+    initial_model = FakeVisionModel(caption_json("original-card", "Original", "first-day caption"))
+    with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-01"):
+        added = await env.run(
+            env.processor(initial_model, routed=routed),
+            [{"change": "added", "path": str(source)}],
+        )
+
+    owned_note = env.workspace / "daily/2026-01-01/original-card.md"
+    add_result = added.metadata["results"][0]["metadata"]
+    assert added.success is True
+    assert add_result["path"] == "daily/2026-01-01/original-card.md"
+    assert add_result["action"] == "added"
+    assert add_result["index"]["date"] == "2026-01-01"
+    assert "first-day caption" in owned_note.read_text(encoding="utf-8")
+
+    unrelated_note = env.write_note(
+        "daily/2026-01-02/photo.md",
+        "[[resource/other.png]]",
+        body="unrelated note that must survive",
+    )
+    unrelated_before = unrelated_note.read_bytes()
+
+    first_model = FakeVisionModel(caption_json("renamed-on-day-two", "Updated", "second-day caption"))
+    with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-02"):
+        first_update = await env.run(
+            env.processor(first_model, routed=routed),
+            [{"change": "modified", "path": str(source)}],
+        )
+
+    first_result = first_update.metadata["results"][0]["metadata"]
+    assert first_update.success is True
+    assert first_result["path"] == "daily/2026-01-01/original-card.md"
+    assert first_result["action"] == "modified"
+    assert first_result["created"] is False
+    assert first_result["index"]["date"] == "2026-01-01"
+    assert "second-day caption" in owned_note.read_text(encoding="utf-8")
+    assert not (env.workspace / "daily/2026-01-02/renamed-on-day-two.md").exists()
+    assert unrelated_note.read_bytes() == unrelated_before
+    assert not (env.workspace / "daily/2026-01-02.md").exists()
+
+    source.write_bytes(image_bytes(color=(20, 90, 200)))
+    second_model = FakeVisionModel(caption_json("renamed-on-day-three", "Updated again", "third-day caption"))
+    with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-03"):
+        second_update = await env.run(
+            env.processor(second_model, routed=routed),
+            [{"change": "modified", "path": str(source)}],
+        )
+
+    second_result = second_update.metadata["results"][0]["metadata"]
+    assert second_update.success is True
+    assert second_result["path"] == "daily/2026-01-01/original-card.md"
+    assert second_result["action"] == "modified"
+    assert second_result["created"] is False
+    assert second_result["index"]["date"] == "2026-01-01"
+    assert "third-day caption" in owned_note.read_text(encoding="utf-8")
+    assert not (env.workspace / "daily/2026-01-03/renamed-on-day-three.md").exists()
+    assert unrelated_note.read_bytes() == unrelated_before
+    assert not (env.workspace / "daily/2026-01-03.md").exists()
+
+    source.unlink()
+    delete_model = FakeVisionModel(caption_json("unused", "Unused", "Must not be requested."))
+    with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-04"):
+        deleted = await env.run(
+            env.processor(delete_model, routed=routed),
+            [{"change": "deleted", "path": str(source)}],
+        )
+
+    delete_result = deleted.metadata["results"][0]["metadata"]
+    assert deleted.success is True
+    assert delete_result["path"] == "daily/2026-01-01/original-card.md"
+    assert delete_result["action"] == "deleted"
+    assert delete_result["modified"] is True
+    assert delete_result["index"]["date"] == "2026-01-01"
+    assert delete_result["index"]["notes"] == []
+    assert not owned_note.exists()
+    assert unrelated_note.read_bytes() == unrelated_before
+    assert "(none)" in (env.workspace / "daily/2026-01-01.md").read_text(encoding="utf-8")
+    assert not (env.workspace / "daily/2026-01-04.md").exists()
+    assert len(initial_model.calls) == len(first_model.calls) == len(second_model.calls) == 1
+    assert not delete_model.calls
+
+
+@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
+async def test_loose_root_image_duplicate_daily_owners_fail_closed(routed, auto_resource_env):
+    """Ambiguous exact ownership is reported without reading the image model or changing notes."""
+    env = auto_resource_env
+    source = env.write_binary("resource/duplicate.png", image_bytes())
+    first_note = env.write_note("daily/2026-01-01/first.md", "[[resource/duplicate.png]]", body="first owner")
+    second_note = env.write_note("daily/2026-01-02/second.md", "[[resource/duplicate.png]]", body="second owner")
+    before = {first_note: first_note.read_bytes(), second_note: second_note.read_bytes()}
+    model = FakeVisionModel(caption_json("replacement", "Replacement", "Must not be generated."))
+
+    with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-03"):
+        response = await env.run(
+            env.processor(model, routed=routed),
+            [{"change": "modified", "path": str(source)}],
+        )
+
+    result = response.metadata["results"][0]["metadata"]
+    assert response.success is False
+    assert result["action"] == "failed"
+    assert result["modified"] is False
+    assert "Multiple daily resource notes claim resource/duplicate.png" in result["error"]
+    assert "daily/2026-01-01/first.md" in result["error"]
+    assert "daily/2026-01-02/second.md" in result["error"]
+    assert not model.calls
+    assert all(path.read_bytes() == contents for path, contents in before.items())
+    assert not (env.workspace / "daily/2026-01-01.md").exists()
+    assert not (env.workspace / "daily/2026-01-02.md").exists()
+    assert not (env.workspace / "daily/2026-01-03.md").exists()
