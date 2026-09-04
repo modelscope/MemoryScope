@@ -1,6 +1,6 @@
 import { createUserMessage } from "@deepseek-ai/dsh-llm";
 import type { Context } from "@deepseek-ai/cordis";
-import { installSettingsSection } from "@deepseek-ai/dsh-settings";
+import type {} from "@deepseek-ai/dsh-settings";
 
 import { ReMeClient } from "../core/client.js";
 import {
@@ -22,25 +22,26 @@ export const inject = ["agents", "sessions", "tools"];
 
 export function apply(ctx: Context, input: ReMeConfigInput = {}): void {
   const base = resolveConfig(input);
-  let settingsSource: () => ReMeSettings = () => settingsFrom(base);
+  const defaultSettings = settingsFrom(base);
+  let settingsSource: () => ReMeSettings = () => defaultSettings;
   const current = () => mergeSettings(base, settingsSource());
   const client = new ReMeClient(current);
   const runtime = new ReMeRuntime(client, current, ctx.logger);
-  installSettingsSection(
-    ctx,
-    REME_SETTINGS_NAMESPACE,
-    SettingsConfig,
-    settingsFrom(base),
-    {
-      setSource: (source) => {
-        settingsSource = source;
+  ctx.inject(["settings"], (settingsCtx) => {
+    settingsCtx.settings.installSection(
+      ctx,
+      REME_SETTINGS_NAMESPACE,
+      SettingsConfig,
+      defaultSettings,
+      {
+        setSource(source) {
+          settingsSource = source;
+        },
+        onChange: () => runtime.reconfigure(),
+        validate: validateSettings,
       },
-      onChange: () => {
-        runtime.reconfigure();
-      },
-      validate: validateSettings,
-    },
-  );
+    );
+  });
   ctx.provide("remeMemory", runtime);
   void ctx.plugin(ReMeStatusGateway);
   ctx.effect(

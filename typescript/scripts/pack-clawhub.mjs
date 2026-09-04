@@ -21,6 +21,14 @@ const temporaryDirectory = await mkdtemp(
 );
 const stagingDirectory = path.join(temporaryDirectory, "package");
 
+async function stageReadme(source, destination, oldLink, newLink) {
+  const content = await readFile(path.join(packageDirectory, source), "utf8");
+  await writeFile(
+    path.join(stagingDirectory, destination),
+    content.replace(oldLink, newLink),
+  );
+}
+
 try {
   await mkdir(stagingDirectory, { recursive: true });
   await mkdir(destinationDirectory, { recursive: true });
@@ -49,13 +57,17 @@ try {
       path.join(packageDirectory, "openclaw.plugin.json"),
       path.join(stagingDirectory, "openclaw.plugin.json"),
     ),
-    copyFile(
-      path.join(packageDirectory, "README_OPENCLAW.md"),
-      path.join(stagingDirectory, "README.md"),
+    stageReadme(
+      "docs/openclaw.md",
+      "README.md",
+      "(./openclaw.zh-CN.md)",
+      "(./README_ZH.md)",
     ),
-    copyFile(
-      path.join(packageDirectory, "README_OPENCLAW_ZH.md"),
-      path.join(stagingDirectory, "README_ZH.md"),
+    stageReadme(
+      "docs/openclaw.zh-CN.md",
+      "README_ZH.md",
+      "(./openclaw.md)",
+      "(./README.md)",
     ),
   ]);
 

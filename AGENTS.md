@@ -46,8 +46,8 @@ and concise documentation together.
 - `reme/components/service/`: local CLI, HTTP, and MCP service backends.
 - `reme/components/`: agent wrappers, model adapters, stores, catalogs, graphs, indexes, clients, tokenizers, and
   outbound proxies.
-- `reme/steps/`: registered job steps grouped by common, file I/O, index, evolve, cookbook, benchmark, and transfer
-  concerns.
+- `reme/steps/`: registered job steps grouped by common, file I/O, index, evolve, cookbook, and transfer
+  concerns, plus shared benchmark base classes under `benchmark/`.
 - `reme/utils/`: shared utilities, including service discovery, logging, web-static resolution, session I/O, token
   accounting, and wikilink handling.
 - `tests/unit/`: primary fast, isolated validation suite.
@@ -56,12 +56,14 @@ and concise documentation together.
   `@agentscope-ai/reme_studio` npm static distribution.
 - `typescript/`: the independently published `@agentscope-ai/reme` package, including the shared TypeScript client and
   DeepSeek Harness and OpenClaw adapters.
-- `plugins/`: installable ReMe extensions, such as Auto Fin.
+- `plugins/`: installable ReMe extensions, including Auto Fin and LME/BEAM benchmark Steps and application presets.
 - `integrations/`: adapters that connect ReMe to external agent hosts, such as Claude Code, DSH, and Hermes Agent.
 - `skills/`: standalone skills; `reme_memory` calls ReMe, while other skills may use separate tools or direct-file
   conventions.
 - `benchmark/` and `cookbook/`: runnable evaluations and example workflows.
 - `docs/`: README-linked supporting pages and figures.
+- `github-pages/`: VitePress build shell, generated-content assembly, documentation checks, and GitHub Pages output. The
+  canonical theme and guides remain under `docs/`; `.generated/` and `dist/` are disposable.
 
 ## Development Setup
 
@@ -194,6 +196,9 @@ Black and Flake8 use a 120-character line limit and Python 3.11 formatting; Pyli
 Integration tests may contact real model providers, services, or agent subprocesses and can require credentials. Do not
 run credentialed or externally mutating tests automatically; run them only when the task requires them and the necessary
 environment has been supplied or authorized. Mock network, model, and subprocess boundaries in unit tests.
+
+If documentation or the documentation theme changes, run `npm test` and `npm run build` from `github-pages/`. The Job
+reference is generated from `reme/config/default.yaml`; do not edit generated pages directly.
 
 ## Change Guardrails
 
