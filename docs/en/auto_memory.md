@@ -29,6 +29,57 @@ Auto Memory does not preserve a chat transcript as a running summary. It records
 - Current state: what has been completed, what is blocked, and what comes next.
 - Reusable experience: commands, workflows, diagnostic methods, and solutions.
 
+## Image Input (Opt-in)
+
+Auto Memory can treat AgentScope image blocks as conversation evidence. This is disabled by default so existing text-only
+workflows do not pay the additional image-token cost. Enable it persistently in the job configuration:
+
+```yaml
+jobs:
+  auto_memory:
+    include_images: true
+```
+
+It can also be enabled or disabled for one call with `include_images=true` or `include_images=false`. When enabled, image
+blocks are sent directly to the vision-capable model bound to the default AgentScope agent wrapper; Auto Memory does not
+create or inject an intermediate caption. Text and images retain their order and are interpreted together with the
+message's speaker and timestamp.
+
+The input uses AgentScope `data` blocks. For example:
+
+```json
+{
+  "name": "user",
+  "role": "user",
+  "content": [
+    {"type": "text", "text": "Remember the project code shown here."},
+    {
+      "type": "data",
+      "name": "project-board",
+      "source": {
+        "type": "url",
+        "url": "https://example.com/project-board.png",
+        "media_type": "image/png"
+      }
+    }
+  ]
+}
+```
+
+The configured model must support image input, and Auto Memory performs no caption fallback. Only `image/*` data blocks
+are included; audio, video, tool results, and other data are ignored. Remote images must use HTTP(S). Local `file://`
+images must stay inside the ReMe workspace and, like inline Base64 images, are limited to 5 MiB each. A local file is read
+by ReMe and converted to Base64 before the provider call.
+
+With the default AgentScope wrapper, an image-enabled extraction uses an ephemeral internal agent session, so its image
+payload is not written to `mem_session/agentscope`. Inline Base64 bytes are also removed from the saved source
+conversation; image URLs remain there as part of the original message. If the switch is off, image blocks are completely
+absent from model input—no file is read and no placeholder, synthesized caption, or fallback caption is added.
+
+For non-empty calls, response metadata reports `include_images_requested`, the effective `include_images` value, and the
+number of top-level image blocks as `image_count`. This makes image-on and image-off runs auditable without inspecting the
+model prompt.
+
 ## Write Location
 
 Auto Memory writes distilled memories to `daily/`. Conversations from the same day first become individual cards:

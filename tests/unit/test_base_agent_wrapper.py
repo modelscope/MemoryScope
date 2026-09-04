@@ -4,6 +4,8 @@ import sys
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
+from agentscope.message import AssistantMsg, UserMsg
+from agentscope.state import AgentState
 import pytest
 
 from reme.components.agent_wrapper import (
@@ -265,3 +267,65 @@ async def test_agentscope_structured_output_uses_model_tool_choice_policy(tmp_pa
         "structured_model": {"type": "object"},
     }
     assert result["structured_output"] == {"ok": True}
+
+
+@pytest.mark.asyncio
+async def test_agentscope_ephemeral_calls_skip_state_persistence(tmp_path, monkeypatch):
+    """Ephemeral calls keep their ReAct state in memory without writing a resumable session."""
+    wrapper = AsAgentWrapper(app_context=ApplicationContext(workspace_dir=str(tmp_path)), as_llm="")
+    states = iter(
+        [
+            AgentState(session_id="ephemeral-session"),
+            AgentState(session_id="persistent-session"),
+            AgentState(session_id="ephemeral-stream-session"),
+        ],
+    )
+
+    class FakeAgent:
+        """Minimal stateful AgentScope agent."""
+
+        def __init__(self, state):
+            self.state = state
+
+        async def observe(self, inputs):
+            """Retain the supplied input like AgentScope's real observe path."""
+            self.state.context.append(inputs)
+
+        async def reply(self):
+            """Return a normal AgentScope message without contacting a model."""
+            return AssistantMsg(name="assistant", content="done")
+
+        async def reply_stream(self, inputs):
+            """Retain stream input without contacting a model."""
+            self.state.context.append(inputs)
+            if inputs is None:
+                yield None
+
+    async def build_agent(inputs, **_kwargs):
+        """Build a fresh one-shot fake around each state."""
+        return FakeAgent(next(states)), inputs
+
+    monkeypatch.setattr(wrapper, "_build_agent", build_agent)
+    image_input = UserMsg(
+        name="user",
+        content=[
+            {
+                "type": "data",
+                "name": "private-image",
+                "source": {"type": "base64", "data": "c2Vuc2l0aXZlLWltYWdl", "media_type": "image/png"},
+            },
+        ],
+    )
+
+    await wrapper.reply(image_input, ephemeral=True)
+
+    assert not (wrapper.session_path / "ephemeral-session.jsonl").exists()
+
+    await wrapper.reply(image_input)
+
+    persisted = wrapper.session_path / "persistent-session.jsonl"
+    assert persisted.is_file()
+    assert "c2Vuc2l0aXZlLWltYWdl" in persisted.read_text(encoding="utf-8")
+
+    assert [chunk async for chunk in wrapper.reply_stream(image_input, ephemeral=True)] == []
+    assert not (wrapper.session_path / "ephemeral-stream-session.jsonl").exists()

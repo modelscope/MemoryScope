@@ -26,6 +26,53 @@ Conversation
 - 当前状态：做到哪一步，卡在哪里，下一步是什么。
 - 可复用经验：命令、流程、排查方法、解决方案。
 
+## 图像输入（可选）
+
+Auto Memory 可以把 AgentScope 图像块作为对话证据。该功能默认关闭，使现有纯文本流程不会产生额外的读图 token
+开销。可以在 Job 配置中长期启用：
+
+```yaml
+jobs:
+  auto_memory:
+    include_images: true
+```
+
+也可以在单次调用中用 `include_images=true` 或 `include_images=false` 覆盖。开启后，图像块会直接发送给默认
+AgentScope Agent Wrapper 所绑定的多模态模型；Auto Memory 不会生成或注入中间 caption。文本和图像保持原始顺序，
+并与消息的说话者和时间戳一起解释。
+
+输入使用 AgentScope `data` block，例如：
+
+```json
+{
+  "name": "user",
+  "role": "user",
+  "content": [
+    {"type": "text", "text": "记住这张图里显示的项目代码。"},
+    {
+      "type": "data",
+      "name": "project-board",
+      "source": {
+        "type": "url",
+        "url": "https://example.com/project-board.png",
+        "media_type": "image/png"
+      }
+    }
+  ]
+}
+```
+
+配置的模型必须支持图像输入，Auto Memory 不执行 caption fallback。只有 `image/*` data block 会进入模型，
+音频、视频、工具结果及其他数据会被忽略。远程图像必须使用 HTTP(S)。本地 `file://` 图像必须位于 ReMe
+workspace 内，且与内嵌 Base64 图像一样，每张不得超过 5 MiB。ReMe 会先读取本地文件并转换为 Base64，再调用模型。
+
+使用默认 AgentScope wrapper 时，开启图像的提取会使用临时的内部 agent session，因此图像 payload 不会写入
+`mem_session/agentscope`。内嵌 Base64 字节也会从保存的来源对话中移除；图像 URL 作为原始消息的一部分会被保留。
+开关关闭时，模型输入中完全没有图像块，不会读取图像文件，也不会自动加入占位符、生成的 caption 或回退 caption。
+
+对于非空调用，响应 metadata 会记录 `include_images_requested`、实际生效的 `include_images` 以及顶层图像块数量
+`image_count`，便于在不检查模型 prompt 的情况下审计开启与关闭图像的运行。
+
 ## 写入位置
 
 Auto Memory 会把整理后的记忆放进 `daily/`。当天发生的对话会先被整理成一张张小卡片：

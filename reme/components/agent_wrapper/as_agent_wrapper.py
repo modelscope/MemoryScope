@@ -350,7 +350,8 @@ class AsAgentWrapper(BaseAgentWrapper):
         await agent.observe(inputs)
         last_msg = await agent.reply()
         usage = self._agentscope_usage(last_msg.usage) if last_msg.usage is not None else None
-        await self._dump_state(agent.state)
+        if not kwargs.get("ephemeral", False):
+            await self._dump_state(agent.state)
 
         result = {
             "session_id": agent.state.session_id,
@@ -496,4 +497,5 @@ class AsAgentWrapper(BaseAgentWrapper):
                 chunk.session_id = chunk.session_id or agent.state.session_id
                 yield chunk
 
-        await self._dump_state(agent.state)
+        if not kwargs.get("ephemeral", False):
+            await self._dump_state(agent.state)

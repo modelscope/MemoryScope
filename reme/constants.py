@@ -11,8 +11,8 @@ DEFAULT_MAX_BYTES = 50 * 1024
 MAX_FILE_READ_BYTES = 200 * 1024 * 1024
 TRUNCATION_NOTICE_MARKER = "<<TRUNCATION_NOTICE>>"
 
-# read_image step: oversized images above this threshold return path & metadata
-# only (no base64) to keep LLM context budgets safe.
+# Image ingestion: oversized images above this threshold are rejected or omit
+# base64 to keep memory use and LLM context budgets bounded.
 DEFAULT_MAX_IMAGE_BYTES = 5 * 1024 * 1024
 
 # Background content-processing jobs skip files above this size. File watchers

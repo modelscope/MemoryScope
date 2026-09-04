@@ -1,12 +1,16 @@
 """auto_memory — record conversation facts into a daily note via an agent."""
 
+import base64
+import binascii
 import datetime
 from pathlib import Path
+from urllib.parse import urlparse
+from urllib.request import url2pathname
 import zoneinfo
 
 import aiofiles
 import frontmatter
-from agentscope.message import Msg
+from agentscope.message import Base64Source, DataBlock, Msg, TextBlock, UserMsg
 
 from ._evolve import agent_reply_result_text, format_history, now
 from ..base_step import BaseStep
@@ -14,10 +18,12 @@ from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
 from ..index import normalize_posix_path
 from ...components import R
+from ...constants import DEFAULT_MAX_IMAGE_BYTES
 
 _SESSION_ID_KEY = "session_id"
 _SOURCE_CONVERSATION_KEY = "source_conversation"
 _MESSAGE_TIME_ALIASES = ("time_created", "timestamp", "createdAt", "timeCreated", "created_time")
+_HISTORY_PLACEHOLDER = "__REME_AUTO_MEMORY_MULTIMODAL_HISTORY__"
 
 
 def _sanitize_msg_for_save(msg: Msg) -> Msg:
@@ -63,8 +69,9 @@ def _normalize_msg_timestamp(item: dict) -> dict:
 class AutoMemoryStep(BaseStep):
     """Record conversation facts into a daily note via an Agent."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, include_images: bool = False, **kwargs):
         super().__init__(**kwargs)
+        self.include_images = include_images
         self.create_tools: list[str] = ["daily_write"]
         self.update_tools: list[str] = ["read", "edit", "frontmatter_update", "write"]
 
@@ -273,6 +280,133 @@ class AutoMemoryStep(BaseStep):
         """
         return format_history(messages)
 
+    @staticmethod
+    def _is_image_block(block) -> bool:
+        """Return whether an AgentScope content block contains image data."""
+        return block.type == "data" and str(getattr(block.source, "media_type", "")).lower().startswith("image/")
+
+    @classmethod
+    def _image_count(cls, messages: list[Msg]) -> int:
+        return sum(cls._is_image_block(block) for msg in messages for block in msg.content)
+
+    @staticmethod
+    def _check_image_size(size_bytes: int) -> None:
+        if size_bytes <= 0:
+            raise ValueError("auto_memory image must contain at least one byte")
+        if size_bytes > DEFAULT_MAX_IMAGE_BYTES:
+            raise ValueError(
+                f"auto_memory image exceeds the {DEFAULT_MAX_IMAGE_BYTES}-byte limit: {size_bytes} bytes",
+            )
+
+    def _prepare_image_block(self, block: DataBlock) -> DataBlock:
+        """Validate an image and make local-file reads explicit and workspace-bound."""
+        source = block.source
+        source_type = getattr(source, "type", None)
+        media_type = str(source.media_type).lower()
+
+        if source_type == "base64":
+            encoded_data = source.data
+            max_encoded_chars = 4 * ((DEFAULT_MAX_IMAGE_BYTES + 2) // 3)
+            if len(encoded_data) > max_encoded_chars:
+                self._check_image_size(DEFAULT_MAX_IMAGE_BYTES + 1)
+            try:
+                decoded = base64.b64decode(encoded_data, validate=True)
+            except (binascii.Error, ValueError) as exc:
+                raise ValueError("auto_memory image contains invalid base64 data") from exc
+            self._check_image_size(len(decoded))
+            normalized_source = source.model_copy(update={"media_type": media_type})
+            return block.model_copy(deep=True, update={"source": normalized_source})
+
+        if source_type != "url":
+            return block.model_copy(deep=True)
+
+        raw_url = str(getattr(source, "url", ""))
+        parsed = urlparse(raw_url)
+        scheme = parsed.scheme.lower()
+        if scheme not in ("file", "http", "https"):
+            raise ValueError("auto_memory image URL scheme must be file, http, or https")
+        if scheme != "file":
+            normalized_source = source.model_copy(update={"media_type": media_type})
+            return block.model_copy(deep=True, update={"source": normalized_source})
+        if parsed.netloc not in ("", "localhost"):
+            raise ValueError("auto_memory image file URLs must refer to the local workspace")
+        if parsed.query or parsed.fragment:
+            raise ValueError("auto_memory image file URLs cannot contain a query or fragment")
+
+        try:
+            image_path = Path(url2pathname(parsed.path)).resolve(strict=True)
+        except (FileNotFoundError, OSError, UnicodeError) as exc:
+            raise ValueError("auto_memory image file URL does not identify a readable file") from exc
+        workspace_path = self.file_store.workspace_path.resolve(strict=False)
+        if not image_path.is_relative_to(workspace_path):
+            raise ValueError("auto_memory image file URLs must stay inside the workspace")
+        if not image_path.is_file():
+            raise ValueError("auto_memory image file URL does not identify a readable file")
+
+        try:
+            with image_path.open("rb") as image_file:
+                image_bytes = image_file.read(DEFAULT_MAX_IMAGE_BYTES + 1)
+        except OSError as exc:
+            raise ValueError("auto_memory image file URL does not identify a readable file") from exc
+        self._check_image_size(len(image_bytes))
+
+        encoded_source = Base64Source(
+            data=base64.b64encode(image_bytes).decode("ascii"),
+            media_type=media_type,
+        )
+        return block.model_copy(deep=True, update={"source": encoded_source})
+
+    @staticmethod
+    def _image_label(block: DataBlock, image_index: int) -> str:
+        """Return a short, single-line marker safe to embed beside an image."""
+        supplied = " ".join((block.name or "").split())
+        supplied = supplied.replace("[", "(").replace("]", ")")[:120]
+        return f"image-{image_index}" + (f" ({supplied})" if supplied else "")
+
+    def _multimodal_history(self, messages: list[Msg]) -> list[TextBlock | DataBlock]:
+        """Render text and image blocks in their original conversational order."""
+        history: list[TextBlock | DataBlock] = []
+        image_index = 0
+
+        for msg in messages:
+            content: list[TextBlock | DataBlock] = []
+            for block in msg.content:
+                if block.type == "text":
+                    if block.text.strip():
+                        content.append(block.model_copy(deep=True))
+                elif self._is_image_block(block):
+                    image_index += 1
+                    content.append(TextBlock(text=f"[Image: {self._image_label(block, image_index)}]"))
+                    content.append(self._prepare_image_block(block))
+
+            if not content:
+                continue
+            if history:
+                history.append(TextBlock(text="\n\n"))
+            speaker = msg.name or msg.role or "?"
+            history.append(TextBlock(text=f"[{speaker} @ {msg.created_at}]\n"))
+            history.extend(content)
+
+        return history
+
+    def _build_agent_input(self, template_key: str, messages: list[Msg], include_images: bool, **kwargs):
+        """Build the original text prompt or an AgentScope multimodal user message."""
+        if not include_images:
+            return self.prompt_format(template_key, history=self._format_history(messages), **kwargs)
+
+        rendered = self.prompt_format(template_key, history=_HISTORY_PLACEHOLDER, **kwargs)
+        prefix, marker, suffix = rendered.partition(_HISTORY_PLACEHOLDER)
+        if not marker:
+            raise RuntimeError(f"Auto-memory prompt {template_key!r} is missing the history placeholder")
+
+        content: list[TextBlock | DataBlock] = []
+        if prefix:
+            content.append(TextBlock(text=prefix))
+        content.extend(self._multimodal_history(messages))
+        if suffix:
+            content.append(TextBlock(text=suffix))
+        return UserMsg(name="user", content=content)
+
     # pylint: disable=too-many-return-statements
     async def execute(self):
         assert self.context is not None
@@ -284,9 +418,13 @@ class AutoMemoryStep(BaseStep):
         current = now(tz)
 
         messages: list[Msg] = self._build_messages(raw_messages)
+        include_images_requested = bool(self.context.get("include_images", self.include_images))
+        image_count = self._image_count(messages)
+        include_images = include_images_requested and image_count > 0
         self.logger.info(
             f"[{self.name}] start session_id={session_id!r} raw_messages={len(raw_messages)} "
-            f"messages={len(messages)} hint={bool(memory_hint)}",
+            f"messages={len(messages)} hint={bool(memory_hint)} include_images_requested={include_images_requested} "
+            f"include_images={include_images} image_count={image_count}",
         )
 
         if session_id and (err := validate_session_id(session_id)):
@@ -319,6 +457,14 @@ class AutoMemoryStep(BaseStep):
             self.logger.info(f"[{self.name}] Skipped: no messages session_id={session_id!r} modified=False")
             return
 
+        self.context.response.metadata.update(
+            {
+                "include_images_requested": include_images_requested,
+                "include_images": include_images,
+                "image_count": image_count,
+            },
+        )
+
         try:
             note = await self._list_session_note(day, session_id)
         except RuntimeError as exc:
@@ -337,14 +483,15 @@ class AutoMemoryStep(BaseStep):
             f"created={created} msgs={len(messages)} hint={bool(memory_hint)}",
         )
         template_key = "user_message_create" if created else "user_message_update"
-        user_message = self.prompt_format(
+        user_message = self._build_agent_input(
             template_key,
+            messages,
+            include_images,
             today=day,
             note=memory_hint or "(none)",
             note_path=note_path,
             session_id=session_id,
             session_file=self._session_source_path(session_id),
-            history=self._format_history(messages),
         )
 
         self.logger.info(f"[{self.name}] agent start path={note_path} template={template_key}")
@@ -352,11 +499,16 @@ class AutoMemoryStep(BaseStep):
         # notes retain the upstream ``daily_write`` date behavior, where the
         # model supplies the date from the prompt.
         reply_kwargs = self._reply_extra_kwargs(day)
+        if include_images:
+            # AgentScope keeps its full ReAct context in a resumable session by
+            # default. Image extraction is one-shot, so avoid persisting image
+            # payloads in that separate internal session after the run.
+            reply_kwargs["ephemeral"] = True
         if not created:
             reply_kwargs["injected_job_kwargs"] = {"_allowed_paths": [note_path]}
         result = await self.agent_wrapper.reply(
             user_message,
-            system_prompt=self.prompt_format("system_prompt"),
+            system_prompt=self.prompt_format("system_prompt", include_images=include_images),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,
         )
