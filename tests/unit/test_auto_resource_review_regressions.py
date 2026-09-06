@@ -1,13 +1,18 @@
 """Regression tests for the safety findings from the Auto Resource PR review."""
 
-from unittest.mock import patch
+from pathlib import Path
+from unittest.mock import AsyncMock, patch
 
 import frontmatter
 import pytest
 
+from reme.components import R
+from reme.steps.evolve.auto_resource import AutoResourceStep
+from reme.steps.evolve.auto_text_resource import AutoTextResourceStep
 from reme.steps.evolve.base_auto_resource import BaseAutoResourceStep
 
 from .auto_resource_test_support import (
+    FakeAgentWrapper,
     FakeVisionModel,
     StructuredVisionModel,
     caption_json,
@@ -18,6 +23,16 @@ from .auto_resource_test_support import (
 
 pytest_plugins = ("unit.auto_resource_test_plugin",)
 pytestmark = pytest.mark.asyncio
+
+
+def _link_daily_directory(workspace: Path, day: str, target: Path) -> None:
+    """Expose a fixture directory through the supported daily layout."""
+    link = workspace / "daily" / day
+    link.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        link.symlink_to(target, target_is_directory=True)
+    except OSError as exc:
+        pytest.skip(f"symlinks unavailable: {exc}")
 
 
 @pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
@@ -174,9 +189,14 @@ async def test_blank_plain_caption_does_not_create_or_overwrite_note(routed, pla
 
 
 @pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
-async def test_loose_root_image_keeps_original_daily_card_across_days(routed, auto_resource_env):
+@pytest.mark.parametrize("linked_day", [False, True], ids=["directory", "internal-symlink"])
+async def test_loose_root_image_keeps_original_daily_card_across_days(routed, linked_day, auto_resource_env):
     """Later updates and deletion keep a loose resource's first daily-card ownership."""
     env = auto_resource_env
+    if linked_day:
+        archive = env.workspace / "archive-day"
+        archive.mkdir()
+        _link_daily_directory(env.workspace, "2026-01-01", archive)
     source = env.write_binary("resource/photo.png", image_bytes(color=(200, 30, 30)))
     initial_model = FakeVisionModel(caption_json("original-card", "Original", "first-day caption"))
     with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-01"):
@@ -261,9 +281,14 @@ async def test_loose_root_image_keeps_original_daily_card_across_days(routed, au
 
 
 @pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
-async def test_loose_root_image_duplicate_daily_owners_fail_closed(routed, auto_resource_env):
+@pytest.mark.parametrize("linked_day", [False, True], ids=["directory", "internal-symlink"])
+async def test_loose_root_image_duplicate_daily_owners_fail_closed(routed, linked_day, auto_resource_env):
     """Ambiguous exact ownership is reported without reading the image model or changing notes."""
     env = auto_resource_env
+    if linked_day:
+        archive = env.workspace / "archive-day"
+        archive.mkdir()
+        _link_daily_directory(env.workspace, "2026-01-01", archive)
     source = env.write_binary("resource/duplicate.png", image_bytes())
     first_note = env.write_note("daily/2026-01-01/first.md", "[[resource/duplicate.png]]", body="first owner")
     second_note = env.write_note("daily/2026-01-02/second.md", "[[resource/duplicate.png]]", body="second owner")
@@ -288,3 +313,98 @@ async def test_loose_root_image_duplicate_daily_owners_fail_closed(routed, auto_
     assert not (env.workspace / "daily/2026-01-01.md").exists()
     assert not (env.workspace / "daily/2026-01-02.md").exists()
     assert not (env.workspace / "daily/2026-01-03.md").exists()
+
+
+@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
+async def test_loose_root_lookup_ignores_unsafe_daily_links(routed, auto_resource_env, tmp_path):
+    """Outside, missing, and cyclic directories cannot expose notes or block a safe owner."""
+    env = auto_resource_env
+    outside = write_note(tmp_path / "outside-day/claim.md", "[[resource/photo.png]]", body="private outside note")
+    outside_before = outside.read_bytes()
+    _link_daily_directory(env.workspace, "2025-12-01", outside.parent)
+    _link_daily_directory(env.workspace, "2025-12-02", env.workspace / "missing-day")
+    _link_daily_directory(env.workspace, "2025-12-03", env.workspace / "daily/2025-12-03")
+    source = env.write_binary("resource/photo.png", image_bytes())
+    owned_note = env.write_note("daily/2026-01-01/original.md", "[[resource/photo.png]]")
+    model = FakeVisionModel(caption_json("original", "Updated", "Updated inside workspace."))
+    original_read_text = Path.read_text
+    outside_reads = []
+
+    def guarded_read_text(path, *args, **kwargs):
+        if path.resolve() == outside.resolve():
+            outside_reads.append(path)
+            raise AssertionError("cross-date lookup read a note outside the workspace")
+        return original_read_text(path, *args, **kwargs)
+
+    with patch.object(Path, "read_text", guarded_read_text):
+        with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-02"):
+            updated = await env.run(env.processor(model, routed=routed), [{"change": "modified", "path": str(source)}])
+        assert updated.success is True
+        assert updated.metadata["results"][0]["metadata"]["path"] == "daily/2026-01-01/original.md"
+        assert "Updated inside workspace." in owned_note.read_text(encoding="utf-8")
+        source.unlink()
+        with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-03"):
+            deleted = await env.run(env.processor(model, routed=routed), [{"change": "deleted", "path": str(source)}])
+
+    assert deleted.success is True
+    assert deleted.metadata["results"][0]["metadata"]["action"] == "deleted"
+    assert not owned_note.exists()
+    assert not outside_reads
+    assert outside.read_bytes() == outside_before
+    assert len(model.calls) == 1
+    assert not (env.workspace / "daily/2026-01-02").exists()
+    assert not (env.workspace / "daily/2026-01-03").exists()
+
+
+@pytest.mark.parametrize("routed", [False, True], ids=["text", "unified-router"])
+async def test_loose_root_text_updates_and_deletes_original_daily_card(routed, auto_resource_env):
+    """Text processing also uses exact cross-date ownership for its prompt and lifecycle."""
+    env = auto_resource_env
+    source = env.write_binary("resource/report.txt", b"Updated report text.")
+    note_rel = "daily/2026-01-01/original.md"
+    owned_note = env.write_note(note_rel, "[[resource/report.txt]]", body="Original report text.")
+    unrelated = env.write_note("daily/2026-01-02/report.md", "[[resource/other.txt]]", body="Keep unrelated report.")
+    unrelated_before = unrelated.read_bytes()
+    wrapper = FakeAgentWrapper()
+
+    async def update_note(inputs, **kwargs):
+        assert "Date: 2026-01-01" in inputs
+        assert f"Target note path: {note_rel}" in inputs
+        assert "Updated report text." in inputs
+        assert "read" in kwargs["job_tools"]
+        response = await env.app_context.jobs["write"](
+            path=note_rel,
+            name="suggested-rename",
+            description="Updated report",
+            content="Updated report text.",
+            metadata={"source_resource": "[[resource/report.txt]]"},
+        )
+        assert response.success is True
+        return {"result": "Updated original report."}
+
+    env.app_context.registry = R
+    step_cls = AutoResourceStep if routed else AutoTextResourceStep
+    step = step_cls(app_context=env.app_context, file_store=env.file_store, agent_wrapper=wrapper, language="en")
+    with patch.object(wrapper, "reply", new=AsyncMock(side_effect=update_note)) as reply:
+        with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-02"):
+            updated = await env.run(step, [{"change": "modified", "path": str(source)}])
+        assert updated.success is True
+        result = updated.metadata["results"][0]["metadata"]
+        assert result["path"] == note_rel
+        assert result["created"] is False
+        assert result["action"] == "modified"
+        assert result["index"]["date"] == "2026-01-01"
+        assert "Updated report text." in owned_note.read_text(encoding="utf-8")
+        source.unlink()
+        with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-03"):
+            deleted = await env.run(step, [{"change": "deleted", "path": str(source)}])
+        reply.assert_awaited_once()
+
+    assert deleted.success is True
+    assert deleted.metadata["results"][0]["metadata"]["path"] == note_rel
+    assert deleted.metadata["results"][0]["metadata"]["action"] == "deleted"
+    assert deleted.metadata["results"][0]["metadata"]["index"]["date"] == "2026-01-01"
+    assert not owned_note.exists()
+    assert unrelated.read_bytes() == unrelated_before
+    assert list((env.workspace / "daily/2026-01-02").glob("*.md")) == [unrelated]
+    assert not (env.workspace / "daily/2026-01-03").exists()

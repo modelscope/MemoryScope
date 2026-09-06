@@ -245,11 +245,18 @@ class BaseAutoResourceStep(BaseStep):
             raise ValueError(f"invalid daily_dir {daily_dir!r}: {error or 'cannot resolve path'}")
         if not daily_root.is_dir():
             return []
-        return sorted(
-            entry.name
-            for entry in daily_root.iterdir()
-            if _DATE_RE.fullmatch(entry.name) and entry.is_dir() and not entry.is_symlink()
-        )
+        days = []
+        for entry in daily_root.iterdir():
+            if not _DATE_RE.fullmatch(entry.name):
+                continue
+            try:
+                resolved, path_error = resolve_path(workspace, f"{daily_dir}/{entry.name}")
+                if not path_error and resolved is not None and resolved.is_dir():
+                    days.append(entry.name)
+            except (OSError, RuntimeError):
+                # Broken or cyclic links must not prevent lookup in other days.
+                continue
+        return sorted(days)
 
     async def _find_loose_resource_day(self, file_path: str) -> str | None:
         """Find the single daily-card owner for a root-level resource."""

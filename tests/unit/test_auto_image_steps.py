@@ -237,15 +237,81 @@ def test_image_preprocessing_resizes_16_bit_tiff_before_rgb_conversion():
         assert max(sent.size) <= 2048
 
 
+@pytest.mark.parametrize(("mode", "transparent"), [("P", False), ("1", False), ("P", True)])
+def test_image_preprocessing_retains_thin_strokes_and_palette_alpha(mode, transparent):
+    """Filtered downscaling retains lines that nearest-neighbor sampling drops."""
+    image = Image.new(mode, (4096, 256), 1 if mode == "1" else 0)
+    if mode == "P":
+        image.putpalette([255, 255, 255, 0, 0, 0] + [0] * 762)
+        if transparent:
+            image.info["transparency"] = 0
+    image.paste(0 if mode == "1" else 1, (0, 0, 1, 256))
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG")
+    image.close()
+
+    payload = _build_image_request_payload(buffer.getvalue(), ".png")
+
+    assert payload["source_mime"] == "image/png"
+    with Image.open(io.BytesIO(base64.b64decode(payload["data_b64"]))) as sent:
+        assert sent.size == (2048, 128)
+        if transparent:
+            assert payload["mime"] == "image/png"
+            assert sent.mode == "RGBA"
+            alpha_min, alpha_max = sent.getextrema()[3]
+            assert alpha_min == 0
+            assert 0 < alpha_max < 255
+        else:
+            assert sent.getextrema()[0][0] < 240
+            assert sent.getpixel((sent.width - 1, 0))[:3] == (255, 255, 255)
+
+
+@pytest.mark.parametrize("mode", ["P", "1"])
+@pytest.mark.parametrize("failing_method", ["thumbnail", "save"])
+def test_image_preprocessing_closes_expanded_frames_on_failure(mode, failing_method):
+    """Failure after mode expansion releases the temporary resize frame."""
+    image = Image.new(mode, (2049, 2))
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG")
+    image.close()
+    converted_frames = []
+    original_convert = Image.Image.convert
+
+    def record_convert(frame, *args, **kwargs):
+        converted = original_convert(frame, *args, **kwargs)
+        if frame.mode == mode:
+            converted_frames.append(converted)
+        return converted
+
+    with (
+        patch.object(Image.Image, "convert", new=record_convert),
+        patch.object(Image.Image, failing_method, side_effect=OSError(f"{failing_method} failed")),
+        pytest.raises(RuntimeError, match="Failed to convert/resize image"),
+    ):
+        _build_image_request_payload(buffer.getvalue(), ".png")
+
+    assert len(converted_frames) == 1
+    for frame in converted_frames:
+        with pytest.raises(ValueError, match="closed image"):
+            frame.getpixel((0, 0))
+
+
+@pytest.mark.parametrize(
+    ("source_size", "request_size"),
+    [((3000, 1000), (683, 2048)), ((4096, 1024), (512, 2048))],
+    ids=["resize-and-rotate", "decoder-downsample-and-rotate"],
+)
 @pytest.mark.asyncio
-async def test_auto_image_applies_exif_orientation_before_resizing(auto_resource_env):
+async def test_auto_image_applies_exif_orientation_before_resizing(source_size, request_size, auto_resource_env):
     """A rotated phone JPEG is normalized upright for the VLM without touching its source."""
     env = auto_resource_env
-    image = Image.new("RGB", (3000, 1000), (40, 80, 120))
+    image = Image.new("RGB", source_size, (255, 0, 0))
+    image.paste((0, 0, 255), (image.width // 2, 0, image.width, image.height))
     exif = Image.Exif()
     exif[274] = 6
     buffer = io.BytesIO()
     image.save(buffer, format="JPEG", exif=exif)
+    image.close()
     source = env.write_binary("resource/2026-01-01/phone.jpg", buffer.getvalue())
     stored_bytes = source.read_bytes()
     model = _FakeVisionModel(_caption_json("upright-phone-photo", "Upright", "An upright phone photo."))
@@ -256,8 +322,12 @@ async def test_auto_image_applies_exif_orientation_before_resizing(auto_resource
     data_block = model.calls[0][0].content[1]
     assert data_block.source.media_type == "image/jpeg"
     with Image.open(io.BytesIO(base64.b64decode(data_block.source.data))) as sent:
-        assert sent.size == (683, 2048)
+        assert sent.size == request_size
         assert sent.getexif().get(274) is None
+        top = sent.getpixel((sent.width // 2, sent.height // 4))
+        bottom = sent.getpixel((sent.width // 2, 3 * sent.height // 4))
+        assert top[0] > 240 and top[2] < 15
+        assert bottom[2] > 240 and bottom[0] < 15
     assert source.read_bytes() == stored_bytes
     assert (env.workspace / "daily/2026-01-01/upright-phone-photo.md").is_file()
 

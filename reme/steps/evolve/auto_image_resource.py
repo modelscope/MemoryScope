@@ -158,19 +158,26 @@ def _normalize_image_bytes(
         needs_orientation = orientation in range(2, 9)
         if not needs_resize and not needs_convert and not needs_orientation:
             return None, source_mime, source_mime
+        resize_frame = None
         try:
+            frame = image
             if needs_resize:
-                # Resize the decoded source before color conversion so large
-                # non-JPEG images do not require a second full-size frame.
+                # Pillow forces NEAREST for palette and bilevel images, even
+                # when LANCZOS is requested. Expand these modes within the
+                # checked pixel budget so resizing retains fine strokes and
+                # palette transparency. Other modes resize before conversion.
+                if image.mode in ("P", "1"):
+                    resize_frame = image.convert("RGBA" if image.mode == "P" else "L")
+                    frame = resize_frame
                 # Pillow 10 cannot apply LANCZOS directly to 16-bit integer
                 # modes; NEAREST keeps that path bounded without a full-size
                 # RGB conversion first.
                 resize_filter = image_module.Resampling.LANCZOS
-                if image.mode.startswith("I;16"):
+                if frame.mode.startswith("I;16"):
                     resize_filter = image_module.Resampling.NEAREST
-                image.thumbnail((MAX_IMAGE_REQUEST_DIMENSION, MAX_IMAGE_REQUEST_DIMENSION), resize_filter)
-            has_alpha = image.mode in ("RGBA", "LA", "P")
-            frame = image.convert("RGBA" if has_alpha else "RGB")
+                frame.thumbnail((MAX_IMAGE_REQUEST_DIMENSION, MAX_IMAGE_REQUEST_DIMENSION), resize_filter)
+            has_alpha = frame.mode in ("RGBA", "LA", "P")
+            frame = frame.convert("RGBA" if has_alpha else "RGB")
             try:
                 buffer = io.BytesIO()
                 if frame.mode == "RGBA":
@@ -182,6 +189,9 @@ def _normalize_image_bytes(
                 frame.close()
         except Exception as exc:  # pylint: disable=broad-except
             raise RuntimeError(f"Failed to convert/resize image ({suffix or 'unknown suffix'}): {exc}") from exc
+        finally:
+            if resize_frame is not None:
+                resize_frame.close()
 
 
 def _build_image_request_payload(
