@@ -37,9 +37,9 @@ jobs:
     include_images: true
 ```
 
-也可以在单次调用中用 `include_images=true` 或 `include_images=false` 覆盖。开启后，图像块会直接发送给默认
-AgentScope Agent Wrapper 所绑定的多模态模型；Auto Memory 不会生成或注入中间 caption。文本和图像保持原始顺序，
-并与消息的说话者和时间戳一起解释。
+也可以在单次调用中用 `include_images=true` 或 `include_images=false` 覆盖。开启后，Auto Memory 先用视觉模型描述图像，
+生成链接原图的图像卡片，再在对话副本中用 caption 和卡片链接替换图像块。原有文本、内容块顺序、说话者和时间戳保持不变，
+随后由原来的纯文本记忆 Agent 整理对话事实。
 
 输入使用 AgentScope `data` block，例如：
 
@@ -62,16 +62,47 @@ AgentScope Agent Wrapper 所绑定的多模态模型；Auto Memory 不会生成�
 }
 ```
 
-配置的模型必须支持图像输入，Auto Memory 不执行 caption fallback。只有 `image/*` data block 会进入模型，
-音频、视频、工具结果及其他数据会被忽略。远程图像必须使用 HTTP(S)。本地 `file://` 图像必须位于 ReMe
-workspace 内，且与内嵌 Base64 图像一样，每张不得超过 5 MiB。ReMe 会先读取本地文件并转换为 Base64，再调用模型。
+只处理顶层 `image/*` data block，工具结果中嵌套的图像、音频、视频及其他数据会被忽略。支持内嵌 Base64、HTTP(S) URL，
+以及 workspace 内的本地 `file://` URL。workspace 外的路径及指向外部的符号链接会被拒绝。生成 caption 使用
+`auto_memory_step` 选择的 `as_llm` 组件，默认名称为 `default`，该模型必须支持图像输入；记忆 Agent 保持自身的模型配置。
+可以选择专门的 caption 模型：
 
-使用默认 AgentScope wrapper 时，开启图像的提取会使用临时的内部 agent session，因此图像 payload 不会写入
-`mem_session/agentscope`。内嵌 Base64 字节也会从保存的来源对话中移除；图像 URL 作为原始消息的一部分会被保留。
-开关关闭时，模型输入中完全没有图像块，不会读取图像文件，也不会自动加入占位符、生成的 caption 或回退 caption。
+```yaml
+jobs:
+  auto_memory:
+    include_images: true
+    steps:
+      - backend: auto_memory_step
+        as_llm: vision
+```
 
-对于非空调用，响应 metadata 会记录 `include_images_requested`、实际生效的 `include_images` 以及顶层图像块数量
-`image_count`，便于在不检查模型 prompt 的情况下审计开启与关闭图像的运行。
+该示例需要配置 `components.as_llm.vision`。支持 PNG、JPEG、WebP、GIF、BMP 和 TIFF，原文件上限为 50 MiB、4000 万像素。
+动态图或多页图像只描述第一帧。发给模型的副本会纠正方向，将最长边缩小到最多 2048 像素，并控制在 5 MiB 内；保存的原图保持不变。
+
+原图字节复制到配置的 session 目录，caption 作为 daily 卡片保存：
+
+```text
+session/images/<content-hash>.<extension>                # 原图字节
+session/dialog/<session_id>.jsonl                       # 带持久本地图像引用的消息
+daily/<first-caption-date>/session-image-<fingerprint>.md # caption 和原图链接
+```
+
+这些 session 附件不进入 resource watcher，Auto Memory 不会调用 `auto_resource`。图像卡片通过 `kind: session_image`
+和 `source_resource` 标识原图；session 卡片继续使用既有的 `session_id` 和 `source_conversation` 字段。写入图像记忆时，
+系统维护 session 卡片的 `image_notes` 链接，使 Agent 概括 caption 后仍能追溯图像证据。
+
+Caption 描述可见事实，以及有意义的文字、数字和日期。同一图像内容与 caption 配置可以复用已有结果。
+依赖具体对话的人物身份或关系由记忆 Agent 根据周边消息关联，不写入共享的图像 caption。
+
+Caption 仅出现在记忆提取所用的对话副本中，不写入来源对话。持久化的图像块指向本地副本，后续可以重新处理，无需调用方再次发送
+Base64 字节，也不依赖远程 URL 一直有效。如果图像处理失败，调用会在运行记忆 Agent 前报告失败；已完成的图像产物可在重试时复用。
+
+`include_images=false` 使用原来的纯文本输入，不读取、描述或为图像生成文件，也不加入图像占位符或回退 caption。
+开启开关但消息中没有图像块时同样走纯文本路径。关闭开关不会移除 workspace 中已有的图像事实；比较开启与关闭图像的效果时，应使用
+各自独立的 workspace。
+
+开启图像的调用在响应 metadata 中提供 `auto_memory_images`，记录图像数量和逐图处理结果，并通过 `image_note_paths` 返回写入或
+复用的图像卡片路径。新卡片何时可被搜索，仍由正常的后台索引流程决定。关闭图像的调用保持既有响应结构。
 
 ## 写入位置
 
@@ -115,8 +146,8 @@ session/
     session-b.jsonl
 ```
 
-daily note 会指向对应的对话记录。持久化时会排除 tool-result block 和 base64 data block，避免召回记忆或二进制负载在后续流程中被误当成
-用户提供的证据。
+session 记忆卡片会指向对应的对话记录。持久化时排除 tool-result block 和内嵌 Base64 数据；开启图像记忆时，原图字节单独保存，
+图像块保留为本地文件引用。Caption 留在图像卡片和临时提取输入中，使生成的描述与来源对话保持区分。
 
 ## 消息时间
 

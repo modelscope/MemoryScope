@@ -1,29 +1,25 @@
 """auto_memory — record conversation facts into a daily note via an agent."""
 
-import base64
-import binascii
 import datetime
 from pathlib import Path
-from urllib.parse import urlparse
-from urllib.request import url2pathname
 import zoneinfo
 
 import aiofiles
 import frontmatter
-from agentscope.message import Base64Source, DataBlock, Msg, TextBlock, UserMsg
+from agentscope.message import Msg
 
 from ._evolve import agent_reply_result_text, format_history, now
 from ..base_step import BaseStep
 from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
+from ..file_io._file_io import get_path_lock
+from ..file_io._path import _check_path_permission, resolve_path
 from ..index import normalize_posix_path
 from ...components import R
-from ...constants import DEFAULT_MAX_IMAGE_BYTES
 
 _SESSION_ID_KEY = "session_id"
 _SOURCE_CONVERSATION_KEY = "source_conversation"
 _MESSAGE_TIME_ALIASES = ("time_created", "timestamp", "createdAt", "timeCreated", "created_time")
-_HISTORY_PLACEHOLDER = "__REME_AUTO_MEMORY_MULTIMODAL_HISTORY__"
 
 
 def _sanitize_msg_for_save(msg: Msg) -> Msg:
@@ -71,7 +67,11 @@ class AutoMemoryStep(BaseStep):
 
     def __init__(self, include_images: bool = False, **kwargs):
         super().__init__(**kwargs)
+        if not isinstance(include_images, bool):
+            raise ValueError("include_images must be a boolean")
         self.include_images = include_images
+        self._image_memory_enabled = False
+        self._persist_image_sources = False
         self.create_tools: list[str] = ["daily_write"]
         self.update_tools: list[str] = ["read", "edit", "frontmatter_update", "write"]
 
@@ -195,6 +195,12 @@ class AutoMemoryStep(BaseStep):
         can_append = 0 < len(existing) <= len(merged) and all(
             merged[i].id == existing[i].id for i in range(len(existing))
         )
+        if self._persist_image_sources and can_append:
+            # An image-on retry can replace a previously saved Base64 omission
+            # with a durable file reference without changing the message ID.
+            can_append = all(
+                _sanitize_msg_for_save(merged[i]).model_dump() == existing[i].model_dump() for i in range(len(existing))
+            )
 
         path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -280,133 +286,6 @@ class AutoMemoryStep(BaseStep):
         """
         return format_history(messages)
 
-    @staticmethod
-    def _is_image_block(block) -> bool:
-        """Return whether an AgentScope content block contains image data."""
-        return block.type == "data" and str(getattr(block.source, "media_type", "")).lower().startswith("image/")
-
-    @classmethod
-    def _image_count(cls, messages: list[Msg]) -> int:
-        return sum(cls._is_image_block(block) for msg in messages for block in msg.content)
-
-    @staticmethod
-    def _check_image_size(size_bytes: int) -> None:
-        if size_bytes <= 0:
-            raise ValueError("auto_memory image must contain at least one byte")
-        if size_bytes > DEFAULT_MAX_IMAGE_BYTES:
-            raise ValueError(
-                f"auto_memory image exceeds the {DEFAULT_MAX_IMAGE_BYTES}-byte limit: {size_bytes} bytes",
-            )
-
-    def _prepare_image_block(self, block: DataBlock) -> DataBlock:
-        """Validate an image and make local-file reads explicit and workspace-bound."""
-        source = block.source
-        source_type = getattr(source, "type", None)
-        media_type = str(source.media_type).lower()
-
-        if source_type == "base64":
-            encoded_data = source.data
-            max_encoded_chars = 4 * ((DEFAULT_MAX_IMAGE_BYTES + 2) // 3)
-            if len(encoded_data) > max_encoded_chars:
-                self._check_image_size(DEFAULT_MAX_IMAGE_BYTES + 1)
-            try:
-                decoded = base64.b64decode(encoded_data, validate=True)
-            except (binascii.Error, ValueError) as exc:
-                raise ValueError("auto_memory image contains invalid base64 data") from exc
-            self._check_image_size(len(decoded))
-            normalized_source = source.model_copy(update={"media_type": media_type})
-            return block.model_copy(deep=True, update={"source": normalized_source})
-
-        if source_type != "url":
-            return block.model_copy(deep=True)
-
-        raw_url = str(getattr(source, "url", ""))
-        parsed = urlparse(raw_url)
-        scheme = parsed.scheme.lower()
-        if scheme not in ("file", "http", "https"):
-            raise ValueError("auto_memory image URL scheme must be file, http, or https")
-        if scheme != "file":
-            normalized_source = source.model_copy(update={"media_type": media_type})
-            return block.model_copy(deep=True, update={"source": normalized_source})
-        if parsed.netloc not in ("", "localhost"):
-            raise ValueError("auto_memory image file URLs must refer to the local workspace")
-        if parsed.query or parsed.fragment:
-            raise ValueError("auto_memory image file URLs cannot contain a query or fragment")
-
-        try:
-            image_path = Path(url2pathname(parsed.path)).resolve(strict=True)
-        except (FileNotFoundError, OSError, UnicodeError) as exc:
-            raise ValueError("auto_memory image file URL does not identify a readable file") from exc
-        workspace_path = self.file_store.workspace_path.resolve(strict=False)
-        if not image_path.is_relative_to(workspace_path):
-            raise ValueError("auto_memory image file URLs must stay inside the workspace")
-        if not image_path.is_file():
-            raise ValueError("auto_memory image file URL does not identify a readable file")
-
-        try:
-            with image_path.open("rb") as image_file:
-                image_bytes = image_file.read(DEFAULT_MAX_IMAGE_BYTES + 1)
-        except OSError as exc:
-            raise ValueError("auto_memory image file URL does not identify a readable file") from exc
-        self._check_image_size(len(image_bytes))
-
-        encoded_source = Base64Source(
-            data=base64.b64encode(image_bytes).decode("ascii"),
-            media_type=media_type,
-        )
-        return block.model_copy(deep=True, update={"source": encoded_source})
-
-    @staticmethod
-    def _image_label(block: DataBlock, image_index: int) -> str:
-        """Return a short, single-line marker safe to embed beside an image."""
-        supplied = " ".join((block.name or "").split())
-        supplied = supplied.replace("[", "(").replace("]", ")")[:120]
-        return f"image-{image_index}" + (f" ({supplied})" if supplied else "")
-
-    def _multimodal_history(self, messages: list[Msg]) -> list[TextBlock | DataBlock]:
-        """Render text and image blocks in their original conversational order."""
-        history: list[TextBlock | DataBlock] = []
-        image_index = 0
-
-        for msg in messages:
-            content: list[TextBlock | DataBlock] = []
-            for block in msg.content:
-                if block.type == "text":
-                    if block.text.strip():
-                        content.append(block.model_copy(deep=True))
-                elif self._is_image_block(block):
-                    image_index += 1
-                    content.append(TextBlock(text=f"[Image: {self._image_label(block, image_index)}]"))
-                    content.append(self._prepare_image_block(block))
-
-            if not content:
-                continue
-            if history:
-                history.append(TextBlock(text="\n\n"))
-            speaker = msg.name or msg.role or "?"
-            history.append(TextBlock(text=f"[{speaker} @ {msg.created_at}]\n"))
-            history.extend(content)
-
-        return history
-
-    def _build_agent_input(self, template_key: str, messages: list[Msg], include_images: bool, **kwargs):
-        """Build the original text prompt or an AgentScope multimodal user message."""
-        if not include_images:
-            return self.prompt_format(template_key, history=self._format_history(messages), **kwargs)
-
-        rendered = self.prompt_format(template_key, history=_HISTORY_PLACEHOLDER, **kwargs)
-        prefix, marker, suffix = rendered.partition(_HISTORY_PLACEHOLDER)
-        if not marker:
-            raise RuntimeError(f"Auto-memory prompt {template_key!r} is missing the history placeholder")
-
-        content: list[TextBlock | DataBlock] = []
-        if prefix:
-            content.append(TextBlock(text=prefix))
-        content.extend(self._multimodal_history(messages))
-        if suffix:
-            content.append(TextBlock(text=suffix))
-        return UserMsg(name="user", content=content)
-
     # pylint: disable=too-many-return-statements
     async def execute(self):
         assert self.context is not None
@@ -418,13 +297,9 @@ class AutoMemoryStep(BaseStep):
         current = now(tz)
 
         messages: list[Msg] = self._build_messages(raw_messages)
-        include_images_requested = bool(self.context.get("include_images", self.include_images))
-        image_count = self._image_count(messages)
-        include_images = include_images_requested and image_count > 0
         self.logger.info(
             f"[{self.name}] start session_id={session_id!r} raw_messages={len(raw_messages)} "
-            f"messages={len(messages)} hint={bool(memory_hint)} include_images_requested={include_images_requested} "
-            f"include_images={include_images} image_count={image_count}",
+            f"messages={len(messages)} hint={bool(memory_hint)}",
         )
 
         if session_id and (err := validate_session_id(session_id)):
@@ -448,7 +323,70 @@ class AutoMemoryStep(BaseStep):
             self.logger.warning(f"[{self.name}] invalid date={raw_date!r}")
             return
 
-        await self._save_session_messages(session_id, messages)
+        requested = self.context.get("include_images", self.include_images)
+        if not isinstance(requested, bool):
+            raise ValueError("include_images must be a boolean")
+        self._image_memory_enabled = requested
+        self._persist_image_sources = False
+        if not requested:
+            await self._record_memory(messages, session_id, day, memory_hint)
+            return
+
+        # Lazy import and model resolution: text-only clients need no image
+        # decoder, vision configuration, or extra model call.
+        from ._session_images import SessionImages, is_image  # pylint: disable=import-outside-toplevel
+
+        image_count = sum(is_image(block) for message in messages for block in message.content)
+        image_metadata = {"requested": True, "image_count": image_count, "images": []}
+        self.context.response.metadata["auto_memory_images"] = image_metadata
+        self.context.response.metadata["image_note_paths"] = []
+        images = SessionImages(self)
+        image_metadata["images"] = images.records
+        self.context.response.metadata["image_note_paths"] = images.note_paths
+        # Text-only deltas also share the enabled session's lock, so they cannot
+        # overwrite image links created by a concurrent invocation.
+        lock = await get_path_lock(images.path(self._session_source_path(session_id)))
+        async with lock:
+            if not image_count:
+                await self._record_memory(messages, session_id, day, memory_hint)
+                return
+            # Validate the output scope before downloading or storing evidence.
+            images.path(self.config_value("daily_dir"))
+            stage = "source"
+            try:
+                sources = await images.materialize(messages)
+                self._persist_image_sources = True
+                # Persist original evidence before a model can fail. No generated
+                # caption enters this transcript; retry can load its file URLs.
+                await self._save_session_messages(session_id, sources)
+                stage = "caption"
+                memory_messages = await images.enrich(sources, day)
+                stage = "memory"
+                await self._record_memory(memory_messages, session_id, day, memory_hint, saved=True)
+            except Exception as exc:  # pylint: disable=broad-except
+                self.context.response.success = False
+                # Provider/HTTP exceptions may include a signed URL or request
+                # contents. Publish the failure stage/type, never those payloads.
+                self.context.response.answer = f"Auto-memory {stage} stage failed ({type(exc).__name__})"
+                image_metadata["error_type"] = type(exc).__name__
+                image_metadata["error_stage"] = stage
+                self.logger.warning(f"[{self.name}] {stage} stage failed: {type(exc).__name__}")
+            finally:
+                image_metadata["ready_count"] = sum(r["status"] == "ready" for r in images.records)
+                image_metadata["cache_hits"] = sum(bool(r.get("cache_hit")) for r in images.records)
+
+    async def _record_memory(
+        self,
+        messages: list[Msg],
+        session_id: str,
+        day: str,
+        memory_hint: str,
+        *,
+        saved: bool = False,
+    ) -> None:
+        """The original text-memory flow; images are prepared before this hook."""
+        if not saved:
+            await self._save_session_messages(session_id, messages)
 
         if not messages:
             self.context.response.success = True
@@ -456,14 +394,6 @@ class AutoMemoryStep(BaseStep):
             self.context.response.metadata.update({"date": day, "modified": False, "n_messages": 0})
             self.logger.info(f"[{self.name}] Skipped: no messages session_id={session_id!r} modified=False")
             return
-
-        self.context.response.metadata.update(
-            {
-                "include_images_requested": include_images_requested,
-                "include_images": include_images,
-                "image_count": image_count,
-            },
-        )
 
         try:
             note = await self._list_session_note(day, session_id)
@@ -478,20 +408,26 @@ class AutoMemoryStep(BaseStep):
         created = note is None
         before_note_path = note_path
         before_note_bytes = self._note_bytes(note_path) if note_path else None
+        previous_image_links = []
+        if self._image_memory_enabled and note_path:
+            previous_image_links = self._frontmatter(note_path).get("image_notes", [])
+            if not isinstance(previous_image_links, list) or not all(
+                isinstance(link, str) for link in previous_image_links
+            ):
+                raise ValueError("Existing image_notes frontmatter must be a list of links")
         self.logger.info(
             f"[{self.name}] note lookup session_id={session_id!r} path={note_path!r} "
             f"created={created} msgs={len(messages)} hint={bool(memory_hint)}",
         )
         template_key = "user_message_create" if created else "user_message_update"
-        user_message = self._build_agent_input(
+        user_message = self.prompt_format(
             template_key,
-            messages,
-            include_images,
             today=day,
             note=memory_hint or "(none)",
             note_path=note_path,
             session_id=session_id,
             session_file=self._session_source_path(session_id),
+            history=self._format_history(messages),
         )
 
         self.logger.info(f"[{self.name}] agent start path={note_path} template={template_key}")
@@ -499,16 +435,11 @@ class AutoMemoryStep(BaseStep):
         # notes retain the upstream ``daily_write`` date behavior, where the
         # model supplies the date from the prompt.
         reply_kwargs = self._reply_extra_kwargs(day)
-        if include_images:
-            # AgentScope keeps its full ReAct context in a resumable session by
-            # default. Image extraction is one-shot, so avoid persisting image
-            # payloads in that separate internal session after the run.
-            reply_kwargs["ephemeral"] = True
         if not created:
             reply_kwargs["injected_job_kwargs"] = {"_allowed_paths": [note_path]}
         result = await self.agent_wrapper.reply(
             user_message,
-            system_prompt=self.prompt_format("system_prompt", include_images=include_images),
+            system_prompt=self.prompt_format("system_prompt"),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,
         )
@@ -553,10 +484,35 @@ class AutoMemoryStep(BaseStep):
                 self.logger.info(f"[{self.name}] post-update failed path={note_path} answer={str(exc)!r}")
                 return
 
+        image_paths = self.context.response.metadata.get("image_note_paths") or []
+        if self._image_memory_enabled and (image_paths or previous_image_links):
+            target, error = resolve_path(self.file_store.workspace_path, note_path)
+            if error or target is None:
+                raise ValueError(error or "Invalid session note path")
+            if not _check_path_permission(self.file_store.workspace_path, target, self.context.get("_allowed_paths")):
+                raise ValueError("No permission to update session image links")
+            existing_links = self._frontmatter(note_path).get("image_notes", [])
+            if not isinstance(existing_links, list) or not all(isinstance(link, str) for link in existing_links):
+                raise ValueError("Existing image_notes frontmatter must be a list of links")
+            links = list(
+                dict.fromkeys([*previous_image_links, *existing_links, *(f"[[{path}]]" for path in image_paths)]),
+            )
+            response = await self.run_job("frontmatter_update", path=note_path, metadata={"image_notes": links})
+            if not response.success:
+                raise RuntimeError("Could not preserve image-note references")
+
         modified = self._note_modified(before_note_path, before_note_bytes, note_path)
         daily_dir = self.config_value("daily_dir")
         self.logger.info(f"[{self.name}] refresh index start date={day} daily_dir={daily_dir}")
-        index_payload = await refresh_day_index(self.file_store, day, daily_dir)
+        if self._persist_image_sources:
+            index_path, error = resolve_path(self.file_store.workspace_path, f"{daily_dir}/{day}.md")
+            if error or index_path is None:
+                raise ValueError(error or "Invalid daily index path")
+            index_lock = await get_path_lock(index_path)
+            async with index_lock:
+                index_payload = await refresh_day_index(self.file_store, day, daily_dir)
+        else:
+            index_payload = await refresh_day_index(self.file_store, day, daily_dir)
         self.logger.info(f"[{self.name}] refresh index done path={note_path}")
 
         source_conversation = self._session_link(session_id)

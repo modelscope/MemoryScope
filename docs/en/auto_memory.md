@@ -40,10 +40,10 @@ jobs:
     include_images: true
 ```
 
-It can also be enabled or disabled for one call with `include_images=true` or `include_images=false`. When enabled, image
-blocks are sent directly to the vision-capable model bound to the default AgentScope agent wrapper; Auto Memory does not
-create or inject an intermediate caption. Text and images retain their order and are interpreted together with the
-message's speaker and timestamp.
+It can also be enabled or disabled for one call with `include_images=true` or `include_images=false`. When enabled, Auto
+Memory first describes each image with a vision model and creates a source-linked image card. It replaces the image block
+with its caption and card link in a copy of the conversation, preserving the original text, block order, speakers, and
+timestamps. The existing text-only memory agent then records the conversation facts.
 
 The input uses AgentScope `data` blocks. For example:
 
@@ -66,19 +66,56 @@ The input uses AgentScope `data` blocks. For example:
 }
 ```
 
-The configured model must support image input, and Auto Memory performs no caption fallback. Only `image/*` data blocks
-are included; audio, video, tool results, and other data are ignored. Remote images must use HTTP(S). Local `file://`
-images must stay inside the ReMe workspace and, like inline Base64 images, are limited to 5 MiB each. A local file is read
-by ReMe and converted to Base64 before the provider call.
+Only top-level `image/*` data blocks are processed. Images nested in tool results, audio, video, and other data are ignored.
+Supported image sources are inline Base64, HTTP(S) URLs, and local `file://` URLs inside the workspace. Local paths outside
+the workspace, including symlinks escaping it, are rejected. The caption model is the `as_llm` component selected by
+`auto_memory_step` (`default` unless overridden) and must support image input. The memory agent keeps its own configured
+model. To select a dedicated caption model:
 
-With the default AgentScope wrapper, an image-enabled extraction uses an ephemeral internal agent session, so its image
-payload is not written to `mem_session/agentscope`. Inline Base64 bytes are also removed from the saved source
-conversation; image URLs remain there as part of the original message. If the switch is off, image blocks are completely
-absent from model input—no file is read and no placeholder, synthesized caption, or fallback caption is added.
+```yaml
+jobs:
+  auto_memory:
+    include_images: true
+    steps:
+      - backend: auto_memory_step
+        as_llm: vision
+```
 
-For non-empty calls, response metadata reports `include_images_requested`, the effective `include_images` value, and the
-number of top-level image blocks as `image_count`. This makes image-on and image-off runs auditable without inspecting the
-model prompt.
+This example requires a configured `components.as_llm.vision` model. Supported image formats are PNG, JPEG, WebP, GIF,
+BMP, and TIFF. The source limit is 50 MiB and 40 million pixels. Only the first frame of animated or multi-page images is
+captioned. The provider copy is orientation-corrected, reduced to at most 2048 pixels on its longest side, and limited to
+5 MiB; the saved original remains unchanged.
+
+The original image bytes are copied into the configured session directory, and the caption is stored as a daily card:
+
+```text
+session/images/<content-hash>.<extension>                # original image bytes
+session/dialog/<session_id>.jsonl                       # messages with durable local image references
+daily/<first-caption-date>/session-image-<fingerprint>.md # caption and original-image link
+```
+
+These session attachments are separate from the resource watcher. Auto Memory does not invoke `auto_resource`. Image
+cards use `kind: session_image` and `source_resource` to identify their original images; session cards retain their existing
+`session_id` and `source_conversation` fields. A session card's `image_notes` links are maintained when image memory is
+written, so the image evidence remains reachable even when the agent summarizes the caption.
+
+Captions describe visible facts and meaningful text, numbers, and dates. They are reused for the same image content and
+caption configuration. Conversation-specific identities and relationships
+are interpreted by the memory agent from the surrounding messages, rather than being added to a shared image caption.
+
+Caption text appears only in the memory-extraction copy, never in the saved source conversation. The saved image block
+points to the local copy, allowing it to be processed again without the caller resending Base64 bytes or a remote URL
+remaining available. If image processing fails, the call reports the failure before invoking the memory agent; completed
+image artifacts can be reused on retry.
+
+With `include_images=false`, Auto Memory uses its original text-only input and does not read, caption, or create artifacts
+for images. It adds no image placeholder or fallback caption. Enabling the switch on a conversation with no image blocks
+also uses the text-only path. Turning the switch off does not remove image facts already stored in the workspace; use
+separate workspaces when comparing image-on and image-off runs.
+
+Image-enabled calls include `auto_memory_images` response metadata, with the image count and per-image processing results,
+plus `image_note_paths`. These paths report written or reused image cards; normal background indexing still determines when
+new cards become searchable. Image-disabled calls keep the existing response shape.
 
 ## Write Location
 
@@ -126,8 +163,10 @@ session/
     session-b.jsonl
 ```
 
-Each daily note points to its corresponding conversation record. Saved messages omit tool-result blocks and base64 data
-blocks, preventing recalled memory and binary payloads from being mistaken for user-provided evidence later.
+Each session memory note points to its corresponding conversation record. Saved messages omit tool-result blocks and
+inline Base64 data. With image memory enabled, image bytes are saved separately and their blocks are retained as local
+file references. Captions remain in image cards and in the temporary extraction input, keeping generated descriptions
+separate from the source conversation.
 
 ## Message Timestamps
 

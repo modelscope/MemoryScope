@@ -49,6 +49,7 @@ web = [
 ]
 core = [
     "reme-ai[as]",
+    "Pillow>=11.3.0",
     "claude-agent-sdk>=0.2.126",
     "dingtalk-stream>=0.24.3",
     "openai-codex>=0.144.4",

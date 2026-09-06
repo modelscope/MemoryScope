@@ -141,7 +141,7 @@ jobs:
           description: "optional hint"
         include_images:
           type: boolean
-          description: "include AgentScope image blocks in memory extraction; requires a vision-capable model"
+          description: "caption AgentScope session images into source-linked notes before text memory extraction"
           default: false
         date:
           type: string
