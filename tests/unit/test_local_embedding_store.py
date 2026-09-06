@@ -76,6 +76,40 @@ class InsufficientQuotaError(Exception):
     body = {"error": {"code": "insufficient_quota"}}
 
 
+class RateLimitError(Exception):
+    """OpenAI-compatible 429 error used without importing the provider SDK."""
+
+    status_code = 429
+
+
+class RateLimitedThenSuccessAsEmbedding:
+    """Fail once with a 429, then return a valid embedding."""
+
+    dimensions = 2
+
+    def __init__(self):
+        self.calls = 0
+
+    async def __call__(self, texts: list[str], **_kwargs):
+        self.calls += 1
+        if self.calls == 1:
+            raise RateLimitError("Requests are too frequent")
+        return [[1.0, 0.0] for _ in texts]
+
+
+class AlwaysRateLimitedAsEmbedding:
+    """Always fail with a 429."""
+
+    dimensions = 2
+
+    def __init__(self):
+        self.calls = 0
+
+    async def __call__(self, _texts: list[str], **_kwargs):
+        self.calls += 1
+        raise RateLimitError("Requests are too frequent")
+
+
 class QuotaThenSuccessAsEmbedding:
     """Fail once for quota, then return a valid embedding."""
 
@@ -266,6 +300,71 @@ def test_insufficient_quota_does_not_retry_without_opt_in(monkeypatch):
         assert result is None
         assert embedding.calls == 1
         assert not sleeps
+
+    run(go())
+
+
+def test_rate_limit_retries_with_backoff_without_opt_in(monkeypatch):
+    """A 429 must retry like a network error, with no quota_retry_delay required."""
+
+    async def go():
+        sleeps = []
+
+        async def fake_sleep(delay):
+            sleeps.append(delay)
+
+        store = LocalEmbeddingStore(name="t_local_embedding_rate_limit", max_retries=2)
+        embedding = RateLimitedThenSuccessAsEmbedding()
+        store.as_embedding = embedding
+        monkeypatch.setattr(asyncio, "sleep", fake_sleep)
+
+        result = await store._call_with_retry(["text"])
+
+        assert result == [[1.0, 0.0]]
+        assert embedding.calls == 2
+        assert sleeps == [1.0]
+
+    run(go())
+
+
+def test_is_rate_limited_recognizes_status_code_or_body_and_nothing_else():
+    """A 429 is recognized either by status_code or a body-embedded code, never by guesswork."""
+
+    class StatusCodeError(Exception):
+        """A 429 identified by an HTTP status code attribute."""
+
+        status_code = 429
+
+    class BodyCodeError(Exception):
+        """A 429 identified only by a body-embedded error code."""
+
+        body = {"error": {"code": "rate_limit_exceeded"}}
+
+    assert LocalEmbeddingStore._is_rate_limited(StatusCodeError())
+    assert LocalEmbeddingStore._is_rate_limited(BodyCodeError())
+    assert not LocalEmbeddingStore._is_rate_limited(ValueError("unrelated"))
+
+
+def test_rate_limit_exhausts_retries_and_reports_unhealthy(monkeypatch):
+    """Repeated 429s still give up after max_retries, unlike an unclassified error."""
+
+    async def go():
+        sleeps = []
+
+        async def fake_sleep(delay):
+            sleeps.append(delay)
+
+        store = LocalEmbeddingStore(name="t_local_embedding_rate_limit_exhausted", max_retries=3)
+        embedding = AlwaysRateLimitedAsEmbedding()
+        store.as_embedding = embedding
+        monkeypatch.setattr(asyncio, "sleep", fake_sleep)
+
+        result = await store._call_with_retry(["text"])
+
+        assert result is None
+        assert store.is_healthy is False
+        assert embedding.calls == 3
+        assert sleeps == [1.0, 2.0]
 
     run(go())
 
