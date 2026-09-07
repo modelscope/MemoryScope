@@ -108,13 +108,13 @@ jobs:
   # ── Reindex (derived search indexes only) ──
   reindex:
     backend: base
-    description: "rebuild BM25 and/or embedding indexes from current file_chunks"
+    description: "rebuild BM25, embedding, and/or tag indexes without rescanning workspace files"
     parameters:
       type: object
       properties:
         scope:
           type: string
-          enum: [all, bm25, embedding]
+          enum: [all, bm25, embedding, tag]
           default: all
     steps:
       - backend: reindex_step

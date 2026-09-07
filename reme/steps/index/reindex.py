@@ -6,7 +6,7 @@ from ...components import R
 
 @R.register("reindex_step")
 class ReindexStep(BaseStep):
-    """Rebuild BM25 and/or embeddings without scanning files or changing the graph."""
+    """Rebuild BM25, embeddings, and/or tags without scanning workspace files."""
 
     async def execute(self):
         assert self.context is not None
