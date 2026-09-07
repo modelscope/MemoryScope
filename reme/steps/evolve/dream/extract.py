@@ -1,13 +1,16 @@
 """Global dream extract step."""
 
 import json
+from pathlib import Path
+
+import frontmatter
 
 from ...base_step import BaseStep
 from ...file_io import refresh_day_index
 from .._evolve import agent_reply_result_text
 from ....components import R
 from ....enumeration import DreamBucketEnum
-from ....schema import DreamState
+from ....schema import DreamState, is_shared_memory, normalized_subject
 from .utils import (
     clean_paths,
     daily_dir,
@@ -32,6 +35,7 @@ class DreamExtractStep(BaseStep):
         super().__init__(**kwargs)
         self.scan_days = scan_days
         self.max_units = max_units
+        self._path_scopes: dict[str, dict] = {}
 
     async def execute(self):
         assert self.context is not None
@@ -106,6 +110,7 @@ class DreamExtractStep(BaseStep):
         if not changed:
             self.logger.info(f"[{self.name}] skip no changed input dates={','.join(dates)}")
             return self._finish(state, True, f"No changed dream input for {', '.join(dates)}")
+        self._path_scopes = self._load_path_scopes(workspace, changed)
         if not llm_available(self):
             state.errors.append("no llm configured; dream extract requires an LLM")
             state.failed_paths = list(changed)
@@ -124,6 +129,7 @@ class DreamExtractStep(BaseStep):
                         hint=hint or "(none)",
                         max_units=max_units,
                         changed_paths_json=json.dumps(changed, ensure_ascii=False, indent=2),
+                        path_scopes_json=json.dumps(self._path_scopes, ensure_ascii=False, indent=2),
                         material_blob=pack_paths(workspace, changed),
                     ),
                     system_prompt=self.prompt_format(
@@ -176,6 +182,21 @@ class DreamExtractStep(BaseStep):
                 self.logger.error(f"[{self.name}] stat failed on {rel}: {e}")
         return out
 
+    @staticmethod
+    def _load_path_scopes(workspace: Path, paths: list[str]) -> dict[str, dict]:
+        """Read source scopes once; model output cannot broaden them later."""
+        scopes: dict[str, dict] = {}
+        for path in paths:
+            try:
+                post = frontmatter.loads((workspace / path).read_text(encoding="utf-8"))
+                scopes[path] = {
+                    "subject": normalized_subject(post.metadata),
+                    "shared": is_shared_memory(post.metadata),
+                }
+            except (OSError, UnicodeError, ValueError):
+                scopes[path] = {"subject": None, "shared": False}
+        return scopes
+
     def clean_output(self, state: DreamState, meta: dict, max_units: int | None = None) -> None:
         """Clean up output"""
         allowed = set(state.changed_paths)
@@ -190,12 +211,30 @@ class DreamExtractStep(BaseStep):
             paths = clean_paths(raw.get("paths"), allowed)
             if not name or not summary or not paths:
                 continue
+            source_scopes = [self._path_scopes[path] for path in paths if path in self._path_scopes]
+            source_subjects = {scope["subject"] for scope in source_scopes if scope.get("subject")}
+            if len(source_subjects) > 1:
+                self.logger.warning(
+                    f"[{self.name}] unit {name!r} spans incompatible subjects; dropping merged unit",
+                )
+                state.warnings.append(f"unit {name!r} dropped because its source paths have different subjects")
+                continue
+            subject = next(iter(source_subjects), None)
+            shared = bool(source_scopes) and any(scope.get("shared") for scope in source_scopes) and not subject
+            if not source_scopes:
+                subject = normalized_subject({"subject": raw.get("subject")})
+                shared = bool(raw.get("shared")) and not subject
             try:
                 bucket = DreamBucketEnum(raw_bucket).value
             except ValueError:
                 self.logger.warning(f"[{self.name}] unit {name!r} emitted bucket {raw_bucket!r}; routing to wiki")
                 bucket = DreamBucketEnum.WIKI.value
-            state.units.append({"name": name, "bucket": bucket, "summary": summary, "paths": paths})
+            unit = {"name": name, "bucket": bucket, "summary": summary, "paths": paths}
+            if subject:
+                unit["subject"] = subject
+            if shared:
+                unit["shared"] = True
+            state.units.append(unit)
 
     def _finish(self, state: DreamState, success: bool, answer: str):
         assert self.context is not None

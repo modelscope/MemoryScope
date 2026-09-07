@@ -4,11 +4,13 @@ import asyncio
 import json
 from pathlib import Path
 
+import frontmatter
+
 from ...base_step import BaseStep
 from .._evolve import agent_reply_result_text
 from ....components import R
 from ....enumeration import DreamBucketEnum
-from ....schema import IntegrateOutcome
+from ....schema import IntegrateOutcome, is_shared_memory, normalized_subject
 from .utils import llm_available, pack_paths, parse_structured_reply, state_from_context, store_state, workspace_dir
 
 _TOOLS = ("node_search", "read", "frontmatter_read", "write", "edit", "frontmatter_update")
@@ -109,6 +111,8 @@ class DreamIntegrateStep(BaseStep):
         except ValueError:
             bucket = DreamBucketEnum.WIKI.value
         paths = [str(p) for p in unit.get("paths", [])]
+        unit_subject = str(unit.get("subject") or "").strip() or None
+        unit_shared = bool(unit.get("shared"))
         self.logger.info(
             f"[{self.name}] unit {index}/{len(state.units)} start "
             f"name={unit.get('name', '')!r} bucket={bucket} paths={len(paths)}",
@@ -126,6 +130,8 @@ class DreamIntegrateStep(BaseStep):
                         unit_name=unit.get("name", ""),
                         unit_bucket=bucket,
                         unit_summary=unit.get("summary", ""),
+                        unit_subject=unit_subject or "(none)",
+                        unit_shared=str(unit_shared).lower(),
                         unit_paths_json=json.dumps(paths, ensure_ascii=False, indent=2),
                         material_blob=pack_paths(workspace, paths),
                     ),
@@ -149,7 +155,10 @@ class DreamIntegrateStep(BaseStep):
                     changed[0],
                     action="CREATE" if created else "UPDATED",
                     existed_before=changed[0] in unit_before,
+                    expected_subject=unit_subject,
+                    expected_shared=unit_shared,
                 ):
+                    self._ensure_target_scope(workspace, changed[0], unit_subject, unit_shared)
                     self._record_recovered(state, unit, bucket, paths, changed[0], created, e)
                     self.logger.warning(
                         f"[{self.name}] unit {index}/{len(state.units)} recovered from file change "
@@ -177,6 +186,8 @@ class DreamIntegrateStep(BaseStep):
                     outcome.target_path,
                     action=outcome.action,
                     existed_before=outcome.target_path in unit_before,
+                    expected_subject=unit_subject,
+                    expected_shared=unit_shared,
                 ):
                     raise ValueError(f"invalid or missing digest target_path: {outcome.target_path!r}")
             except Exception as e:  # noqa: BLE001
@@ -191,7 +202,10 @@ class DreamIntegrateStep(BaseStep):
                     changed[0],
                     action="CREATE" if created else "UPDATED",
                     existed_before=changed[0] in unit_before,
+                    expected_subject=unit_subject,
+                    expected_shared=unit_shared,
                 ):
+                    self._ensure_target_scope(workspace, changed[0], unit_subject, unit_shared)
                     self._record_recovered(state, unit, bucket, paths, changed[0], created, e)
                     self.logger.warning(
                         f"[{self.name}] unit {index}/{len(state.units)} accepted file change with invalid receipt "
@@ -224,6 +238,7 @@ class DreamIntegrateStep(BaseStep):
                 target_path=outcome.target_path,
                 note=outcome.note,
             )
+            self._ensure_target_scope(workspace, outcome.target_path, unit_subject, unit_shared)
             self.logger.info(
                 f"[{self.name}] unit {index}/{len(state.units)} done "
                 f"action={outcome.action} target_path={outcome.target_path}",
@@ -251,6 +266,8 @@ class DreamIntegrateStep(BaseStep):
         *,
         action: str,
         existed_before: bool,
+        expected_subject: str | None = None,
+        expected_shared: bool = False,
     ) -> bool:
         target = str(target_path or "").strip().replace("\\", "/")
         parts = Path(target).parts
@@ -268,7 +285,41 @@ class DreamIntegrateStep(BaseStep):
             return False
         if action == "CREATE":
             return target_bucket == bucket and not existed_before
-        return existed_before
+        if not existed_before:
+            return False
+        if expected_subject or expected_shared:
+            try:
+                metadata = frontmatter.loads((workspace / target).read_text(encoding="utf-8")).metadata
+            except (OSError, UnicodeError, ValueError):
+                return False
+            if expected_subject and normalized_subject(metadata) != expected_subject:
+                return False
+            if expected_shared != is_shared_memory(metadata):
+                return False
+        return True
+
+    @staticmethod
+    def _ensure_target_scope(
+        workspace: Path,
+        target_path: str,
+        subject: str | None,
+        shared: bool,
+    ) -> None:
+        """Repair agent-created frontmatter to the source-owned scope."""
+        if not subject and not shared:
+            return
+        target = workspace / Path(str(target_path).replace("\\", "/"))
+        if not target.is_file():
+            return
+        post = frontmatter.loads(target.read_text(encoding="utf-8"))
+        metadata = {}
+        if subject:
+            metadata["subject"] = subject
+        if shared:
+            metadata["shared"] = True
+        if any(post.metadata.get(key) != value for key, value in metadata.items()):
+            post.metadata.update(metadata)
+            target.write_text(frontmatter.dumps(post), encoding="utf-8")
 
     @staticmethod
     def _unit_key(unit: dict, bucket: str, paths: list[str]) -> tuple[str, str, tuple[str, ...]]:
@@ -292,16 +343,19 @@ class DreamIntegrateStep(BaseStep):
             for result in state.integrate_results
         )
         if not exists:
-            state.integrate_results.append(
-                {
-                    "unit": unit.get("name", ""),
-                    "bucket": bucket,
-                    "paths": paths,
-                    "action": action,
-                    "target_path": target_path,
-                    "note": note,
-                },
-            )
+            result = {
+                "unit": unit.get("name", ""),
+                "bucket": bucket,
+                "paths": paths,
+                "action": action,
+                "target_path": target_path,
+                "note": note,
+            }
+            if unit.get("subject"):
+                result["subject"] = unit["subject"]
+            if unit.get("shared"):
+                result["shared"] = True
+            state.integrate_results.append(result)
         targets = state.nodes_created if action == "CREATE" else state.nodes_updated
         if target_path not in targets:
             targets.append(target_path)

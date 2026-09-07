@@ -1061,6 +1061,15 @@ class LocalFileStore(BaseFileStore):
                 return False
 
         metadata_filter = dict(search_filter.get("metadata") or {})
+        metadata_any = search_filter.get("metadata_any") or []
+        if isinstance(metadata_any, dict):
+            metadata_any = [metadata_any]
+        if metadata_any and not any(
+            isinstance(candidate, dict)
+            and all(cls._value_matches(chunk.metadata.get(key), value) for key, value in candidate.items())
+            for candidate in metadata_any
+        ):
+            return False
         reserved = {
             "path",
             "paths",
@@ -1069,6 +1078,7 @@ class LocalFileStore(BaseFileStore):
             "prefix",
             "prefixes",
             "metadata",
+            "metadata_any",
             "start_date",
             "end_date",
             "strict_date_filter",

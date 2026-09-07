@@ -158,8 +158,14 @@ source_conversation: [[session/dialog/abc.jsonl]]
 ---
 ```
 
-The current code recognizes `name` and `description` explicitly. Other fields are preserved as additional metadata. The
-write interface merges `name`, `description`, and `metadata` into frontmatter.
+The current code recognizes `name`, `description`, `subject`, and `shared` explicitly. Other fields are preserved as
+additional metadata. `subject` is the canonical stable identity of the person, team, or project a memory is about. Older
+files may use `target`; it is read as an alias only when `subject` is absent, and `subject` wins if both are present.
+Use `shared: true` to mark subject-independent workspace knowledge explicitly. A missing subject does not imply shared
+memory. The write interface merges `name`, `description`, and `metadata` into frontmatter.
+
+For example, a subject-scoped daily card can use `subject: project-alpha`, while a reusable workspace-wide procedure
+can use `shared: true` and `kind: procedure`.
 
 Treat frontmatter as a node-level summary and the body as evidence, explanation, and relationships. For example:
 
@@ -238,8 +244,9 @@ FileLink
 Older documents containing wrappers such as `related:: [[path]]`,
 `- related:: [[path]]`, or `[related:: [[path]]]` remain readable. ReMe ignores the surrounding text and indexes the
 inner `[[path]]` as an ordinary link. Graph changes are applied when source files pass through the normal ingestion
-path. `reme reindex` only rebuilds BM25 and embedding indexes from existing chunks; it does not reparse files or rebuild
-the derived graph.
+path. `reme reindex` with the default `scope: all` clears and rebuilds source-derived chunks from watched Markdown files,
+then rebuilds BM25, embeddings, tags, and the derived graph. This is the migration path for frontmatter-derived fields
+such as `subject`; narrow scopes (`bm25`, `embedding`, `tag`) remain index-only operations.
 
 ### Sources and Relationships
 

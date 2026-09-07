@@ -492,6 +492,13 @@ integrate_user_message: |
   unit_name: {unit_name}
   unit_bucket: {unit_bucket}
   unit_summary: {unit_summary}
+  unit_subject: {unit_subject}
+  unit_shared: {unit_shared}
+
+  Scope is source-owned. If unit_subject is not `(none)`, update only a digest
+  node with exactly that subject; never merge it into another subject or an
+  unscoped node. If unit_shared is true, update only a node explicitly marked
+  `shared: true`. For CREATE, write the required scope in frontmatter.
 
   unit_paths:
   {unit_paths_json}
@@ -511,6 +518,12 @@ integrate_user_message_zh: |
   unit_name: {unit_name}
   unit_bucket: {unit_bucket}
   unit_summary: {unit_summary}
+  unit_subject：{unit_subject}
+  unit_shared：{unit_shared}
+
+  作用域由来源决定。如果 unit_subject 不是 `(none)`，只能更新 subject 完全相同的 digest node；绝不能
+  与其他 subject 或无作用域 node 合并。如果 unit_shared 为 true，只能更新明确标记 `shared: true` 的 node。
+  CREATE 时必须在 frontmatter 写入要求的作用域。
 
   unit_paths:
   {unit_paths_json}

@@ -78,9 +78,14 @@ Auto Dream 只扫描 Markdown 日期索引和笔记，不读取 proactive 状态
 2. 扫描这些日期的索引页和 `daily/<date>/**/*.md`，与 `file_catalog: dream` 中记录的 mtime 对比。
 3. 只把 changed files 一起交给 LLM，全局抽取结构化 memory `units`。
 
-`units` 是准备沉淀进 digest 的长期记忆单元，包含 `name`、`bucket`、`summary`、`paths`。一次最多返回 `max_units`
+`units` 是准备沉淀进 digest 的长期记忆单元，包含 `name`、`bucket`、`summary`、`paths`；来源有作用域时还会包含规范化的
+`subject`，明确共享的 workspace 知识才包含 `shared: true`。一次最多返回 `max_units`
 个，抽取器会优先合并指向同一抽象的跨文件证据，并丢弃短暂提及、逐文件摘要和缺少复用价值的弱候选。`bucket` 只允许
 `procedure`、`personal`、`wiki`；未知值会路由到 `wiki`。
+
+Extract 会接收每个 changed path 的规范化 frontmatter 作用域，绝不会把不同 non-empty subject 的 path 合并进同一 unit；
+Integrate 也会拒绝更新 subject 不兼容或缺少 `shared: true` 的 digest node。Agent 写入新节点后，系统会补齐 unit 的作用域，避免
+模型层面的去重把不同主体错误合并成一条记忆。
 
 如果没有 changed files，Extract 会成功返回空 units；Integrate 随后没有 unit 可处理，Finish 仍会正常汇总 catalog。
 如果有变化但没有配置 LLM，Extract 会失败，因为抽取依赖 LLM。

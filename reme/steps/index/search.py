@@ -171,6 +171,13 @@ class SearchStep(BaseStep):
         candidates = min(_MAX_CANDIDATES, max(1, int(limit * candidate_multiplier)))
         search_filter: dict = dict(self.context.get("search_filter", {}) or {})
 
+        # Subject-scoped search is intentionally an OR: personal memories for
+        # the requested identity plus explicitly shared workspace memory.
+        # Subjectless, unmarked files stay out of the scoped result set.
+        subject = str(self.context.get("subject") or "").strip()
+        if subject:
+            search_filter["metadata_any"] = [{"subject": subject}, {"shared": True}]
+
         # Promote top-level date parameters into search_filter for file_store.
         for date_key in ("start_date", "end_date"):
             value = self.context.get(date_key)
@@ -266,6 +273,12 @@ class SearchStep(BaseStep):
             c.model_dump(exclude_none=True, exclude={"embedding"}) for c in fused
         ]
         self.context.response.metadata["link_expansion"] = link_expansion
+        if subject:
+            self.context.response.metadata["subject_scope"] = {
+                "subject": subject,
+                "shared": True,
+                "policy": "subject match OR explicit shared:true",
+            }
         self.context.response.metadata["counts"] = {
             "vector": len(vector_results),
             "keyword": len(keyword_results),

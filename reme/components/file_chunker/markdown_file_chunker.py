@@ -30,6 +30,8 @@ from ...schema import (
     FileChunk,
     FileFrontMatter,
     FileNode,
+    is_shared_memory,
+    normalized_subject,
 )
 from ...utils.wikilink_handler import WikilinkHandler
 
@@ -145,10 +147,17 @@ class MarkdownFileChunker(DefaultFileChunker):
                 with MarkdownRenderer() as renderer:
                     tree = self._build_tree(Document(content), renderer, line_offset=line_offset)
                     chunks = self._chunk_node(tree, (), rel_path, renderer)
-            if self.include_frontmatter_in_metadata:
+            # Subject scope is retrieval-critical and survives the historical
+            # opt-in gate even when a caller does not copy all frontmatter.
+            if self.include_frontmatter_in_metadata or normalized_subject(front_matter) or is_shared_memory(front_matter):
+                allow_keys = self.include_frontmatter_keys_in_metadata or None
+                if not self.include_frontmatter_in_metadata and allow_keys is None:
+                    # Scope fields are the only frontmatter that retrieval must
+                    # inherit when the historical opt-in flag remains false.
+                    allow_keys = ["subject", "shared", "kind"]
                 chunk_metadata = self._chunk_metadata(
                     front_matter,
-                    allow_keys=self.include_frontmatter_keys_in_metadata or None,
+                    allow_keys=allow_keys,
                 )
                 for chunk in chunks:
                     chunk.metadata = chunk_metadata.copy()
@@ -257,7 +266,14 @@ class MarkdownFileChunker(DefaultFileChunker):
         ``allow_keys`` (when non-empty) restricts the output to that subset of
         field names; absent or empty means "all fields with non-empty values".
         """
-        dumped = front_matter.model_dump(mode="json")
+        dumped = front_matter.model_dump(mode="json", exclude_none=True)
+        # Do not expose the overloaded legacy key to retrieval. Normalize it
+        # into the one canonical key so old and new files share a filter shape.
+        dumped.pop("target", None)
+        if subject := normalized_subject(front_matter):
+            dumped["subject"] = subject
+        if not is_shared_memory(front_matter):
+            dumped.pop("shared", None)
         filtered = dumped if not allow_keys else {k: dumped.get(k) for k in allow_keys if k in dumped}
         return {key: value for key, value in filtered.items() if value not in (None, "")}
 

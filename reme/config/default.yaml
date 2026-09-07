@@ -184,6 +184,10 @@ jobs:
           type: string
           description: "YYYY-MM-DD daily note date; empty = infer from message timestamps or today"
           default: ""
+        subject:
+          type: string
+          description: "optional stable person, team, or project identity this memory is about"
+          default: ""
       required:
         - messages
     steps:
@@ -390,7 +394,7 @@ jobs:
 
   reindex:
     backend: base
-    description: "rebuild BM25, embedding, and/or tag indexes without rescanning workspace files"
+    description: "reparse Markdown sources and rebuild BM25, embedding, and/or tag indexes"
     parameters:
       type: object
       properties:
@@ -398,6 +402,10 @@ jobs:
           type: string
           enum: [all, bm25, embedding, tag]
           default: all
+        rescan_sources:
+          type: boolean
+          description: "for scope=all, rebuild chunks from workspace Markdown before rebuilding indexes"
+          default: true
     steps:
       - backend: reindex_step
 
@@ -424,6 +432,10 @@ jobs:
         end_date:
           type: string
           description: "optional inclusive end date filter (YYYY-MM-DD); results later than this date are excluded"
+        subject:
+          type: string
+          description: "optional memory subject; includes exact subject matches and explicitly shared:true memory"
+          default: ""
       required:
         - query
     steps:
@@ -879,8 +891,8 @@ components:
       supported_extensions: [ "md" ]
       embed_toc: true
       max_ast_sections: 100
-      include_frontmatter_in_metadata: false
-      include_frontmatter_keys_in_metadata: []  # empty = all non-empty frontmatter keys
+      include_frontmatter_in_metadata: true
+      include_frontmatter_keys_in_metadata: [ "subject", "shared", "kind" ]
     json:
       backend: json
       supported_extensions: [ "json" ]

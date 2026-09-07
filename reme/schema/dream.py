@@ -17,6 +17,8 @@ class DreamUnit(BaseModel):
     bucket: DreamBucketEnum = Field(description="Digest bucket; unknown raw values route to wiki before validation.")
     summary: str = Field(description="Grounded abstraction summary with evidence pointers.")
     paths: list[str] = Field(default_factory=list, description="Workspace-relative source paths.")
+    subject: str | None = Field(default=None, description="Normalized source memory subject, when scoped.")
+    shared: bool = Field(default=False, description="Whether the unit is explicitly workspace-shared.")
 
 
 class DreamExtractOutput(BaseModel):

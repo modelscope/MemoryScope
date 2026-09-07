@@ -121,18 +121,15 @@ def test_default_config_registers_manual_and_scheduled_proactive_refresh():
     assert manual["steps"] == scheduled["steps"]
 
 
-def test_default_config_keeps_frontmatter_chunk_metadata_opt_in():
-    """Markdown frontmatter-to-chunk metadata is disabled by default for compatibility."""
+def test_default_config_exposes_minimal_subject_chunk_metadata():
+    """The default Markdown index exposes only the scope fields needed for retrieval."""
     cfg = _load_config("default.yaml")
 
     markdown = cfg["components"]["file_chunker"]["markdown"]
     assert markdown["embed_toc"] is True
     assert markdown["max_ast_sections"] == 100
-    assert markdown["include_frontmatter_in_metadata"] is False
-    # Allow-list defaults to empty; combined with the False above, chunk metadata stays empty.
-    assert markdown["include_frontmatter_keys_in_metadata"] == [] or markdown.get(
-        "include_frontmatter_keys_in_metadata",
-    ) in (None, [])
+    assert markdown["include_frontmatter_in_metadata"] is True
+    assert markdown["include_frontmatter_keys_in_metadata"] == ["subject", "shared", "kind"]
 
 
 def test_parse_args_rejects_non_key_value_extra_argument():

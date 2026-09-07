@@ -81,10 +81,15 @@ The main outputs are:
 2. Scan those day indexes and `daily/<date>/**/*.md`, comparing mtimes with `file_catalog: dream`.
 3. Send all changed files together to the LLM and globally extract structured memory `units`.
 
-`units` are long-term memory units ready to be distilled into digest. Each has `name`, `bucket`, `summary`, and `paths`.
+`units` are long-term memory units ready to be distilled into digest. Each has `name`, `bucket`, `summary`, and `paths`,
+plus a normalized `subject` when its source files have one, or `shared: true` for explicit workspace-shared knowledge.
 A run returns at most `max_units`; extraction merges cross-file evidence for the same abstraction and drops passing
 mentions, per-file summaries, and weak candidates without reusable value. `bucket` may only be `procedure`, `personal`,
 or `wiki`; unknown values are routed to `wiki`.
+
+Extract receives the normalized frontmatter scope for every changed path. It never merges paths with different non-empty
+subjects; Integrate refuses to update a digest node with an incompatible subject or missing `shared: true`. New digest nodes
+inherit the unit scope after the agent writes them, preventing model-level deduplication from collapsing different actors.
 
 If there are no changed files, Extract succeeds with no units; Integrate then has no unit work, and Finish still
 performs its normal catalog summary. If files changed but no LLM is

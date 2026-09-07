@@ -143,8 +143,13 @@ source_conversation: [[session/dialog/abc.jsonl]]
 ---
 ```
 
-当前代码固定识别 `name` 和 `description`，其他字段会作为额外 metadata 保留。写入接口会把 `name`、`description` 和
-`metadata` 合并成 frontmatter。
+当前代码固定识别 `name`、`description`、`subject` 和 `shared`，其他字段会作为额外 metadata 保留。`subject` 是记忆所
+对应的人、团队或项目的规范稳定身份。旧文件可以使用 `target`；只有在没有 `subject` 时才把它作为读取别名，如果两者
+同时存在则以 `subject` 为准。与 subject 无关、要在 workspace 共享的知识必须显式使用 `shared: true`；缺失 subject
+不等于 shared。写入接口会把 `name`、`description` 和 `metadata` 合并成 frontmatter。
+
+例如，subject 作用域的 daily 卡片可以写 `subject: project-alpha`；可复用、面向整个 workspace 的流程可以写
+`shared: true` 和 `kind: procedure`。
 
 推荐把 frontmatter 当作“节点级摘要”，把正文当作“证据、解释和关系”。例如：
 
@@ -219,8 +224,9 @@ FileLink
 
 旧文档中的 `related:: [[path]]`、`- related:: [[path]]` 或
 `[related:: [[path]]]` 仍然可以读取。ReMe 会忽略外围文本，把内部 `[[path]]`
-作为普通链接建立索引。源文件通过正常摄取路径时会应用图谱变更。`reme reindex` 只基于现有 chunks 重建 BM25 和 Embedding
-索引，不会重新解析文件或重建派生图谱。
+作为普通链接建立索引。源文件通过正常摄取路径时会应用图谱变更。默认 `scope: all` 的 `reme reindex` 会清理并从监听的
+Markdown 源文件重建 chunks，再重建 BM25、Embedding、tag 和派生图谱；新增或修正 `subject` 这类 frontmatter 派生字段时应
+使用它完成迁移。较窄的 `bm25`、`embedding`、`tag` scope 仍然只重建对应索引。
 
 ### 来源和关系
 

@@ -61,6 +61,20 @@ This keeps different conversations separate without forcing opaque IDs into file
 `session_id` or `source_conversation`; if the Agent supplies a better frontmatter `name`, the system can rename the note and
 retarget inbound wikilinks. To see what happened on a day, start with `YYYY-MM-DD.md`.
 
+### Subject-scoped memory
+
+Pass an optional stable `subject` when the conversation belongs to a person, team, or project:
+
+```bash
+reme auto_memory subject=project-alpha session_id=session-a date=2026-06-20 \
+  messages='[{"role":"user","content":"The deployment uses a blue-green rollout."}]'
+```
+
+The caller owns this identity. Auto Memory writes the exact value as `subject`, refuses to update an existing card whose
+canonical subject (or legacy `target` alias) conflicts, and repairs model-written frontmatter after a successful write.
+Calls without a subject remain backward compatible. Subject-independent knowledge must be marked `shared: true` explicitly;
+it is then eligible for every subject-scoped search.
+
 ## Preserving the Original Information
 
 The distilled daily note is optimized for readability; a filtered source conversation record is retained for trust and

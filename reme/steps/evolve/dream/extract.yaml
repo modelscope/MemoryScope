@@ -10,6 +10,14 @@ extract_system_prompt: |
   keeps reusable principles, patterns, precedents, workflows, conventions, and
   user/team preferences a future agent should recall.
 
+  ## Subject scope
+
+  Each changed path has a source scope in `path_scopes`. Merge paths only when
+  their non-empty subjects are identical. Never merge evidence belonging to
+  different subjects into one unit. A unit with `shared: true` is explicitly
+  workspace-shared and subject-independent; do not infer that flag from a
+  missing subject.
+
   ## What to Extract
 
   - **Reusable memory units**: durable abstractions worth integrating into digest.
@@ -32,7 +40,7 @@ extract_system_prompt: |
     situations, or when they will evolve independently as more material arrives.
   - When in doubt, merge related evidence into one unit or drop the weaker
     candidate entirely.
-  - Each unit must have name, bucket, summary, and paths.
+  - Each unit must have name, bucket, summary, and paths. Include `subject` when the source scope has one, or `shared: true` only for an explicitly shared source scope.
   - paths must only contain values from changed_paths.
   - Unknown bucket is invalid; if unsure, use wiki.
   - Do not emit passing mentions, known-concept recaps, umbrella event units,
@@ -78,6 +86,12 @@ extract_system_prompt_zh: |
   Digest 是抽象记忆层。原始细节保留在 daily notes 中；digest 只保存未来 agent 应该记住的可复用原则、
   模式、先例、工作流、约定，以及用户/团队偏好。
 
+  ## Subject 作用域
+
+  `path_scopes` 给出每个 changed path 的来源作用域。只有 non-empty subject 完全相同的 path 才能合并；
+  绝不能把不同 subject 的证据合并到同一个 unit。`shared: true` 表示明确的 workspace 共享、与 subject 无关的
+  内容；不能因为 subject 缺失就自行推断 shared。
+
   ## 抽取什么
 
   - **可复用记忆 unit**：值得整合进 digest 的长期抽象。
@@ -93,7 +107,7 @@ extract_system_prompt_zh: |
   - 返回的 units 数量不能超过 max_units。如果候选更多，只保留最强、最可复用的抽象，丢掉较弱候选。
   - 只有当两个抽象会在未来不同场景被召回，或会随着更多材料独立演化时，才拆成两个 unit。
   - 不确定时，把相关证据合并成一个 unit，或直接丢掉较弱候选。
-  - 每个 unit 必须包含 name、bucket、summary、paths。
+  - 每个 unit 必须包含 name、bucket、summary、paths。有 source subject 时写入 `subject`；只有明确共享的来源才写 `shared: true`。
   - paths 只能使用 changed_paths 中出现的值。
   - Unknown bucket 无效；不确定时使用 wiki。
   - 不要输出 passing mention、已知概念复述、事件 umbrella unit、一次性时间戳、参会事实、
@@ -132,8 +146,11 @@ extract_user_message: |
   hint: {hint}
   max_units: {max_units}
 
-  changed_paths:
-  {changed_paths_json}
+    changed_paths:
+    {changed_paths_json}
+
+    path_scopes:
+    {path_scopes_json}
 
   # Changed material
 
@@ -148,8 +165,11 @@ extract_user_message_zh: |
   提示：{hint}
   max_units: {max_units}
 
-  changed_paths:
-  {changed_paths_json}
+    changed_paths:
+    {changed_paths_json}
+
+    path_scopes:
+    {path_scopes_json}
 
   # 变化内容
 

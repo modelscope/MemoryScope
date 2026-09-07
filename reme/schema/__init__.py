@@ -15,7 +15,7 @@ from .proactive import (
 )
 from .emb_node import EmbNode
 from .file_chunk import FileChunk
-from .file_front_matter import FileFrontMatter
+from .file_front_matter import FileFrontMatter, is_shared_memory, normalized_subject, subject_scope
 from .graph_snapshot import GraphSnapshot, GraphSnapshotEdge, GraphSnapshotNode
 from .file_link import FileLink
 from .file_node import FileNode
@@ -34,6 +34,9 @@ __all__ = [
     "EmbNode",
     "FileChunk",
     "FileFrontMatter",
+    "is_shared_memory",
+    "normalized_subject",
+    "subject_scope",
     "FileLink",
     "FileNode",
     "GraphSnapshot",

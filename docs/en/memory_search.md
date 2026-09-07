@@ -3,8 +3,8 @@
 Memory Search is ReMe's memory retrieval entry point. The default background loop continuously builds Markdown under
 `daily/` and `digest/` into a searchable chunk index and wikilink graph. At query time, it first recalls the most
 relevant fragments and then expands context along the bidirectional links of the files containing those fragments.
-`reme reindex` rebuilds derived BM25 and embedding indexes from the authoritative in-memory `file_chunks`; it does not
-rescan workspace files, rechunk content, or rewrite the wikilink graph.
+`reme reindex` with `scope: all` reparses watched Markdown source files before rebuilding derived chunks, BM25, embeddings,
+tags, and the wikilink graph. This makes frontmatter-derived metadata rebuildable. Narrow scopes remain index-only.
 
 <p align="center">
   <img src="../figure/auto-index-and-memory-search.svg" alt="ReMe Auto Index and Memory Search indexing, recall, fusion, and link expansion" width="92%">
@@ -29,8 +29,8 @@ The default `index_update_loop` watches two memory directories:
 - `digest_dir`: long-term distilled digest nodes.
 
 The live watcher handles only the `md` suffix. A separate `resource_watch_loop` watches `resource_dir`, and Auto
-Resource turns those inputs into daily cards that enter the live index. Manual `reindex` operates on chunks already
-accepted by those ingestion paths and therefore does not expand the set of searched files.
+Resource turns those inputs into daily cards that enter the live index. Manual `reindex` with its default `scope: all`
+rebuilds the same watched source boundary while refreshing frontmatter-derived chunk metadata.
 
 ## How the Index Is Built
 
@@ -122,8 +122,8 @@ Embedded integrations that have already verified a provider can call `resume_emb
 missing vectors in the same vector space. Vector-space changes must use the explicit `reindex` job with
 `scope: embedding`; vector search remains unavailable until that job finishes successfully.
 Use `scope: bm25` to rebuild only keyword search, or `scope: tag` to rebuild the optional tag index from the current
-file graph. `scope: all` rebuilds BM25 first, then embeddings, and finally tags. BM25 and embedding rebuilds use the
-current `file_chunks` snapshot; the tag rebuild uses `FileNode` frontmatter from the file graph.
+file graph. `scope: all` reparses watched Markdown first, then rebuilds BM25, embeddings, and tags. The source files are
+therefore authoritative for chunk metadata such as `subject`.
 
 ## How to Search
 
@@ -139,6 +139,7 @@ search:
     min_score: number
     start_date: string
     end_date: string
+    subject: string
   steps:
     - backend: search_step
       vector_weight: 0.7
@@ -152,6 +153,15 @@ Call it with:
 ```bash
 reme search query="recent discussions about indexing" limit=5
 ```
+
+To recall memory for one person, team, or project while still allowing explicitly shared workspace knowledge:
+
+```bash
+reme search query="deployment decision" subject=project-alpha limit=10
+```
+
+Subject filtering is `subject == project-alpha OR shared == true`. Files with neither a matching subject nor an explicit
+`shared: true` marker are excluded; a missing subject is not treated as shared.
 
 Use `start_date` and `end_date` for inclusive `YYYY-MM-DD` filtering:
 

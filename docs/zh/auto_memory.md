@@ -55,6 +55,19 @@ source_conversation: "[[session/dialog/session-a.jsonl]]"
 这样既能分开不同对话，又不必把不透明的 ID 当文件名。更新时会按 `session_id` 或 `source_conversation` 找到旧卡片；如果 Agent
 提供了更好的 frontmatter `name`，系统可重命名并重定向入链。查看某天内容时从 `YYYY-MM-DD.md` 开始。
 
+### Subject 作用域记忆
+
+如果对话属于某个人、团队或项目，可以传入稳定的 `subject`：
+
+```bash
+reme auto_memory subject=project-alpha session_id=session-a date=2026-06-20 \
+  messages='[{"role":"user","content":"部署采用 blue-green rollout。"}]'
+```
+
+这个身份由调用方拥有。Auto Memory 会把原值写入 `subject`；如果已有卡片的规范 subject（或旧 `target` 别名）冲突，会拒绝更新；
+成功写入后即使模型写错 frontmatter，也会由系统修复。未传 subject 的调用保持向后兼容。与 subject 无关、要对所有 workspace 共享的
+知识必须显式标记 `shared: true`，之后才会进入每个 subject-scoped search。
+
 ## 同时保存原始信息
 
 整理后的 daily note 负责“好读”，过滤后的对话来源记录负责“可信”。

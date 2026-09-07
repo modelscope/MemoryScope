@@ -14,6 +14,7 @@ from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
 from ..index import normalize_posix_path
 from ...components import R
+from ...schema import normalized_subject
 
 _SESSION_ID_KEY = "session_id"
 _SOURCE_CONVERSATION_KEY = "source_conversation"
@@ -123,6 +124,17 @@ class AutoMemoryStep(BaseStep):
         """Whether this step should generate and normalize frontmatter tags."""
         return bool(self.kwargs.get("enable_tags", False))
 
+    def _requested_subject(self) -> str | None:
+        """Read the caller-owned subject as a scalar, preserving empty as unset."""
+        assert self.context is not None
+        raw = self.context.get("subject")
+        if raw in (None, ""):
+            return None
+        if isinstance(raw, (dict, list, tuple, set)):
+            raise ValueError("subject must be a scalar string")
+        subject = str(raw).strip()
+        return subject or None
+
     def _frontmatter(self, path: str) -> dict:
         post = frontmatter.loads((self.file_store.workspace_path / path).read_text(encoding="utf-8"))
         return dict(post.metadata or {})
@@ -158,12 +170,15 @@ class AutoMemoryStep(BaseStep):
         notes = list_response.metadata.get("notes") or []
         return self._find_session_note(notes, session_id)
 
-    async def _ensure_memory_frontmatter(self, path: str, session_id: str) -> None:
+    async def _ensure_memory_frontmatter(self, path: str, session_id: str, subject: str | None = None) -> None:
         current = self._frontmatter(path)
         metadata = {
             _SESSION_ID_KEY: session_id,
             _SOURCE_CONVERSATION_KEY: self._session_link(session_id),
         }
+        effective_subject = subject or normalized_subject(current)
+        if effective_subject:
+            metadata["subject"] = effective_subject
         if self._tags_enabled():
             metadata[_TAGS_KEY] = _normalize_tags(current.get(_TAGS_KEY))
         if all(current.get(key) == value for key, value in metadata.items()):
@@ -322,6 +337,13 @@ class AutoMemoryStep(BaseStep):
         session_id: str = self.context.get("session_id", "")
         memory_hint: str = self.context.get("memory_hint", "")
         raw_date = self.context.get("date", "")
+        try:
+            requested_subject = self._requested_subject()
+        except ValueError as exc:
+            self.context.response.success = False
+            self.context.response.answer = f"Error: {exc}"
+            self.context.response.metadata.update({"modified": False, "subject": self.context.get("subject")})
+            return
         tz = self.app_context.app_config.timezone if self.app_context is not None else None
         current = now(tz)
 
@@ -372,6 +394,17 @@ class AutoMemoryStep(BaseStep):
 
         note_path = str(note["path"]) if note else ""
         created = note is None
+        existing_subject = normalized_subject(self._frontmatter(note_path)) if note_path else None
+        if requested_subject and existing_subject and requested_subject != existing_subject:
+            message = f"subject mismatch: existing note is scoped to {existing_subject!r}"
+            self.context.response.success = False
+            self.context.response.answer = f"Error: {message}"
+            self.context.response.metadata.update(
+                {"date": day, "path": note_path, "created": False, "modified": False, "subject": existing_subject}
+            )
+            self.logger.warning(f"[{self.name}] {message} requested={requested_subject!r} path={note_path!r}")
+            return
+        effective_subject = requested_subject or existing_subject
         before_note_path = note_path
         before_note_bytes = self._note_bytes(note_path) if note_path else None
         self.logger.info(
@@ -387,7 +420,11 @@ class AutoMemoryStep(BaseStep):
             note_path=note_path,
             session_id=session_id,
             session_file=self._session_source_path(session_id),
+            subject=effective_subject or "(none)",
             history=self._format_history(messages),
+        )
+        user_message = (
+            f"Memory subject (immutable when supplied): {effective_subject or '(none)'}\n\n{user_message}"
         )
 
         self.logger.info(f"[{self.name}] agent start path={note_path} template={template_key}")
@@ -426,8 +463,8 @@ class AutoMemoryStep(BaseStep):
                 return
             note_path = str(note["path"])
         try:
-            if not created or self._tags_enabled():
-                await self._ensure_memory_frontmatter(note_path, session_id)
+            if not created or self._tags_enabled() or effective_subject:
+                await self._ensure_memory_frontmatter(note_path, session_id, effective_subject)
             if not created:
                 note_path = await self._rename_from_frontmatter_name(note_path, day)
         except RuntimeError as exc:
@@ -462,6 +499,7 @@ class AutoMemoryStep(BaseStep):
                 "modified": modified,
                 "n_messages": len(messages),
                 "source_conversation": source_conversation,
+                "subject": effective_subject,
                 "index": index_payload,
             },
         )

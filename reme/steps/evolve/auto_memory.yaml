@@ -20,6 +20,8 @@ system_prompt: |
 
   - `name` = a concise, stable topic/event filename stem, such as `cold-remedies` or `project-kickoff-decision`. Do not include today's date or the daily directory date; the outer daily path already records the date. For existing notes, update it when a better filename is clearly warranted.
   - `description` = a thorough summary; vague descriptions like "notes" / "misc" are unacceptable.
+  - `subject` is caller-supplied scope. When the prompt contains a concrete subject, copy it exactly into frontmatter and never invent, replace, or broaden it.
+  - The legacy `target` key may be read for older notes, but all new or repaired notes use `subject`. Use `shared: true` only when the memory is intentionally workspace-shared and subject-independent.
   [enable_tags] - `tags` = 0–8 unique retrieval keywords for the complete note. Always include the field, using `[]` when no useful tags exist. Each tag must be one string with no whitespace, may contain technical punctuation (for example `GPT-5`, `C++`, `C#`, or `.NET`), must contain at least one letter or digit, and must be at most 64 characters. Store numeric tags as strings, for example `"100"`.
   - **Never set `status`** — it is a field reserved for downstream processing.
 system_prompt_zh: |
@@ -44,6 +46,8 @@ system_prompt_zh: |
 
   - `name` = 简洁、稳定的主题/事件文件名 stem，例如 `cold-remedies` 或 `project-kickoff-decision`。不要包含今天日期或日记目录日期；外层日记路径已经记录日期。对已有笔记，如果明显有更好的文件名，就更新它。
   - `description` = 详细总结；模糊的描述如 "notes" / "misc" 不可接受。
+  - `subject` 是调用方提供的作用域。当提示中有明确 subject 时，必须原样写入 frontmatter，不能臆造、替换或扩大作用域。
+  - 旧笔记可以读取 legacy `target`，但新建或修复的笔记统一使用 `subject`。只有明确与 subject 无关、应在 workspace 共享的记忆才使用 `shared: true`。
   [enable_tags] - `tags` = 针对完整笔记的 0–8 个不重复检索关键词。该字段必须始终存在；没有合适关键词时使用 `[]`。每个 tag 必须是一个不含空白字符的字符串，可以包含技术名称中的标点（例如 `GPT-5`、`C++`、`C#` 或 `.NET`），必须至少包含一个字母或数字，且不得超过 64 个字符。数字 tag 也保存为字符串，例如 `"100"`。
   - **永远不要设置 `status`**——它是下游处理保留的字段。
 
@@ -76,6 +80,7 @@ user_message_create: |
   - Do not include today's date or the daily directory date in `name`; the note already lives under today's daily path.
   - `name` must be a valid single filename component: no slash, backslash, leading/trailing whitespace, or characters like `< > : " | ? *`.
   - `description` must be a thorough summary of the body — specific enough that the description alone conveys all key information.
+  - If a Memory subject was supplied by the caller, metadata must contain exactly that subject string. Do not derive a different subject from the conversation.
   [enable_tags] - Generate 0–8 `tags` from the complete note. Always pass `metadata={{"tags": [...]}}`, including an empty list when there are no useful tags. Follow the system prompt's tag format exactly.
 
   ## Step 3 — Summary
@@ -114,6 +119,7 @@ user_message_create_zh: |
   - `name` 不要包含今天日期或日记目录日期；笔记已经位于当天日记路径下。
   - `name` 必须是合法的单个文件名组件：不能包含 slash、反斜杠、首尾空白，或 `< > : " | ? *` 等字符。
   - `description` 必须是正文的详尽总结——具体到仅凭 description 就能传达全部核心信息。
+  - 如果 Memory subject 不是 `(none)`，必须在 metadata 中原样写入该 subject；不能根据对话改写或推导另一个 subject。
   [enable_tags] - 根据完整笔记生成 0–8 个 `tags`。必须始终传入 `metadata={{"tags": [...]}}`，没有合适关键词时也要传入空数组。严格遵守 system prompt 的 tag 格式。
 
   ## 步骤 3 — 总结
@@ -160,7 +166,7 @@ user_message_update: |
 
   Execution:
   1. Use `edit path={note_path} old=<original fragment> new=<replacement fragment>` for each section that needs updating. You may call `edit` multiple times.
-  2. After body changes, refresh frontmatter with `frontmatter_update path={note_path} metadata={{"name": "<updated filename stem>", "description": "<updated summary>"}}`.
+  2. After body changes, refresh frontmatter with `frontmatter_update path={note_path} metadata={{"name": "<updated filename stem>", "description": "<updated summary>", "subject": "<exact Memory subject>"}}` when a concrete subject was supplied. The subject value is immutable.
   [enable_tags]    Also regenerate 0–8 tags from the complete merged note and include `"tags": [<tag>, ...]` in the same metadata object. Always include `tags`, using `[]` when none are useful.
      - Keep the existing `name` only when it is already the best concise topic/event filename stem. The system will rename the file after your final response.
      - Do not add today's date or the daily directory date to `name`.
@@ -174,6 +180,7 @@ user_message_update: |
   [enable_tags] Also pass `metadata={{"tags": [<tag>, ...]}}` in this call.
 
   - Use a concise, stable topic/event `name`; filename changes are applied after your final response.
+  - Preserve the immutable Memory subject exactly when it is not `(none)`; do not change it while updating the body.
   - Do not include today's date or the daily directory date in `name`.
   - `description` must be a thorough summary of the body — specific enough that the description alone conveys all key information.
   [enable_tags] - Generate 0–8 tags from the complete body and always include `metadata={{"tags": [...]}}`, using `[]` when none are useful.
@@ -209,6 +216,7 @@ user_message_update_zh: |
   ## 步骤 2 — 读取现有内容
 
   调用 `read path={note_path}` 查看当前笔记内容。
+  Memory subject（如有则不可修改）由调用方提供，必须原样保留。
   - 如果正文为空（只有 frontmatter 无实际内容）→ 按新建处理，跳到 **步骤 3b**。
   - 如果有正文内容 → 转到 **步骤 3a** 进行合并。
 

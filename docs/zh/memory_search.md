@@ -2,7 +2,8 @@
 
 Memory Search 是 ReMe 的记忆检索入口。默认后台持续把 `daily/`、`digest/` 里的 Markdown 构建成可搜索的 chunk 索引和
 wikilink 图谱；查询时先召回最相关的片段，再沿着片段所在文件的双向链接展开上下文。`reme reindex` 以权威的内存态
-`file_chunks` 为输入重建派生的 BM25 和 Embedding 索引；它不会重新扫描工作区、重新分块或改写 wikilink 图谱。
+默认 `scope: all` 的 `reme reindex` 会先重新解析监听的 Markdown 源文件，再重建派生 chunks、BM25、Embedding、tag 和
+wikilink 图谱，因此 frontmatter 派生 metadata 可以从源文件恢复。较窄的 scope 仍然只重建对应索引。
 
 <p align="center">
   <img src="../figure/auto-index-and-memory-search.svg" alt="ReMe Auto Index and Memory Search 索引、召回、融合与链接展开流程" width="92%">
@@ -26,7 +27,7 @@ workspace files
 - `digest_dir`：长期沉淀后的 digest 节点。
 
 默认实时后缀只有 `md`。`resource_dir` 由独立的 `resource_watch_loop` 监听，并经 Auto Resource 转换成 daily 卡片后进入实时索引。
-手动 `reindex` 只处理这些摄取路径已经接受的 chunk，因此不会扩大搜索文件范围。
+默认 `scope: all` 的手动 `reindex` 仍然只处理同一组监听目录，但会刷新 frontmatter 派生的 chunk metadata。
 
 ## 索引怎么构建
 
@@ -110,9 +111,8 @@ Embedding store 可通过 `health_check_timeout` 配置启动探测。临时失�
 
 已经完成真实服务验证的嵌入式集成可以调用 `resume_embedding(verified=True)`，修复同一向量空间内缺失的向量。
 切换 Embedding 向量空间必须显式运行 `reindex` Job，并传入 `scope: embedding`；该 Job 成功完成前向量搜索保持不可用。
-`scope: bm25` 只重建关键词索引；`scope: tag` 从当前文件图重建可选的标签索引；`scope: all` 依次重建
-BM25、Embedding 和标签索引。BM25 和 Embedding 使用当前的 `file_chunks` 快照，标签索引使用文件图中
-`FileNode` 的 frontmatter。
+`scope: bm25` 只重建关键词索引；`scope: tag` 从当前文件图重建可选的标签索引；`scope: all` 会先重新解析监听的 Markdown，
+再依次重建 BM25、Embedding 和标签索引。因此 `subject` 这类 chunk metadata 以源文件为准。
 
 ## 怎么搜索
 
@@ -128,6 +128,7 @@ search:
     min_score: number
     start_date: string
     end_date: string
+    subject: string
   steps:
     - backend: search_step
       vector_weight: 0.7
@@ -141,6 +142,15 @@ search:
 ```bash
 reme search query="最近关于索引的讨论" limit=5
 ```
+
+如果要按人、团队或项目召回，同时保留明确标记为共享的 workspace 知识：
+
+```bash
+reme search query="部署决策" subject=project-alpha limit=10
+```
+
+subject 过滤策略是 `subject == project-alpha OR shared == true`。既没有匹配 subject、也没有显式 `shared: true` 的文件会
+被排除；缺失 subject 不会自动视作 shared。
 
 `start_date` 和 `end_date` 可以按 `YYYY-MM-DD` 做包含边界的日期过滤：
 
