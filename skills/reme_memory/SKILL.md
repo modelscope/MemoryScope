@@ -53,7 +53,7 @@ the active environment's executable directory is on `PATH`; do not repeatedly re
 ### 2. Configure optional model credentials
 
 Basic file operations, BM25 search, wikilink traversal, and reading existing proactive topics work without model
-credentials. `auto_memory`, `auto_resource`, and `auto_dream` require an LLM configuration.
+credentials. `auto_memory`, `auto_resource`, `auto_dream`, and proactive refresh require an LLM configuration.
 
 When those model-powered jobs are needed, have the user provide valid values through the environment or a `.env` file:
 
@@ -195,22 +195,28 @@ reme auto_resource changes='[{"path":"resource/<YYYY-MM-DD>/<file>","change":"ad
 ## Consolidate and Use Proactive Topics
 
 The default service runs background and cron jobs while it remains active. `auto_dream` consolidates daily notes and
-resource interpretations into long-term digest memory and generates interest topics. Run it manually when the host owns
-the schedule or the user requests consolidation:
+resource interpretations into long-term digest memory. Proactive refresh independently generates interest topics. Run
+Auto Dream manually when the host owns the schedule or the user requests consolidation:
 
 ```bash
 reme auto_dream date="<YYYY-MM-DD>"
 ```
 
+Run proactive refresh once, without exposing its writer job through HTTP or MCP:
+
+```bash
+reme start job=proactive_refresh date="<YYYY-MM-DD>"
+```
+
 Read generated topics with:
 
 ```bash
-reme proactive date="<YYYY-MM-DD>"
+reme proactive_read date="<YYYY-MM-DD>"
 ```
 
-`auto_dream` requires LLM credentials. `proactive` reads existing structured topics and works without an LLM call. Pass
-`include_content=false` when raw YAML content is unnecessary. The host Agent decides whether and how to mention topics;
-ReMe does not independently notify the user or take external action.
+`auto_dream` and proactive refresh require LLM credentials. `proactive_read` reads existing structured topics and works
+without an LLM call. Pass `include_content=false` when raw YAML content is unnecessary. The host Agent decides whether
+and how to mention topics; ReMe does not independently notify the user or take external action.
 
 ## Integration Rules
 

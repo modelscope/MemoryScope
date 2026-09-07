@@ -145,7 +145,6 @@ async def _run_loop(env, reme) -> None:
         "auto_dream",
         date=today,
         hint="Integration e2e: preserve Project Meridian CRDT/Yjs/WebTransport facts.",
-        topic_count=3,
     )
     assert dream.success is True, f"auto_dream failed: {dream.answer!r}\n{dream.metadata!r}"
     dmeta = (dream.metadata or {}).get("dream") or {}
@@ -182,14 +181,13 @@ async def _run_loop(env, reme) -> None:
         "search recalled none of the seeded facts — the provision->" "consolidate->index->search loop is broken"
     )
 
-    # ---- 5. proactive: read the interests surfaced by the dream --
-    proactive = await reme.run_job("proactive", date=today, include_content=True)
+    # ---- 5. proactive: dream does not produce proactive interests --
+    proactive = await reme.run_job("proactive_read", date=today, include_content=True)
     assert proactive.success is True, f"proactive failed: {proactive.answer!r}"
     pmeta = proactive.metadata or {}
     assert pmeta.get("path") == f"daily/{today}/interests.yaml", f"unexpected interests path: {pmeta!r}"
-    topics = pmeta.get("topics") or []
-    print(f"\n[5/5 proactive] topics: {topics}")
-    assert topics, f"proactive surfaced no interest topics: {pmeta!r}"
+    assert pmeta.get("skipped") is True, f"proactive unexpectedly found dream-produced topics: {pmeta!r}"
+    assert pmeta.get("topics") == [], f"proactive unexpectedly returned dream-produced topics: {pmeta!r}"
 
     print("\n" + "=" * 70)
     print("test_reme_e2e_full_loop passed")

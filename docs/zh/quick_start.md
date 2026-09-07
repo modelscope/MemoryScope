@@ -1,4 +1,11 @@
+---
+title: 快速开始
+description: 安装并启动 ReMe，完成文件写入、检索和自动记忆的第一个闭环。
+---
+
 # 快速开始
+
+本页用于完成第一次可运行闭环。需要完整配置字段时查看[基础配置](./configuration.md)；接入 HTTP 或 MCP 时查看[服务与部署](./services.md)。
 
 ## 安装
 
@@ -26,7 +33,7 @@ cd ..
 
 `core` extra 建议安装：当前代码会导入 AgentScope wrapper，自进化记忆也依赖它。
 
-如果要使用 `auto_memory`、`auto_resource`、`auto_dream` 这类 Agent 流程，再配置 LLM：
+如果要使用 `auto_memory`、`auto_resource`、`auto_dream` 和 proactive refresh 这类 Agent 流程，再配置 LLM：
 
 ```bash
 cat > .env <<'EOF'
@@ -178,7 +185,8 @@ reme auto_memory \
   memory_hint="记录用户偏好"
 ```
 
-外部资料放入 `resource/YYYY-MM-DD/` 或直接放在 `resource/` 下后，默认后台会监听 `md/txt/json/jsonl/csv/yaml/html`。
+外部资料放入 `resource/YYYY-MM-DD/` 或直接放在 `resource/` 下后，默认后台会监听文本资源
+(`md/txt/json/jsonl/csv/yaml/html`) 和图像资源 (`png/jpg/jpeg/webp/gif/bmp/tiff/heic`)。
 也可以手动触发：
 
 ```bash
@@ -189,7 +197,7 @@ reme auto_resource changes='[{"path":"resource/2026-06-20/report.md","change":"a
 
 ```bash
 reme auto_dream date=2026-06-20
-reme proactive date=2026-06-20
+reme proactive_read date=2026-06-20
 ```
 
 这些流程需要可用 LLM；未配置 LLM 时请先使用 `write/read/search` 这类基础能力。
@@ -228,3 +236,5 @@ reme start \
 ```bash
 reme start config=/path/to/custom.yaml
 ```
+
+下一步可以查看 [CLI 参考](./reference/cli.md)、[Job API 参考](./reference/jobs.md)和[诊断、备份与恢复](./operations.md)。

@@ -12,9 +12,11 @@ ReMe 的共同模式是：
       |
       +--> auto_dream
       |        从 daily/ 提炼 digest/{personal,procedure,wiki}/
-      |        同时写 daily/<date>/interests.yaml
       |
-      +--> search / node_search / read / traverse / proactive
+      +--> proactive_refresh_cron
+      |        写入 daily/<date>/interests.yaml
+      |
+      +--> search / node_search / read / traverse / proactive_read
                供 Agent 检索、联想、读取兴趣主题
 ```
 
@@ -54,15 +56,15 @@ daily/
     ├── glencore-output-update.md
     ├── drc-cobalt-policy.md
     ├── high-nickel-cathode-trend.md
-    └── interests.yaml          # auto_dream 后生成
+    └── interests.yaml          # proactive refresh 生成
 ```
 
 对应链路：
 
 - `auto_memory` 保存对话来源消息到 `session/dialog/<session_id>.jsonl`，再让 Agent 把重要事实写入按主题命名的
   `daily/<date>/<generated_name>.md`；卡片 frontmatter 保留 `session_id` 和 `source_conversation` 用于稳定定位和追溯。
-- `resource_watch_loop` 监听 `resource/` 文本文件变化，并触发 `auto_resource_step` 写带 `source_resource` 的 daily note；文件名由
-  Agent 根据内容建议，再由系统清洗并处理冲突，不保证与资源同名。
+- `resource_watch_loop` 监听 `resource/` 下支持的文本与图像变化，并触发 `auto_resource_step` 写带
+  `source_resource` 的 daily note；文本资源由 Agent 处理，图像由视觉模型处理。根据内容生成的文件名会被系统清洗并处理冲突，不保证与资源同名。
 - Auto Memory、Auto Resource 和 Auto Dream 都会在写入后刷新 `daily/<date>.md` 当天索引页。
 
 ### Day 1 晚上：Auto Dream 进入 Digest
@@ -73,19 +75,16 @@ daily/
 reme auto_dream date=2026-05-18
 ```
 
-`auto_dream` 是四步管线：
+`auto_dream` 是三步管线：
 
 ```text
 dream_extract_step
   默认扫描 2026-05-17 至 2026-05-18 的 daily 窗口
-  从 changed 文件输出最多 5 个 units 和 topics
+  从 changed 文件输出最多 5 个 memory units
 
 dream_integrate_step
   每个 unit 用 node_search 召回已有 digest 节点
   决定 CREATE / CORROBORATE / REFINE / CORRECT
-
-dream_topics_step
-  写 daily/2026-05-18/interests.yaml
 
 dream_finish_step
   checkpoint 成功处理的 daily 输入
@@ -212,7 +211,7 @@ reme traverse path=digest/wiki/钴.md depth=2 direction=both
 
 ### Proactive：读取当天兴趣主题
 
-`auto_dream` 会写：
+独立的 proactive refresh 流程会写：
 
 ```text
 daily/2026-05-18/interests.yaml
@@ -221,24 +220,41 @@ daily/2026-05-18/interests.yaml
 示例：
 
 ```yaml
+version: 2
 date: 2026-05-18
-topic_count: 3
-diversity_days: 7
+generated_at: 2026-05-18T18:00:00+08:00
+push: true
 topics:
-  - title: 刚果(金)矿权政策对钴供给的影响
+  - id: f7c355661d51
+    title: 刚果(金)矿权政策对钴供给的影响
     reason: 用户当天多次提到 KFM 矿和钴价风险
-    keywords: [钴, 刚果金, 洛阳钼业, KFM]
+    kind: follow_up
+    confidence: 0.7
+    first_seen: 2026-05-18
+    last_evidence_at: 2026-05-18
+    evidence: daily/2026-05-18/cobalt-supply-risk.md
     paths:
       - daily/2026-05-18/cobalt-supply-risk.md
+agenda:
+  - topic_id: f7c355661d51
+    title: 刚果(金)矿权政策对钴供给的影响
+    scenario_type: resume_task
+    opener: 下次判断钴供给前，先看看 KFM 的最新政策变化。
+    next_action: 对比最新政策笔记与已有供给风险判断。
+    preconditions: []
+    delivery: in_conversation
+    linked_memory: [daily/2026-05-18/cobalt-supply-risk.md]
+    order_reason: 证据较新且下一步明确。
+suppressed: []
 ```
 
 调用：
 
 ```bash
-reme proactive date=2026-05-18
+reme proactive_read date=2026-05-18
 ```
 
-`proactive` Job 返回 `interests.yaml` 中的 topics 和可选 YAML 原文。
+`proactive_read` Job 返回 `interests.yaml` 中的 topics 和可选 YAML 原文。
 
 ### 场景价值
 

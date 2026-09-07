@@ -20,14 +20,18 @@ class LocalTagIndex(BaseTagIndex):
         self.tag_to_paths: dict[str, set[str]] = {}
         self._maintenance_lock = asyncio.Lock()
 
+    @property
+    def n_files(self) -> int:
+        return len(self.path_to_tags)
+
     @staticmethod
     def _positive_int(name: str, value: object) -> int:
         if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
             raise ValueError(f"{name} must be a positive integer")
         return value
 
-    def normalize_tags(self, value: object) -> list[str]:
-        """Normalize a strict frontmatter list into unique canonical tag names."""
+    def _normalize_tags(self, value: object, *, limit: int | None) -> list[str]:
+        """Normalize a strict tag list, optionally limiting the result count."""
         if not isinstance(value, list):
             return []
         result: list[str] = []
@@ -45,9 +49,13 @@ class LocalTagIndex(BaseTagIndex):
                 continue
             seen.add(canonical)
             result.append(canonical)
-            if len(result) >= self.max_tags_per_file:
+            if limit is not None and len(result) >= limit:
                 break
         return result
+
+    def normalize_tags(self, value: object) -> list[str]:
+        """Normalize frontmatter tags according to the per-file count limit."""
+        return self._normalize_tags(value, limit=self.max_tags_per_file)
 
     @staticmethod
     def _validate_path(path: str) -> str:
@@ -94,6 +102,7 @@ class LocalTagIndex(BaseTagIndex):
         async with self._maintenance_lock:
             self.path_to_tags = path_to_tags
             self.tag_to_paths = tag_to_paths
+            self.is_healthy = True
         self.logger.info(f"Rebuilt tag index: files={len(path_to_tags)}, tags={len(tag_to_paths)}")
 
     async def upsert_nodes(self, nodes: list[FileNode]) -> None:
@@ -113,7 +122,12 @@ class LocalTagIndex(BaseTagIndex):
                 self._replace(self.path_to_tags, self.tag_to_paths, path, ())
 
     async def paths_for_tags(self, tags: object, *, match_all: bool = True) -> list[str]:
-        normalized = self.normalize_tags(tags)
+        if not self.is_healthy:
+            return []
+        # ``max_tags_per_file`` constrains indexed documents, not lookup
+        # expressions. Truncating here would silently weaken AND queries and
+        # omit valid matches from OR queries.
+        normalized = self._normalize_tags(tags, limit=None)
         if not normalized:
             return []
         async with self._maintenance_lock:
@@ -122,6 +136,8 @@ class LocalTagIndex(BaseTagIndex):
             return sorted(matches)
 
     async def tags_for_path(self, path: str) -> list[str]:
+        if not self.is_healthy:
+            return []
         path = self._validate_path(path)
         async with self._maintenance_lock:
             return list(self.path_to_tags.get(path, ()))
@@ -130,6 +146,7 @@ class LocalTagIndex(BaseTagIndex):
         async with self._maintenance_lock:
             self.path_to_tags = {}
             self.tag_to_paths = {}
+            self.is_healthy = True
 
     async def _close(self) -> None:
         await self.clear()

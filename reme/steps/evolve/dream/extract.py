@@ -26,11 +26,10 @@ _TOOLS = ("read",)
 
 @R.register("dream_extract_step")
 class DreamExtractStep(BaseStep):
-    """Scan changed daily files and globally extract merged units/topics."""
+    """Scan changed daily files and globally extract merged memory units."""
 
-    def __init__(self, topic_session_id: str = "interests", scan_days: int = 2, max_units: int = 5, **kwargs):
+    def __init__(self, scan_days: int = 2, max_units: int = 5, **kwargs):
         super().__init__(**kwargs)
-        self.topic_session_id = topic_session_id
         self.scan_days = scan_days
         self.max_units = max_units
 
@@ -57,22 +56,27 @@ class DreamExtractStep(BaseStep):
 
         existing = self._existing(
             workspace,
-            [
-                path
-                for scan_day in dates
-                for path in scan_day_files(workspace, scan_day, daily, f"{self.topic_session_id}.yaml")
-            ],
+            [path for scan_day in dates for path in scan_day_files(workspace, scan_day, daily)],
         )
-        interest_rels = {f"{daily}/{scan_day}/{self.topic_session_id}.yaml" for scan_day in dates}
         day_mds = {f"{daily}/{scan_day}.md" for scan_day in dates}
         day_prefixes = tuple(f"{daily}/{scan_day}/" for scan_day in dates)
         nodes = await self.file_catalog.get_nodes()
-        indexed_all = {n.path: n.st_mtime for n in nodes if n.path in day_mds or n.path.startswith(day_prefixes)}
-        indexed = {path: mt for path, mt in indexed_all.items() if path not in interest_rels}
+        # Older Auto Dream versions checkpointed generated interests files.
+        # Remove every such watermark from the dream catalog, not only entries
+        # inside the current scan window. The exposure files themselves remain
+        # untouched and are owned by the proactive refresh pipeline.
+        legacy_interests = sorted(
+            {n.path for n in nodes if n.path.startswith(f"{daily}/") and n.path.endswith("/interests.yaml")},
+        )
+        indexed_all = {
+            n.path: n.st_mtime
+            for n in nodes
+            if n.path not in legacy_interests and (n.path in day_mds or n.path.startswith(day_prefixes))
+        }
+        indexed = {path: mt for path, mt in indexed_all.items() if path in existing}
         changed = [rel for rel, mt in existing.items() if indexed.get(rel) != mt]
         unchanged = [rel for rel, mt in existing.items() if indexed.get(rel) == mt]
-        protected = set(existing) | {rel for rel in interest_rels if (workspace / rel).is_file()}
-        deleted = sorted(indexed_all.keys() - protected)
+        deleted = sorted((indexed_all.keys() - set(existing)) | set(legacy_interests))
         self.logger.info(
             f"[{self.name}] scan summary existing={len(existing)} indexed={len(indexed)} "
             f"changed={len(changed)} unchanged={len(unchanged)} deleted={len(deleted)}",
@@ -147,21 +151,20 @@ class DreamExtractStep(BaseStep):
                 return self._finish(state, False, error)
 
             units = meta.get("units") if "units" in meta else meta.get("memory_units")
-            if isinstance(units, list) and isinstance(meta.get("topics"), list):
+            if isinstance(units, list):
                 break
             if attempt == 0:
                 self.logger.warning(f"[{self.name}] extract attempt 1 returned an unusable receipt; retrying once")
                 continue
             # Keep the warning-only result checkpointable after one retry so a bad source cannot loop forever.
-            warning = "dream extract skipped unusable agent receipt after retry; expected units and topics lists"
+            warning = "dream extract skipped unusable agent receipt after retry; expected a units list"
             state.warnings.append(warning)
             self.logger.warning(f"[{self.name}] {warning}")
 
         self.logger.info(f"[{self.name}] parse done keys={','.join(sorted(meta.keys())) if meta else '(none)'}")
         self.clean_output(state, meta, max_units=max_units)
         state.extract_summary = raw_result
-        answer = f"Extracted {len(state.units)} unit(s), {len(state.topics)} topic(s)"
-        answer = f"{answer} from {len(changed)} changed file(s) across {len(dates)} day(s)"
+        answer = f"Extracted {len(state.units)} unit(s) from {len(changed)} changed file(s) across {len(dates)} day(s)"
         return self._finish(state, True, answer)
 
     def _existing(self, workspace, files: list[str]) -> dict[str, float]:
@@ -193,29 +196,6 @@ class DreamExtractStep(BaseStep):
                 self.logger.warning(f"[{self.name}] unit {name!r} emitted bucket {raw_bucket!r}; routing to wiki")
                 bucket = DreamBucketEnum.WIKI.value
             state.units.append({"name": name, "bucket": bucket, "summary": summary, "paths": paths})
-        for raw in meta.get("topics") or []:
-            topic = self._clean_topic(raw, allowed)
-            if topic:
-                state.topics.append(topic)
-
-    @staticmethod
-    def _clean_topic(raw, allowed: set[str]) -> dict:
-        if not isinstance(raw, dict):
-            return {}
-        title = str(raw.get("title") or "").strip()
-        reason = str(raw.get("reason") or "").strip()
-        paths = clean_paths(raw.get("paths"), allowed)
-        if not title or not reason or not paths:
-            return {}
-        keywords = raw.get("keywords") or []
-        cleaned_keywords = [str(k).strip() for k in keywords if str(k).strip()] if isinstance(keywords, list) else []
-        return {
-            "title": title,
-            "reason": reason,
-            "evidence": str(raw.get("evidence") or "").strip(),
-            "keywords": cleaned_keywords,
-            "paths": paths,
-        }
 
     def _finish(self, state: DreamState, success: bool, answer: str):
         assert self.context is not None

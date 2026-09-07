@@ -81,6 +81,27 @@ def test_rebuild_is_atomic_and_supports_all_or_any_queries() -> None:
     asyncio.run(run())
 
 
+def test_queries_are_not_truncated_by_per_file_tag_limit() -> None:
+    """Apply the count limit to indexed files without dropping lookup conditions."""
+
+    async def run() -> None:
+        index = LocalTagIndex(max_tags_per_file=2)
+        await index.rebuild(
+            [
+                _node("daily/a.md", ["a", "b"]),
+                _node("daily/c.md", ["c"]),
+            ],
+        )
+
+        assert await index.paths_for_tags(["a", "b", "c"]) == []
+        assert await index.paths_for_tags(["a", "b", "c"], match_all=False) == [
+            "daily/a.md",
+            "daily/c.md",
+        ]
+
+    asyncio.run(run())
+
+
 def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Path) -> None:
     """Keep daily and digest tags aligned through file-store mutations."""
 
@@ -149,6 +170,92 @@ def test_tag_failures_do_not_block_other_indexes_and_retry_rebuild(monkeypatch, 
         assert await store.tag_index.paths_for_tags(["alpha"]) == ["daily/a.md"]
         assert await store.tag_index.paths_for_tags(["beta"]) == ["digest/b.md"]
         assert {"chunk-a", "chunk-b"}.issubset(store.keyword_index.document_ids)
+        await store.close()
+
+    asyncio.run(run())
+
+
+def test_failed_tag_reconciliation_makes_queries_fail_closed(monkeypatch, tmp_path: Path) -> None:
+    """Never expose stale tag matches while reconciliation is pending."""
+
+    async def run() -> None:
+        monkeypatch.chdir(tmp_path)
+        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        await store.start()
+        assert store.tag_index is not None
+        await store.upsert([(_node("daily/a.md", ["old"]), [])])
+
+        async def fail(_items) -> None:
+            raise RuntimeError("tag failure")
+
+        monkeypatch.setattr(store.tag_index, "upsert_nodes", fail)
+        monkeypatch.setattr(store.tag_index, "rebuild", fail)
+        await store.upsert([(_node("daily/a.md", ["new"]), [])])
+
+        assert store._tag_index_rebuild_required is True
+        assert store.tag_index.is_healthy is False
+        assert await store.tag_index.paths_for_tags(["old"]) == []
+        assert await store.tag_index.paths_for_tags(["new"]) == []
+        assert await store.tag_index.tags_for_path("daily/a.md") == []
+        await store.close()
+
+    asyncio.run(run())
+
+
+def test_tag_rebuild_graph_read_failure_does_not_block_upsert(monkeypatch, tmp_path: Path) -> None:
+    """Keep core indexes consistent if the optional tag repair cannot read the graph snapshot."""
+
+    async def run() -> None:
+        monkeypatch.chdir(tmp_path)
+        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        await store.start()
+        assert store.tag_index is not None
+        assert store.file_graph is not None
+        store._tag_index_rebuild_required = True
+        original_get_nodes = store.file_graph.get_nodes
+
+        async def fail_full_snapshot(paths=None):
+            if paths is None:
+                raise RuntimeError("graph snapshot failure")
+            return await original_get_nodes(paths)
+
+        monkeypatch.setattr(store.file_graph, "get_nodes", fail_full_snapshot)
+        chunk = _chunk("chunk-a", "daily/a.md", "alpha memory")
+        await store.upsert([(_node("daily/a.md", ["alpha"]), [chunk])])
+
+        assert "chunk-a" in store.file_chunks
+        assert "chunk-a" in store.keyword_index.document_ids
+        assert store._tag_index_rebuild_required is True
+        assert store.tag_index.is_healthy is False
+        await store.close()
+
+    asyncio.run(run())
+
+
+def test_explicit_reindex_restores_tag_index(monkeypatch, tmp_path: Path) -> None:
+    """The tag scope and all scope rebuild tags from the authoritative graph."""
+
+    async def run() -> None:
+        monkeypatch.chdir(tmp_path)
+        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        await store.start()
+        assert store.tag_index is not None
+        await store.upsert(
+            [
+                (_node("daily/a.md", ["ReMe"]), []),
+                (_node("daily/untagged.md"), []),
+            ],
+        )
+
+        await store.tag_index.clear()
+        assert await store.tag_index.paths_for_tags(["reme"]) == []
+        assert await store.reindex("tag") == {"indexed": 1, "scope": "tag"}
+        assert await store.tag_index.paths_for_tags(["reme"]) == ["daily/a.md"]
+
+        await store.tag_index.clear()
+        result = await store.reindex("all")
+        assert result["tag"] == {"indexed": 1, "scope": "tag"}
+        assert await store.tag_index.paths_for_tags(["reme"]) == ["daily/a.md"]
         await store.close()
 
     asyncio.run(run())

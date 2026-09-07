@@ -1,16 +1,11 @@
 # Auto Dream
 
 `auto_dream` 是 ReMe 的 daily 到 digest 的长期记忆沉淀流程。它默认扫描目标日期及前一天的 daily 输入，只处理相对上次 dream
-发生变化的文件，从整个扫描窗口中抽取少量高价值 memory units，整合进 `digest/`，再生成目标日期可供主动提醒使用的
-`interests.yaml`。
-
-<p align="center">
-  <img src="../figure/auto-dream-and-proactive.svg" alt="ReMe Auto Dream and Proactive 从 daily 到 digest 再到 proactive 的流程" width="92%">
-</p>
+发生变化的文件，从整个扫描窗口中抽取少量高价值 memory units，并整合进 `digest/`。
 
 它消费的 daily 输入通常来自 [Auto Memory](./auto_memory.md) 和 [Auto Resource](./auto_resource.md)。`digest/`、Sources 章节
 和 wikilink 的文件语义见 [Memory as File](./memory_as_file.md)；Integrate 阶段的链接策略详见 [Auto Link](./auto_link.md)。
-`interests.yaml` 的读取接口见 [Proactive](./proactive.md)。
+主动发现是独立流程，见 [Proactive](./proactive.md)。
 
 ## 配置入口
 
@@ -32,22 +27,12 @@ auto_dream:
     max_units:
       type: integer
       default: 5
-    topic_count:
-      type: integer
-      default: 3
-    topic_diversity_days:
-      type: integer
-      default: 7
   steps:
     - backend: dream_extract_step
       file_catalog: dream
-      topic_session_id: interests
       scan_days: 2
       max_units: 5
     - backend: dream_integrate_step
-    - backend: dream_topics_step
-      topic_count: 3
-      topic_diversity_days: 7
     - backend: dream_finish_step
       file_catalog: dream
 ```
@@ -60,8 +45,6 @@ auto_dream:
 | `hint`                 | 调用方给抽取和整合阶段的额外指导。                                |
 | `scan_days`            | 以 `date` 结尾的最近日期窗口；默认扫描 2 天，最小为 1。           |
 | `max_units`            | 一次最多抽取多少个可复用 unit；默认 5。                           |
-| `topic_count`          | 最终写入 `interests.yaml` 的 topic 上限，默认 3。                 |
-| `topic_diversity_days` | 选择 topic 时参考过去多少天的 `interests.yaml` 避免重复，默认 7。 |
 
 ## 输入和输出
 
@@ -74,7 +57,7 @@ daily/2026-06-20.md
 daily/2026-06-20/**/*.md
 ```
 
-扫描窗口内的 `daily/<date>/interests.yaml` 都不作为抽取输入，避免上一轮主动主题反过来污染下一轮抽取。最终 topic 只写入目标日期。
+Auto Dream 只扫描 Markdown 日期索引和笔记，不读取 proactive 状态或 `interests.yaml`。
 
 主要输出有三类：
 
@@ -83,10 +66,9 @@ daily/2026-06-20/**/*.md
 | `digest/procedure/*.md`        | 方法、流程、runbook、可执行经验。                 |
 | `digest/personal/*.md`         | 用户、团队、项目相关的偏好、事实、长期上下文。    |
 | `digest/wiki/*.md`             | 通用知识、概念、观察、决策先例。                  |
-| `daily/<date>/interests.yaml`  | 当天值得上层 Agent 主动关注的兴趣主题。           |
 | `metadata/file_catalog/dream*` | dream 专用 catalog，用于判断 daily 输入是否变化。 |
 
-## 四个阶段
+## 三个阶段
 
 ### 1. Extract
 
@@ -94,16 +76,14 @@ daily/2026-06-20/**/*.md
 
 1. 刷新扫描窗口内每天的索引页 `daily/<date>.md`。
 2. 扫描这些日期的索引页和 `daily/<date>/**/*.md`，与 `file_catalog: dream` 中记录的 mtime 对比。
-3. 只把 changed files 一起交给 LLM，全局抽取两类结构化结果：`units` 和 `topics`。
+3. 只把 changed files 一起交给 LLM，全局抽取结构化 memory `units`。
 
 `units` 是准备沉淀进 digest 的长期记忆单元，包含 `name`、`bucket`、`summary`、`paths`。一次最多返回 `max_units`
 个，抽取器会优先合并指向同一抽象的跨文件证据，并丢弃短暂提及、逐文件摘要和缺少复用价值的弱候选。`bucket` 只允许
 `procedure`、`personal`、`wiki`；未知值会路由到 `wiki`。
 
-`topics` 是当天主动兴趣候选，包含 `title`、`reason`、`evidence`、`keywords`、`paths`，后续由 Topics 阶段再筛选。
-
-如果没有 changed files，Extract 会成功返回空 units；Integrate 随后没有 unit 可处理，Topics 保留目标日期已有的 topics，Finish
-仍会正常汇总 catalog。如果有变化但没有配置 LLM，Extract 会失败，因为抽取依赖 LLM。
+如果没有 changed files，Extract 会成功返回空 units；Integrate 随后没有 unit 可处理，Finish 仍会正常汇总 catalog。
+如果有变化但没有配置 LLM，Extract 会失败，因为抽取依赖 LLM。
 
 ### 2. Integrate
 
@@ -131,45 +111,17 @@ digest 节点。新增与更新都必须保留来源，并把相关 digest 链�
 Integrate 成功的 unit 会记录到 `integrate_results`；失败的 unit 会进入 `failed_units`，其来源路径会进入 `failed_paths`。
 Finish 阶段不会 checkpoint 失败路径，保证下次还能重试。
 
-### 3. Topics
-
-`dream_topics_step` 将 Extract 阶段产生的 topic candidates 变成当天最终的 `daily/<date>/interests.yaml`。
-
-它会读取：
-
-```text
-daily/<date>/interests.yaml
-daily/<过去 topic_diversity_days 天中的每一天>/interests.yaml
-```
-
-同一天已有 topics 会被保留，最近 `topic_diversity_days` 天出现过的相似主题会被去重。默认最多写 3 个 topic。配置了 LLM 时会让
-LLM 选择更具体、可行动、非重复的主题；没有 LLM 时会退化成本地规范化去重。
-
-写入格式示例。读取这个文件的接口见 [Proactive](./proactive.md)：
-
-```yaml
-date: 2026-06-20
-topic_count: 3
-diversity_days: 7
-topics:
-  - title: 记忆检索链路的质量回归
-    reason: 用户近期持续修改 search、node_search 和 dream 集成链路。
-    evidence: daily/2026-06-20/session.md
-    keywords:
-      - memory search
-      - auto dream
-    paths:
-      - daily/2026-06-20/session.md
-```
-
-### 4. Finish
+### 3. Finish
 
 `dream_finish_step` 负责收尾：
 
 1. 将成功处理的 changed paths 写入 `file_catalog: dream`。
-2. 将目标日期的 `daily/<date>/interests.yaml` 和扫描窗口内每个已刷新的 day-index 页也写入 catalog。
+2. 将扫描窗口内每个已刷新的 day-index 页也写入 catalog。
 3. 如果有 upsert 或 delete，持久化 dream catalog。
-4. 返回包含 scanned、changed、integrated、topics、checkpoint 等计数的摘要。
+4. 返回包含 scanned、changed、integrated、checkpoint 等计数的摘要。
+
+Auto Dream 不读取或写入 proactive 状态和 `interests.yaml`。这些文件由 proactive refresh writer 链路负责，
+见 [Proactive](./proactive.md)。
 
 失败路径不会被 checkpoint。这样下一次 `auto_dream` 仍会把它们视作 changed input，直到整合成功。
 
@@ -204,7 +156,6 @@ jobs:
       - backend: dream_extract_step
         file_catalog: dream
       - backend: dream_integrate_step
-      - backend: dream_topics_step
       - backend: dream_finish_step
         file_catalog: dream
 ```
@@ -217,7 +168,6 @@ jobs:
 `该决策记录在 [[daily/<date>/decision.md]] 中。`链接写法遵循
 [Memory as File](./memory_as_file.md) 中的 workspace-relative wikilink 语义。
 
-`auto_dream` 不凭空生成总览。只有 daily 输入中确实出现、并被抽取为 unit 或 topic 的内容，才会进入 digest 或
-`interests.yaml`。
+`auto_dream` 不凭空生成总览。只有 daily 输入中确实出现、并被抽取为 memory unit 的内容，才会进入 digest。
 
-完整流程依赖 LLM 完成 Extract 和 Integrate。Topics 可以在没有 LLM 时做本地去重，但这不等于完整 dream 能离线运行。
+完整流程依赖 LLM 完成 Extract 和 Integrate。

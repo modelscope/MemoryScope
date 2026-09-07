@@ -12,6 +12,19 @@ class BaseTagIndex(BaseComponent):
 
     component_type = ComponentEnum.TAG_INDEX
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.is_healthy = True
+
+    def set_healthy(self, healthy: bool) -> None:
+        """Mark whether lookups can safely use the current derived state."""
+        self.is_healthy = healthy
+
+    @property
+    @abstractmethod
+    def n_files(self) -> int:
+        """Return the number of files that currently have indexed tags."""
+
     @abstractmethod
     def normalize_tags(self, value: object) -> list[str]:
         """Return canonical tags according to this index's configured limits."""

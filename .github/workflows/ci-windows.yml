@@ -45,7 +45,7 @@ jobs:
       - name: Run Windows path tests
         run: |
           python -m pytest `
-            tests/unit/test_auto_dream.py::test_scan_day_files_includes_nested_md_and_excludes_interests `
+            tests/unit/test_auto_dream.py::test_scan_day_files_includes_only_markdown_day_files `
             tests/unit/test_auto_dream.py::test_dream_extract_matches_posix_catalog_paths `
             tests/unit/test_read_with_neighbors.py::test_read_with_neighbors_uses_posix_nested_path `
             -v

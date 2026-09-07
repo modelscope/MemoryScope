@@ -110,8 +110,9 @@ Embedding store 可通过 `health_check_timeout` 配置启动探测。临时失�
 
 已经完成真实服务验证的嵌入式集成可以调用 `resume_embedding(verified=True)`，修复同一向量空间内缺失的向量。
 切换 Embedding 向量空间必须显式运行 `reindex` Job，并传入 `scope: embedding`；该 Job 成功完成前向量搜索保持不可用。
-`scope: bm25` 只重建关键词索引；`scope: all` 先重建 BM25，再重建 Embedding。所有 scope 都使用当前的
-`file_chunks` 快照。
+`scope: bm25` 只重建关键词索引；`scope: tag` 从当前文件图重建可选的标签索引；`scope: all` 依次重建
+BM25、Embedding 和标签索引。BM25 和 Embedding 使用当前的 `file_chunks` 快照，标签索引使用文件图中
+`FileNode` 的 frontmatter。
 
 ## 怎么搜索
 
