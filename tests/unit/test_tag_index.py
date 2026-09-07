@@ -81,6 +81,27 @@ def test_rebuild_is_atomic_and_supports_all_or_any_queries() -> None:
     asyncio.run(run())
 
 
+def test_queries_are_not_truncated_by_per_file_tag_limit() -> None:
+    """Apply the count limit to indexed files without dropping lookup conditions."""
+
+    async def run() -> None:
+        index = LocalTagIndex(max_tags_per_file=2)
+        await index.rebuild(
+            [
+                _node("daily/a.md", ["a", "b"]),
+                _node("daily/c.md", ["c"]),
+            ],
+        )
+
+        assert await index.paths_for_tags(["a", "b", "c"]) == []
+        assert await index.paths_for_tags(["a", "b", "c"], match_all=False) == [
+            "daily/a.md",
+            "daily/c.md",
+        ]
+
+    asyncio.run(run())
+
+
 def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Path) -> None:
     """Keep daily and digest tags aligned through file-store mutations."""
 

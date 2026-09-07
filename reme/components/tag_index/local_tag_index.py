@@ -30,8 +30,8 @@ class LocalTagIndex(BaseTagIndex):
             raise ValueError(f"{name} must be a positive integer")
         return value
 
-    def normalize_tags(self, value: object) -> list[str]:
-        """Normalize a strict frontmatter list into unique canonical tag names."""
+    def _normalize_tags(self, value: object, *, limit: int | None) -> list[str]:
+        """Normalize a strict tag list, optionally limiting the result count."""
         if not isinstance(value, list):
             return []
         result: list[str] = []
@@ -49,9 +49,13 @@ class LocalTagIndex(BaseTagIndex):
                 continue
             seen.add(canonical)
             result.append(canonical)
-            if len(result) >= self.max_tags_per_file:
+            if limit is not None and len(result) >= limit:
                 break
         return result
+
+    def normalize_tags(self, value: object) -> list[str]:
+        """Normalize frontmatter tags according to the per-file count limit."""
+        return self._normalize_tags(value, limit=self.max_tags_per_file)
 
     @staticmethod
     def _validate_path(path: str) -> str:
@@ -120,7 +124,10 @@ class LocalTagIndex(BaseTagIndex):
     async def paths_for_tags(self, tags: object, *, match_all: bool = True) -> list[str]:
         if not self.is_healthy:
             return []
-        normalized = self.normalize_tags(tags)
+        # ``max_tags_per_file`` constrains indexed documents, not lookup
+        # expressions. Truncating here would silently weaken AND queries and
+        # omit valid matches from OR queries.
+        normalized = self._normalize_tags(tags, limit=None)
         if not normalized:
             return []
         async with self._maintenance_lock:
