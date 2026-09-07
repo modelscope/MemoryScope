@@ -295,7 +295,8 @@ export default defineConfig({
   },
   head: [
     ["link", { rel: "icon", type: "image/svg+xml", href: `${base}reme-icon.svg` }],
-    ["meta", { name: "theme-color", content: "#087f6a" }],
+    ["meta", { name: "theme-color", content: "#087f6a", media: "(prefers-color-scheme: light)" }],
+    ["meta", { name: "theme-color", content: "#0d1512", media: "(prefers-color-scheme: dark)" }],
     ["script", {
       defer: "",
       src: "https://cloud.umami.is/script.js",
