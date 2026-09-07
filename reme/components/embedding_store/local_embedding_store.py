@@ -217,6 +217,8 @@ class LocalEmbeddingStore(BaseEmbeddingStore):
     @staticmethod
     def _is_rate_limited(error: Exception) -> bool:
         """Recognize an OpenAI-compatible 429 response without importing a provider SDK."""
+        if LocalEmbeddingStore._is_insufficient_quota(error):
+            return False
         if getattr(error, "status_code", None) == 429:
             return True
         body = getattr(error, "body", None)

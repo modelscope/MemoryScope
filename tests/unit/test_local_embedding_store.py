@@ -73,6 +73,7 @@ class FakeProviderModel:
 class InsufficientQuotaError(Exception):
     """OpenAI-compatible quota error used without importing the provider SDK."""
 
+    status_code = 429
     body = {"error": {"code": "insufficient_quota"}}
 
 
@@ -343,6 +344,13 @@ def test_is_rate_limited_recognizes_status_code_or_body_and_nothing_else():
     assert LocalEmbeddingStore._is_rate_limited(StatusCodeError())
     assert LocalEmbeddingStore._is_rate_limited(BodyCodeError())
     assert not LocalEmbeddingStore._is_rate_limited(ValueError("unrelated"))
+
+
+def test_is_rate_limited_defers_to_insufficient_quota_on_status_code_429():
+    """An insufficient_quota error carrying status_code=429 is not the generic rate-limit case."""
+
+    assert not LocalEmbeddingStore._is_rate_limited(InsufficientQuotaError("quota exhausted"))
+    assert LocalEmbeddingStore._is_insufficient_quota(InsufficientQuotaError("quota exhausted"))
 
 
 def test_rate_limit_exhausts_retries_and_reports_unhealthy(monkeypatch):
