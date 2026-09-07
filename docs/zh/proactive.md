@@ -1,6 +1,7 @@
 # Proactive
 
-`proactive` 是 ReMe 的主动记忆读取接口。它不重新分析 daily，也不调用 LLM，只读取 `auto_dream` 写出的当天兴趣主题：
+`proactive_read` 是 ReMe 的主动记忆读取接口。它不重新分析 daily，也不调用 LLM，只读取独立 proactive refresh
+流程写出的兴趣主题：
 
 ```text
 daily/<date>/interests.yaml
@@ -8,54 +9,81 @@ daily/<date>/interests.yaml
 
 上层 Agent 可以用它获取“今天值得主动关注什么”，再决定是否提醒、追问、推荐下一步或生成主动洞察。
 
-`interests.yaml` 由 [Auto Dream](./auto_dream.md) 的 Topics 阶段生成；`proactive` 只负责读取和暴露结果。
+`interests.yaml` 由 `proactive_refresh_cron` 生成；`proactive_read` 只负责读取和暴露结果。Auto Dream 是独立的
+daily-to-digest 流程，不读取或写入 proactive 状态。
 
 ## 配置入口
 
 默认配置在 `reme/config/default.yaml`：
 
 ```yaml
-proactive:
+proactive_read:
   backend: base
   description: "Proactive: read daily/<date>/interests.yaml and expose the latest user-interest topics."
   parameters:
-    date:
-      type: string
-      default: ""
-    include_content:
-      type: boolean
-      default: true
+    type: object
+    properties:
+      date:
+        type: string
+        default: ""
+      include_content:
+        type: boolean
+        default: true
+      horizon_days:
+        type: integer
+        default: 1
+      min_confidence:
+        type: number
+        default: 0.4
   steps:
     - backend: proactive_step
+      min_confidence: 0.4
 ```
 
 参数含义：
 
-| 参数              | 作用                                                            |
-|-------------------|-----------------------------------------------------------------|
-| `date`            | 要读取的日期，格式为 `YYYY-MM-DD`。为空时使用应用时区中的今天。 |
-| `include_content` | 是否在 answer 和 metadata 中返回 YAML 原文，默认 `true`。       |
+| 参数              | 作用                                                                        |
+|-------------------|-----------------------------------------------------------------------------|
+| `date`            | 要读取的日期，格式为 `YYYY-MM-DD`。为空时使用应用时区中的今天。              |
+| `include_content` | 是否在 answer 和 metadata 中返回 YAML 原文，默认 `true`。                    |
+| `horizon_days`    | 读取单日曝光文件，或在更宽时间窗下读取 truth source；默认 `1`。              |
+| `min_confidence`  | 返回 topic 的最低置信度，默认 `0.4`；旧版 topic 使用 `0.5`。                 |
 
 ## 输入契约
 
-典型格式如下：
+当前 proactive refresh 生成的文件如下：
 
 ```yaml
+version: 2
 date: 2026-06-20
-topic_count: 3
-diversity_days: 7
+generated_at: 2026-06-20T18:00:00+08:00
+push: true
 topics:
-  - title: 记忆检索链路的质量回归
+  - id: b2120f3573cb
+    title: 记忆检索链路的质量回归
     reason: 用户近期持续修改 search、node_search 和 dream 集成链路。
+    kind: follow_up
+    confidence: 0.86
+    first_seen: 2026-06-20
+    last_evidence_at: 2026-06-20
     evidence: daily/2026-06-20/session.md
-    keywords:
-      - memory search
-      - auto dream
     paths:
       - daily/2026-06-20/session.md
+agenda:
+  - topic_id: b2120f3573cb
+    title: 记忆检索链路的质量回归
+    scenario_type: resume_task
+    opener: 下次发布前先回顾最近的检索回归。
+    next_action: 对比失败查询与上一个索引快照。
+    preconditions: []
+    delivery: in_conversation
+    linked_memory: []
+    order_reason: 证据较新且下一步明确。
+suppressed: []
 ```
 
-只有 `topics` 列表会被解析成结构化结果。每个 topic 至少需要 `title` 和 `reason`；`evidence`、`keywords`、`paths` 是辅助字段。
+当前 v2 topic 包含稳定 ID、类型、置信度、证据日期和来源路径。读取器仍兼容包含 `title`、`reason`、`evidence`、
+`keywords`、`paths` 的 v1 文件；缺少 v2 置信度时按 `0.5` 处理。
 
 ## 返回结果
 
@@ -86,11 +114,28 @@ topics:
   "summary": "Read 1 proactive topic(s) from daily/2026-06-20/interests.yaml",
   "topics": [
     {
+      "id": "b2120f3573cb",
       "title": "记忆检索链路的质量回归",
       "reason": "用户最近反复修改了 search、node_search 和 dream integration。",
+      "kind": "follow_up",
+      "confidence": 0.86,
+      "first_seen": "2026-06-20",
+      "last_evidence_at": "2026-06-20",
       "evidence": "daily/2026-06-20/session.md",
-      "keywords": ["memory search", "auto dream"],
       "paths": ["daily/2026-06-20/session.md"]
+    }
+  ],
+  "agenda": [
+    {
+      "topic_id": "b2120f3573cb",
+      "title": "记忆检索链路的质量回归",
+      "scenario_type": "resume_task",
+      "opener": "下次发布前先回顾最近的检索回归。",
+      "next_action": "对比失败查询与上一个索引快照。",
+      "preconditions": [],
+      "delivery": "in_conversation",
+      "linked_memory": [],
+      "order_reason": "证据较新且下一步明确。"
     }
   ],
   "content": "date: 2026-06-20\n..."
@@ -106,7 +151,7 @@ topics:
 Skipped: interests file not found at daily/2026-06-20/interests.yaml
 ```
 
-这让上层 Agent 可以把“今天还没有 dream 结果”当作正常空状态处理。
+这让上层 Agent 可以把“今天还没有 proactive refresh 结果”当作正常空状态处理。
 
 ## 运行方式
 
@@ -124,25 +169,21 @@ reme proactive_read date=2026-06-20 include_content=false
 
 ## 与 auto_dream 的关系
 
-`proactive` 是 `auto_dream` 的下游读取步骤：
+Proactive refresh 和 Auto Dream 各自独立消费 daily notes：
 
 ```text
-daily notes
-  -> auto_dream
-  -> daily/<date>/interests.yaml
-  -> proactive
-  -> upper-level agent
+daily notes -> auto_dream -> digest
+daily notes -> proactive_refresh_cron -> daily/<date>/interests.yaml -> proactive_read -> upper-level agent
 ```
 
-职责边界如下。更完整的 Extract、Integrate、Topics、Finish 说明见 [Auto Dream](./auto_dream.md)：
+Proactive 职责边界如下：
 
 | 模块                     | 职责                                         |
 |--------------------------|----------------------------------------------|
-| `dream_extract_step`     | 从 changed daily 输入抽取 topic candidates。 |
 | `proactive_refresh_cron` | `interests.yaml` 的唯一写入方（白天曝光）。  |
 | `proactive_step`         | 读取 `interests.yaml`，暴露给上层 Agent。    |
 
-`proactive` 不修改任何文件，不更新 catalog，也不负责判断是否应该主动打扰用户。它只提供当天主题材料；是否推送、何时推送、用什么语气推送，应由调用方根据产品策略决定。
+`proactive_read` 不修改任何文件，不更新 catalog，也不负责判断是否应该主动打扰用户。它只提供当天主题材料；是否推送、何时推送、用什么语气推送，应由调用方根据产品策略决定。
 
 ## 失败模式
 

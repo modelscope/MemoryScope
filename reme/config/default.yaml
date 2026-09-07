@@ -67,7 +67,6 @@ jobs:
     steps:
       - backend: dream_extract_step
         file_catalog: dream
-        topic_session_id: interests
         scan_days: 2
         max_units: 5
       - backend: dream_integrate_step
@@ -104,7 +103,7 @@ jobs:
 
   auto_dream:
     backend: base
-    description: "Auto-dream: scan today's day-index and daily notes, globally extract merged units/topics, integrate digest units, and persist the dream catalog. interests.yaml is owned by proactive_refresh_cron."
+    description: "Auto-dream: scan today's day-index and daily notes, globally extract merged units, integrate digest units, and persist the dream catalog."
     parameters:
       type: object
       properties:
@@ -127,7 +126,6 @@ jobs:
     steps:
       - backend: dream_extract_step
         file_catalog: dream
-        topic_session_id: interests
         scan_days: 2
         max_units: 5
       - backend: dream_integrate_step

@@ -12,9 +12,11 @@ ReMe 的共同模式是：
       |
       +--> auto_dream
       |        从 daily/ 提炼 digest/{personal,procedure,wiki}/
-      |        同时写 daily/<date>/interests.yaml
       |
-      +--> search / node_search / read / traverse / proactive
+      +--> proactive_refresh_cron
+      |        写入 daily/<date>/interests.yaml
+      |
+      +--> search / node_search / read / traverse / proactive_read
                供 Agent 检索、联想、读取兴趣主题
 ```
 
@@ -54,7 +56,7 @@ daily/
     ├── glencore-output-update.md
     ├── drc-cobalt-policy.md
     ├── high-nickel-cathode-trend.md
-    └── interests.yaml          # auto_dream 后生成
+    └── interests.yaml          # proactive refresh 生成
 ```
 
 对应链路：
@@ -73,12 +75,12 @@ daily/
 reme auto_dream date=2026-05-18
 ```
 
-`auto_dream` 是四步管线：
+`auto_dream` 是三步管线：
 
 ```text
 dream_extract_step
   默认扫描 2026-05-17 至 2026-05-18 的 daily 窗口
-  从 changed 文件输出最多 5 个 units 和 topics
+  从 changed 文件输出最多 5 个 memory units
 
 dream_integrate_step
   每个 unit 用 node_search 召回已有 digest 节点
@@ -209,7 +211,7 @@ reme traverse path=digest/wiki/钴.md depth=2 direction=both
 
 ### Proactive：读取当天兴趣主题
 
-`auto_dream` 会写：
+独立的 proactive refresh 流程会写：
 
 ```text
 daily/2026-05-18/interests.yaml
@@ -235,7 +237,7 @@ topics:
 reme proactive_read date=2026-05-18
 ```
 
-`proactive` Job 返回 `interests.yaml` 中的 topics 和可选 YAML 原文。
+`proactive_read` Job 返回 `interests.yaml` 中的 topics 和可选 YAML 原文。
 
 ### 场景价值
 

@@ -66,8 +66,8 @@ def llm_available(step: BaseStep) -> bool:
         return False
 
 
-def scan_day_files(workspace: Path, day: str, daily: str, interests_name: str = "interests.yaml") -> list[str]:
-    """Scan day files."""
+def scan_day_files(workspace: Path, day: str, daily: str) -> list[str]:
+    """Scan Markdown day-index and note files."""
     out: list[str] = []
     day_index = workspace / daily / f"{day}.md"
     if day_index.is_file():
@@ -75,7 +75,7 @@ def scan_day_files(workspace: Path, day: str, daily: str, interests_name: str = 
     daily_root = workspace / daily / day
     if daily_root.is_dir():
         out.extend(p.relative_to(workspace).as_posix() for p in sorted(daily_root.rglob("*.md")) if p.is_file())
-    return [p for p in out if p != f"{daily}/{day}/{interests_name}"]
+    return out
 
 
 def pack_paths(
@@ -133,77 +133,6 @@ def previous_dates(day: str, n_days: int) -> list[str]:
     except ValueError:
         return []
     return [(base - dt.timedelta(days=i)).isoformat() for i in range(1, max(n_days, 0) + 1)]
-
-
-def load_yaml_topics(path: Path, *, strict: bool = False) -> list[dict]:
-    """Load YAML topics."""
-    if not path.is_file():
-        return []
-    try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8"))
-    except Exception as exc:
-        if strict:
-            raise ValueError(f"Invalid interests YAML at {path}: {exc}") from exc
-        return []
-    if data is None:
-        if strict:
-            raise ValueError(f"Invalid interests YAML at {path}: expected an object")
-        return []
-    topics = data.get("topics") if isinstance(data, dict) else None
-    if not isinstance(topics, list):
-        if strict:
-            raise ValueError(f"Invalid interests YAML at {path}: topics must be a list")
-        return []
-    cleaned_topics = []
-    for index, topic in enumerate(topics):
-        if strict:
-            _validate_topic(topic, path, index)
-        if isinstance(topic, dict) and (cleaned := clean_topic(topic)):
-            cleaned_topics.append(cleaned)
-    return cleaned_topics
-
-
-def _validate_topic(topic: object, path: Path, index: int) -> None:
-    """Reject topic data that would otherwise be silently discarded or coerced."""
-    prefix = f"Invalid interests YAML at {path}: topics[{index}]"
-    if not isinstance(topic, dict):
-        raise ValueError(f"{prefix} must be an object")
-
-    allowed = {"title", "reason", "evidence", "keywords", "paths"}
-    if unknown := sorted(set(topic) - allowed):
-        raise ValueError(f"{prefix} has unknown field(s): {', '.join(str(key) for key in unknown)}")
-
-    for field in ("title", "reason"):
-        value = topic.get(field)
-        if not isinstance(value, str) or not value.strip():
-            raise ValueError(f"{prefix}.{field} must be a non-empty string")
-    if "evidence" in topic and not isinstance(topic["evidence"], str):
-        raise ValueError(f"{prefix}.evidence must be a string")
-    for field in ("keywords", "paths"):
-        if field not in topic:
-            continue
-        values = topic[field]
-        if not isinstance(values, list) or any(not isinstance(value, str) or not value.strip() for value in values):
-            raise ValueError(f"{prefix}.{field} must be a list of non-empty strings")
-
-
-def clean_topic(raw: dict) -> dict:
-    """Clean topic."""
-    title, reason = (
-        str(raw.get("title") or "").strip(),
-        str(raw.get("reason") or "").strip(),
-    )
-    if not title or not reason:
-        return {}
-    keywords = raw.get("keywords") or []
-    paths = raw.get("paths") or []
-    return {
-        "title": title,
-        "reason": reason,
-        "evidence": str(raw.get("evidence") or "").strip(),
-        "keywords": ([str(k).strip() for k in keywords if str(k).strip()] if isinstance(keywords, list) else []),
-        "paths": ([str(p).strip() for p in paths if str(p).strip()] if isinstance(paths, list) else []),
-    }
 
 
 def parse_structured_reply(text: str) -> dict:

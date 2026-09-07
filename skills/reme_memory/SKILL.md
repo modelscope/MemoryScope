@@ -205,10 +205,10 @@ reme auto_dream date="<YYYY-MM-DD>"
 Read generated topics with:
 
 ```bash
-reme proactive date="<YYYY-MM-DD>"
+reme proactive_read date="<YYYY-MM-DD>"
 ```
 
-`auto_dream` requires LLM credentials. `proactive` reads existing structured topics and works without an LLM call. Pass
+`auto_dream` requires LLM credentials. `proactive_read` reads existing structured topics and works without an LLM call. Pass
 `include_content=false` when raw YAML content is unnecessary. The host Agent decides whether and how to mention topics;
 ReMe does not independently notify the user or take external action.
 

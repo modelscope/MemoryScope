@@ -2,16 +2,12 @@
 
 `auto_dream` is ReMe's long-term memory distillation flow from daily to digest. By default it scans the target date and
 the previous day, processes only files changed since the previous dream, extracts a small set of high-value memory units
-across that window, integrates them into `digest/`, and writes the target day's `interests.yaml` for proactive use.
-
-<p align="center">
-  <img src="../figure/auto-dream-and-proactive.svg" alt="ReMe Auto Dream and Proactive flow from daily to digest to proactive" width="92%">
-</p>
+across that window, and integrates them into `digest/`.
 
 Its daily inputs usually come from [Auto Memory](./auto_memory.md) and [Auto Resource](./auto_resource.md). For the file
 semantics of `digest/`, Sources sections, and wikilinks, see [Memory as File](./memory_as_file.md). For the linking
-strategy used during Integrate, see [Auto Link](./auto_link.md). To read `interests.yaml`,
-use [Proactive](./proactive.md).
+strategy used during Integrate, see [Auto Link](./auto_link.md). Proactive discovery is a separate flow; see
+[Proactive](./proactive.md).
 
 ## Configuration
 
@@ -36,7 +32,6 @@ auto_dream:
   steps:
     - backend: dream_extract_step
       file_catalog: dream
-      topic_session_id: interests
       scan_days: 2
       max_units: 5
     - backend: dream_integrate_step
@@ -65,8 +60,7 @@ daily/2026-06-20.md
 daily/2026-06-20/**/*.md
 ```
 
-Every `daily/<date>/interests.yaml` in the scan window is excluded from extraction so previous proactive output cannot
-feed back into the next run. Final topics are written only for the target date.
+Only Markdown day indexes and notes are scanned. Proactive state and `interests.yaml` are not Auto Dream inputs.
 
 The main outputs are:
 
@@ -75,10 +69,9 @@ The main outputs are:
 | `digest/procedure/*.md`        | Methods, workflows, runbooks, and executable experience.                     |
 | `digest/personal/*.md`         | User-, team-, and project-related preferences, facts, and long-term context. |
 | `digest/wiki/*.md`             | General knowledge, concepts, observations, and decision precedents.          |
-| `daily/<date>/interests.yaml`  | Topics worth proactive attention from the host agent that day.               |
 | `metadata/file_catalog/dream*` | Dream-specific catalog used to detect changes in daily inputs.               |
 
-## Four Stages
+## Three Stages
 
 ### 1. Extract
 
@@ -86,18 +79,15 @@ The main outputs are:
 
 1. Refresh each `daily/<date>.md` in the scan window.
 2. Scan those day indexes and `daily/<date>/**/*.md`, comparing mtimes with `file_catalog: dream`.
-3. Send all changed files together to the LLM and globally extract two structured result types: `units` and `topics`.
+3. Send all changed files together to the LLM and globally extract structured memory `units`.
 
 `units` are long-term memory units ready to be distilled into digest. Each has `name`, `bucket`, `summary`, and `paths`.
 A run returns at most `max_units`; extraction merges cross-file evidence for the same abstraction and drops passing
 mentions, per-file summaries, and weak candidates without reusable value. `bucket` may only be `procedure`, `personal`,
 or `wiki`; unknown values are routed to `wiki`.
 
-`topics` are proactive-interest candidates for the day. They contain `title`, `reason`, `evidence`, `keywords`, and
-`paths` and are filtered again in the Topics stage.
-
-If there are no changed files, Extract succeeds with no units; Integrate then has no unit work, Topics preserves any
-existing target-day topics, and Finish still performs its normal catalog summary. If files changed but no LLM is
+If there are no changed files, Extract succeeds with no units; Integrate then has no unit work, and Finish still
+performs its normal catalog summary. If files changed but no LLM is
 configured, Extract fails because extraction requires an LLM.
 
 ### 2. Integrate
@@ -138,9 +128,8 @@ paths enter `failed_paths`. The Finish stage does not checkpoint failed paths, e
 3. Persist the dream catalog if there were upserts or deletions.
 4. Return a summary containing counts for scanned, changed, integrated, checkpoints, and related values.
 
-`interests.yaml` is no longer written by auto dream. The daytime exposure file is owned by
-`proactive_refresh_cron`; see [Proactive](./proactive.md). Dream only reads historical `interests.yaml` files as
-extraction material.
+Auto Dream neither reads nor writes proactive state or `interests.yaml`. Those files are owned by
+`proactive_refresh_cron`; see [Proactive](./proactive.md).
 
 Failed paths are not checkpointed. The next `auto_dream` run therefore continues to treat them as changed inputs until
 integration succeeds.
@@ -191,7 +180,6 @@ the workspace-relative wikilink semantics described in
 [Memory as File](./memory_as_file.md).
 
 `auto_dream` does not invent an overview from nothing. Only content that actually appears in daily input and is
-extracted as a unit or topic can enter digest or `interests.yaml`.
+extracted as a memory unit can enter digest.
 
-The complete flow depends on an LLM for Extract and Integrate. Topics can perform local deduplication without an LLM,
-but that does not mean the full dream flow can run offline.
+The complete flow depends on an LLM for Extract and Integrate.

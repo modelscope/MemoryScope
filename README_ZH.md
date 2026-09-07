@@ -266,8 +266,8 @@ ReMe 遵循 capture → index → consolidate → recall 的循环。workspace �
 | [`auto_memory`](docs/zh/auto_memory.md)     | Agent hook 或 `reme auto_memory`          | 提炼有长期价值的对话事实，同时保留过滤后的对话来源记录。                                     | `session/dialog/*.jsonl`、`daily/<date>/<generated-name>.md` |
 | [`auto_resource`](docs/zh/auto_resource.md) | 资源监听或 `reme auto_resource`           | 将 `resource/` 下的文件转为带来源链接、按内容命名的 daily 卡片。                             | `daily/<date>/<resource-card>.md`                            |
 | [`auto_index`](docs/zh/memory_search.md)    | 后台监听或 `reme reindex`                 | watcher 摄取 `daily/` 和 `digest/` 中的 Markdown；`reindex` 只基于已摄取的 chunks 重建 BM25 和 Embedding。 | 可检索的 chunks、BM25、wikilink 图谱和可选向量               |
-| [`auto_dream`](docs/zh/auto_dream.md)       | `dream_cron` 或 `reme auto_dream`         | 默认从最近两天内变化的文件中最多提取 5 个可复用 unit，再创建、印证、补充或修正 digest 节点。 | `digest/**`、`daily/<date>/interests.yaml`                   |
-| [`proactive_read`](docs/zh/proactive.md)         | Agent 决定主动行动前调用 `reme proactive_read` | 读取 `auto_dream` 生成的 topics；是否以及如何提醒用户由宿主 Agent 决定。                     | 来自 `daily/<date>/interests.yaml` 的结构化 topics           |
+| [`auto_dream`](docs/zh/auto_dream.md)       | `dream_cron` 或 `reme auto_dream`         | 默认从最近两天内变化的文件中最多提取 5 个可复用 unit，再创建、印证、补充或修正 digest 节点。 | `digest/**`                                                  |
+| [`proactive_read`](docs/zh/proactive.md)         | Agent 决定主动行动前调用 `reme proactive_read` | 读取独立 proactive refresh 流程生成的 topics；是否以及如何提醒用户由宿主 Agent 决定。       | 来自 `daily/<date>/interests.yaml` 的结构化 topics           |
 
 <table>
   <tr>
@@ -292,7 +292,7 @@ ReMe 遵循 capture → index → consolidate → recall 的循环。workspace �
 
 > [!IMPORTANT]
 >
-> `proactive` 只读取并暴露 Auto Dream 生成的兴趣主题，不会自行联网、发送通知或改写知识库；是否以及如何使用主题，由宿主 Agent
+> `proactive_read` 只读取并暴露 proactive refresh 生成的兴趣主题，不会自行联网、发送通知或改写知识库；是否以及如何使用主题，由宿主 Agent
 > 决定。
 
 ## 📊 评测结果

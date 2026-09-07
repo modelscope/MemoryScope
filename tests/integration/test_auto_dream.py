@@ -1,8 +1,8 @@
-"""Integration test for the 4-step auto_dream job and proactive reader.
+"""Integration test for the three-step auto_dream job.
 
 Runs against a real LLM. The test seeds a dream workspace, runs ``auto_dream`` for
-2026-05-28, verifies digest/interests/catalog effects, then runs ``proactive``.
-Agent messages and generated markdown/yaml/jsonl artifacts are copied to
+2026-05-28, and verifies digest/catalog effects without producing proactive output.
+Agent messages and generated markdown/jsonl artifacts are copied to
 ``tests/integration/logs/auto_dream_latest/`` for manual inspection.
 """
 
@@ -11,8 +11,6 @@ import json
 import shutil
 import sys
 from pathlib import Path
-
-import yaml
 
 INTEGRATION_DIR = Path(__file__).resolve().parent
 ARTIFACT_DIR = INTEGRATION_DIR / "logs" / "auto_dream_latest"
@@ -99,8 +97,8 @@ def _file_graph_links(env) -> dict[str, list[dict]]:
     return out
 
 
-def test_auto_dream_and_proactive():
-    """Run auto_dream end to end, save transcripts/results, then read interests via proactive."""
+def test_auto_dream():
+    """Run auto_dream end to end and verify that it does not produce proactive interests."""
 
     async def run():
         _reset_artifacts()
@@ -121,8 +119,6 @@ def test_auto_dream_and_proactive():
                         "auto_dream",
                         date=DREAM_DATE,
                         hint="Integration test: preserve SOC2, JWT kid, Redis current_kid, and small-PR facts.",
-                        topic_count=3,
-                        topic_diversity_days=7,
                     )
                 dumped = await recorder.dump()
                 session_jsonl = sorted((env.workspace_dir / "mem_session" / "agentscope").glob("*.jsonl"))
@@ -142,7 +138,7 @@ def test_auto_dream_and_proactive():
                 interests = env.workspace_dir / "daily" / DREAM_DATE / "interests.yaml"
                 catalog = env.workspace_dir / "metadata" / "file_catalog" / "dream.jsonl.zst"
                 assert changed_note.is_file(), f"changed note missing: {changed_note}"
-                assert interests.is_file(), f"interests.yaml missing: {interests}"
+                assert not interests.exists(), f"auto_dream unexpectedly wrote interests.yaml: {interests}"
                 assert catalog.is_file(), f"dream catalog missing: {catalog}"
 
                 after_digest = _all_digest_text(env)
@@ -195,16 +191,6 @@ def test_auto_dream_and_proactive():
                     "no digest↔digest wikilink found in integrated target markdown\n" f"targets: {target_paths}"
                 )
 
-                interests_text = _print_text_file("interests.yaml", interests)
-                interests_data = yaml.safe_load(interests_text) or {}
-                topics = interests_data.get("topics") or []
-                assert isinstance(topics, list) and topics, f"no topics in interests.yaml\n{interests_text}"
-
-                proactive = await app.run_job("proactive_read", date=DREAM_DATE, include_content=True)
-                assert proactive.success is True, f"proactive failed: {proactive.answer!r}"
-                assert proactive.metadata.get("path") == f"daily/{DREAM_DATE}/interests.yaml"
-                assert proactive.metadata.get("topics"), f"proactive returned no topics: {proactive.metadata!r}"
-
                 if day_index.is_file():
                     _print_text_file("day_index.md", day_index)
                 else:
@@ -231,5 +217,5 @@ def test_auto_dream_and_proactive():
 
 if __name__ == "__main__":
     print("=== auto_dream integration test ===")
-    test_auto_dream_and_proactive()
+    test_auto_dream()
     print("\nIntegration test passed!")

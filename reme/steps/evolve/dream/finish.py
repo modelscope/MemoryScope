@@ -81,7 +81,7 @@ def render_summary(state: DreamState) -> str:
             f"- Files: {state.files_scanned} scanned, {state.files_changed} changed, "
             f"{state.files_unchanged} unchanged, {state.files_deleted} deleted"
         ),
-        f"- Extracted: {len(state.units)} unit(s), {len(state.topics)} topic candidate(s)",
+        f"- Extracted: {len(state.units)} unit(s)",
         (
             f"- Integrated: {len(state.integrate_results)} ok, {len(state.skipped_units)} skipped, "
             f"{len(state.failed_units)} failed"

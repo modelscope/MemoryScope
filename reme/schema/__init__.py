@@ -4,10 +4,8 @@ from .application_config import ApplicationConfig, ComponentConfig, JobConfig
 from .dream import (
     DreamExtractOutput,
     DreamState,
-    DreamTopic,
     DreamUnit,
     IntegrateOutcome,
-    TopicSelectionOutput,
 )
 from .proactive import (
     ProactiveResult,
@@ -32,7 +30,6 @@ __all__ = [
     "ComponentConfig",
     "DreamExtractOutput",
     "DreamState",
-    "DreamTopic",
     "DreamUnit",
     "EmbNode",
     "FileChunk",
@@ -52,7 +49,6 @@ __all__ = [
     "Response",
     "StreamChunk",
     "TokenUsage",
-    "TopicSelectionOutput",
     "TraverseGraph",
     "TraverseGraphEdge",
     "TraverseGraphNode",

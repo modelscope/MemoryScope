@@ -19,7 +19,8 @@ from reme.steps.evolve.dream.extract import DreamExtractStep
 from reme.steps.evolve.dream.finish import DreamFinishStep
 from reme.steps.evolve.dream.integrate import DreamIntegrateStep, _snapshot_digest
 from reme.steps.evolve.proactive.proactive import ProactiveStep
-from reme.steps.evolve.dream.utils import load_yaml_topics, parse_structured_reply, recent_dates, scan_day_files
+from reme.steps.evolve.dream.utils import parse_structured_reply, recent_dates, scan_day_files
+from reme.steps.evolve.proactive.utils import load_yaml_topics
 
 
 def _touch(path: Path, text: str = "x") -> Path:
@@ -116,8 +117,8 @@ class _SequenceAgent(BaseAgentWrapper):
         return outcome
 
 
-def test_scan_day_files_includes_nested_md_and_excludes_interests():
-    """Scan day files."""
+def test_scan_day_files_includes_only_markdown_day_files():
+    """Scan day indexes and nested Markdown notes without including YAML products."""
     with tempfile.TemporaryDirectory() as tmp:
         workspace = Path(tmp)
         _touch(workspace / "daily" / "2026-05-28.md")
@@ -166,6 +167,42 @@ def test_dream_extract_matches_posix_catalog_paths(tmp_path):
         assert dream["changed_paths"] == []
         assert dream["deleted_paths"] == []
         assert not catalog.deleted
+
+    asyncio.run(run())
+
+
+def test_dream_extract_removes_legacy_interests_entry_from_catalog(tmp_path):
+    """Auto Dream leaves interests.yaml untouched and removes its obsolete dream-catalog watermark."""
+
+    class Catalog(_Catalog):
+        """Catalog seeded with a legacy interests entry."""
+
+        def __init__(self, nodes):
+            super().__init__()
+            self.nodes = nodes
+            self.deleted = []
+
+        async def delete(self, path):
+            self.deleted.extend(path if isinstance(path, list) else [path])
+
+        async def get_nodes(self, paths=None):
+            return self.nodes
+
+    async def run():
+        interests = _touch(tmp_path / "daily" / "2026-05-28" / "interests.yaml", "topics: []\n")
+        rel_path = interests.relative_to(tmp_path).as_posix()
+        catalog = Catalog([FileNode(path=rel_path, st_mtime=interests.stat().st_mtime)])
+        step = DreamExtractStep(scan_days=1, app_context=ApplicationContext(workspace_dir=str(tmp_path)))
+
+        with patch("reme.steps.evolve.dream.extract.refresh_day_index", return_value={}):
+            response = await step(
+                RuntimeContext(date="2026-05-28", file_catalog=catalog, file_store=_FileStore(tmp_path)),
+            )
+
+        assert response.success is True
+        assert response.metadata["dream"]["deleted_paths"] == [rel_path]
+        assert catalog.deleted == [rel_path]
+        assert interests.read_text(encoding="utf-8") == "topics: []\n"
 
     asyncio.run(run())
 
@@ -248,7 +285,7 @@ def test_extract_unusable_receipt_is_a_warning_not_a_failure(tmp_path):
         assert dream["units"] == []
         assert dream["failed_paths"] == []
         assert dream["warnings"] == [
-            "dream extract skipped unusable agent receipt after retry; expected units and topics lists",
+            "dream extract skipped unusable agent receipt after retry; expected a units list",
         ]
         assert step.agent_wrapper.calls == 2
 
@@ -260,7 +297,7 @@ def test_extract_retries_one_unusable_receipt(tmp_path):
 
     async def run():
         _touch(tmp_path / "daily" / "2026-05-28" / "session.md")
-        agent = _SequenceAgent({"result": "{}"}, {"result": '{"units": [], "topics": []}'})
+        agent = _SequenceAgent({"result": "{}"}, {"result": '{"units": []}'})
         step = DreamExtractStep(
             scan_days=1,
             app_context=ApplicationContext(workspace_dir=str(tmp_path)),

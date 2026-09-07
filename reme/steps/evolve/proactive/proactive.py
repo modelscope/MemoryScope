@@ -15,9 +15,10 @@ import yaml
 from ...base_step import BaseStep
 from ....components import R
 from ....schema import ProactiveResult
-from ..dream.utils import load_yaml_topics, today, workspace_dir
+from ..dream.utils import today, workspace_dir
 from .utils import (
     dump_topic,
+    load_yaml_topics,
     load_state,
     parse_interests_topics,
     sort_topics,

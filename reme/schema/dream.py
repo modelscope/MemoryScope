@@ -19,21 +19,10 @@ class DreamUnit(BaseModel):
     paths: list[str] = Field(default_factory=list, description="Workspace-relative source paths.")
 
 
-class DreamTopic(BaseModel):
-    """One topic candidate emitted by global extract."""
-
-    title: str = Field(description="Specific user-interest topic title.")
-    reason: str = Field(description="Why this topic may interest the user.")
-    evidence: str = Field(description="Grounded evidence pointer.")
-    keywords: list[str] = Field(default_factory=list, description="Keywords for de-duplication.")
-    paths: list[str] = Field(default_factory=list, description="Workspace-relative source paths.")
-
-
 class DreamExtractOutput(BaseModel):
     """Structured output for ``dream_extract_step``."""
 
     units: list[DreamUnit] = Field(default_factory=list)
-    topics: list[DreamTopic] = Field(default_factory=list)
 
 
 class IntegrateOutcome(BaseModel):
@@ -42,12 +31,6 @@ class IntegrateOutcome(BaseModel):
     action: Literal["CREATE", "CORROBORATE", "REFINE", "CORRECT"] = Field(description="Write decision.")
     target_path: str = Field(description="Digest path written or edited.")
     note: str = Field(default="", description="Short summary of what landed.")
-
-
-class TopicSelectionOutput(BaseModel):
-    """Structured output for daily topic selection."""
-
-    topics: list[DreamTopic] = Field(default_factory=list)
 
 
 class DreamState(BaseModel):
@@ -69,7 +52,6 @@ class DreamState(BaseModel):
     existing: dict[str, float] = Field(default_factory=dict)
     indexed: dict[str, float] = Field(default_factory=dict)
     units: list[dict] = Field(default_factory=list)
-    topics: list[dict] = Field(default_factory=list)
     extract_summary: str = ""
     integrate_results: list[dict] = Field(default_factory=list)
     skipped_units: list[dict] = Field(default_factory=list)
