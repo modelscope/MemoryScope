@@ -85,6 +85,27 @@ def test_normalization_applies_exif_orientation_before_resizing():
         assert original.getexif()[274] == 6
 
 
+@pytest.mark.parametrize("mode", ["I;16", "I;16B"])
+def test_normalization_resizes_16_bit_tiff_on_pillow_10(mode):
+    """Large 16-bit inputs resize without requiring Pillow 11's LANCZOS support."""
+    output = io.BytesIO()
+    image = Image.new(mode, (3000, 1000), 0)
+    image.paste(65535, (1500, 0, 3000, 1000))
+    image.save(output, format="TIFF")
+    source = output.getvalue()
+    original = bytes(source)
+
+    prepared, provider_mime, source_mime = normalize_image(source)
+
+    assert source == original
+    assert source_mime == "image/tiff"
+    assert provider_mime == "image/png"
+    with Image.open(io.BytesIO(prepared)) as result:
+        assert result.size == (2048, 683)
+        assert result.getpixel((0, 0)) == (0, 0, 0)
+        assert result.getpixel((2047, 682)) == (255, 255, 255)
+
+
 def test_normalization_uses_only_first_frame():
     """Animated GIFs deterministically expose the first frame to the captioner."""
     output = io.BytesIO()

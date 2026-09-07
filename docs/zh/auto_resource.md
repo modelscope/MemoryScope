@@ -33,7 +33,8 @@ resource/[YYYY-MM-DD/]<resource_file>
 ## 原始资料入口
 
 Auto Resource 以 `resource/` 作为原始资料入口。推荐按日期放置，目录日期会决定它进入哪一天的 daily 记忆层；也支持直接放在
-`resource/` 根目录，此时使用应用时区中的今天。
+`resource/` 根目录，首次处理时使用应用时区中的今天。之后即使跨天更新或删除，也会通过精确匹配
+`source_resource` 继续操作原 daily 卡片，不会重复新建卡片或留下孤立链接。
 
 示例目录：
 
@@ -46,11 +47,30 @@ workspace/
       meeting-notes.csv
 ```
 
-当前 Beta 版本更适合处理文本类资源，例如 `md`、`txt`、`json`、`jsonl`、`csv`、`yaml`、`html`。
+当前 Beta 版本以文本类资源为主，例如 `md`、`txt`、`json`、`jsonl`、`csv`、`yaml`、`html`；图像资源（`png`、`jpg`、`jpeg`、`webp`、`gif`、`bmp`、`tiff`、`heic`）会生成 caption 卡片，见下文[图像资源](#图像资源)一节。
+
+内部由统一的 `AutoResourceStep` 接收每批变更，并将每一项交给配置中第一个匹配它的 processor。
+`AutoImageResourceStep` 声明图像后缀匹配规则，`AutoTextResourceStep` 作为最后的 fallback。后续新增模态时，
+只需注册新的 processor、提供独立 prompt 并在 `dispatch_steps` 中增加一项，无需修改 router。
+
+## 图像资源
+
+图像文件的解读方式相同：视觉模型写入一张 caption 卡片并链接原图。卡片正文以 `![[resource/...]]` 嵌入链接开头，frontmatter 携带 `kind: image` 与 `media_type`，文本检索因此可以通过 caption 命中图像内容。
+
+视觉模型优先使用配置中的 `as_llm` `vision` 实例，未配置时回退到 `default` 实例——默认模型具备视觉能力时无需额外配置。宽或高超过 2048px 的图像会降采样，格式不被模型接受的图像会转码；这些处理只发生在请求前的内存副本中，`resource/` 下的原图文件不会被修改。图像变更时卡片原地重写；图像删除时卡片随之删除。
+
+在完整解码前，系统会检查图像尺寸，默认上限为 40,000,000 像素；超限图像或 Pillow
+decompression-bomb 警告只会导致当前资源失败。缩放或转码前，会按 EXIF orientation 校正仅用于请求的内存副本。
+尺寸过大的 JPEG 会先使用 decoder-level downsampling，并在需要时再完成最终缩放。
+VLM 请求的 MIME 和卡片 frontmatter 中的 `media_type` 都使用 Pillow 根据实际图像字节识别的格式，
+而不是直接信任文件扩展名。
+
+图像预处理使用 `core` extra 中的 Pillow。HEIC 资源还需要可选的 `image-heif` extra：
+`pip install "reme-ai[image-heif]"`。其他受支持图像格式不会加载或依赖 HEIF 插件。
 
 ## 资源卡片
 
-每个资源文件会生成一张 daily 资源卡片。创建时先使用资源文件 stem 作为临时路径，Agent 写入后，系统会根据 frontmatter `name`
+每个资源文件会生成一张 daily 资源卡片。创建时先使用资源文件 stem 作为临时路径，对应 processor 写入后，系统会根据 frontmatter `name`
 重命名文件：
 
 ```text
@@ -65,8 +85,8 @@ daily/2026-06-20/市场报告要点.md
 source_resource: "[[resource/2026-06-20/market-report.md]]"
 ```
 
-如果资源文件更新，Auto Resource 会通过 `source_resource` 找到对应卡片并更新；如果资源文件删除，对应的 daily note 也会被清理。旧版本按
-stem 生成的 `daily/YYYY-MM-DD/<resource_stem>.md` 仍作为 fallback 兼容。
+如果资源文件更新，Auto Resource 只会通过精确匹配的 `source_resource` 找到对应卡片并更新；如果资源文件删除，也只会清理显式关联的
+daily note。缺少该来源标记的同 stem 笔记会被视为用户笔记并保留，新资源卡片则会使用无冲突路径。
 
 ## 当天索引
 
@@ -86,7 +106,7 @@ daily/
 
 解读后的 daily note 负责“好读”，原始资源负责“可信”。
 
-Auto Resource 不会把原始文件挪走：它仍然留在 `resource/` 下的原路径。这样，文本资料会进入 daily 记忆流，原始文件也始终保留在它来时的位置。
+Auto Resource 不会把原始文件挪走：它仍然留在 `resource/` 下的原路径。这样，文本与图像资料会进入 daily 记忆流，原始文件也始终保留在它来时的位置。
 
 ## 后续流向
 

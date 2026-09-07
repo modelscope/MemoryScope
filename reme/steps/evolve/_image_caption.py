@@ -103,7 +103,10 @@ def normalize_image(data: bytes) -> tuple[bytes, str, str]:
             with Image.open(io.BytesIO(data), formats=list(_SOURCE_MEDIA_TYPES)) as source:
                 source.seek(0)
                 image = ImageOps.exif_transpose(source)
-                image.thumbnail((MAX_IMAGE_SIDE, MAX_IMAGE_SIDE), Image.Resampling.LANCZOS)
+                # Match the resource image path: Pillow 10 cannot resize
+                # 16-bit integer modes with LANCZOS before RGB conversion.
+                resize_filter = Image.Resampling.NEAREST if image.mode.startswith("I;16") else Image.Resampling.LANCZOS
+                image.thumbnail((MAX_IMAGE_SIDE, MAX_IMAGE_SIDE), resize_filter)
                 encoded, media_type = _provider_image(image, source_format)
                 return encoded, media_type, _SOURCE_MEDIA_TYPES[source_format]
     except (Image.DecompressionBombError, Image.DecompressionBombWarning) as exc:

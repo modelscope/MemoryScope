@@ -217,7 +217,8 @@ class Neo4jFileGraph(BaseFileGraph):
 
     async def delete_nodes(self, paths: list[str]) -> None:
         """Demote real → virtual to preserve inbound visibility; fully
-        remove the (now-virtual) node only if no edge points at it."""
+        remove the (now-virtual) node only if no edge points at it.
+        """
         if not paths:
             return
         async with self._session() as session:

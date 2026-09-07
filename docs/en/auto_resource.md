@@ -36,7 +36,8 @@ In short, it turns "a file was archived" into "the resource is usable."
 
 Auto Resource uses `resource/` as the entry point for source material. Date directories are recommended, and their date
 determines which daily memory layer receives the interpreted card. A file directly under `resource/` is also supported
-and uses today in the application timezone.
+and uses today in the application timezone when it is first processed. On later days, an exact `source_resource` match
+keeps updates and deletion tied to that original daily card instead of creating a new card or leaving an orphan.
 
 Example directory:
 
@@ -49,13 +50,39 @@ workspace/
       meeting-notes.csv
 ```
 
-The current Beta version is best suited to text-based resources such as `md`, `txt`, `json`, `jsonl`, `csv`, `yaml`, and
-`html`.
+Text resources such as `md`, `txt`, `json`, `jsonl`, `csv`, `yaml`, and `html` are the primary fit. Image resources
+(`png`, `jpg`, `jpeg`, `webp`, `gif`, `bmp`, `tiff`, `heic`) produce caption cards as described in
+[Image Resources](#image-resources).
+
+Internally, one `AutoResourceStep` receives each change batch and sends every item to the first configured processor
+whose class-level matcher accepts it. `AutoImageResourceStep` handles image suffixes and `AutoTextResourceStep` is the
+final fallback. A new modality can therefore add a registered processor, its prompt, and one `dispatch_steps` entry
+without changing the router.
+
+## Image Resources
+
+Image files are interpreted the same way: a vision model writes a caption card that links back to the original image.
+The card body starts with an `![[resource/...]]` embed link and the frontmatter carries `kind: image` and `media_type`,
+so text search reaches image content through the caption.
+
+The vision model is the `vision` instance of `as_llm` when configured, and otherwise falls back to the `default`
+instance — a multimodal default model needs no extra configuration. Images wider or taller than 2048px are downscaled,
+and provider-unfriendly formats are re-encoded, in memory for the request only; the original file under
+`resource/` is never modified. Before a full decode, image dimensions are checked against a default limit of 40,000,000
+pixels; images over the limit and Pillow decompression-bomb warnings fail only that resource. EXIF orientation is
+applied to the in-memory request copy before resizing or conversion. Oversized JPEGs first use decoder-level
+downsampling, followed by a final thumbnail pass when needed. The VLM request MIME and the card's frontmatter
+`media_type` use the format Pillow detects from the image bytes, rather than trusting the filename extension. When an
+image changes, its card is rewritten in place; when the image is deleted, the card is removed with it.
+
+Image preprocessing uses Pillow from the `core` extra. HEIC resources additionally require the optional
+`image-heif` extra: `pip install "reme-ai[image-heif]"`. Other supported image formats do not load or require the HEIF
+plugin.
 
 ## Resource Cards
 
 Each resource file produces one daily resource card. The system initially uses the resource file's stem as a temporary
-path. After the agent writes the card, the file is renamed according to its frontmatter `name`:
+path. After the matching processor writes the card, the file is renamed according to its frontmatter `name`:
 
 ```text
 resource/2026-06-20/market-report.md
@@ -69,9 +96,9 @@ The resource card links to the original file through frontmatter:
 source_resource: "[[resource/2026-06-20/market-report.md]]"
 ```
 
-When a resource changes, Auto Resource finds and updates the corresponding card through `source_resource`. When a
-resource is deleted, its daily note is also removed. The older `daily/YYYY-MM-DD/<resource_stem>.md` naming convention
-remains supported as a fallback.
+When a resource changes, Auto Resource finds and updates the corresponding card through an exact `source_resource`
+match. When a resource is deleted, only the explicitly linked daily note is removed. A same-stem note without that
+provenance marker is treated as user-owned and left untouched; new resource cards use a collision-free path instead.
 
 ## Daily Index
 
@@ -93,7 +120,7 @@ resource, open its corresponding resource card.
 
 The interpreted daily note is optimized for readability; the original resource is retained for trust and verification.
 
-Auto Resource does not move the original file. It remains at its original path under `resource/`. Text resources can
+Auto Resource does not move the original file. It remains at its original path under `resource/`. Resources can
 therefore enter the daily memory flow while their source files stay in their original location.
 
 ## What Happens Next

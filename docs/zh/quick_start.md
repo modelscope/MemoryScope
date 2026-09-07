@@ -185,7 +185,8 @@ reme auto_memory \
   memory_hint="记录用户偏好"
 ```
 
-外部资料放入 `resource/YYYY-MM-DD/` 或直接放在 `resource/` 下后，默认后台会监听 `md/txt/json/jsonl/csv/yaml/html`。
+外部资料放入 `resource/YYYY-MM-DD/` 或直接放在 `resource/` 下后，默认后台会监听文本资源
+(`md/txt/json/jsonl/csv/yaml/html`) 和图像资源 (`png/jpg/jpeg/webp/gif/bmp/tiff/heic`)。
 也可以手动触发：
 
 ```bash
