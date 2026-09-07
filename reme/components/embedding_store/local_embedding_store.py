@@ -194,6 +194,15 @@ class LocalEmbeddingStore(BaseEmbeddingStore):
                 if attempt < self.max_retries - 1:
                     await asyncio.sleep(2**attempt)
             except Exception as error:
+                if self._is_rate_limited(error):
+                    if attempt < self.max_retries - 1:
+                        delay = 2**attempt
+                        self.logger.warning(f"Embedding rate limited; retrying in {delay:.1f}s")
+                        await asyncio.sleep(delay)
+                        continue
+                    self.logger.exception("Embedding request failed after exhausting rate-limit retries")
+                    self.is_healthy = False
+                    return None
                 if (
                     self.quota_retry_delay is not None
                     and self._is_insufficient_quota(error)
@@ -209,6 +218,19 @@ class LocalEmbeddingStore(BaseEmbeddingStore):
                 return None
         self.is_healthy = False
         return None
+
+    @staticmethod
+    def _is_rate_limited(error: Exception) -> bool:
+        """Recognize an OpenAI-compatible 429 response without importing a provider SDK."""
+        if LocalEmbeddingStore._is_insufficient_quota(error):
+            return False
+        if getattr(error, "status_code", None) == 429:
+            return True
+        body = getattr(error, "body", None)
+        if not isinstance(body, dict):
+            return False
+        details = body.get("error", body)
+        return isinstance(details, dict) and details.get("code") == "rate_limit_exceeded"
 
     @staticmethod
     def _is_insufficient_quota(error: Exception) -> bool:
