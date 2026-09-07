@@ -78,6 +78,7 @@ class LocalFileStore(BaseFileStore):
         self._embedding_space_generation = 0
         self._mutation_generation = 0
         self._tag_index_rebuild_required = False
+        self._tag_indexed_file_count = 0
         self._closing = False
 
     # -- lifecycle ------------------------------------------------------------
@@ -365,17 +366,20 @@ class LocalFileStore(BaseFileStore):
 
     @BaseFileStore.serialized
     async def reindex(self, scope: str) -> dict:
-        """Rebuild derived search indexes from ``file_chunks`` without touching files or the graph."""
-        if scope not in {"all", "bm25", "embedding"}:
-            raise ValueError("reindex scope must be one of: all, bm25, embedding")
+        """Rebuild derived search indexes without rescanning workspace files."""
+        if scope not in {"all", "bm25", "embedding", "tag"}:
+            raise ValueError("reindex scope must be one of: all, bm25, embedding, tag")
         if scope == "bm25":
             return await self._reindex_bm25()
         if scope == "embedding":
             return await self._reindex_embedding()
+        if scope == "tag":
+            return await self._reindex_tag()
         return {
             "scope": "all",
             "bm25": await self._reindex_bm25(),
             "embedding": await self._reindex_embedding(),
+            "tag": await self._reindex_tag(),
         }
 
     async def _reindex_bm25(self) -> dict:
@@ -634,18 +638,39 @@ class LocalFileStore(BaseFileStore):
         """Best-effort rebuild that never lets an optional tag index block the file store."""
         if self.tag_index is None:
             self._tag_index_rebuild_required = False
+            self._tag_indexed_file_count = 0
             return True
-        nodes = await self.file_graph.get_nodes()
         try:
+            nodes = await self.file_graph.get_nodes()
             await self.tag_index.rebuild(nodes)
         except Exception:
             self._tag_index_rebuild_required = True
             self.logger.exception(
                 f"{self.name}: tag index rebuild failed during {reason}; keeping file store available",
             )
+            await self._quarantine_tag_index(reason)
             return False
         self._tag_index_rebuild_required = False
+        self.tag_index.set_healthy(True)
+        self._tag_indexed_file_count = self.tag_index.n_files
         return True
+
+    async def _quarantine_tag_index(self, reason: str) -> None:
+        """Fail closed after a reconciliation error without propagating cleanup failures."""
+        assert self.tag_index is not None
+        self.tag_index.set_healthy(False)
+        try:
+            await self.tag_index.clear()
+        except Exception:
+            self.logger.exception(f"{self.name}: failed to clear unhealthy tag index during {reason}")
+        finally:
+            self.tag_index.set_healthy(False)
+
+    async def _reindex_tag(self) -> dict:
+        """Synchronously rebuild the optional tag index from the authoritative file graph."""
+        if not await self._rebuild_tag_index("explicit reindex"):
+            raise RuntimeError("tag index reindex failed")
+        return {"indexed": self._tag_indexed_file_count, "scope": "tag"}
 
     async def _upsert_tag_nodes(self, nodes: list[FileNode]) -> None:
         """Update tags without allowing optional-index failures to block other indexes."""
@@ -656,8 +681,10 @@ class LocalFileStore(BaseFileStore):
             return
         try:
             await self.tag_index.upsert_nodes(nodes)
+            self.tag_index.set_healthy(True)
         except Exception:
             self._tag_index_rebuild_required = True
+            self.tag_index.set_healthy(False)
             self.logger.exception(f"{self.name}: incremental tag index update failed; rebuilding from graph")
             await self._rebuild_tag_index("incremental update recovery")
 
@@ -670,8 +697,10 @@ class LocalFileStore(BaseFileStore):
             return
         try:
             await self.tag_index.delete(paths)
+            self.tag_index.set_healthy(True)
         except Exception:
             self._tag_index_rebuild_required = True
+            self.tag_index.set_healthy(False)
             self.logger.exception(f"{self.name}: incremental tag index delete failed; rebuilding from graph")
             await self._rebuild_tag_index("incremental delete recovery")
 
@@ -878,8 +907,11 @@ class LocalFileStore(BaseFileStore):
             try:
                 await self.tag_index.clear()
                 self._tag_index_rebuild_required = False
+                self._tag_indexed_file_count = 0
+                self.tag_index.set_healthy(True)
             except Exception:
                 self._tag_index_rebuild_required = True
+                self.tag_index.set_healthy(False)
                 self.logger.exception(f"{self.name}: tag index clear failed; rebuilding from empty graph")
                 await self._rebuild_tag_index("clear recovery")
         self._mutation_generation += 1

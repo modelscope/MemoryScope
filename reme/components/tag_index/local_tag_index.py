@@ -20,6 +20,10 @@ class LocalTagIndex(BaseTagIndex):
         self.tag_to_paths: dict[str, set[str]] = {}
         self._maintenance_lock = asyncio.Lock()
 
+    @property
+    def n_files(self) -> int:
+        return len(self.path_to_tags)
+
     @staticmethod
     def _positive_int(name: str, value: object) -> int:
         if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
@@ -94,6 +98,7 @@ class LocalTagIndex(BaseTagIndex):
         async with self._maintenance_lock:
             self.path_to_tags = path_to_tags
             self.tag_to_paths = tag_to_paths
+            self.is_healthy = True
         self.logger.info(f"Rebuilt tag index: files={len(path_to_tags)}, tags={len(tag_to_paths)}")
 
     async def upsert_nodes(self, nodes: list[FileNode]) -> None:
@@ -113,6 +118,8 @@ class LocalTagIndex(BaseTagIndex):
                 self._replace(self.path_to_tags, self.tag_to_paths, path, ())
 
     async def paths_for_tags(self, tags: object, *, match_all: bool = True) -> list[str]:
+        if not self.is_healthy:
+            return []
         normalized = self.normalize_tags(tags)
         if not normalized:
             return []
@@ -122,6 +129,8 @@ class LocalTagIndex(BaseTagIndex):
             return sorted(matches)
 
     async def tags_for_path(self, path: str) -> list[str]:
+        if not self.is_healthy:
+            return []
         path = self._validate_path(path)
         async with self._maintenance_lock:
             return list(self.path_to_tags.get(path, ()))
@@ -130,6 +139,7 @@ class LocalTagIndex(BaseTagIndex):
         async with self._maintenance_lock:
             self.path_to_tags = {}
             self.tag_to_paths = {}
+            self.is_healthy = True
 
     async def _close(self) -> None:
         await self.clear()

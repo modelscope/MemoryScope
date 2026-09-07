@@ -1038,12 +1038,16 @@ def test_all_reindex_composes_bm25_then_embedding_under_one_lock():
         async def rebuild_embedding():
             return await rebuild("embedding")
 
+        async def rebuild_tag():
+            return await rebuild("tag")
+
         store._reindex_bm25 = rebuild_bm25
         store._reindex_embedding = rebuild_embedding
+        store._reindex_tag = rebuild_tag
 
         result = await store.reindex("all")
 
-        assert calls == ["bm25", "embedding"]
+        assert calls == ["bm25", "embedding", "tag"]
         assert result["scope"] == "all"
 
     run(go())

@@ -6,11 +6,12 @@ import pytest
 
 from reme.components.file_store import LocalFileStore
 from reme.components.runtime_context import RuntimeContext
+from reme.config import resolve_app_config
 from reme.steps.index import ReindexStep
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("scope", ["bm25", "embedding"])
+@pytest.mark.parametrize("scope", ["bm25", "embedding", "tag"])
 async def test_reindex_step_delegates_scope(scope):
     """The step forwards each individual scope without clearing the store."""
     store = LocalFileStore(name=f"test_reindex_{scope}", embedding_store="")
@@ -32,6 +33,7 @@ async def test_reindex_step_delegates_all_once():
         "scope": "all",
         "bm25": {"scope": "bm25", "indexed": 3},
         "embedding": {"scope": "embedding", "indexed": 3},
+        "tag": {"scope": "tag", "indexed": 3},
     }
     store.reindex = AsyncMock(return_value=details)
 
@@ -39,3 +41,11 @@ async def test_reindex_step_delegates_all_once():
 
     store.reindex.assert_awaited_once_with("all")
     assert response.metadata == details
+
+
+def test_reindex_job_schema_exposes_tag_scope():
+    """The public job contract accepts every scope implemented by the file store."""
+    config = resolve_app_config(config="default", log_config=False)
+    scope = config["jobs"]["reindex"]["parameters"]["properties"]["scope"]
+
+    assert scope["enum"] == ["all", "bm25", "embedding", "tag"]
