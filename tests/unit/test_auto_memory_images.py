@@ -26,6 +26,7 @@ from reme.steps.evolve._evolve import format_history
 from reme.steps.evolve._image_caption import ImageCaption
 from reme.steps.evolve.auto_memory import AutoMemoryStep
 from reme.steps.file_io.daily_list import DailyListStep
+from reme.steps.file_io.edit import EditStep
 from reme.steps.file_io.frontmatter_update import FrontmatterUpdateStep
 from reme.steps.file_io.move import MoveStep
 from reme.steps.file_io.write import WriteStep
@@ -141,6 +142,7 @@ class _Harness:
             name: _StepJob(step_cls, self.app, self.store)
             for name, step_cls in {
                 "daily_list": DailyListStep,
+                "edit": EditStep,
                 "frontmatter_update": FrontmatterUpdateStep,
                 "move": MoveStep,
                 "write": WriteStep,

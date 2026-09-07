@@ -2,6 +2,7 @@
 
 import asyncio
 import base64
+from contextlib import closing, contextmanager, ExitStack
 import io
 import json
 import warnings
@@ -44,41 +45,39 @@ class ImageCaption(BaseModel):
 
 def _encode_image(image, image_format: str, **kwargs) -> bytes:
     """Encode an already bounded Pillow image without inherited metadata."""
-    output = io.BytesIO()
-    image.save(output, format=image_format, **kwargs)
-    return output.getvalue()
+    with io.BytesIO() as output:
+        image.save(output, format=image_format, **kwargs)
+        return output.getvalue()
 
 
 def _provider_image(image, source_format: str) -> tuple[bytes, str]:
     """Keep lossless pixels when practical; use bounded JPEG for large payloads."""
     from PIL import Image
 
-    has_alpha = "A" in image.getbands() or "transparency" in image.info
-    image = image.convert("RGBA" if has_alpha else "RGB")
-    image.info.clear()
-    output_format = "JPEG" if source_format == "JPEG" and not has_alpha else "PNG"
-    encoded = _encode_image(image, output_format, **({"quality": 95} if output_format == "JPEG" else {}))
-    if len(encoded) <= MAX_IMAGE_PROVIDER_BYTES:
-        return encoded, _SOURCE_MEDIA_TYPES[output_format]
-
-    if has_alpha:
-        background = Image.new("RGB", image.size, "white")
-        background.paste(image, mask=image.getchannel("A"))
-        image = background
-    for quality in (90, 80, 65):
-        encoded = _encode_image(image, "JPEG", quality=quality)
+    with ExitStack() as owned:
+        has_alpha = "A" in image.getbands() or "transparency" in image.info
+        image = owned.enter_context(closing(image.convert("RGBA" if has_alpha else "RGB")))
+        image.info.clear()
+        output_format = "JPEG" if source_format == "JPEG" and not has_alpha else "PNG"
+        encoded = _encode_image(image, output_format, **({"quality": 95} if output_format == "JPEG" else {}))
         if len(encoded) <= MAX_IMAGE_PROVIDER_BYTES:
-            return encoded, "image/jpeg"
-    raise ValueError("Image cannot be encoded within the provider payload limit")
+            return encoded, _SOURCE_MEDIA_TYPES[output_format]
+
+        if has_alpha:
+            background = owned.enter_context(closing(Image.new("RGB", image.size, "white")))
+            with closing(image.getchannel("A")) as mask:
+                background.paste(image, mask=mask)
+            image = background
+        for quality in (90, 80, 65):
+            encoded = _encode_image(image, "JPEG", quality=quality)
+            if len(encoded) <= MAX_IMAGE_PROVIDER_BYTES:
+                return encoded, "image/jpeg"
+        raise ValueError("Image cannot be encoded within the provider payload limit")
 
 
-def normalize_image(data: bytes) -> tuple[bytes, str, str]:
-    """Validate source bytes and return (provider bytes, provider MIME, source MIME).
-
-    Source bytes are never modified. Animated or multi-page inputs contribute
-    their first frame only. A provider copy has EXIF orientation applied, a
-    maximum side of 2048 pixels, and no inherited metadata.
-    """
+@contextmanager
+def _decoded_image(data: bytes, *, reduce_jpeg: bool = False):
+    """Own one decoded first frame after shared format, byte and pixel checks."""
     if not isinstance(data, bytes) or not data:
         raise ValueError("Image must contain non-empty bytes")
     if len(data) > MAX_IMAGE_INPUT_BYTES:
@@ -87,34 +86,76 @@ def normalize_image(data: bytes) -> tuple[bytes, str, str]:
         raise ValueError("HEIC/HEIF images are not supported; convert them to PNG or JPEG")
 
     try:
-        from PIL import Image, ImageOps, UnidentifiedImageError
+        from PIL import Image, UnidentifiedImageError
     except ImportError as exc:
         raise RuntimeError("Image memory requires Pillow; install ReMe with its core dependencies") from exc
 
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("error", Image.DecompressionBombWarning)
-            with Image.open(io.BytesIO(data), formats=list(_SOURCE_MEDIA_TYPES)) as source:
+            with closing(Image.open(io.BytesIO(data), formats=list(_SOURCE_MEDIA_TYPES))) as source:
                 width, height = source.size
                 if width <= 0 or height <= 0 or width * height > MAX_IMAGE_PIXELS:
                     raise ValueError(f"Image exceeds the {MAX_IMAGE_PIXELS}-pixel limit")
                 source_format = source.format
+                # A permitted plugin can identify a container subtype (e.g.
+                # JPEG's MPO) that this first-frame contract does not support.
+                if source_format not in _SOURCE_MEDIA_TYPES:
+                    raise ValueError(
+                        "Unsupported image format; supported formats are PNG, JPEG, WebP, GIF, BMP, and TIFF",
+                    )
                 source.verify()
-            with Image.open(io.BytesIO(data), formats=list(_SOURCE_MEDIA_TYPES)) as source:
+            with closing(Image.open(io.BytesIO(data), formats=list(_SOURCE_MEDIA_TYPES))) as source:
                 source.seek(0)
-                image = ImageOps.exif_transpose(source)
-                # Match the resource image path: Pillow 10 cannot resize
-                # 16-bit integer modes with LANCZOS before RGB conversion.
-                resize_filter = Image.Resampling.NEAREST if image.mode.startswith("I;16") else Image.Resampling.LANCZOS
-                image.thumbnail((MAX_IMAGE_SIDE, MAX_IMAGE_SIDE), resize_filter)
-                encoded, media_type = _provider_image(image, source_format)
-                return encoded, media_type, _SOURCE_MEDIA_TYPES[source_format]
+                if reduce_jpeg and source_format == "JPEG" and max(width, height) > MAX_IMAGE_SIDE:
+                    # Power-of-two decoder scaling avoids allocating the entire
+                    # full-resolution JPEG before the final filtered thumbnail.
+                    side = max(width, height)
+                    decoder_size = tuple(
+                        max(1, (value * MAX_IMAGE_SIDE + side - 1) // side) for value in (width, height)
+                    )
+                    source.draft(None, decoder_size)
+                source.load()
+                yield source, source_format
     except (Image.DecompressionBombError, Image.DecompressionBombWarning) as exc:
         raise ValueError(f"Image exceeds the {MAX_IMAGE_PIXELS}-pixel limit") from exc
     except (UnidentifiedImageError, OSError, SyntaxError) as exc:
         raise ValueError(
             "Invalid or unsupported image; supported formats are PNG, JPEG, WebP, GIF, BMP, and TIFF",
         ) from exc
+
+
+def validate_image(data: bytes) -> str:
+    """Validate original bytes and a complete first-frame decode; return source MIME.
+
+    This path never requests resizing, re-encoding or provider EXIF normalization;
+    a decoder may apply its own intrinsic orientation while loading a frame.
+    Animated/multi-page inputs have the same first-frame-only policy as captions.
+    """
+    with _decoded_image(data) as (_, source_format):
+        return _SOURCE_MEDIA_TYPES[source_format]
+
+
+def normalize_image(data: bytes) -> tuple[bytes, str, str]:
+    """Return (provider bytes, provider MIME, source MIME), preserving source bytes.
+
+    Validate and decode the first frame once. A provider copy has EXIF orientation
+    applied, a maximum side of 2048 pixels, and no inherited metadata.
+    """
+    with _decoded_image(data, reduce_jpeg=True) as (image, source_format):
+        from PIL import Image, ImageOps
+
+        # In-place orientation avoids an extra full-size decoded image copy.
+        ImageOps.exif_transpose(image, in_place=True)
+        with ExitStack() as owned:
+            if max(image.size) > MAX_IMAGE_SIDE and image.mode in ("P", "1"):
+                # Pillow otherwise forces NEAREST and drops thin strokes/alpha.
+                image = owned.enter_context(closing(image.convert("RGBA" if image.mode == "P" else "L")))
+            # Pillow 10 cannot resize I;16 with LANCZOS before RGB conversion.
+            resize_filter = Image.Resampling.NEAREST if image.mode.startswith("I;16") else Image.Resampling.LANCZOS
+            image.thumbnail((MAX_IMAGE_SIDE, MAX_IMAGE_SIDE), resize_filter)
+            encoded, media_type = _provider_image(image, source_format)
+            return encoded, media_type, _SOURCE_MEDIA_TYPES[source_format]
 
 
 def _structured_fallback_allowed(error: Exception) -> bool:
@@ -178,6 +219,8 @@ async def _plain_caption(model: ChatModelBase, message: UserMsg) -> ImageCaption
             raise ValueError("Image caption stream ended without a complete response")
         response = final_response
     text = _response_text(response).strip()
+    if getattr(response, "is_last", None) is not True:
+        raise ValueError("Image caption model returned an incomplete response")
     if text.startswith("```json\n") and text.endswith("\n```"):
         text = text[8:-4].strip()
     try:

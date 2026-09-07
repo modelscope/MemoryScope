@@ -96,17 +96,25 @@ daily/<first-caption-date>/session-image-<fingerprint>.md # caption and original
 
 These session attachments are separate from the resource watcher. Auto Memory does not invoke `auto_resource`. Image
 cards use `kind: session_image` and `source_resource` to identify their original images; session cards retain their existing
-`session_id` and `source_conversation` fields. A session card's `image_notes` links are maintained when image memory is
-written, so the image evidence remains reachable even when the agent summarizes the caption.
+`session_id` and `source_conversation` fields. A session card's `image_notes` links are maintained even during later
+image-disabled updates, so the image evidence remains reachable when the agent rewrites the session card.
 
 Captions describe visible facts and meaningful text, numbers, and dates. They are reused for the same image content and
 caption configuration. Conversation-specific identities and relationships
 are interpreted by the memory agent from the surrounding messages, rather than being added to a shared image caption.
+Reuse follows the card's frontmatter identity, including after a rename or move to another daily date. Its current Markdown
+body is read again, so user edits remain authoritative. Conflicting owners, a changed original, or inconsistent source links
+fail explicitly without overwriting the evidence. Lookup metadata is scoped to one invocation; ordinary creates and renames
+refresh it, while in-place identity edits to unselected cards are guaranteed to be discovered on the next invocation.
 
 Caption text appears only in the memory-extraction copy, never in the saved source conversation. The saved image block
 points to the local copy, allowing it to be processed again without the caller resending Base64 bytes or a remote URL
 remaining available. If image processing fails, the call reports the failure before invoking the memory agent; completed
 image artifacts can be reused on retry.
+Original attachments, caption cards, and conversation updates are staged and published as complete files. Existing
+unowned files are not overwritten; invalid saved JSONL is reported rather than silently discarded. Image-enabled and
+image-disabled calls for the same session share an in-process lock. This does not coordinate separate ReMe processes or
+provide an all-files transaction; avoid concurrent writers from separate processes to the same workspace.
 
 With `include_images=false`, Auto Memory uses its original text-only input and does not read, caption, or create artifacts
 for images. It adds no image placeholder or fallback caption. Enabling the switch on a conversation with no image blocks
@@ -116,6 +124,10 @@ separate workspaces when comparing image-on and image-off runs.
 Image-enabled calls include `auto_memory_images` response metadata, with the image count and per-image processing results,
 plus `image_note_paths`. These paths report written or reused image cards; normal background indexing still determines when
 new cards become searchable. Image-disabled calls keep the existing response shape.
+The image metadata also reports `source_modified`, `notes_modified`, and per-day `indexes` results. A failed call may still
+have saved evidence: use these fields and the reported paths before retrying. Daily-index errors report failure while
+preserving already written cards; a later retry can rebuild a missing or incomplete image-card index. For image-enabled
+calls, top-level `modified` includes saved sources, caption cards, and index repairs, not only the session card.
 
 ## Write Location
 
