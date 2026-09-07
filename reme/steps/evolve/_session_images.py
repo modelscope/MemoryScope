@@ -21,7 +21,7 @@ from ..file_io._path import _check_path_permission, resolve_path
 from ..index import normalize_posix_path
 
 _SOURCE_METADATA = "reme_image_sources"
-_PREPROCESSING_VERSION = 1
+_PREPROCESSING_VERSION = 2
 _MAX_NOTE_BYTES = 1024 * 1024
 _EXTENSIONS = {
     "image/png": "png",

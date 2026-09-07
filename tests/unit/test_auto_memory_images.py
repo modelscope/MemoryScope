@@ -494,6 +494,28 @@ async def test_caption_prompt_change_creates_new_note_without_duplicating_source
 
 
 @pytest.mark.asyncio
+async def test_preprocessing_change_preserves_old_note_and_creates_new_caption(tmp_path, caption_mock, monkeypatch):
+    """A changed image preparation policy must not reuse a previous policy's caption."""
+    harness = _Harness(tmp_path)
+    messages = [_message(_image())]
+    version = _session_images._PREPROCESSING_VERSION
+    with monkeypatch.context() as previous:
+        previous.setattr(_session_images, "_PREPROCESSING_VERSION", version - 1)
+        first = await harness.run(messages, include_images=True)
+    old_note = tmp_path / first.metadata["image_note_paths"][0]
+    old_bytes = old_note.read_bytes()
+
+    second = await harness.run(messages, include_images=True)
+
+    assert second.success
+    assert caption_mock.await_count == 2
+    assert second.metadata["image_note_paths"] != first.metadata["image_note_paths"]
+    assert old_note.read_bytes() == old_bytes
+    assert frontmatter.load(tmp_path / second.metadata["image_note_paths"][0])["image_preprocessing_version"] == version
+    assert len(list((tmp_path / "session" / "images").iterdir())) == 1
+
+
+@pytest.mark.asyncio
 async def test_user_edited_image_note_remains_caption_source_of_truth(
     tmp_path,
     caption_mock,
