@@ -109,6 +109,18 @@ def test_default_config_registers_workspace_web_jobs():
     assert jobs["chat"]["steps"] == [{"backend": "chat_step", "agent_wrapper": "default"}]
 
 
+def test_default_config_registers_manual_and_scheduled_proactive_refresh():
+    """Proactive refresh is locally runnable while only the scheduled job starts automatically."""
+    jobs = _load_config("default.yaml")["jobs"]
+
+    manual = jobs["proactive_refresh"]
+    scheduled = jobs["proactive_refresh_cron"]
+    assert manual["backend"] == "base"
+    assert manual["enable_serve"] is False
+    assert scheduled["backend"] == "cron"
+    assert manual["steps"] == scheduled["steps"]
+
+
 def test_default_config_keeps_frontmatter_chunk_metadata_opt_in():
     """Markdown frontmatter-to-chunk metadata is disabled by default for compatibility."""
     cfg = _load_config("default.yaml")

@@ -84,7 +84,7 @@ ReMe 用目录表达记忆组织和记忆分层。原始材料先进入 `resourc
 │   ├── YYYY-MM-DD.md                 # 当天索引页
 │   └── YYYY-MM-DD/
 │       ├── <generated_name>.md       # 按主题命名的对话或资源卡片
-│       └── interests.yaml            # auto_dream 产出的主动兴趣主题
+│       └── interests.yaml            # proactive refresh 产出的主动兴趣主题
 └── digest/                           # 深加工层；可长期复用的个人事实、流程经验、知识节点
     ├── personal/
     │   └── <memory>.md               # 用户画像、偏好、长期个人事实

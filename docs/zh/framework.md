@@ -405,7 +405,6 @@ jobs:
     steps:
       - backend: dream_extract_step
       - backend: dream_integrate_step
-      - backend: dream_topics_step
       - backend: dream_finish_step
 ```
 
@@ -416,9 +415,9 @@ jobs:
 ```mermaid
 flowchart LR
     Jobs["default.yaml jobs"] --> BG["background<br/>index_update_loop<br/>resource_watch_loop<br/>digest_watch_loop"]
-    Jobs --> Cron["cron<br/>dream_cron<br/>optimize_index_cron"]
+    Jobs --> Cron["cron<br/>dream_cron<br/>proactive_refresh_cron<br/>optimize_index_cron"]
     Jobs --> Stream["stream<br/>chat"]
-    Jobs --> Base["base<br/>version / help / health_check / status / app_config<br/>search / node_search / traverse / graph_snapshot / reindex<br/>read / load / read_image / write / save / edit / delete / move / list / stat / frontmatter_*<br/>daily_list / daily_reindex / daily_write<br/>auto_memory / auto_memory_cc / auto_resource / auto_dream / proactive"]
+    Jobs --> Base["base<br/>version / help / health_check / status / app_config<br/>search / node_search / traverse / graph_snapshot / reindex<br/>read / load / read_image / write / save / edit / delete / move / list / stat / frontmatter_*<br/>daily_list / daily_reindex / daily_write<br/>auto_memory / auto_memory_cc / auto_resource / auto_dream / proactive_refresh / proactive_read"]
 ```
 
 ## 7. Step 模型
@@ -784,7 +783,6 @@ jobs:
       - backend: dream_extract_step
         file_catalog: dream
       - backend: dream_integrate_step
-      - backend: dream_topics_step
       - backend: dream_finish_step
         file_catalog: dream
 ```

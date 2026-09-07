@@ -93,7 +93,8 @@ components:
 
 可注册的内置 backend 包括 `openai`、`anthropic`、`dashscope`、`deepseek`、`gemini`、`moonshot`、`ollama` 和 `xai`。实际字段由对应 AgentScope model wrapper 决定。
 
-基础文件操作、BM25 检索、wikilink 遍历不需要 LLM。`auto_memory`、`auto_resource`、`auto_dream` 等演化流程需要可用 LLM。
+基础文件操作、BM25 检索、wikilink 遍历和 `proactive_read` 不需要 LLM。`auto_memory`、`auto_resource`、
+`auto_dream` 和 proactive refresh 等演化流程需要可用 LLM。
 
 ## Embedding 配置
 
