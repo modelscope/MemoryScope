@@ -229,15 +229,32 @@ daily/2026-05-18/interests.yaml
 Example:
 
 ```yaml
+version: 2
 date: 2026-05-18
-topic_count: 3
-diversity_days: 7
+generated_at: 2026-05-18T18:00:00+08:00
+push: true
 topics:
-  - title: Impact of DRC mining-rights policy on cobalt supply
+  - id: 9c2aa7bd21bf
+    title: Impact of DRC mining-rights policy on cobalt supply
     reason: The user repeatedly mentioned KFM and cobalt-price risk today
-    keywords: [cobalt, DRC, CMOC, KFM]
+    kind: follow_up
+    confidence: 0.7
+    first_seen: 2026-05-18
+    last_evidence_at: 2026-05-18
+    evidence: daily/2026-05-18/cobalt-supply-risk.md
     paths:
       - daily/2026-05-18/cobalt-supply-risk.md
+agenda:
+  - topic_id: 9c2aa7bd21bf
+    title: Impact of DRC mining-rights policy on cobalt supply
+    scenario_type: resume_task
+    opener: Review the KFM policy update before the next cobalt-supply decision.
+    next_action: Compare the latest policy note with the existing supply-risk assessment.
+    preconditions: []
+    delivery: in_conversation
+    linked_memory: [daily/2026-05-18/cobalt-supply-risk.md]
+    order_reason: Recent evidence and a concrete next step.
+suppressed: []
 ```
 
 Call:

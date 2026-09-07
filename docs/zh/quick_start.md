@@ -33,7 +33,7 @@ cd ..
 
 `core` extra 建议安装：当前代码会导入 AgentScope wrapper，自进化记忆也依赖它。
 
-如果要使用 `auto_memory`、`auto_resource`、`auto_dream` 这类 Agent 流程，再配置 LLM：
+如果要使用 `auto_memory`、`auto_resource`、`auto_dream` 和 proactive refresh 这类 Agent 流程，再配置 LLM：
 
 ```bash
 cat > .env <<'EOF'

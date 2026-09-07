@@ -61,11 +61,22 @@ class DreamExtractStep(BaseStep):
         day_mds = {f"{daily}/{scan_day}.md" for scan_day in dates}
         day_prefixes = tuple(f"{daily}/{scan_day}/" for scan_day in dates)
         nodes = await self.file_catalog.get_nodes()
-        indexed_all = {n.path: n.st_mtime for n in nodes if n.path in day_mds or n.path.startswith(day_prefixes)}
+        # Older Auto Dream versions checkpointed generated interests files.
+        # Remove every such watermark from the dream catalog, not only entries
+        # inside the current scan window. The exposure files themselves remain
+        # untouched and are owned by the proactive refresh pipeline.
+        legacy_interests = sorted(
+            {n.path for n in nodes if n.path.startswith(f"{daily}/") and n.path.endswith("/interests.yaml")},
+        )
+        indexed_all = {
+            n.path: n.st_mtime
+            for n in nodes
+            if n.path not in legacy_interests and (n.path in day_mds or n.path.startswith(day_prefixes))
+        }
         indexed = {path: mt for path, mt in indexed_all.items() if path in existing}
         changed = [rel for rel, mt in existing.items() if indexed.get(rel) != mt]
         unchanged = [rel for rel, mt in existing.items() if indexed.get(rel) == mt]
-        deleted = sorted(indexed_all.keys() - set(existing))
+        deleted = sorted((indexed_all.keys() - set(existing)) | set(legacy_interests))
         self.logger.info(
             f"[{self.name}] scan summary existing={len(existing)} indexed={len(indexed)} "
             f"changed={len(changed)} unchanged={len(unchanged)} deleted={len(deleted)}",

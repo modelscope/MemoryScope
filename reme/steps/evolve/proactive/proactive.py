@@ -162,12 +162,17 @@ class ProactiveStep(BaseStep):
         try:
             base = dt.date.fromisoformat(day)
             cutoff = (base - dt.timedelta(days=max(horizon - 1, 0))).isoformat()
+            upper_bound = base.isoformat()
         except ValueError:
             cutoff = ""
+            upper_bound = ""
         kept = [
             dump_topic(t)
             for t in state_file.open_topics
-            if (not cutoff or str(t.last_evidence_at or "") >= cutoff) and t.confidence >= min_confidence - 1e-9
+            if (
+                (not cutoff or cutoff <= str(t.last_evidence_at or "") <= upper_bound)
+                and t.confidence >= min_confidence - 1e-9
+            )
         ]
         kept = sort_topics(kept)
         result.path = f"{daily}/_proactive.yaml"

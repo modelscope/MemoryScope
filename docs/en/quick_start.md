@@ -34,7 +34,7 @@ The static build step requires Node.js 22.13 or newer and makes Studio available
 Installing the `core` extra is recommended. The current code imports the AgentScope wrapper, and self-evolving memory
 also depends on it.
 
-To use agent workflows such as `auto_memory`, `auto_resource`, and `auto_dream`, configure an LLM:
+To use agent workflows such as `auto_memory`, `auto_resource`, `auto_dream`, and proactive refresh, configure an LLM:
 
 ```bash
 cat > .env <<'EOF'

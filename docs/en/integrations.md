@@ -31,7 +31,8 @@ An empty search result must remain empty; do not present model inference as reca
 
 ## MCP
 
-The default HTTP service exposes streamable HTTP MCP at `http://127.0.0.1:2333/mcp`. Common tools include `search`, `read`, `traverse`, `list`, `auto_memory`, and `proactive`.
+The default HTTP service exposes streamable HTTP MCP at `http://127.0.0.1:2333/mcp`. Common tools include `search`,
+`read`, `traverse`, `list`, `auto_memory`, and `proactive_read`.
 
 Use `service.jobs` to expose a read-only subset or keep write tools in a separate configuration.
 

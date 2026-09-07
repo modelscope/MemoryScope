@@ -128,8 +128,8 @@ paths enter `failed_paths`. The Finish stage does not checkpoint failed paths, e
 3. Persist the dream catalog if there were upserts or deletions.
 4. Return a summary containing counts for scanned, changed, integrated, checkpoints, and related values.
 
-Auto Dream neither reads nor writes proactive state or `interests.yaml`. Those files are owned by
-`proactive_refresh_cron`; see [Proactive](./proactive.md).
+Auto Dream neither reads nor writes proactive state or `interests.yaml`. Those files are owned by the proactive refresh
+pipeline; see [Proactive](./proactive.md).
 
 Failed paths are not checkpointed. The next `auto_dream` run therefore continues to treat them as changed inputs until
 integration succeeds.

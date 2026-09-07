@@ -18,9 +18,7 @@ from reme.schema import DreamState, FileNode
 from reme.steps.evolve.dream.extract import DreamExtractStep
 from reme.steps.evolve.dream.finish import DreamFinishStep
 from reme.steps.evolve.dream.integrate import DreamIntegrateStep, _snapshot_digest
-from reme.steps.evolve.proactive.proactive import ProactiveStep
 from reme.steps.evolve.dream.utils import parse_structured_reply, recent_dates, scan_day_files
-from reme.steps.evolve.proactive.utils import load_yaml_topics
 
 
 def _touch(path: Path, text: str = "x") -> Path:
@@ -171,8 +169,8 @@ def test_dream_extract_matches_posix_catalog_paths(tmp_path):
     asyncio.run(run())
 
 
-def test_dream_extract_removes_legacy_interests_entry_from_catalog(tmp_path):
-    """Auto Dream leaves interests.yaml untouched and removes its obsolete dream-catalog watermark."""
+def test_dream_extract_removes_all_legacy_interests_entries_from_catalog(tmp_path):
+    """Auto Dream removes historical interests watermarks without touching exposure files."""
 
     class Catalog(_Catalog):
         """Catalog seeded with a legacy interests entry."""
@@ -190,8 +188,15 @@ def test_dream_extract_removes_legacy_interests_entry_from_catalog(tmp_path):
 
     async def run():
         interests = _touch(tmp_path / "daily" / "2026-05-28" / "interests.yaml", "topics: []\n")
+        old_interests = _touch(tmp_path / "daily" / "2026-01-01" / "interests.yaml", "topics: []\n")
         rel_path = interests.relative_to(tmp_path).as_posix()
-        catalog = Catalog([FileNode(path=rel_path, st_mtime=interests.stat().st_mtime)])
+        old_rel_path = old_interests.relative_to(tmp_path).as_posix()
+        catalog = Catalog(
+            [
+                FileNode(path=rel_path, st_mtime=interests.stat().st_mtime),
+                FileNode(path=old_rel_path, st_mtime=old_interests.stat().st_mtime),
+            ],
+        )
         step = DreamExtractStep(scan_days=1, app_context=ApplicationContext(workspace_dir=str(tmp_path)))
 
         with patch("reme.steps.evolve.dream.extract.refresh_day_index", return_value={}):
@@ -200,9 +205,10 @@ def test_dream_extract_removes_legacy_interests_entry_from_catalog(tmp_path):
             )
 
         assert response.success is True
-        assert response.metadata["dream"]["deleted_paths"] == [rel_path]
-        assert catalog.deleted == [rel_path]
+        assert response.metadata["dream"]["deleted_paths"] == [old_rel_path, rel_path]
+        assert catalog.deleted == [old_rel_path, rel_path]
         assert interests.read_text(encoding="utf-8") == "topics: []\n"
+        assert old_interests.read_text(encoding="utf-8") == "topics: []\n"
 
     asyncio.run(run())
 
@@ -506,107 +512,6 @@ def test_extract_without_llm_marks_changed_paths_failed(tmp_path):
         assert response.success is False
         assert note.relative_to(tmp_path).as_posix() in dream["changed_paths"]
         assert dream["failed_paths"] == dream["changed_paths"]
-
-    asyncio.run(run())
-
-
-def test_strict_topic_loading_rejects_lossy_fields(tmp_path):
-    """Strict mode rejects values and fields that clean_topic would silently lose."""
-    target = _touch(tmp_path / "interests.yaml", "topics:\n  - title: Topic\n    reason: Reason\n    custom: keep me\n")
-
-    try:
-        load_yaml_topics(target, strict=True)
-    except ValueError as exc:
-        assert "unknown field(s): custom" in str(exc)
-    else:
-        raise AssertionError("strict topic loading accepted a lossy field")
-
-
-def test_strict_topic_loading_rejects_invalid_field_types(tmp_path):
-    """Strict mode rejects list fields that would otherwise be normalized away."""
-    target = _touch(
-        tmp_path / "interests.yaml",
-        "topics:\n  - title: Topic\n    reason: Reason\n    paths: daily/source.md\n",
-    )
-
-    try:
-        load_yaml_topics(target, strict=True)
-    except ValueError as exc:
-        assert "topics[0].paths must be a list of non-empty strings" in str(exc)
-    else:
-        raise AssertionError("strict topic loading accepted an invalid paths type")
-
-
-def test_proactive_answer_includes_topics_and_requested_content(tmp_path):
-    """Successful proactive reads expose useful data through the primary answer."""
-
-    async def run():
-        content = (
-            "date: 2026-05-28\n"
-            "topics:\n"
-            "  - title: Retrieval quality\n"
-            "    reason: Search behavior changed repeatedly.\n"
-            "    evidence: daily/2026-05-28/session.md\n"
-        )
-        _touch(tmp_path / "daily" / "2026-05-28" / "interests.yaml", content)
-        step = ProactiveStep(app_context=ApplicationContext(workspace_dir=str(tmp_path)))
-
-        response = await step(RuntimeContext(date="2026-05-28", include_content=True, file_store=_FileStore(tmp_path)))
-
-        assert response.success is True
-        assert response.answer == {
-            "summary": "Read 1 proactive topic(s) from daily/2026-05-28/interests.yaml",
-            "topics": [
-                {
-                    "title": "Retrieval quality",
-                    "reason": "Search behavior changed repeatedly.",
-                    "evidence": "daily/2026-05-28/session.md",
-                    "paths": [],
-                },
-            ],
-            "content": content,
-        }
-        assert response.metadata["topics"] == response.answer["topics"]
-        assert response.metadata["content"] == content
-
-    asyncio.run(run())
-
-
-def test_proactive_answer_omits_unrequested_content(tmp_path):
-    """Raw YAML is absent from the primary answer when include_content is false."""
-
-    async def run():
-        _touch(tmp_path / "daily" / "2026-05-28" / "interests.yaml", "topics:\n  - title: Topic\n    reason: Reason\n")
-        step = ProactiveStep(app_context=ApplicationContext(workspace_dir=str(tmp_path)))
-
-        response = await step(RuntimeContext(date="2026-05-28", include_content=False, file_store=_FileStore(tmp_path)))
-
-        assert response.success is True
-        assert "content" not in response.answer
-        assert response.answer["topics"][0]["title"] == "Topic"
-        assert response.metadata["content"] == ""
-
-    asyncio.run(run())
-
-
-def test_proactive_keeps_skipped_and_error_answers_explicit(tmp_path):
-    """Empty and failure outcomes remain distinguishable without reading metadata."""
-
-    async def run():
-        step = ProactiveStep(app_context=ApplicationContext(workspace_dir=str(tmp_path)))
-        skipped = await step(RuntimeContext(date="2026-05-28", file_store=_FileStore(tmp_path)))
-
-        assert skipped.success is True
-        assert skipped.answer == "Skipped: interests file not found at daily/2026-05-28/interests.yaml"
-        assert skipped.metadata["skipped"] is True
-
-        _touch(tmp_path / "daily" / "2026-05-28" / "interests.yaml", "topics: []\n")
-        with patch("reme.steps.evolve.proactive.proactive.load_yaml_topics", side_effect=ValueError("bad topics")):
-            failed = await step(RuntimeContext(date="2026-05-28", file_store=_FileStore(tmp_path)))
-
-        assert failed.success is False
-        assert failed.answer == "Error: ValueError: bad topics"
-        assert failed.metadata["error"] == "ValueError: bad topics"
 
     asyncio.run(run())
 

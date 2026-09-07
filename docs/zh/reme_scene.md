@@ -220,15 +220,32 @@ daily/2026-05-18/interests.yaml
 示例：
 
 ```yaml
+version: 2
 date: 2026-05-18
-topic_count: 3
-diversity_days: 7
+generated_at: 2026-05-18T18:00:00+08:00
+push: true
 topics:
-  - title: 刚果(金)矿权政策对钴供给的影响
+  - id: f7c355661d51
+    title: 刚果(金)矿权政策对钴供给的影响
     reason: 用户当天多次提到 KFM 矿和钴价风险
-    keywords: [钴, 刚果金, 洛阳钼业, KFM]
+    kind: follow_up
+    confidence: 0.7
+    first_seen: 2026-05-18
+    last_evidence_at: 2026-05-18
+    evidence: daily/2026-05-18/cobalt-supply-risk.md
     paths:
       - daily/2026-05-18/cobalt-supply-risk.md
+agenda:
+  - topic_id: f7c355661d51
+    title: 刚果(金)矿权政策对钴供给的影响
+    scenario_type: resume_task
+    opener: 下次判断钴供给前，先看看 KFM 的最新政策变化。
+    next_action: 对比最新政策笔记与已有供给风险判断。
+    preconditions: []
+    delivery: in_conversation
+    linked_memory: [daily/2026-05-18/cobalt-supply-risk.md]
+    order_reason: 证据较新且下一步明确。
+suppressed: []
 ```
 
 调用：

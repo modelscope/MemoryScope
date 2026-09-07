@@ -99,7 +99,7 @@ cat > .env <<'EOF'
 # EMBEDDING_API_KEY=sk-xxx
 # EMBEDDING_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 
-# Required for auto_memory, auto_resource, and auto_dream.
+# Required for auto_memory, auto_resource, auto_dream, and proactive refresh.
 LLM_API_KEY=sk-xxx
 LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 EOF

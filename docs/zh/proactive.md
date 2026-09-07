@@ -9,12 +9,44 @@ daily/<date>/interests.yaml
 
 上层 Agent 可以用它获取“今天值得主动关注什么”，再决定是否提醒、追问、推荐下一步或生成主动洞察。
 
-`interests.yaml` 由 `proactive_refresh_cron` 生成；`proactive_read` 只负责读取和暴露结果。Auto Dream 是独立的
-daily-to-digest 流程，不读取或写入 proactive 状态。
+`interests.yaml` 由 proactive refresh writer 链路生成，默认通过 `proactive_refresh_cron` 定时执行；
+`proactive_read` 只负责读取和暴露结果。Auto Dream 是独立的 daily-to-digest 流程，不读取或写入 proactive 状态。
 
 ## 配置入口
 
-默认配置在 `reme/config/default.yaml`：
+默认配置在 `reme/config/default.yaml`。同一组 refresh steps 有两个入口：用于维护和调试的本地 one-shot job，
+以及按应用时区每天 18:00 执行的定时任务：
+
+```yaml
+proactive_refresh:
+  backend: base
+  enable_serve: false
+  steps: &proactive_refresh_steps
+    - backend: proactive_extract_step
+      file_catalog: proactive
+      scan_days: 2
+      carry_forward_days: 14
+      max_carry_forward_topics: 20
+      llm_timeout_seconds: 300
+      max_chars_per_file: 60000
+      max_total_chars: 300000
+    - backend: proactive_topics_step
+      known_threshold: 0.85
+      known_threshold_calibrated_for: text-embedding-v4@1024
+      min_push_confidence: 0.5
+      max_topics: 10
+    - backend: proactive_plan_step
+    - backend: proactive_agenda_step
+    - backend: proactive_finish_step
+      file_catalog: proactive
+
+proactive_refresh_cron:
+  backend: cron
+  cron: "0 18 * * *"
+  steps: *proactive_refresh_steps
+```
+
+上面的 anchor 只是为了紧凑展示；`default.yaml` 中显式写出了两组 steps。读取 job 为：
 
 ```yaml
 proactive_read:
@@ -48,6 +80,18 @@ proactive_read:
 | `include_content` | 是否在 answer 和 metadata 中返回 YAML 原文，默认 `true`。                    |
 | `horizon_days`    | 读取单日曝光文件，或在更宽时间窗下读取 truth source；默认 `1`。              |
 | `min_confidence`  | 返回 topic 的最低置信度，默认 `0.4`；旧版 topic 使用 `0.5`。                 |
+
+### Refresh 成本、文件与关闭方式
+
+没有 daily Markdown 发生变化时，refresh 会在调用 LLM 前结束，也不会生成新的曝光文件。有变化素材时，extract
+通常调用一次 LLM；回复不可用时最多重试一次。存在 push candidates 时，plan 会再调用一次；候选数大于一个时，
+agenda 会再调用一次。因此默认链路单轮最多调用四次 LLM。
+
+Refresh 会维护可重建的 truth source `daily/_proactive.yaml`，写入 `daily/<date>/interests.yaml`，并推进独立的
+`proactive` file catalog。Auto Dream 不读取或写入这些 proactive 产物。
+
+如需关闭自动 refresh，请使用不包含 `proactive_refresh_cron` job 的显式应用配置。若仍需按需维护，可保留
+本地 one-shot 的 `proactive_refresh`；它设置了 `enable_serve: false`，不会暴露到 HTTP 或 MCP。
 
 ## 输入契约
 
@@ -155,7 +199,16 @@ Skipped: interests file not found at daily/2026-06-20/interests.yaml
 
 ## 运行方式
 
-CLI：
+通过正常应用生命周期立即执行一次 refresh：
+
+```bash
+reme start job=proactive_refresh date=2026-06-20
+```
+
+该命令可能调用配置的 LLM，并更新 `_proactive.yaml`、`interests.yaml` 与 proactive catalog；它不会运行 Auto
+Dream。
+
+读取生成的 topics：
 
 ```bash
 reme proactive_read date=2026-06-20
@@ -180,7 +233,8 @@ Proactive 职责边界如下：
 
 | 模块                     | 职责                                         |
 |--------------------------|----------------------------------------------|
-| `proactive_refresh_cron` | `interests.yaml` 的唯一写入方（白天曝光）。  |
+| `proactive_refresh`      | 从本地 CLI 单次运行 refresh writer 链路。    |
+| `proactive_refresh_cron` | 每天 18:00 运行同一套 writer 链路。          |
 | `proactive_step`         | 读取 `interests.yaml`，暴露给上层 Agent。    |
 
 `proactive_read` 不修改任何文件，不更新 catalog，也不负责判断是否应该主动打扰用户。它只提供当天主题材料；是否推送、何时推送、用什么语气推送，应由调用方根据产品策略决定。

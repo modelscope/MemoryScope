@@ -79,6 +79,36 @@ jobs:
     steps:
       - backend: optimize_index_step
 
+  proactive_refresh:
+    backend: base
+    enable_serve: false
+    description: "Refresh proactive topics once for local maintenance or debugging; not exposed by HTTP/MCP."
+    parameters:
+      type: object
+      properties:
+        date:
+          type: string
+          description: "YYYY-MM-DD to refresh; defaults to today in the application's timezone"
+          default: ""
+    steps:
+      - backend: proactive_extract_step
+        file_catalog: proactive
+        scan_days: 2
+        carry_forward_days: 14
+        max_carry_forward_topics: 20
+        llm_timeout_seconds: 300
+        max_chars_per_file: 60000
+        max_total_chars: 300000
+      - backend: proactive_topics_step
+        known_threshold: 0.85
+        known_threshold_calibrated_for: text-embedding-v4@1024
+        min_push_confidence: 0.5
+        max_topics: 10
+      - backend: proactive_plan_step
+      - backend: proactive_agenda_step
+      - backend: proactive_finish_step
+        file_catalog: proactive
+
   proactive_refresh_cron:
     backend: cron
     cron: "0 18 * * *"             # once a day at 18:00

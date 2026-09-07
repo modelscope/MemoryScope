@@ -120,8 +120,8 @@ Finish 阶段不会 checkpoint 失败路径，保证下次还能重试。
 3. 如果有 upsert 或 delete，持久化 dream catalog。
 4. 返回包含 scanned、changed、integrated、checkpoint 等计数的摘要。
 
-Auto Dream 不读取或写入 proactive 状态和 `interests.yaml`。这些文件由 `proactive_refresh_cron` 负责，见
-[Proactive](./proactive.md)。
+Auto Dream 不读取或写入 proactive 状态和 `interests.yaml`。这些文件由 proactive refresh writer 链路负责，
+见 [Proactive](./proactive.md)。
 
 失败路径不会被 checkpoint。这样下一次 `auto_dream` 仍会把它们视作 changed input，直到整合成功。
 

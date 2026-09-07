@@ -7,7 +7,8 @@ description: Quick answers for ReMe installation, services, models, retrieval, f
 
 ## Do basic file operations require a model API key?
 
-No. `write`, `read`, `list`, `stat`, BM25 search, and wikilink traversal work without model credentials. `auto_memory`, `auto_resource`, and `auto_dream` require an LLM.
+No. `write`, `read`, `list`, `stat`, BM25 search, wikilink traversal, and `proactive_read` work without model
+credentials. `auto_memory`, `auto_resource`, `auto_dream`, and proactive refresh require an LLM.
 
 ## Why is search still BM25-only after setting an embedding key?
 

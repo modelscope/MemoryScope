@@ -34,6 +34,7 @@ from reme.steps.evolve.proactive.utils import (
     load_carry_forward,
     load_personal_profile_block,
     load_state,
+    load_yaml_topics,
     normalize_topic,
     parse_interests_topics,
     parse_extract_reply,
@@ -1220,6 +1221,64 @@ def test_proactive_backward_compat(tmp_path):
     asyncio.run(run())
 
 
+def test_proactive_answer_omits_unrequested_content(tmp_path):
+    """Raw YAML is absent from the primary answer when include_content is false."""
+
+    async def run():
+        _touch(tmp_path / "daily" / DAY / "interests.yaml", "topics:\n  - title: Topic\n    reason: Reason\n")
+        step = ProactiveStep(app_context=ApplicationContext(workspace_dir=str(tmp_path)))
+
+        response = await step(RuntimeContext(date=DAY, include_content=False, file_store=_FileStore(tmp_path)))
+
+        assert response.success is True
+        assert "content" not in response.answer
+        assert response.answer["topics"][0]["title"] == "Topic"
+        assert response.metadata["content"] == ""
+
+    asyncio.run(run())
+
+
+def test_proactive_missing_file_is_an_explicit_skip(tmp_path):
+    """A missing single-day exposure remains distinguishable without metadata."""
+
+    async def run():
+        step = ProactiveStep(app_context=ApplicationContext(workspace_dir=str(tmp_path)))
+        response = await step(RuntimeContext(date=DAY, file_store=_FileStore(tmp_path)))
+
+        assert response.success is True
+        assert response.answer == f"Skipped: interests file not found at daily/{DAY}/interests.yaml"
+        assert response.metadata["skipped"] is True
+
+    asyncio.run(run())
+
+
+def test_strict_topic_loading_rejects_lossy_fields(tmp_path):
+    """Strict legacy loading rejects values that would otherwise be discarded."""
+    target = _touch(tmp_path / "interests.yaml", "topics:\n  - title: Topic\n    reason: Reason\n    custom: keep me\n")
+
+    try:
+        load_yaml_topics(target, strict=True)
+    except ValueError as exc:
+        assert "unknown field(s): custom" in str(exc)
+    else:
+        raise AssertionError("strict topic loading accepted a lossy field")
+
+
+def test_strict_topic_loading_rejects_invalid_field_types(tmp_path):
+    """Strict legacy loading rejects list fields that would otherwise be normalized away."""
+    target = _touch(
+        tmp_path / "interests.yaml",
+        "topics:\n  - title: Topic\n    reason: Reason\n    paths: daily/source.md\n",
+    )
+
+    try:
+        load_yaml_topics(target, strict=True)
+    except ValueError as exc:
+        assert "topics[0].paths must be a list of non-empty strings" in str(exc)
+    else:
+        raise AssertionError("strict topic loading accepted an invalid paths type")
+
+
 def test_horizon_merge(tmp_path):
     """Horizon>1 reads the truth source filtered by evidence recency (v5 R4)."""
 
@@ -1244,6 +1303,13 @@ def test_horizon_merge(tmp_path):
             RuntimeContext(date=DAY, include_content=False, file_store=_FileStore(ws), horizon_days=7),
         )
         assert {t["title"] for t in response2.answer["topics"]} == {"Topic X", "Topic Y"}
+
+        # Historical reads are bounded on both sides and cannot expose topics
+        # whose evidence is newer than the requested date.
+        historical = await step(
+            RuntimeContext(date="2026-08-10", include_content=False, file_store=_FileStore(ws), horizon_days=7),
+        )
+        assert [t["title"] for t in historical.answer["topics"]] == ["Topic Y"]
 
         # Empty truth source -> skipped, not an error.
         with tempfile.TemporaryDirectory() as tmp:
