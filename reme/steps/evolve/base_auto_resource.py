@@ -4,13 +4,15 @@ import hashlib
 import re
 from abc import abstractmethod
 from collections.abc import Mapping
-from dataclasses import dataclass
+from contextlib import contextmanager
+from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 from typing import Any
 
 import frontmatter
 from watchfiles import Change
 
+from ...components.runtime_context import RuntimeContext
 from ..base_step import BaseStep
 from ..file_io import refresh_day_index, validate_filename_component
 from ..file_io._path import is_relative_to, resolve_path
@@ -19,6 +21,60 @@ from ._evolve import now
 _SOURCE_RESOURCE_KEY = "source_resource"
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _UNSAFE_FILENAME_CHARS = re.compile(r'[<>:"/\\|?*\x00-\x1f]+')
+_LOOKUP_BATCH_KEY = "_auto_resource_lookup_batch"
+
+
+@dataclass
+class _ResourceDayLookup:
+    """Small, rebuildable ownership index; note bodies never enter the cache."""
+
+    owners: dict[str, dict[str, str]] = field(default_factory=dict)
+    day_sources: dict[str, set[str]] = field(default_factory=dict)
+    dirty_days: set[str] = field(default_factory=set)
+    aliases: dict[Path, set[str]] = field(default_factory=dict)
+
+    def replace_day(self, day: str, notes: list[dict]) -> None:
+        """Replace one day's owners, preserving daily_list's first-match order."""
+        day_owners: dict[str, str] = {}
+        for note in notes:
+            source = str(note.get(_SOURCE_RESOURCE_KEY, "")).strip()
+            if source and source not in day_owners:
+                day_owners[source] = str(note["path"])
+        for source in self.day_sources.pop(day, set()):
+            owners = self.owners[source]
+            owners.pop(day, None)
+            if not owners:
+                del self.owners[source]
+        for source, path in day_owners.items():
+            self.owners.setdefault(source, {})[day] = path
+        self.day_sources[day] = set(day_owners)
+        self.dirty_days.discard(day)
+
+
+@dataclass
+class _ResourceLookupBatch:
+    """Indexes isolated by workspace, daily directory and resolved dependencies."""
+
+    indexes: dict[tuple, _ResourceDayLookup] = field(default_factory=dict)
+
+
+@contextmanager
+def _resource_lookup_scope(context: RuntimeContext, *, reuse: bool = False):
+    """Share a router's index with processors, never with the next watch batch."""
+    previous = context.get(_LOOKUP_BATCH_KEY)
+    if reuse and isinstance(previous, _ResourceLookupBatch):
+        yield previous
+        return
+    existed = _LOOKUP_BATCH_KEY in context
+    batch = _ResourceLookupBatch()
+    context[_LOOKUP_BATCH_KEY] = batch
+    try:
+        yield batch
+    finally:
+        if existed:
+            context[_LOOKUP_BATCH_KEY] = previous
+        else:
+            del context[_LOOKUP_BATCH_KEY]
 
 
 @dataclass(frozen=True)
@@ -230,14 +286,34 @@ class BaseAutoResourceStep(BaseStep):
         return None
 
     async def _list_resource_note(self, day: str, file_path: str) -> dict | None:
+        notes = await self._list_daily_notes(day)
+        batch, key = self._resource_lookup_cache()
+        if batch is not None and key in batch.indexes:
+            batch.indexes[key].replace_day(day, notes)
+        return self._find_resource_note(notes, file_path)
+
+    async def _list_daily_notes(self, day: str) -> list[dict]:
+        """Use the configured daily_list job for both history and targeted checks."""
         list_response = await self.run_job("daily_list", date=day)
         if not list_response.success:
             raise RuntimeError(f"daily_list failed: {list_response.answer}")
-        notes = list_response.metadata.get("notes") or []
-        return self._find_resource_note(notes, file_path)
+        return list_response.metadata.get("notes") or []
 
-    def _daily_note_days(self) -> list[str]:
-        """Return safe, deterministic daily subdirectories available for lookup."""
+    def _resource_lookup_cache(self) -> tuple[_ResourceLookupBatch | None, tuple]:
+        """Keep overridden stores/configurations from sharing another lookup domain."""
+        batch = self.context.get(_LOOKUP_BATCH_KEY) if self.context is not None else None
+        if not isinstance(batch, _ResourceLookupBatch):
+            return None, ()
+        key = (
+            self.workspace_path.resolve(),
+            str(self.config_value("daily_dir")),
+            id(self.file_store),
+            id(self.app_context),
+        )
+        return batch, key
+
+    def _daily_note_days(self, *, include_missing_links: bool = False) -> list[str]:
+        """List safe daily directories, optionally retaining missing internal aliases."""
         workspace = self.workspace_path.resolve()
         daily_dir = str(self.config_value("daily_dir"))
         daily_root, error = resolve_path(workspace, daily_dir)
@@ -251,7 +327,9 @@ class BaseAutoResourceStep(BaseStep):
                 continue
             try:
                 resolved, path_error = resolve_path(workspace, f"{daily_dir}/{entry.name}")
-                if not path_error and resolved is not None and resolved.is_dir():
+                if path_error or resolved is None:
+                    continue
+                if resolved.is_dir() or (include_missing_links and entry.is_symlink() and not resolved.exists()):
                     days.append(entry.name)
             except (OSError, RuntimeError):
                 # Broken or cyclic links must not prevent lookup in other days.
@@ -259,12 +337,30 @@ class BaseAutoResourceStep(BaseStep):
         return sorted(days)
 
     async def _find_loose_resource_day(self, file_path: str) -> str | None:
-        """Find the single daily-card owner for a root-level resource."""
-        matches: list[tuple[str, str]] = []
-        for day in self._daily_note_days():
-            note = await self._list_resource_note(day, file_path)
-            if note is not None:
-                matches.append((day, str(note["path"])))
+        """Scan history once per batch, then refresh only potentially changed days."""
+        batch, key = self._resource_lookup_cache()
+        lookup = batch.indexes.get(key) if batch is not None else None
+        if lookup is None:
+            lookup = _ResourceDayLookup()
+            for day in self._daily_note_days(include_missing_links=True):
+                directory, error = resolve_path(
+                    self.workspace_path.resolve(),
+                    f"{self.config_value('daily_dir')}/{day}",
+                )
+                if error or directory is None:
+                    raise ValueError(f"invalid daily path for {day}: {error}")
+                # Remember safe missing aliases too: creating their target in
+                # this batch can make another date claim the same new card.
+                lookup.aliases.setdefault(directory, set()).add(day)
+                if directory.is_dir():
+                    lookup.replace_day(day, await self._list_daily_notes(day))
+            # Publish only a complete scan; a failed daily_list must not turn
+            # unvisited days into false negatives for subsequent resources.
+            if batch is not None:
+                batch.indexes[key] = lookup
+        for day in sorted(lookup.dirty_days):
+            lookup.replace_day(day, await self._list_daily_notes(day))
+        matches = sorted(lookup.owners.get(self._source_resource_link(file_path), {}).items())
         if len(matches) > 1:
             paths = ", ".join(path for _, path in matches)
             raise RuntimeError(f"Multiple daily resource notes claim {file_path}: {paths}")
@@ -543,16 +639,32 @@ class BaseAutoResourceStep(BaseStep):
         note_stem = _compute_note_stem(filename)
         self.logger.info(f"[{self.name}] {change.name} file_path={file_path} note_stem={note_stem}")
 
-        if change == Change.deleted:
-            await self._handle_delete(file_path, date_str, note_stem)
-        else:
-            await self._handle_upsert(
-                file_path,
-                date_str,
-                note_stem,
-                change == Change.added,
-                source_path,
-            )
+        try:
+            if change == Change.deleted:
+                await self._handle_delete(file_path, date_str, note_stem)
+            else:
+                await self._handle_upsert(
+                    file_path,
+                    date_str,
+                    note_stem,
+                    change == Change.added,
+                    source_path,
+                )
+        finally:
+            # A processor may already have written/unlinked a card before
+            # raising. Re-read this day before the next historical lookup,
+            # including any new owners or changed provenance in that day.
+            batch, key = self._resource_lookup_cache()
+            if batch is not None:
+                directory, _ = resolve_path(
+                    self.workspace_path.resolve(),
+                    f"{self.config_value('daily_dir')}/{date_str}",
+                )
+                for lookup_key, lookup in batch.indexes.items():
+                    if lookup_key[:2] == key[:2]:
+                        lookup.dirty_days.add(date_str)
+                    if directory is not None:
+                        lookup.dirty_days.update(lookup.aliases.get(directory, ()))
         return {
             "success": self.context.response.success,
             "path": file_path,
@@ -587,6 +699,12 @@ class BaseAutoResourceStep(BaseStep):
         }
 
     async def execute(self):
+        assert self.context is not None
+        with _resource_lookup_scope(self.context, reuse=True):
+            return await self._execute_changes()
+
+    async def _execute_changes(self):
+        """Process a sub-batch within the router's or a standalone lookup scope."""
         assert self.context is not None
         changes = self.context.get("changes")
         if not isinstance(changes, list):

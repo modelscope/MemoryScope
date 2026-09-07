@@ -6,7 +6,7 @@ import inspect
 from ...components import R
 from ...enumeration import ComponentEnum
 from ..base_step import BaseStep
-from .base_auto_resource import BaseAutoResourceStep, _results_answer
+from .base_auto_resource import BaseAutoResourceStep, _resource_lookup_scope, _results_answer
 
 _ProcessorSpec = str | dict
 _IndexedChange = tuple[int, dict]
@@ -168,13 +168,14 @@ class AutoResourceStep(BaseStep):
 
         route_counts = ", ".join(f"{spec['backend']}={len(batch)}" for spec, _, batch in routes)
         self.logger.info(f"[{self.name}] route changes={len(changes)} processors=({route_counts})")
-        try:
-            for spec, _, indexed_changes in routes:
-                await self._dispatch_processor(spec, indexed_changes, result_slots)
-        finally:
-            # dispatch_steps merges the sub-batch into the shared context.
-            # Downstream steps and the result hook must see the original batch.
-            self.context["changes"] = changes
+        with _resource_lookup_scope(self.context):
+            try:
+                for spec, _, indexed_changes in routes:
+                    await self._dispatch_processor(spec, indexed_changes, result_slots)
+            finally:
+                # dispatch_steps merges the sub-batch into the shared context.
+                # Downstream steps and the result hook must see the original batch.
+                self.context["changes"] = changes
 
         results = [item for item in result_slots if item is not None]
         success_count = sum(1 for item in results if item.get("success"))
