@@ -168,6 +168,8 @@ class AutoResourceStep(BaseStep):
 
         route_counts = ", ".join(f"{spec['backend']}={len(batch)}" for spec, _, batch in routes)
         self.logger.info(f"[{self.name}] route changes={len(changes)} processors=({route_counts})")
+        # One common lookup scope covers every configured modality. Base builds
+        # history only when a loose-root resource needs it, regardless of order.
         with _resource_lookup_scope(self.context):
             try:
                 for spec, _, indexed_changes in routes:

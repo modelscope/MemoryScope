@@ -1,12 +1,14 @@
 """Shared lifecycle and helpers for automatic resource processors."""
 
+import asyncio
 import hashlib
 import re
 from abc import abstractmethod
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
+from threading import RLock
 from typing import Any
 
 import frontmatter
@@ -22,6 +24,9 @@ _SOURCE_RESOURCE_KEY = "source_resource"
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _UNSAFE_FILENAME_CHARS = re.compile(r'[<>:"/\\|?*\x00-\x1f]+')
 _LOOKUP_BATCH_KEY = "_auto_resource_lookup_batch"
+_LOOKUP_STATE_KEY = "_auto_resource_lookup_state"
+_LookupKey = tuple[Path, str, int, int]
+_LookupDomain = tuple[Path, str]
 
 
 @dataclass
@@ -32,6 +37,7 @@ class _ResourceDayLookup:
     day_sources: dict[str, set[str]] = field(default_factory=dict)
     dirty_days: set[str] = field(default_factory=set)
     aliases: dict[Path, set[str]] = field(default_factory=dict)
+    revision: int = 0
 
     def replace_day(self, day: str, notes: list[dict]) -> None:
         """Replace one day's owners, preserving daily_list's first-match order."""
@@ -51,11 +57,126 @@ class _ResourceDayLookup:
         self.dirty_days.discard(day)
 
 
-@dataclass
-class _ResourceLookupBatch:
-    """Indexes isolated by workspace, daily directory and resolved dependencies."""
+class _ResourceLookupState:
+    """Notify only active batches in this Application; retain no ownership cache."""
 
-    indexes: dict[tuple, _ResourceDayLookup] = field(default_factory=dict)
+    def __init__(self):
+        self.batches: set[_ResourceLookupBatch] = set()
+        self.lock = RLock()
+
+    def add(self, batch: "_ResourceLookupBatch") -> None:
+        """Register one invocation before it starts reading history."""
+        with self.lock:
+            self.batches.add(batch)
+
+    def remove(self, batch: "_ResourceLookupBatch") -> None:
+        """Release the invocation on normal exit, failure, or cancellation."""
+        with self.lock:
+            self.batches.discard(batch)
+
+    def changed(self, domain: _LookupDomain, day: str, directory: Path | None) -> None:
+        """Broadcast a possible disk mutation, without serializing model calls."""
+        with self.lock:
+            for batch in self.batches:
+                batch.record_change(domain, day, directory)
+
+
+class _ResourceLookupBatch:
+    """Own modality-independent index construction, refresh and invocation lifetime."""
+
+    def __init__(self):
+        self.indexes: dict[_LookupKey, _ResourceDayLookup] = {}
+        self.states: list[_ResourceLookupState] = []
+        self.lock = asyncio.Lock()
+        self.event_lock = RLock()
+        self.revision = 0
+        self.events: dict[tuple[_LookupDomain, str], tuple[int, Path | None]] = {}
+
+    def attach(self, app_context) -> None:
+        """Subscribe to concurrent resource mutations in each used Application."""
+        metadata = getattr(app_context, "metadata", None)
+        if not isinstance(metadata, dict):
+            return
+        state = metadata.setdefault(_LOOKUP_STATE_KEY, _ResourceLookupState())
+        if not isinstance(state, _ResourceLookupState):
+            raise TypeError(f"{_LOOKUP_STATE_KEY} must be a resource lookup state")
+        if state not in self.states:
+            state.add(self)
+            self.states.append(state)
+
+    def close(self) -> None:
+        """Drop registrations and ownership data; never carry them to another batch."""
+        for state in self.states:
+            state.remove(self)
+        self.states.clear()
+        self.indexes.clear()
+        self.events.clear()
+
+    def record_change(self, domain: _LookupDomain, day: str, directory: Path | None) -> None:
+        """Keep the latest revision per changed day, including during an in-flight scan."""
+        with self.event_lock:
+            self.revision += 1
+            self.events[(domain, day)] = (self.revision, directory)
+
+    def changed(self, key: _LookupKey, day: str, directory: Path | None) -> None:
+        """Invalidate this batch and any overlapping batches in the same Application."""
+        if self.states:
+            for state in self.states:
+                state.changed(key[:2], day, directory)
+        else:
+            self.record_change(key[:2], day, directory)
+
+    def changes_since(self, revision: int) -> tuple[int, list[tuple[_LookupDomain, str, Path | None]]]:
+        """Snapshot notifications without holding a thread lock over asynchronous I/O."""
+        with self.event_lock:
+            changes = [
+                (domain, day, directory)
+                for (domain, day), (version, directory) in self.events.items()
+                if version > revision
+            ]
+            return self.revision, changes
+
+    async def get_lookup(
+        self,
+        key: _LookupKey,
+        list_days: Callable[..., list[str]],
+        read_day: Callable[[str], Awaitable[list[dict]]],
+    ) -> _ResourceDayLookup:
+        """Lazily build one shared index, regardless of which modality needs it first."""
+        async with self.lock:
+            lookup = self.indexes.get(key)
+            if lookup is None:
+                revision, _ = self.changes_since(0)
+                lookup = _ResourceDayLookup(revision=revision)
+                for day in list_days(include_missing_links=True):
+                    directory, error = resolve_path(key[0], f"{key[1]}/{day}")
+                    if error or directory is None:
+                        raise ValueError(f"invalid daily path for {day}: {error}")
+                    # Creating a target can make an initially missing alias valid.
+                    lookup.aliases.setdefault(directory, set()).add(day)
+                    if directory.is_dir():
+                        lookup.replace_day(day, await read_day(day))
+
+            # A notification arriving during read_day must not be cleared by
+            # replace_day. Reconcile revisions after each round of reads.
+            for attempt in range(4):
+                revision, changes = self.changes_since(lookup.revision)
+                for domain, day, directory in changes:
+                    if domain == key[:2]:
+                        lookup.dirty_days.add(day)
+                    if directory is not None:
+                        lookup.dirty_days.update(lookup.aliases.get(directory, ()))
+                lookup.revision = revision
+                if not lookup.dirty_days:
+                    # Only publish a complete, reconciled scan. Failed scans
+                    # remain retryable and never become false negative owners.
+                    self.indexes[key] = lookup
+                    return lookup
+                if attempt == 3:
+                    raise RuntimeError("Resource note ownership kept changing during lookup; retry the resource")
+                for day in sorted(lookup.dirty_days):
+                    lookup.replace_day(day, await read_day(day))
+        raise AssertionError("resource lookup refresh did not finish")
 
 
 @contextmanager
@@ -71,6 +192,7 @@ def _resource_lookup_scope(context: RuntimeContext, *, reuse: bool = False):
     try:
         yield batch
     finally:
+        batch.close()
         if existed:
             context[_LOOKUP_BATCH_KEY] = previous
         else:
@@ -287,9 +409,6 @@ class BaseAutoResourceStep(BaseStep):
 
     async def _list_resource_note(self, day: str, file_path: str) -> dict | None:
         notes = await self._list_daily_notes(day)
-        batch, key = self._resource_lookup_cache()
-        if batch is not None and key in batch.indexes:
-            batch.indexes[key].replace_day(day, notes)
         return self._find_resource_note(notes, file_path)
 
     async def _list_daily_notes(self, day: str) -> list[dict]:
@@ -304,6 +423,7 @@ class BaseAutoResourceStep(BaseStep):
         batch = self.context.get(_LOOKUP_BATCH_KEY) if self.context is not None else None
         if not isinstance(batch, _ResourceLookupBatch):
             return None, ()
+        batch.attach(self.app_context)
         key = (
             self.workspace_path.resolve(),
             str(self.config_value("daily_dir")),
@@ -337,29 +457,13 @@ class BaseAutoResourceStep(BaseStep):
         return sorted(days)
 
     async def _find_loose_resource_day(self, file_path: str) -> str | None:
-        """Scan history once per batch, then refresh only potentially changed days."""
+        """Resolve ownership through the common batch index, for any resource modality."""
         batch, key = self._resource_lookup_cache()
-        lookup = batch.indexes.get(key) if batch is not None else None
-        if lookup is None:
-            lookup = _ResourceDayLookup()
-            for day in self._daily_note_days(include_missing_links=True):
-                directory, error = resolve_path(
-                    self.workspace_path.resolve(),
-                    f"{self.config_value('daily_dir')}/{day}",
-                )
-                if error or directory is None:
-                    raise ValueError(f"invalid daily path for {day}: {error}")
-                # Remember safe missing aliases too: creating their target in
-                # this batch can make another date claim the same new card.
-                lookup.aliases.setdefault(directory, set()).add(day)
-                if directory.is_dir():
-                    lookup.replace_day(day, await self._list_daily_notes(day))
-            # Publish only a complete scan; a failed daily_list must not turn
-            # unvisited days into false negatives for subsequent resources.
-            if batch is not None:
-                batch.indexes[key] = lookup
-        for day in sorted(lookup.dirty_days):
-            lookup.replace_day(day, await self._list_daily_notes(day))
+        if batch is None:
+            assert self.context is not None
+            with _resource_lookup_scope(self.context):
+                return await self._find_loose_resource_day(file_path)
+        lookup = await batch.get_lookup(key, self._daily_note_days, self._list_daily_notes)
         matches = sorted(lookup.owners.get(self._source_resource_link(file_path), {}).items())
         if len(matches) > 1:
             paths = ", ".join(path for _, path in matches)
@@ -639,6 +743,7 @@ class BaseAutoResourceStep(BaseStep):
         note_stem = _compute_note_stem(filename)
         self.logger.info(f"[{self.name}] {change.name} file_path={file_path} note_stem={note_stem}")
 
+        handled = False
         try:
             if change == Change.deleted:
                 await self._handle_delete(file_path, date_str, note_stem)
@@ -650,21 +755,19 @@ class BaseAutoResourceStep(BaseStep):
                     change == Change.added,
                     source_path,
                 )
+            handled = True
         finally:
             # A processor may already have written/unlinked a card before
-            # raising. Re-read this day before the next historical lookup,
-            # including any new owners or changed provenance in that day.
-            batch, key = self._resource_lookup_cache()
-            if batch is not None:
-                directory, _ = resolve_path(
-                    self.workspace_path.resolve(),
-                    f"{self.config_value('daily_dir')}/{date_str}",
-                )
-                for lookup_key, lookup in batch.indexes.items():
-                    if lookup_key[:2] == key[:2]:
-                        lookup.dirty_days.add(date_str)
-                    if directory is not None:
-                        lookup.dirty_days.update(lookup.aliases.get(directory, ()))
+            # raising or cancellation. Notify active batches conservatively
+            # on failure, but do not invalidate history for successful no-ops.
+            if not handled or self.context.response.metadata.get("modified"):
+                batch, key = self._resource_lookup_cache()
+                if batch is not None:
+                    directory, _ = resolve_path(
+                        self.workspace_path.resolve(),
+                        f"{self.config_value('daily_dir')}/{date_str}",
+                    )
+                    batch.changed(key, date_str, directory)
         return {
             "success": self.context.response.success,
             "path": file_path,
