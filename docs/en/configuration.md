@@ -86,7 +86,8 @@ components:
 
 Built-in registrations include `openai`, `anthropic`, `dashscope`, `deepseek`, `gemini`, `moonshot`, `ollama`, and `xai`. Their detailed model fields follow the corresponding AgentScope wrappers.
 
-File operations, BM25 search, and wikilink traversal do not require an LLM. Evolution workflows such as `auto_memory`, `auto_resource`, and `auto_dream` do.
+File operations, BM25 search, wikilink traversal, and `proactive_read` do not require an LLM. Evolution workflows such
+as `auto_memory`, `auto_resource`, `auto_dream`, and proactive refresh do.
 
 ## Embeddings
 

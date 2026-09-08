@@ -121,8 +121,9 @@ automatically.
 Embedded integrations that have already verified a provider can call `resume_embedding(verified=True)` to repair
 missing vectors in the same vector space. Vector-space changes must use the explicit `reindex` job with
 `scope: embedding`; vector search remains unavailable until that job finishes successfully.
-Use `scope: bm25` to rebuild only keyword search. `scope: all` runs the BM25 rebuild first and then the embedding
-rebuild; all scopes use the current `file_chunks` snapshot.
+Use `scope: bm25` to rebuild only keyword search, or `scope: tag` to rebuild the optional tag index from the current
+file graph. `scope: all` rebuilds BM25 first, then embeddings, and finally tags. BM25 and embedding rebuilds use the
+current `file_chunks` snapshot; the tag rebuild uses `FileNode` frontmatter from the file graph.
 
 ## How to Search
 

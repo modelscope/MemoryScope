@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useData } from "vitepress";
 
 const props = defineProps<{ lang: "zh" | "en" }>();
-const shareUrl = "https://cloud.umami.is/analytics/us/share/S1OZK1PSDLEpyiU5?date=30day&page=1";
+const shareBase = "https://cloud.umami.is/analytics/us/share/S1OZK1PSDLEpyiU5?date=30day&page=1";
+const { isDark } = useData();
+const shareUrl = computed(() => `${shareBase}&theme=${isDark.value ? "dark" : "light"}`);
 const text = computed(() => props.lang === "zh" ? {
   eyebrow: "OPEN METRICS",
   title: "ReMe 访问数据",

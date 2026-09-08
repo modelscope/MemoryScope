@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img"
      aria-labelledby="title desc">
     <title id="title">ReMe auto dream and proactive flow</title>
-    <desc id="desc">A left-to-right flow from a recent changed-daily window to digest integration, interest topic
-        writing, catalog checkpointing, and proactive reads.
+    <desc id="desc">Independent Auto Dream and proactive flows consume daily notes: Auto Dream writes digest memory,
+        while proactive refresh writes interest topics for proactive reads.
     </desc>
     <defs>
         <style>.bg { fill: #fffdf8; } .title { font: 700 30px "Comic Sans MS", "Bradley Hand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1f2430; } .subtitle { font: 14px "Comic Sans MS", "Bradley Hand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #556276; } .step-num { font: 700 12px "Comic Sans MS", "Bradley Hand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #ffffff; } .step-title { font: 700 18px "Comic Sans MS", "Bradley Hand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1f2430; } .step-subtitle { font: 13px "Comic Sans MS", "Bradley Hand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #556276; } .chip-title { font: 700 13px "Comic Sans MS", "Bradley Hand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1f2430; } .chip-text { font: 12px "Comic Sans MS", "Bradley Hand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #5e6a7c; } .note { font: 12px "Comic Sans MS", "Bradley Hand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #4f5c6f; } .panel { fill: #ffffff; stroke: #1f2430; stroke-width: 2.2; rx: 18; ry: 18; stroke-linecap: round; stroke-linejoin: round; } .chip { fill: #f8fbff; stroke: #1f2430; stroke-width: 1.6; rx: 11; ry: 11; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 6 5; } .badge { fill: #44546a; } .arrow { stroke: #7f8b9d; stroke-width: 1.45; fill: none; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); } .soft-arrow { stroke: #a3adbd; stroke-width: 1.25; stroke-dasharray: 6 6; fill: none; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-soft); } .line { stroke: #a3adbd; stroke-width: 1.25; stroke-linecap: round; }</style>
@@ -17,7 +17,7 @@
 
     <rect class="bg" x="0" y="0" width="1200" height="640"/>
     <text class="title" x="600" y="54" text-anchor="middle">Auto Dream and Proactive</text>
-    <text class="subtitle" x="600" y="80" text-anchor="middle">Scan a recent daily window, integrate a compact set of reusable units, then expose proactive topics.</text>
+    <text class="subtitle" x="600" y="80" text-anchor="middle">Independent flows turn daily notes into digest memory and proactive topics.</text>
 
     <rect class="panel" x="38" y="132" width="196" height="300"/>
     <circle class="badge" cx="72" cy="170" r="15"/>
@@ -32,7 +32,7 @@
     <text class="chip-text" x="136" y="333" text-anchor="middle">changed daily</text>
     <rect class="chip" x="66" y="360" width="140" height="44"/>
     <text class="chip-title" x="136" y="379" text-anchor="middle">LLM extract</text>
-    <text class="chip-text" x="136" y="397" text-anchor="middle">≤ 5 units + topics</text>
+    <text class="chip-text" x="136" y="397" text-anchor="middle">≤ 5 memory units</text>
 
     <rect class="panel" x="270" y="132" width="196" height="300"/>
     <circle class="badge" cx="304" cy="170" r="15"/>
@@ -52,37 +52,37 @@
     <rect class="panel" x="502" y="132" width="196" height="300"/>
     <circle class="badge" cx="536" cy="170" r="15"/>
     <text class="step-num" x="536" y="174" text-anchor="middle">3</text>
-    <text class="step-title" x="564" y="176">Topics</text>
-    <text class="step-subtitle" x="530" y="206">dream_topics_step</text>
+    <text class="step-title" x="564" y="176">Finish</text>
+    <text class="step-subtitle" x="530" y="206">dream_finish_step</text>
     <rect class="chip" x="530" y="232" width="140" height="44"/>
-    <text class="chip-title" x="600" y="251" text-anchor="middle">merge topics</text>
-    <text class="chip-text" x="600" y="269" text-anchor="middle">same day kept</text>
+    <text class="chip-title" x="600" y="251" text-anchor="middle">checkpoint</text>
+    <text class="chip-text" x="600" y="269" text-anchor="middle">skip failures</text>
     <rect class="chip" x="530" y="296" width="140" height="44"/>
-    <text class="chip-title" x="600" y="315" text-anchor="middle">avoid repeats</text>
-    <text class="chip-text" x="600" y="333" text-anchor="middle">last 7 days</text>
+    <text class="chip-title" x="600" y="315" text-anchor="middle">persist catalog</text>
+    <text class="chip-text" x="600" y="333" text-anchor="middle">dream catalog</text>
     <rect class="chip" x="530" y="360" width="140" height="44"/>
-    <text class="chip-title" x="600" y="379" text-anchor="middle">write YAML</text>
-    <text class="chip-text" x="600" y="397" text-anchor="middle">interests.yaml</text>
+    <text class="chip-title" x="600" y="379" text-anchor="middle">return summary</text>
+    <text class="chip-text" x="600" y="397" text-anchor="middle">counts + errors</text>
 
     <rect class="panel" x="734" y="132" width="196" height="300"/>
     <circle class="badge" cx="768" cy="170" r="15"/>
-    <text class="step-num" x="768" y="174" text-anchor="middle">4</text>
-    <text class="step-title" x="796" y="176">Finish</text>
-    <text class="step-subtitle" x="762" y="206">dream_finish_step</text>
+    <text class="step-num" x="768" y="174" text-anchor="middle">P</text>
+    <text class="step-title" x="796" y="176">Refresh</text>
+    <text class="step-subtitle" x="762" y="206">proactive_refresh_cron</text>
     <rect class="chip" x="762" y="232" width="140" height="44"/>
-    <text class="chip-title" x="832" y="251" text-anchor="middle">checkpoint</text>
-    <text class="chip-text" x="832" y="269" text-anchor="middle">skip failures</text>
+    <text class="chip-title" x="832" y="251" text-anchor="middle">extract topics</text>
+    <text class="chip-text" x="832" y="269" text-anchor="middle">changed daily</text>
     <rect class="chip" x="762" y="296" width="140" height="44"/>
-    <text class="chip-title" x="832" y="315" text-anchor="middle">persist catalog</text>
-    <text class="chip-text" x="832" y="333" text-anchor="middle">file_catalog</text>
+    <text class="chip-title" x="832" y="315" text-anchor="middle">plan agenda</text>
+    <text class="chip-text" x="832" y="333" text-anchor="middle">filter + order</text>
     <rect class="chip" x="762" y="360" width="140" height="44"/>
-    <text class="chip-title" x="832" y="379" text-anchor="middle">return summary</text>
-    <text class="chip-text" x="832" y="397" text-anchor="middle">counts + errors</text>
+    <text class="chip-title" x="832" y="379" text-anchor="middle">write YAML</text>
+    <text class="chip-text" x="832" y="397" text-anchor="middle">interests.yaml</text>
 
     <rect class="panel" x="966" y="132" width="196" height="300"/>
     <circle class="badge" cx="1000" cy="170" r="15"/>
-    <text class="step-num" x="1000" y="174" text-anchor="middle">5</text>
-    <text class="step-title" x="1028" y="176">Proactive</text>
+    <text class="step-num" x="1000" y="174" text-anchor="middle">R</text>
+    <text class="step-title" x="1028" y="176">Read</text>
     <text class="step-subtitle" x="994" y="206">proactive_step</text>
     <rect class="chip" x="994" y="232" width="140" height="44"/>
     <text class="chip-title" x="1064" y="251" text-anchor="middle">read YAML</text>
@@ -96,7 +96,6 @@
 
     <path class="arrow" d="M234 282 H270"/>
     <path class="arrow" d="M466 282 H502"/>
-    <path class="arrow" d="M698 282 H734"/>
     <path class="arrow" d="M930 282 H966"/>
 
     <rect class="panel" x="80" y="502" width="1040" height="82"/>
@@ -112,6 +111,5 @@
     <text class="chip-title" x="972" y="532">Boundary</text>
     <text class="chip-text" x="972" y="554" style="font-size:11px">Read-only; caller decides</text>
 
-    <path class="soft-arrow" d="M1064 432 C1064 476 600 472 600 432"/>
-    <text class="note" x="834" y="474" text-anchor="middle">proactive reads interests.yaml after auto_dream writes it</text>
+    <text class="note" x="834" y="474" text-anchor="middle">Auto Dream and proactive refresh are independent consumers of daily notes</text>
 </svg>

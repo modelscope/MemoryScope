@@ -33,7 +33,7 @@ cd ..
 
 `core` extra 建议安装：当前代码会导入 AgentScope wrapper，自进化记忆也依赖它。
 
-如果要使用 `auto_memory`、`auto_resource`、`auto_dream` 这类 Agent 流程，再配置 LLM：
+如果要使用 `auto_memory`、`auto_resource`、`auto_dream` 和 proactive refresh 这类 Agent 流程，再配置 LLM：
 
 ```bash
 cat > .env <<'EOF'
@@ -197,7 +197,7 @@ reme auto_resource changes='[{"path":"resource/2026-06-20/report.md","change":"a
 
 ```bash
 reme auto_dream date=2026-06-20
-reme proactive date=2026-06-20
+reme proactive_read date=2026-06-20
 ```
 
 这些流程需要可用 LLM；未配置 LLM 时请先使用 `write/read/search` 这类基础能力。

@@ -7,7 +7,8 @@ description: ReMe 安装、服务、模型、检索、文件和插件问题的�
 
 ## 基础文件操作需要模型 API Key 吗？
 
-不需要。`write`、`read`、`list`、`stat`、BM25 搜索和 wikilink 遍历可以在没有模型凭据时运行。`auto_memory`、`auto_resource` 和 `auto_dream` 需要 LLM。
+不需要。`write`、`read`、`list`、`stat`、BM25 搜索、wikilink 遍历和 `proactive_read` 可以在没有模型凭据时
+运行。`auto_memory`、`auto_resource`、`auto_dream` 和 proactive refresh 需要 LLM。
 
 ## 为什么配置了 Embedding Key 仍然只有 BM25？
 

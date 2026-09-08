@@ -4,11 +4,14 @@ from .application_config import ApplicationConfig, ComponentConfig, JobConfig
 from .dream import (
     DreamExtractOutput,
     DreamState,
-    DreamTopic,
     DreamUnit,
     IntegrateOutcome,
+)
+from .proactive import (
     ProactiveResult,
-    TopicSelectionOutput,
+    ProactiveState,
+    ProactiveStateFile,
+    ProactiveTopic,
 )
 from .emb_node import EmbNode
 from .file_chunk import FileChunk
@@ -27,7 +30,6 @@ __all__ = [
     "ComponentConfig",
     "DreamExtractOutput",
     "DreamState",
-    "DreamTopic",
     "DreamUnit",
     "EmbNode",
     "FileChunk",
@@ -40,11 +42,13 @@ __all__ = [
     "IntegrateOutcome",
     "JobConfig",
     "ProactiveResult",
+    "ProactiveState",
+    "ProactiveStateFile",
+    "ProactiveTopic",
     "Request",
     "Response",
     "StreamChunk",
     "TokenUsage",
-    "TopicSelectionOutput",
     "TraverseGraph",
     "TraverseGraphEdge",
     "TraverseGraphNode",
