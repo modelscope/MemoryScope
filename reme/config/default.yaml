@@ -165,7 +165,6 @@ jobs:
   auto_memory:
     backend: base
     description: "Auto-memory: record conversation facts into a daily note"
-    include_images: false
     parameters:
       type: object
       properties:
@@ -181,10 +180,6 @@ jobs:
         memory_hint:
           type: string
           description: "optional hint"
-        include_images:
-          type: boolean
-          description: "caption AgentScope session images into source-linked notes before text memory extraction"
-          default: false
         date:
           type: string
           description: "YYYY-MM-DD daily note date; empty = infer from message timestamps or today"

@@ -26,98 +26,6 @@ Conversation
 - 当前状态：做到哪一步，卡在哪里，下一步是什么。
 - 可复用经验：命令、流程、排查方法、解决方案。
 
-## 图像输入（可选）
-
-Auto Memory 可以把 AgentScope 图像块作为对话证据。该功能默认关闭，使现有纯文本流程不会产生额外的读图 token
-开销。可以在 Job 配置中长期启用：
-
-```yaml
-jobs:
-  auto_memory:
-    include_images: true
-```
-
-也可以在单次调用中用 `include_images=true` 或 `include_images=false` 覆盖。开启后，Auto Memory 先用视觉模型描述图像，
-生成链接原图的图像卡片，再在对话副本中用 caption 和卡片链接替换图像块。原有文本、内容块顺序、说话者和时间戳保持不变，
-随后由原来的纯文本记忆 Agent 整理对话事实。
-
-输入使用 AgentScope `data` block，例如：
-
-```json
-{
-  "name": "user",
-  "role": "user",
-  "content": [
-    {"type": "text", "text": "记住这张图里显示的项目代码。"},
-    {
-      "type": "data",
-      "name": "project-board",
-      "source": {
-        "type": "url",
-        "url": "https://example.com/project-board.png",
-        "media_type": "image/png"
-      }
-    }
-  ]
-}
-```
-
-只处理顶层 `image/*` data block，工具结果中嵌套的图像、音频、视频及其他数据会被忽略。支持内嵌 Base64、HTTP(S) URL，
-以及 workspace 内的本地 `file://` URL。workspace 外的路径及指向外部的符号链接会被拒绝。生成 caption 使用
-`auto_memory_step` 选择的 `as_llm` 组件，默认名称为 `default`，该模型必须支持图像输入；记忆 Agent 保持自身的模型配置。
-可以选择专门的 caption 模型：
-
-```yaml
-jobs:
-  auto_memory:
-    include_images: true
-    steps:
-      - backend: auto_memory_step
-        as_llm: vision
-```
-
-该示例需要配置 `components.as_llm.vision`。支持 PNG、JPEG、WebP、GIF、BMP 和 TIFF，原文件上限为 50 MiB、4000 万像素。
-动态图或多页图像只描述第一帧。发给模型的副本会纠正方向，将最长边缩小到最多 2048 像素，并控制在 5 MiB 内；保存的原图保持不变。
-无符号 16 位灰度按完整的 0–65535 范围线性映射到 8 位，不对单张图片自动拉伸对比度。
-
-原图字节复制到配置的 session 目录，caption 作为 daily 卡片保存：
-
-```text
-session/images/<content-hash>.<extension>                # 原图字节
-session/dialog/<session_id>.jsonl                       # 带持久本地图像引用的消息
-daily/<first-caption-date>/session-image-<fingerprint>.md # caption 和原图链接
-```
-
-这些 session 附件不进入 resource watcher，Auto Memory 不会调用 `auto_resource`。图像卡片通过 `kind: session_image`
-和 `source_resource` 标识原图；session 卡片继续使用既有的 `session_id` 和 `source_conversation` 字段。写入图像记忆时，
-系统维护 session 卡片的 `image_notes` 链接，后续关闭图像后的更新也会保留这些链接，使 Agent 重写会话卡片后仍能追溯图像证据。
-
-Caption 描述可见事实，以及有意义的文字、数字和日期。同一图像内容与 caption 配置可以复用已有结果。
-依赖具体对话的人物身份或关系由记忆 Agent 根据周边消息关联，不写入共享的图像 caption。
-复用依据卡片的 frontmatter 身份，因此重命名或移动到另一个 daily 日期后仍可复用，并重新读取当前 Markdown 正文，保留用户编辑。
-同一身份存在多份卡片、原图被修改或来源链接不一致时会明确报错，不覆盖已有证据。查询元数据仅在单次调用内复用；普通新建和
-重命名会触发刷新，对尚未选中卡片的身份元数据做原地修改则保证在下一次调用时发现。
-复用与链接重定向是不同的操作：系统可以修复已知、已不存在的默认 hash 文件名链接，但不会猜测任意自定义旧名称的身份。
-连续自定义改名后，请通过正常的链接重定向或手动维护旧链接；已有路径和无法确认身份的用户链接不会被改写。
-
-Caption 仅出现在记忆提取所用的对话副本中，不写入来源对话。持久化的图像块指向本地副本，后续可以重新处理，无需调用方再次发送
-Base64 字节，也不依赖远程 URL 一直有效。如果图像处理失败，调用会在运行记忆 Agent 前报告失败；已完成的图像产物可在重试时复用。
-原图附件、caption 卡片和对话更新会先完整写入临时文件再发布，不覆盖已有的非本功能文件；已保存 JSONL 存在无效记录时会报错，
-而不是静默丢弃。相同 session 的图像开启和关闭调用共用进程内锁，但不提供跨进程协调或多文件事务；请避免多个 ReMe 进程
-同时写入同一 workspace。
-
-`include_images=false` 使用原来的纯文本输入，不读取、描述或为图像生成文件，也不加入图像占位符或回退 caption。
-开启开关但消息中没有图像块时同样走纯文本路径。关闭开关不会移除 workspace 中已有的图像事实；比较开启与关闭图像的效果时，应使用
-各自独立的 workspace。
-未进行图像处理时，再次传入同 ID 消息会保留其已有的完整带图来源记录，包括历史补录导致 JSONL 重排的情况；新消息仍正常合并。
-这不会读取或重新描述原图。需要替换该消息的图像时，应开启图像处理后再提交。
-
-开启图像的调用在响应 metadata 中提供 `auto_memory_images`，记录图像数量和逐图处理结果，并通过 `image_note_paths` 返回写入或
-复用的图像卡片路径。新卡片何时可被搜索，仍由正常的后台索引流程决定。关闭图像的调用保持既有响应结构。
-图像 metadata 还通过 `source_modified`、`notes_modified` 和逐日 `indexes` 结果报告落盘情况。失败时也可能已有证据保存，
-重试前可以查看这些字段和返回路径。daily 索引失败会如实报错并保留已写卡片，后续重试可重建缺失或不完整的图像卡片索引。
-图像开启时，顶层 `modified` 包含来源文件、caption 卡片和索引修复的改动，不仅指 session 卡片。
-
 ## 写入位置
 
 Auto Memory 会把整理后的记忆放进 `daily/`。当天发生的对话会先被整理成一张张小卡片：
@@ -160,8 +68,8 @@ session/
     session-b.jsonl
 ```
 
-session 记忆卡片会指向对应的对话记录。持久化时排除 tool-result block 和内嵌 Base64 数据；开启图像记忆时，原图字节单独保存，
-图像块保留为本地文件引用。Caption 留在图像卡片和临时提取输入中，使生成的描述与来源对话保持区分。
+daily note 会指向对应的对话记录。持久化时会排除 tool-result block 和 base64 data block，避免召回记忆或二进制负载在后续流程中被误当成
+用户提供的证据。
 
 ## 消息时间
 

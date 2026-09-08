@@ -1,27 +1,22 @@
 """auto_memory — record conversation facts into a daily note via an agent."""
 
-import asyncio
 import datetime
 from pathlib import Path
 import zoneinfo
 
+import aiofiles
 import frontmatter
 from agentscope.message import Msg
 
 from ._evolve import agent_reply_result_text, format_history, now
-from ._session_io import atomic_write
 from ..base_step import BaseStep
 from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
-from ..file_io._file_io import get_path_lock
-from ..file_io._path import _check_path_permission, resolve_path
 from ..index import normalize_posix_path
 from ...components import R
-from ...utils.wikilink_handler import WikilinkHandler
 
 _SESSION_ID_KEY = "session_id"
 _SOURCE_CONVERSATION_KEY = "source_conversation"
-_IMAGE_SOURCES_KEY = "reme_image_sources"
 _TAGS_KEY = "tags"
 _MAX_TAGS = 8
 _MAX_TAG_LENGTH = 64
@@ -30,9 +25,8 @@ _MESSAGE_TIME_ALIASES = ("time_created", "timestamp", "createdAt", "timeCreated"
 
 def _sanitize_msg_for_save(msg: Msg) -> Msg:
     new_content = []
-    retained_indexes = {}
     changed = False
-    for index, block in enumerate(msg.content):
+    for block in msg.content:
         # Tool results often contain recalled memory/search/read output. Keeping
         # them in saved conversation history lets retrieved facts masquerade as
         # user-provided context in future auto-memory runs.
@@ -42,23 +36,10 @@ def _sanitize_msg_for_save(msg: Msg) -> Msg:
         if block.type == "data" and hasattr(block, "source") and getattr(block.source, "type", None) == "base64":
             changed = True
             continue
-        retained_indexes[(block.id, index)] = len(new_content)
         new_content.append(block)
     if not changed:
         return msg
-    update = {"content": new_content}
-    sources = (msg.metadata or {}).get(_IMAGE_SOURCES_KEY)
-    if isinstance(sources, list):
-        # Removing tool results / non-image Base64 blocks changes positions.
-        # Keep provenance aligned with the filtered, durable transcript.
-        sources = [dict(source) if isinstance(source, dict) else source for source in sources]
-        for source in sources:
-            if isinstance(source, dict):
-                key = (source.get("block_id"), source.get("block_index"))
-                if isinstance(key[0], str) and type(key[1]) is int and key in retained_indexes:
-                    source["block_index"] = retained_indexes[key]
-        update["metadata"] = {**msg.metadata, _IMAGE_SOURCES_KEY: sources}
-    return msg.model_copy(update=update)
+    return msg.model_copy(update={"content": new_content})
 
 
 def _normalize_msg_timestamp(item: dict) -> dict:
@@ -118,14 +99,8 @@ def _normalize_tags(value) -> list[str]:
 class AutoMemoryStep(BaseStep):
     """Record conversation facts into a daily note via an Agent."""
 
-    def __init__(self, include_images: bool = False, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        if not isinstance(include_images, bool):
-            raise ValueError("include_images must be a boolean")
-        self.include_images = include_images
-        self._image_memory_enabled = False
-        self._persist_image_sources = False
-        self._source_modified = False
         self.create_tools: list[str] = ["daily_write"]
         self.update_tools: list[str] = ["read", "edit", "frontmatter_update", "write"]
 
@@ -133,24 +108,7 @@ class AutoMemoryStep(BaseStep):
         return normalize_posix_path(str(self.config_value("session_dir")))
 
     def _session_path(self, session_id: str) -> Path:
-        return self._safe_path(self._session_source_path(session_id))
-
-    def _session_lock_path(self, session_id: str) -> Path:
-        """Validate the declared source before any image IO and use its lock key.
-
-        Adapters such as Claude Code declare their own source link and override
-        the save hook; they must not require access to an unused dialog path.
-        """
-        return self._safe_path(self._session_link(session_id)[2:-2])
-
-    def _safe_path(self, path: str) -> Path:
-        target, error = resolve_path(self.file_store.workspace_path, path)
-        if error or target is None:
-            raise ValueError(error or "Invalid session path")
-        allowed = self.context.get("_allowed_paths") if self.context is not None else None
-        if not _check_path_permission(self.file_store.workspace_path, target, allowed):
-            raise ValueError("No permission to access session evidence")
-        return target
+        return self.file_store.workspace_path / self._session_dir() / "dialog" / f"{session_id}.jsonl"
 
     def _session_source_path(self, session_id: str) -> str:
         return normalize_posix_path(f"{self._session_dir()}/dialog/{session_id}.jsonl")
@@ -166,11 +124,11 @@ class AutoMemoryStep(BaseStep):
         return bool(self.kwargs.get("enable_tags", False))
 
     def _frontmatter(self, path: str) -> dict:
-        post = frontmatter.loads(self._safe_path(path).read_text(encoding="utf-8"))
+        post = frontmatter.loads((self.file_store.workspace_path / path).read_text(encoding="utf-8"))
         return dict(post.metadata or {})
 
     def _note_bytes(self, path: str) -> bytes | None:
-        note_path = self._safe_path(path)
+        note_path = self.file_store.workspace_path / path
         if not note_path.is_file():
             return None
         return note_path.read_bytes()
@@ -182,99 +140,6 @@ class AutoMemoryStep(BaseStep):
         if after_bytes is None:
             return before_bytes is not None
         return after_path != before_path or before_bytes != after_bytes
-
-    async def _preserve_image_links(self, note_path: str, previous_links: list[str]) -> None:
-        """Keep existing provenance even when a text-only agent rewrites a note."""
-        image_paths = (
-            (self.context.response.metadata.get("image_note_paths") or []) if self._image_memory_enabled else []
-        )
-        if not (previous_links or image_paths):
-            return
-        target = self._safe_path(note_path)
-        lock = await get_path_lock(target)
-        async with lock:
-            # Read, merge and publish under the same lock as normal file jobs.
-            # Calling frontmatter_update/edit here would acquire it recursively.
-            previous = await asyncio.to_thread(target.read_bytes)
-            post = frontmatter.loads(previous.decode("utf-8"))
-            # A no-op must not change formatting, mtime or user bytes.
-            if self._merge_image_links(post, previous_links, image_paths):
-                await atomic_write(target, frontmatter.dumps(post), overwrite=True, expected=previous)
-
-    def _merge_image_links(self, post, previous_links: list[str], image_paths: list[str]) -> bool:
-        """Retarget verified links in the caller's locked note snapshot."""
-        existing_links = post.get("image_notes", [])
-        if not isinstance(existing_links, list) or not all(isinstance(link, str) for link in existing_links):
-            raise ValueError("Existing image_notes frontmatter must be a list of links")
-        records = self.context.response.metadata.get("auto_memory_images", {}).get("images", [])
-        relocated = {
-            record["image_fingerprint"]: record["note_path"]
-            for record in records
-            if self._image_memory_enabled and record.get("image_fingerprint") and record.get("note_path")
-        }
-        links = list(
-            dict.fromkeys(
-                self._current_image_link(link, relocated)
-                for link in [*previous_links, *existing_links, *(f"[[{path}]]" for path in image_paths)]
-            ),
-        )
-        changed = links != existing_links
-        if changed:
-            post["image_notes"] = links
-        body = post.content
-        if relocated:
-            for match in WikilinkHandler.iter_matches(post.content):
-                old_link = f"[[{match.target}]]"
-                new_link = self._current_image_link(old_link, relocated)
-                if old_link != new_link:
-                    body, _ = WikilinkHandler.scan_and_rewrite(body, match.target, new_link[2:-2])
-        if body != post.content:
-            post.content = body
-            changed = True
-        return changed
-
-    def _current_image_link(self, link: str, relocated: dict[str, str]) -> str:
-        """Retarget only a missing canonical card with a verified current owner.
-
-        A filesystem rename may precede background graph indexing, so generic
-        move retargeting cannot always find these incoming frontmatter links.
-        Unrecognized links and occupied paths remain user-owned and untouched.
-        """
-        if not relocated or not (link.startswith("[[") and link.endswith("]]")):
-            return link
-        path = Path(link[2:-2])
-        fingerprint = path.name.removeprefix("session-image-").removesuffix(".md")
-        destination = relocated.get(fingerprint)
-        if (
-            destination
-            and path.name == f"session-image-{fingerprint}.md"
-            and path.parent.parent.as_posix() == normalize_posix_path(str(self.config_value("daily_dir")))
-            and parse_daily_date(path.parent.name) == path.parent.name
-            and not self._safe_path(path.as_posix()).exists()
-        ):
-            return f"[[{destination}]]"
-        return link
-
-    def _record_note_state(
-        self,
-        day: str,
-        session_id: str,
-        count: int,
-        before_path: str,
-        before_bytes: bytes | None,
-        note_path: str,
-    ) -> None:
-        """Publish durable note state before any fallible post-processing."""
-        self.context.response.metadata.update(
-            {
-                "date": day,
-                "path": note_path or None,
-                "created": bool(note_path and not before_path),
-                "modified": self._note_modified(before_path, before_bytes, note_path),
-                "n_messages": count,
-                "source_conversation": self._session_link(session_id),
-            },
-        )
 
     def _find_session_note(self, notes: list[dict], session_id: str) -> dict | None:
         source = self._session_link(session_id)
@@ -344,71 +209,53 @@ class AutoMemoryStep(BaseStep):
         )
 
         existing: list[Msg] = []
-        previous = None
         if path.exists():
-            previous = await asyncio.to_thread(path.read_bytes)
-            content = previous.decode("utf-8")
+            async with aiofiles.open(path, encoding="utf-8") as f:
+                content = await f.read()
             for line in content.splitlines():
                 line = line.strip()
                 if line:
                     try:
                         existing.append(Msg.model_validate_json(line))
-                    except Exception as exc:
-                        raise ValueError(
-                            "Existing session contains an invalid message; refusing to rewrite it",
-                        ) from exc
+                    except Exception:
+                        pass
 
         by_id: dict[str, Msg] = {}
         for msg in existing:
             by_id[msg.id] = msg
         for msg in messages:
-            saved = by_id.get(msg.id)
-            if saved is not None and (saved.metadata or {}).get(_IMAGE_SOURCES_KEY) and not self._persist_image_sources:
-                # Without image processing we cannot reconcile a replacement
-                # attachment or its positions. Preserve the complete durable
-                # source message, including its provenance, on history rewrites
-                # as well as appends. New text messages merge normally.
-                continue
             by_id[msg.id] = msg
         merged = sorted(by_id.values(), key=lambda m: m.created_at)
 
         can_append = 0 < len(existing) <= len(merged) and all(
             merged[i].id == existing[i].id for i in range(len(existing))
         )
-        if self._persist_image_sources and can_append:
-            # An image-on retry can replace a previously saved Base64 omission
-            # with a durable file reference without changing the message ID.
-            can_append = all(
-                _sanitize_msg_for_save(merged[i]).model_dump() == existing[i].model_dump() for i in range(len(existing))
-            )
+
+        path.parent.mkdir(parents=True, exist_ok=True)
 
         if can_append:
             new_msgs = merged[len(existing) :]
-            if not new_msgs:
-                return
-            # Preserve the original text-only same-ID behavior and exact saved
-            # prefix, while staging a complete append instead of a partial one.
-            prefix = previous or b""
-            if prefix and not prefix.endswith(b"\n"):
-                prefix += b"\n"
-            content = (
-                prefix + "".join(_sanitize_msg_for_save(msg).model_dump_json() + "\n" for msg in new_msgs).encode()
-            )
+            if new_msgs:
+                async with aiofiles.open(path, "a", encoding="utf-8") as f:
+                    for msg in new_msgs:
+                        await f.write(_sanitize_msg_for_save(msg).model_dump_json() + "\n")
+                self.logger.info(
+                    f"[{self.name}] save session appended session_id={session_id!r} "
+                    f"existing={len(existing)} appended={len(new_msgs)} total={len(merged)}",
+                )
+            else:
+                self.logger.info(
+                    f"[{self.name}] save session unchanged session_id={session_id!r} "
+                    f"existing={len(existing)} total={len(merged)}",
+                )
         else:
-            content = "".join(_sanitize_msg_for_save(msg).model_dump_json() + "\n" for msg in merged).encode()
-        if content == previous:
-            return
-        await asyncio.to_thread(path.parent.mkdir, parents=True, exist_ok=True)
-        try:
-            await atomic_write(path, content, overwrite=True, expected=previous)
-        finally:
-            # Cancellation can race with a complete atomic publication. Record
-            # the durable outcome without treating partial staging as success.
-            try:
-                if path.is_file() and await asyncio.to_thread(path.read_bytes) == content:
-                    self._source_modified = True
-            except OSError:
-                self.context.response.metadata["source_state_unknown"] = True
+            async with aiofiles.open(path, "w", encoding="utf-8") as f:
+                for msg in merged:
+                    await f.write(_sanitize_msg_for_save(msg).model_dump_json() + "\n")
+            self.logger.info(
+                f"[{self.name}] save session rewrote session_id={session_id!r} "
+                f"existing={len(existing)} total={len(merged)}",
+            )
 
     @staticmethod
     def _to_msg(item) -> Msg:
@@ -505,86 +352,7 @@ class AutoMemoryStep(BaseStep):
             self.logger.warning(f"[{self.name}] invalid date={raw_date!r}")
             return
 
-        requested = self.context.get("include_images", self.include_images)
-        if not isinstance(requested, bool):
-            raise ValueError("include_images must be a boolean")
-        self._image_memory_enabled = requested
-        self._persist_image_sources = False
-        self._source_modified = False
-        # Both modes update the same source and note. Disabling new image
-        # processing must not disable serialization or preservation of old links.
-        lock = await get_path_lock(self._session_lock_path(session_id))
-        async with lock:
-            if requested:
-                await self._record_images(messages, session_id, day, memory_hint)
-            else:
-                await self._record_memory(messages, session_id, day, memory_hint)
-
-    async def _record_images(self, messages: list[Msg], session_id: str, day: str, memory_hint: str) -> None:
-        """Prepare image evidence under the shared session lock."""
-        # Lazy import and model resolution: text-only clients need no image
-        # decoder, vision configuration, or extra model call.
-        from ._session_images import SessionImages, is_image  # pylint: disable=import-outside-toplevel
-
-        image_count = sum(is_image(block) for message in messages for block in message.content)
-        image_metadata = {"requested": True, "image_count": image_count, "images": []}
-        self.context.response.metadata["auto_memory_images"] = image_metadata
-        self.context.response.metadata["image_note_paths"] = []
-        images = SessionImages(self)
-        image_metadata["images"] = images.records
-        self.context.response.metadata["image_note_paths"] = images.note_paths
-        stage = "source"
-        try:
-            if not image_count:
-                await self._save_session_messages(session_id, messages)
-                stage = "memory"
-                await self._record_memory(messages, session_id, day, memory_hint, saved=True)
-                return
-            # Validate the output scope before downloading or storing evidence.
-            images.path(self.config_value("daily_dir"))
-            sources = await images.materialize(messages)
-            self._persist_image_sources = True
-            # Persist original evidence before a model can fail. No generated
-            # caption enters this transcript; retry can load its file URLs.
-            await self._save_session_messages(session_id, sources)
-            stage = "caption"
-            memory_messages = await images.enrich(sources, day)
-            stage = "memory"
-            await self._record_memory(memory_messages, session_id, day, memory_hint, saved=True)
-        except Exception as exc:  # pylint: disable=broad-except
-            self.context.response.success = False
-            # Provider/HTTP exceptions may include a signed URL or request
-            # contents. Publish the failure stage/type, never those payloads.
-            failure_stage = images.stage if stage == "caption" else stage
-            self.context.response.answer = f"Auto-memory {failure_stage} stage failed ({type(exc).__name__})"
-            image_metadata["error_type"] = type(exc).__name__
-            image_metadata["error_stage"] = failure_stage
-            self.logger.warning(f"[{self.name}] {failure_stage} stage failed: {type(exc).__name__}")
-        finally:
-            image_metadata["ready_count"] = sum(r["status"] == "ready" for r in images.records)
-            image_metadata["cache_hits"] = sum(bool(r.get("cache_hit")) for r in images.records)
-            image_metadata["source_modified"] = images.source_modified or self._source_modified
-            image_metadata["notes_modified"] = images.notes_modified
-            image_metadata["indexes"] = images.index_results
-            self.context.response.metadata["modified"] = bool(
-                self.context.response.metadata.get("modified")
-                or image_metadata["source_modified"]
-                or images.notes_modified
-                or any(result.get("changed") for result in images.index_results),
-            )
-
-    async def _record_memory(
-        self,
-        messages: list[Msg],
-        session_id: str,
-        day: str,
-        memory_hint: str,
-        *,
-        saved: bool = False,
-    ) -> None:
-        """The original text-memory flow; images are prepared before this hook."""
-        if not saved:
-            await self._save_session_messages(session_id, messages)
+        await self._save_session_messages(session_id, messages)
 
         if not messages:
             self.context.response.success = True
@@ -606,13 +374,6 @@ class AutoMemoryStep(BaseStep):
         created = note is None
         before_note_path = note_path
         before_note_bytes = self._note_bytes(note_path) if note_path else None
-        previous_image_links = []
-        if note_path:
-            previous_image_links = self._frontmatter(note_path).get("image_notes", [])
-            if not isinstance(previous_image_links, list) or not all(
-                isinstance(link, str) for link in previous_image_links
-            ):
-                raise ValueError("Existing image_notes frontmatter must be a list of links")
         self.logger.info(
             f"[{self.name}] note lookup session_id={session_id!r} path={note_path!r} "
             f"created={created} msgs={len(messages)} hint={bool(memory_hint)}",
@@ -636,37 +397,12 @@ class AutoMemoryStep(BaseStep):
         reply_kwargs = self._reply_extra_kwargs(day)
         if not created:
             reply_kwargs["injected_job_kwargs"] = {"_allowed_paths": [note_path]}
-        try:
-            result = await self.agent_wrapper.reply(
-                user_message,
-                system_prompt=self.prompt_format("system_prompt", enable_tags=self._tags_enabled()),
-                job_tools=self.create_tools if created else self.update_tools,
-                **reply_kwargs,
-            )
-        except BaseException:
-            # Tools can have written a complete note before the agent fails or
-            # is cancelled. Keep that durable outcome visible to the caller.
-            try:
-                if created:
-                    note = await self._list_session_note(day, session_id)
-                    note_path = str(note["path"]) if note else ""
-                self._record_note_state(day, session_id, len(messages), before_note_path, before_note_bytes, note_path)
-                try:
-                    if note_path:
-                        await self._preserve_image_links(note_path, previous_image_links)
-                finally:
-                    self._record_note_state(
-                        day,
-                        session_id,
-                        len(messages),
-                        before_note_path,
-                        before_note_bytes,
-                        note_path,
-                    )
-            except Exception as recovery_error:  # pylint: disable=broad-except
-                self.context.response.metadata["memory_state_unknown"] = True
-                self.logger.warning(f"[{self.name}] note recovery failed: {type(recovery_error).__name__}")
-            raise
+        result = await self.agent_wrapper.reply(
+            user_message,
+            system_prompt=self.prompt_format("system_prompt", enable_tags=self._tags_enabled()),
+            job_tools=self.create_tools if created else self.update_tools,
+            **reply_kwargs,
+        )
         self.logger.info(f"[{self.name}] agent done path={note_path} has_result={bool(result.get('result'))}")
 
         if created:
@@ -689,9 +425,7 @@ class AutoMemoryStep(BaseStep):
                 self.logger.info(f"[{self.name}] done without note session_id={session_id!r} modified=False")
                 return
             note_path = str(note["path"])
-        self._record_note_state(day, session_id, len(messages), before_note_path, before_note_bytes, note_path)
         try:
-            await self._preserve_image_links(note_path, previous_image_links)
             if not created or self._tags_enabled():
                 await self._ensure_memory_frontmatter(note_path, session_id)
             if not created:
@@ -710,32 +444,25 @@ class AutoMemoryStep(BaseStep):
             )
             self.logger.info(f"[{self.name}] post-write failed path={note_path} answer={str(exc)!r}")
             return
-        finally:
-            self._record_note_state(day, session_id, len(messages), before_note_path, before_note_bytes, note_path)
 
-        self._record_note_state(day, session_id, len(messages), before_note_path, before_note_bytes, note_path)
-        await self._preserve_image_links(note_path, previous_image_links)
-        self._record_note_state(day, session_id, len(messages), before_note_path, before_note_bytes, note_path)
+        modified = self._note_modified(before_note_path, before_note_bytes, note_path)
         daily_dir = self.config_value("daily_dir")
         self.logger.info(f"[{self.name}] refresh index start date={day} daily_dir={daily_dir}")
-        try:
-            index_path = self._safe_path(f"{daily_dir}/{day}.md")
-            index_lock = await get_path_lock(index_path)
-            async with index_lock:
-                index_payload = await refresh_day_index(self.file_store, day, daily_dir)
-            if index_payload.get("error"):
-                raise RuntimeError("Daily index refresh failed")
-        except Exception as exc:  # pylint: disable=broad-except
-            self.context.response.success = False
-            self.context.response.answer = f"Session note saved, but daily index refresh failed ({type(exc).__name__})"
-            self.context.response.metadata["index"] = {"success": False, "error_type": type(exc).__name__}
-            if self._image_memory_enabled:
-                self.context.response.metadata["auto_memory_images"].update(
-                    {"error_stage": "index", "error_type": type(exc).__name__},
-                )
-            return
+        index_payload = await refresh_day_index(self.file_store, day, daily_dir)
+        self.logger.info(f"[{self.name}] refresh index done path={note_path}")
 
+        source_conversation = self._session_link(session_id)
         self.context.response.success = True
         self.context.response.answer = agent_reply_result_text(result)
-        self.context.response.metadata["index"] = index_payload
-        self.logger.info(f"[{self.name}] done {note_path} modified={self.context.response.metadata['modified']}")
+        self.context.response.metadata.update(
+            {
+                "date": day,
+                "path": note_path,
+                "created": created,
+                "modified": modified,
+                "n_messages": len(messages),
+                "source_conversation": source_conversation,
+                "index": index_payload,
+            },
+        )
+        self.logger.info(f"[{self.name}] done {note_path} modified={modified}")
