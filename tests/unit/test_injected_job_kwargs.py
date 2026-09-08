@@ -8,10 +8,13 @@ the injected keys from the tool schema exposed to the model.
 # pylint: disable=protected-access,missing-function-docstring
 
 
+from unittest.mock import MagicMock
+
 import pytest
 
 from reme.components.agent_wrapper import AsAgentWrapper, BaseAgentWrapper, CcAgentWrapper
 from reme.components.file_store import LocalFileStore
+from reme.components.tag_index import LocalTagIndex
 from reme.schema import Response
 from reme.steps.evolve.auto_memory import AutoMemoryStep
 from reme.steps.evolve.auto_memory_cc import AutoMemoryCCStep
@@ -240,7 +243,19 @@ def test_auto_memory_keeps_original_tool_names():
 def test_auto_memory_tags_are_disabled_by_default_and_enabled_through_kwargs():
     assert AutoMemoryStep()._tags_enabled() is False
     assert AutoMemoryCCStep()._tags_enabled() is False
-    assert AutoMemoryStep(enable_tags=True)._tags_enabled() is True
+    store = LocalFileStore(embedding_store="", tag_index="")
+    store.tag_index = LocalTagIndex(key="keywords")
+    assert AutoMemoryStep(enable_tags=True, file_store=store)._tags_enabled() is True
+    assert AutoMemoryStep(enable_tags=True)._tags_enabled() is False
+
+
+def test_auto_memory_warns_once_when_tags_enabled_without_tag_index():
+    step = AutoMemoryStep(enable_tags=True)
+    step.logger = MagicMock()
+
+    assert step._tags_enabled() is False
+    assert step._tags_enabled() is False
+    step.logger.warning.assert_called_once()
 
 
 def test_auto_memory_tags_prompt_follows_step_kwarg():
@@ -264,22 +279,30 @@ def test_auto_memory_tags_prompt_follows_step_kwarg():
     assert 'metadata={"tags"' not in disabled_create
     assert '"tags"' not in disabled_update
 
-    enabled_step = AutoMemoryStep(enable_tags=True)
-    enabled_system = enabled_step.prompt_format("system_prompt", enable_tags=enabled_step._tags_enabled())
+    store = LocalFileStore(embedding_store="", tag_index="")
+    store.tag_index = LocalTagIndex(key="keywords")
+    enabled_step = AutoMemoryStep(enable_tags=True, file_store=store)
+    enabled_system = enabled_step.prompt_format(
+        "system_prompt",
+        enable_tags=enabled_step._tags_enabled(),
+        tags_key=enabled_step._tags_key(),
+    )
     enabled_create = enabled_step.prompt_format(
         "user_message_create",
         enable_tags=enabled_step._tags_enabled(),
+        tags_key=enabled_step._tags_key(),
         **prompt_kwargs,
     )
     enabled_update = enabled_step.prompt_format(
         "user_message_update",
         enable_tags=enabled_step._tags_enabled(),
+        tags_key=enabled_step._tags_key(),
         note_path="daily/2026-09-01/memory.md",
         **prompt_kwargs,
     )
-    assert "`tags`" in enabled_system
-    assert 'metadata={"tags"' in enabled_create
-    assert '"tags"' in enabled_update
+    assert "`keywords`" in enabled_system
+    assert 'metadata={"keywords"' in enabled_create
+    assert '"keywords"' in enabled_update
 
 
 def test_auto_memory_create_prompts_match_upstream_date_arguments():
@@ -289,8 +312,8 @@ def test_auto_memory_create_prompts_match_upstream_date_arguments():
     prompt_file = Path("reme/steps/evolve/auto_memory.yaml")
     evolve_prompt = prompt_file.read_text(encoding="utf-8")
     assert "date={today}" in evolve_prompt or "`date`: {today}" in evolve_prompt or "`date`：{today}" in evolve_prompt
-    assert '"tags": [<tag>, ...]' in evolve_prompt
-    assert '"tags": []' in evolve_prompt or "using `[]`" in evolve_prompt
+    assert '"{tags_key}": [<tag>, ...]' in evolve_prompt
+    assert '"{tags_key}": []' in evolve_prompt or "using `[]`" in evolve_prompt
 
 
 def test_configs_define_original_jobs_without_daily_variants():
@@ -305,7 +328,7 @@ def test_configs_define_original_jobs_without_daily_variants():
             assert name not in jobs, f"{config_name} unexpectedly defines {name}"
 
     default = resolve_app_config(config="default", log_config=False)
-    assert default["jobs"]["auto_memory"]["steps"][0]["enable_tags"] is False
+    assert default["jobs"]["auto_memory"]["steps"][0]["enable_tags"] is True
 
 
 if __name__ == "__main__":

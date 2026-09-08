@@ -188,7 +188,7 @@ jobs:
         - messages
     steps:
       - backend: auto_memory_step
-        enable_tags: false
+        enable_tags: true
 
   auto_memory_cc:
     backend: base
@@ -387,6 +387,37 @@ jobs:
       properties: { }
     steps:
       - backend: graph_snapshot_step
+
+  list_tags:
+    backend: base
+    description: >-
+      List active tags with file counts. Returns {total_tags, total_pages, page, range, items}; range is the inclusive
+      1-based item range and each item is [tag, file_count]. An oversized page returns the last page.
+    parameters:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+          description: "1-based page; values past the end use the last page"
+        order_by:
+          type: string
+          enum: [tag, file_count]
+          default: tag
+          description: "sort by tag or file count"
+        order:
+          type: string
+          enum: [asc, desc]
+          description: "defaults to asc for tag, desc for file_count"
+        page_size:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 100
+          description: "items per page"
+    steps:
+      - backend: list_tags_step
 
   reindex:
     backend: base
@@ -896,11 +927,12 @@ components:
       backend: bm25
       tokenizer: default
 
-#  tag_index:
-#    default:
-#      backend: local
-#      max_tags_per_file: 8
-#      max_tag_length: 64
+  tag_index:
+    default:
+      backend: local
+      key: tags
+      max_tags_per_file: 8
+      max_tag_length: 64
 
   file_store:
     default:
@@ -911,4 +943,4 @@ components:
       embedding_store: ""
       keyword_index: default
       file_graph: default
-#      tag_index: default
+      tag_index: default

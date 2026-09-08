@@ -12,10 +12,11 @@ from reme.components.file_store import LocalFileStore
 from reme.components.tag_index import LocalTagIndex
 from reme.config import resolve_app_config
 from reme.schema import FileChunk, FileFrontMatter, FileNode
+from reme.steps.index.list_tags import ListTagsStep
 
 
-def _node(path: str, tags: object = None) -> FileNode:
-    metadata = {} if tags is None else {"tags": tags}
+def _node(path: str, tags: object = None, *, key: str = "tags") -> FileNode:
+    metadata = {} if tags is None else {key: tags}
     return FileNode(path=path, st_mtime=1.0, front_matter=FileFrontMatter(**metadata))
 
 
@@ -100,6 +101,159 @@ def test_queries_are_not_truncated_by_per_file_tag_limit() -> None:
         ]
 
     asyncio.run(run())
+
+
+def test_list_tags_paginates_and_applies_default_sort_orders() -> None:
+    """List only active tags with compact counts and deterministic pagination."""
+
+    async def run() -> None:
+        index = LocalTagIndex()
+        await index.rebuild(
+            [
+                _node("daily/a.md", ["beta", "alpha"]),
+                _node("daily/b.md", ["gamma", "beta"]),
+                _node("daily/c.md", ["delta"]),
+            ],
+        )
+
+        assert await index.list_tags(page_size=2) == {
+            "total_tags": 4,
+            "total_pages": 2,
+            "page": 1,
+            "range": [1, 2],
+            "items": [["alpha", 1], ["beta", 2]],
+        }
+        assert await index.list_tags(page=2, page_size=2) == {
+            "total_tags": 4,
+            "total_pages": 2,
+            "page": 2,
+            "range": [3, 4],
+            "items": [["delta", 1], ["gamma", 1]],
+        }
+        assert (await index.list_tags(order_by="file_count"))["items"] == [
+            ["beta", 2],
+            ["alpha", 1],
+            ["delta", 1],
+            ["gamma", 1],
+        ]
+        assert (await index.list_tags(order_by="file_count", order="asc"))["items"] == [
+            ["alpha", 1],
+            ["delta", 1],
+            ["gamma", 1],
+            ["beta", 2],
+        ]
+        assert (await index.list_tags(order="desc"))["items"] == [
+            ["gamma", 1],
+            ["delta", 1],
+            ["beta", 2],
+            ["alpha", 1],
+        ]
+
+        await index.delete(["daily/c.md"])
+        result = await index.list_tags(page=3, page_size=2)
+        assert result == {
+            "total_tags": 3,
+            "total_pages": 2,
+            "page": 2,
+            "range": [3, 3],
+            "items": [["gamma", 1]],
+        }
+
+        await index.clear()
+        assert await index.list_tags(page=9) == {
+            "total_tags": 0,
+            "total_pages": 0,
+            "page": 1,
+            "range": [0, 0],
+            "items": [],
+        }
+
+    asyncio.run(run())
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "message"),
+    [
+        ({"page": 0}, "page must be a positive integer"),
+        ({"page_size": True}, "page_size must be a positive integer"),
+        ({"page_size": 1001}, "page_size must be less than or equal to 1000"),
+        ({"order_by": "unknown"}, "order_by must be one of"),
+        ({"order": "sideways"}, "order must be one of"),
+    ],
+)
+def test_list_tags_rejects_invalid_parameters(kwargs, message) -> None:
+    """Reject invalid pagination and sorting parameters at the index boundary."""
+
+    async def run() -> None:
+        index = LocalTagIndex()
+        with pytest.raises(ValueError, match=message):
+            await index.list_tags(**kwargs)
+
+    asyncio.run(run())
+
+
+def test_list_tags_step_and_tool_schema_expose_compact_result_contract() -> None:
+    """Expose list_tags through a registered step with self-describing tool parameters."""
+
+    async def run() -> None:
+        store = LocalFileStore(name="test", embedding_store="", tag_index="")
+        store.tag_index = LocalTagIndex()
+        await store.tag_index.rebuild([_node("daily/a.md", ["ReMe"])])
+
+        response = await ListTagsStep(file_store=store)(order_by="file_count")
+
+        assert response.answer == {
+            "total_tags": 1,
+            "total_pages": 1,
+            "page": 1,
+            "range": [1, 1],
+            "items": [["reme", 1]],
+        }
+
+    asyncio.run(run())
+
+    config = resolve_app_config(config="default", log_config=False)
+    job = config["jobs"]["list_tags"]
+    assert job["steps"] == [{"backend": "list_tags_step"}]
+    assert job["parameters"]["properties"]["page_size"]["default"] == 100
+    assert "[tag, file_count]" in job["description"]
+    assert "range" in job["description"]
+
+
+def test_tag_index_reads_configured_frontmatter_key() -> None:
+    """Derive relationships from the configured key instead of a fixed tags field."""
+
+    async def run() -> None:
+        index = LocalTagIndex(key="keywords")
+        await index.rebuild(
+            [
+                _node("daily/a.md", ["ignored"]),
+                _node("daily/b.md", ["Python"], key="keywords"),
+            ],
+        )
+
+        assert index.key == "keywords"
+        assert await index.paths_for_tags(["python"]) == ["daily/b.md"]
+        assert await index.paths_for_tags(["ignored"]) == []
+
+    asyncio.run(run())
+
+
+@pytest.mark.parametrize("key", ["", "   ", None, 123])
+def test_tag_index_rejects_invalid_frontmatter_key(key) -> None:
+    """Reject keys that cannot identify a frontmatter field."""
+    with pytest.raises(ValueError, match="key must be a non-empty string"):
+        LocalTagIndex(key=key)
+
+
+def test_tag_index_rejects_invalid_runtime_frontmatter_key() -> None:
+    """Apply the same validation when a live component key is updated."""
+    index = LocalTagIndex()
+
+    with pytest.raises(ValueError, match="key must be a non-empty string"):
+        index.key = ""
+
+    assert index.key == "tags"
 
 
 def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Path) -> None:
@@ -261,6 +415,27 @@ def test_explicit_reindex_restores_tag_index(monkeypatch, tmp_path: Path) -> Non
     asyncio.run(run())
 
 
+def test_explicit_reindex_uses_updated_tag_key(monkeypatch, tmp_path: Path) -> None:
+    """A key change takes effect when the derived tag index is rebuilt."""
+
+    async def run() -> None:
+        monkeypatch.chdir(tmp_path)
+        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        await store.start()
+        assert store.tag_index is not None
+        await store.upsert([(_node("daily/a.md", ["old"]), [])])
+        await store.file_graph.upsert_nodes([_node("daily/a.md", ["new"], key="keywords")])
+
+        store.tag_index.key = "keywords"
+        await store.reindex("tag")
+
+        assert await store.tag_index.paths_for_tags(["old"]) == []
+        assert await store.tag_index.paths_for_tags(["new"]) == ["daily/a.md"]
+        await store.close()
+
+    asyncio.run(run())
+
+
 def test_tag_delete_failures_do_not_block_core_deletion(monkeypatch, tmp_path: Path) -> None:
     """Complete graph, chunk, and keyword deletion when tag deletion and recovery fail."""
 
@@ -331,16 +506,13 @@ def test_file_store_rebuilds_non_persistent_tag_index_from_graph(monkeypatch, tm
     asyncio.run(run())
 
 
-def test_default_config_documents_optional_tag_index_without_enabling_it() -> None:
-    """Document tag indexing in the default config without enabling another index or watcher."""
+def test_default_config_enables_tag_index_with_explicit_key() -> None:
+    """Keep auto-memory generation and file-store indexing on the same configured key."""
 
     config = resolve_app_config(config="default", log_config=False)
 
     assert config["jobs"]["index_update_loop"]["watch_dirs"] == ["daily_dir", "digest_dir"]
     assert "tag_index_loop" not in config["jobs"]
-    assert "tag_index" not in config["components"]
-    assert "tag_index" not in config["components"]["file_store"]["default"]
-
-    default_yaml = Path("reme/config/default.yaml").read_text(encoding="utf-8")
-    assert "#  tag_index:" in default_yaml
-    assert "#      tag_index: default" in default_yaml
+    assert config["components"]["tag_index"]["default"]["key"] == "tags"
+    assert config["components"]["file_store"]["default"]["tag_index"] == "default"
+    assert config["jobs"]["auto_memory"]["steps"][0]["enable_tags"] is True

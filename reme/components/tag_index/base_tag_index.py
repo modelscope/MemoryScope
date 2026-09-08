@@ -13,8 +13,21 @@ class BaseTagIndex(BaseComponent):
     component_type = ComponentEnum.TAG_INDEX
 
     def __init__(self, **kwargs):
+        key = kwargs.pop("key", "tags")
         super().__init__(**kwargs)
+        self.key = key
         self.is_healthy = True
+
+    @property
+    def key(self) -> str:
+        """Frontmatter field from which this index derives tags."""
+        return self._key
+
+    @key.setter
+    def key(self, value: object) -> None:
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("key must be a non-empty string")
+        self._key = value.strip()
 
     def set_healthy(self, healthy: bool) -> None:
         """Mark whether lookups can safely use the current derived state."""
@@ -48,6 +61,17 @@ class BaseTagIndex(BaseComponent):
     @abstractmethod
     async def tags_for_path(self, path: str) -> list[str]:
         """Return normalized tags for one workspace-relative path."""
+
+    @abstractmethod
+    async def list_tags(
+        self,
+        *,
+        page: int = 1,
+        order_by: str = "tag",
+        order: str | None = None,
+        page_size: int = 100,
+    ) -> dict[str, object]:
+        """Return a page of active tags with counts and a 1-based result range."""
 
     @abstractmethod
     async def clear(self) -> None:

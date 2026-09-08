@@ -1997,7 +1997,7 @@ def test_auto_memory_reports_modified_for_create_and_false_for_skip():
         with tempfile.TemporaryDirectory() as tmpdir, temp_chdir(tmpdir):
             cwd = Path.cwd()
             app_ctx = _make_app_context(cwd)
-            fs = LocalFileStore(name="test_store", embedding_store="")
+            fs = LocalFileStore(name="test_store", embedding_store="", tag_index="default")
             wrapper = _FakeAgentWrapper()
             await fs.start()
             _install_file_jobs(app_ctx, fs)
@@ -2048,7 +2048,7 @@ def test_auto_memory_normalizes_tags_after_existing_note_update():
         with tempfile.TemporaryDirectory() as tmpdir, temp_chdir(tmpdir):
             cwd = Path.cwd()
             app_ctx = _make_app_context(cwd)
-            fs = LocalFileStore(name="test_store", embedding_store="")
+            fs = LocalFileStore(name="test_store", embedding_store="", tag_index="default")
             wrapper = _FakeAgentWrapper()
             await fs.start()
             _install_file_jobs(app_ctx, fs)
@@ -2087,6 +2087,52 @@ def test_auto_memory_normalizes_tags_after_existing_note_update():
                 assert resp.success is True
                 metadata = step._frontmatter(f"daily/{today}/memory.md")
                 assert metadata["tags"] == ["GPT-5", "C++", "C#", ".NET", "100", "ReMe", "tag7", "tag8"]
+            finally:
+                await fs.close()
+
+    asyncio.run(run())
+
+
+def test_auto_memory_uses_tag_index_frontmatter_key():
+    """Generate and normalize metadata under the key selected by the bound tag index."""
+
+    async def run():
+        with tempfile.TemporaryDirectory() as tmpdir, temp_chdir(tmpdir):
+            cwd = Path.cwd()
+            app_ctx = _make_app_context(cwd)
+            fs = LocalFileStore(name="test_store", embedding_store="", tag_index="default")
+            wrapper = _FakeAgentWrapper()
+            await fs.start()
+            fs.tag_index.key = "keywords"
+            _install_file_jobs(app_ctx, fs)
+            try:
+                today = datetime.datetime.now().strftime("%Y-%m-%d")
+                note_path = cwd / "daily" / today / "memory.md"
+                wrapper.on_reply = lambda *_: write_file(
+                    note_path,
+                    "---\nname: memory\nsession_id: s1\n"
+                    "source_conversation: '[[session/dialog/s1.jsonl]]'\n"
+                    "keywords: [ReMe]\n---\nbody\n",
+                )
+
+                step = AutoMemoryStep(
+                    app_context=app_ctx,
+                    file_store=fs,
+                    agent_wrapper=wrapper,
+                    enable_tags=True,
+                )
+                resp = await step(
+                    RuntimeContext(
+                        messages=[{"name": "user", "role": "user", "content": "remember ReMe"}],
+                        session_id="s1",
+                    ),
+                )
+                resp = resp or step.context.response
+
+                assert resp.success is True
+                assert step._frontmatter(f"daily/{today}/memory.md")["keywords"] == ["ReMe"]
+                assert 'metadata={"keywords"' in wrapper.inputs
+                assert "`keywords`" in wrapper.kwargs["system_prompt"]
             finally:
                 await fs.close()
 

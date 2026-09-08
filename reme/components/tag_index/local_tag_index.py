@@ -70,7 +70,7 @@ class LocalTagIndex(BaseTagIndex):
         prepared: list[tuple[str, tuple[str, ...]]] = []
         for node in nodes:
             path = self._validate_path(node.path)
-            tags = self.normalize_tags(node.front_matter.model_dump().get("tags"))
+            tags = self.normalize_tags(node.front_matter.model_dump().get(self.key))
             prepared.append((path, tuple(tags)))
         return prepared
 
@@ -141,6 +141,53 @@ class LocalTagIndex(BaseTagIndex):
         path = self._validate_path(path)
         async with self._maintenance_lock:
             return list(self.path_to_tags.get(path, ()))
+
+    async def list_tags(
+        self,
+        *,
+        page: int = 1,
+        order_by: str = "tag",
+        order: str | None = None,
+        page_size: int = 100,
+    ) -> dict[str, object]:
+        """Return a deterministic page of active tags, counts, and its 1-based range."""
+        page = self._positive_int("page", page)
+        page_size = self._positive_int("page_size", page_size)
+        if page_size > 1000:
+            raise ValueError("page_size must be less than or equal to 1000")
+
+        order_by = str(order_by).lower()
+        if order_by not in {"tag", "file_count"}:
+            raise ValueError("order_by must be one of ['file_count', 'tag']")
+        if order is None:
+            order = "asc" if order_by == "tag" else "desc"
+        order = str(order).lower()
+        if order not in {"asc", "desc"}:
+            raise ValueError("order must be one of ['asc', 'desc']")
+
+        async with self._maintenance_lock:
+            items = [[tag, len(paths)] for tag, paths in self.tag_to_paths.items()] if self.is_healthy else []
+
+        if order_by == "tag":
+            items.sort(key=lambda item: item[0], reverse=order == "desc")
+        else:
+            # Keep tag ascending as a stable, deterministic tiebreaker.
+            items.sort(key=lambda item: item[0])
+            items.sort(key=lambda item: item[1], reverse=order == "desc")
+
+        total_tags = len(items)
+        total_pages = (total_tags + page_size - 1) // page_size
+        page = min(page, max(total_pages, 1))
+        start = (page - 1) * page_size
+        page_items = items[start : start + page_size]
+        item_range = [start + 1, start + len(page_items)] if page_items else [0, 0]
+        return {
+            "total_tags": total_tags,
+            "total_pages": total_pages,
+            "page": page,
+            "range": item_range,
+            "items": page_items,
+        }
 
     async def clear(self) -> None:
         async with self._maintenance_lock:

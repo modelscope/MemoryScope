@@ -17,7 +17,6 @@ from ...components import R
 
 _SESSION_ID_KEY = "session_id"
 _SOURCE_CONVERSATION_KEY = "source_conversation"
-_TAGS_KEY = "tags"
 _MAX_TAGS = 8
 _MAX_TAG_LENGTH = 64
 _MESSAGE_TIME_ALIASES = ("time_created", "timestamp", "createdAt", "timeCreated", "created_time")
@@ -103,6 +102,7 @@ class AutoMemoryStep(BaseStep):
         super().__init__(**kwargs)
         self.create_tools: list[str] = ["daily_write"]
         self.update_tools: list[str] = ["read", "edit", "frontmatter_update", "write"]
+        self._missing_tag_index_warned = False
 
     def _session_dir(self) -> str:
         return normalize_posix_path(str(self.config_value("session_dir")))
@@ -119,9 +119,28 @@ class AutoMemoryStep(BaseStep):
     def _daily_note_path(self, day: str, name: str) -> str:
         return f"{self.config_value('daily_dir')}/{day}/{name}.md"
 
+    def _tags_key(self) -> str | None:
+        """Return the configured tag frontmatter key when tag generation is usable."""
+        if not self.kwargs.get("enable_tags", False):
+            return None
+        try:
+            tag_index = self.file_store.tag_index
+            key = tag_index.key if tag_index is not None else None
+        except (AttributeError, KeyError, RuntimeError):
+            key = None
+        if key:
+            return key
+        if not self._missing_tag_index_warned:
+            self.logger.warning(
+                f"[{self.name}] enable_tags is true but no tag_index is configured on file_store; "
+                "tag generation is disabled",
+            )
+            self._missing_tag_index_warned = True
+        return None
+
     def _tags_enabled(self) -> bool:
         """Whether this step should generate and normalize frontmatter tags."""
-        return bool(self.kwargs.get("enable_tags", False))
+        return self._tags_key() is not None
 
     def _frontmatter(self, path: str) -> dict:
         post = frontmatter.loads((self.file_store.workspace_path / path).read_text(encoding="utf-8"))
@@ -164,8 +183,9 @@ class AutoMemoryStep(BaseStep):
             _SESSION_ID_KEY: session_id,
             _SOURCE_CONVERSATION_KEY: self._session_link(session_id),
         }
-        if self._tags_enabled():
-            metadata[_TAGS_KEY] = _normalize_tags(current.get(_TAGS_KEY))
+        tags_key = self._tags_key()
+        if tags_key is not None:
+            metadata[tags_key] = _normalize_tags(current.get(tags_key))
         if all(current.get(key) == value for key, value in metadata.items()):
             return
         response = await self.run_job(
@@ -379,9 +399,12 @@ class AutoMemoryStep(BaseStep):
             f"created={created} msgs={len(messages)} hint={bool(memory_hint)}",
         )
         template_key = "user_message_create" if created else "user_message_update"
+        tags_key = self._tags_key()
+        enable_tags = tags_key is not None
         user_message = self.prompt_format(
             template_key,
-            enable_tags=self._tags_enabled(),
+            enable_tags=enable_tags,
+            tags_key=tags_key or "tags",
             today=day,
             note=memory_hint or "(none)",
             note_path=note_path,
@@ -399,7 +422,11 @@ class AutoMemoryStep(BaseStep):
             reply_kwargs["injected_job_kwargs"] = {"_allowed_paths": [note_path]}
         result = await self.agent_wrapper.reply(
             user_message,
-            system_prompt=self.prompt_format("system_prompt", enable_tags=self._tags_enabled()),
+            system_prompt=self.prompt_format(
+                "system_prompt",
+                enable_tags=enable_tags,
+                tags_key=tags_key or "tags",
+            ),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,
         )
@@ -426,7 +453,7 @@ class AutoMemoryStep(BaseStep):
                 return
             note_path = str(note["path"])
         try:
-            if not created or self._tags_enabled():
+            if not created or enable_tags:
                 await self._ensure_memory_frontmatter(note_path, session_id)
             if not created:
                 note_path = await self._rename_from_frontmatter_name(note_path, day)
