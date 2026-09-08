@@ -3,6 +3,7 @@
 # pylint: disable=protected-access
 
 import asyncio
+import importlib
 from unittest.mock import AsyncMock
 
 import frontmatter
@@ -242,8 +243,8 @@ async def test_renamed_card_body_links_are_repaired_without_relying_on_agent(tmp
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("agent_fails", [False, True])
-async def test_body_repair_failure_reports_already_updated_metadata(tmp_path, agent_fails):
-    """A failed later body edit cannot hide the completed provenance metadata write."""
+async def test_link_repair_failure_keeps_metadata_and_body_atomic(tmp_path, monkeypatch, agent_fails):
+    """A failed publication cannot leave provenance and body targets half-updated."""
     harness = _Harness(tmp_path)
     harness.write_session_card_on_reply()
     first = await harness.run([_message(_image())], include_images=True)
@@ -254,11 +255,115 @@ async def test_body_repair_failure_reports_already_updated_metadata(tmp_path, ag
     post = frontmatter.load(path)
     post.content = f"Image: [[{old}]]"
     path.write_text(frontmatter.dumps(post), encoding="utf-8")
+    before = path.read_bytes()
     harness.agent.on_reply = AsyncMock(side_effect=RuntimeError("model failed")) if agent_fails else None
-    harness.app.jobs["edit"] = AsyncMock(side_effect=OSError("disk failure during body edit"))
+    publish = auto_memory.atomic_write
+
+    async def failing_repair(target, *args, **kwargs):
+        if target == path:
+            raise OSError("disk failure during link repair")
+        await publish(target, *args, **kwargs)
+
+    monkeypatch.setattr(auto_memory, "atomic_write", failing_repair)
     response = await harness.run(harness.saved(), include_images=True)
     assert not response.success
-    assert response.metadata["modified"]
     assert not response.metadata["auto_memory_images"]["notes_modified"]
     assert not response.metadata["auto_memory_images"]["source_modified"]
-    assert frontmatter.load(path)["image_notes"] == [f"[[{renamed}]]"]
+    assert path.read_bytes() == before
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("replacement_is_text", [False, True])
+async def test_off_history_backfill_keeps_saved_image_message(tmp_path, monkeypatch, caption_mock, replacement_is_text):
+    """A forced JSONL rewrite in off mode keeps source identity, without image IO."""
+    original = _message(_text("Before"), _image(), _text("After"), metadata={"external": "retained"})
+    on = _Harness(tmp_path)
+    assert (await on.run([original], include_images=True)).success
+    saved = on.saved()[0].model_dump()
+    evidence = {path: path.read_bytes() for path in (tmp_path / "session/images").iterdir()}
+    incoming = _message(_text("Same-ID text replacement")) if replacement_is_text else original
+    earlier = _message(_text("Earlier fact"), msg_id="earlier", created_at=f"{_DAY}T00:00:00Z")
+    off = _Harness(tmp_path)
+    with monkeypatch.context() as patch:
+        patch.setattr(_session_images.SessionImages, "_read_source", AsyncMock(side_effect=AssertionError("image IO")))
+        patch.setattr(_session_images, "normalize_image", lambda *_: pytest.fail("image preprocessing while off"))
+        response = await off.run([incoming, earlier], include_images=False)
+    assert response.success
+    assert "auto_memory_images" not in response.metadata
+    assert [msg.id for msg in off.saved()] == ["earlier", original.id]
+    assert off.saved()[1].model_dump() == saved
+    assert all(path.read_bytes() == data for path, data in evidence.items())
+    assert original.content[1].source.type == "base64"
+    replay = await _Harness(tmp_path).run(off.saved(), include_images=True)
+    assert replay.success
+    assert replay.metadata["auto_memory_images"]["image_count"] == 1
+    assert replay.metadata["auto_memory_images"]["cache_hits"] == 1
+    assert caption_mock.await_count == 1
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("writer_job", ["write", "frontmatter_update"])
+async def test_link_repair_merges_concurrent_user_links_under_one_lock(tmp_path, monkeypatch, writer_job):
+    """Real user file jobs finish before repair re-reads their current metadata."""
+    first = _Harness(tmp_path)
+    first.write_session_card_on_reply()
+    initial = await first.run([_message(_image())], include_images=True)
+    old = initial.metadata["image_note_paths"][0]
+    renamed = f"daily/{_DAY}/renamed.md"
+    (tmp_path / old).rename(tmp_path / renamed)
+    relative = initial.metadata["path"]
+    target = tmp_path / relative
+    post = frontmatter.load(target)
+    unknown = "[[user-owned/manual.md]]"
+    post["image_notes"].append(unknown)
+    post["user_field"] = "keep this"
+    post.content = f"User prose with ![[{old}#Caption|Board]]."
+    writing, preserving, release = asyncio.Event(), asyncio.Event(), asyncio.Event()
+    module = importlib.import_module(f"reme.steps.file_io.{writer_job}")
+    real_lock = module.get_path_lock
+    current = _Harness(tmp_path)
+    real_preserve = current.step._preserve_image_links
+
+    class PausedWriterLock:
+        """Hold the real shared file lock before the user's write begins."""
+
+        def __init__(self, lock):
+            self.lock = lock
+
+        async def __aenter__(self):
+            await self.lock.acquire()
+            writing.set()
+            await release.wait()
+
+        async def __aexit__(self, *_args):
+            self.lock.release()
+
+    async def paused_lock(path):
+        return PausedWriterLock(await real_lock(path))
+
+    async def observed_preserve(*args, **kwargs):
+        preserving.set()
+        await real_preserve(*args, **kwargs)
+
+    monkeypatch.setattr(module, "get_path_lock", paused_lock)
+    monkeypatch.setattr(current.step, "_preserve_image_links", observed_preserve)
+    writer_kwargs = {"path": relative, "metadata": post.metadata}
+    if writer_job == "write":
+        writer_kwargs.update(content=post.content, name=post["name"], description=post["description"])
+    else:
+        # FrontmatterUpdate leaves the original body untouched.
+        post.content = frontmatter.load(target).content
+    writer = asyncio.create_task(current.app.jobs[writer_job](**writer_kwargs))
+    memory = None
+    try:
+        await asyncio.wait_for(writing.wait(), 5)
+        memory = asyncio.create_task(current.run(first.saved(), include_images=True))
+        await asyncio.wait_for(preserving.wait(), 5)
+    finally:
+        release.set()
+        results = await asyncio.wait_for(asyncio.gather(writer, *([memory] if memory else [])), 5)
+    assert all(result.success for result in results)
+    updated = frontmatter.load(target)
+    assert updated["image_notes"] == [f"[[{renamed}]]", unknown]
+    assert updated["user_field"] == "keep this"
+    assert updated.content == post.content.replace(old, renamed)

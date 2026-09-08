@@ -24,7 +24,7 @@ from ..file_io._path import _check_path_permission, resolve_path
 from ..index import normalize_posix_path
 
 _SOURCE_METADATA = "reme_image_sources"
-_PREPROCESSING_VERSION = 3
+_PREPROCESSING_VERSION = 4
 _MAX_NOTE_BYTES = 1024 * 1024
 _MAX_SOURCE_CACHE = 256
 _MAX_INDEX_CACHE_DAYS = 8
@@ -196,12 +196,7 @@ class SessionImages:
         for message in messages:
             content = []
             sources = []
-            previous = (message.metadata or {}).get(_SOURCE_METADATA, [])
-            previous_by_id = (
-                {item.get("block_id"): item for item in previous if isinstance(item, dict)}
-                if isinstance(previous, list)
-                else {}
-            )
+            previous_sources = self._saved_sources(message)
             for index, block in enumerate(message.content):
                 if not is_image(block):
                     content.append(block)
@@ -216,7 +211,7 @@ class SessionImages:
                 }
                 self.records.append(record)
                 try:
-                    data = await self._read_source(block, previous_by_id.get(block.id))
+                    data = await self._read_source(block, previous_sources.get((block.id, index)))
                     digest = hashlib.sha256(data).hexdigest()
                     source_mime = self._validated_sources.get(digest)
                     if source_mime is None:
@@ -280,6 +275,46 @@ class SessionImages:
                 result.append(message)
         return result
 
+    @staticmethod
+    def _saved_sources(message: Msg) -> dict[tuple[str, int], dict]:
+        """Match saved provenance by position as well as ID; IDs need not be unique.
+
+        Older transcripts could remove non-image blocks without adjusting the
+        saved index. A unique image ID can recover that position, but only its
+        original source path/digest is trusted by ``_read_source``. Multiple
+        possible positions or duplicate provenance never silently discard an
+        immutable source identity.
+        """
+        previous = (message.metadata or {}).get(_SOURCE_METADATA, [])
+        if not isinstance(previous, list):
+            raise ValueError("Invalid saved session image provenance list")
+        images_by_id: dict[str, list[int]] = {}
+        for index, block in enumerate(message.content):
+            if is_image(block):
+                images_by_id.setdefault(block.id, []).append(index)
+        entries: dict[tuple[str, int], dict] = {}
+        counts: dict[str, int] = {}
+        for item in previous:
+            if not isinstance(item, dict):
+                raise ValueError("Invalid saved session image provenance entry")
+            block_id, index = item.get("block_id"), item.get("block_index")
+            if not isinstance(block_id, str) or type(index) is not int or index < 0:
+                raise ValueError("Invalid saved session image provenance position")
+            key = block_id, index
+            if key in entries:
+                raise ValueError("Duplicate saved session image provenance position")
+            entries[key] = item
+            counts[block_id] = counts.get(block_id, 0) + 1
+        matched = {}
+        for (block_id, index), item in entries.items():
+            positions = images_by_id.get(block_id, [])
+            if index not in positions:
+                if len(positions) != 1 or counts[block_id] != 1:
+                    raise ValueError("Saved session image provenance position is ambiguous or missing")
+                index = positions[0]
+            matched[block_id, index] = item
+        return matched
+
     def _generation_identity(self) -> dict:
         model = self.step.as_llm
         parameters = getattr(model, "parameters", None)
@@ -302,7 +337,6 @@ class SessionImages:
             self.note_paths.append(relative)
         day = Path(relative).parent.name
         if created:
-            self._notes.invalidate_day(day)
             self.dirty_days.add(day)
             return
         if day in self.dirty_days:
@@ -368,6 +402,16 @@ class SessionImages:
             # user document is never overwritten. The short catalog lock keeps
             # concurrent image writers out of metadata scans, never out of LLM calls.
             async with await self._notes.get_catalog_lock():
+                # A normal file write or restore can have supplied a user-owned
+                # caption while the model was running. Recheck under the catalog
+                # lock without recursively acquiring it or publishing a second
+                # owner. The selected card's current body takes precedence.
+                found = await self._notes.find_locked(fingerprint, record)
+                if found:
+                    relative, post = found
+                    record.update(note_path=relative, cache_hit=True, status="ready")
+                    await self._remember_note(relative, created=False)
+                    return relative, post.content
                 target = self.path(target_rel)
                 target_lock = await get_path_lock(target)
                 async with target_lock:
@@ -385,6 +429,11 @@ class SessionImages:
                         raise
                 record.update(note_path=target_rel, cache_hit=False, status="ready", note_modified=True)
                 await self._remember_note(target_rel, created=True)
+                try:
+                    await self._notes.record_committed(target_rel, post)
+                except BaseException:
+                    self._notes.invalidate_day(day)
+                    raise
             return target_rel, body
 
     async def _refresh_indexes(self, *, suppress_errors: bool = False) -> None:

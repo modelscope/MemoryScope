@@ -21,13 +21,15 @@ from ...utils.wikilink_handler import WikilinkHandler
 
 _SESSION_ID_KEY = "session_id"
 _SOURCE_CONVERSATION_KEY = "source_conversation"
+_IMAGE_SOURCES_KEY = "reme_image_sources"
 _MESSAGE_TIME_ALIASES = ("time_created", "timestamp", "createdAt", "timeCreated", "created_time")
 
 
 def _sanitize_msg_for_save(msg: Msg) -> Msg:
     new_content = []
+    retained_indexes = {}
     changed = False
-    for block in msg.content:
+    for index, block in enumerate(msg.content):
         # Tool results often contain recalled memory/search/read output. Keeping
         # them in saved conversation history lets retrieved facts masquerade as
         # user-provided context in future auto-memory runs.
@@ -37,10 +39,23 @@ def _sanitize_msg_for_save(msg: Msg) -> Msg:
         if block.type == "data" and hasattr(block, "source") and getattr(block.source, "type", None) == "base64":
             changed = True
             continue
+        retained_indexes[(block.id, index)] = len(new_content)
         new_content.append(block)
     if not changed:
         return msg
-    return msg.model_copy(update={"content": new_content})
+    update = {"content": new_content}
+    sources = (msg.metadata or {}).get(_IMAGE_SOURCES_KEY)
+    if isinstance(sources, list):
+        # Removing tool results / non-image Base64 blocks changes positions.
+        # Keep provenance aligned with the filtered, durable transcript.
+        sources = [dict(source) if isinstance(source, dict) else source for source in sources]
+        for source in sources:
+            if isinstance(source, dict):
+                key = (source.get("block_id"), source.get("block_index"))
+                if isinstance(key[0], str) and type(key[1]) is int and key in retained_indexes:
+                    source["block_index"] = retained_indexes[key]
+        update["metadata"] = {**msg.metadata, _IMAGE_SOURCES_KEY: sources}
+    return msg.model_copy(update=update)
 
 
 def _normalize_msg_timestamp(item: dict) -> dict:
@@ -135,7 +150,19 @@ class AutoMemoryStep(BaseStep):
         )
         if not (previous_links or image_paths):
             return
-        post = frontmatter.loads(self._safe_path(note_path).read_text(encoding="utf-8"))
+        target = self._safe_path(note_path)
+        lock = await get_path_lock(target)
+        async with lock:
+            # Read, merge and publish under the same lock as normal file jobs.
+            # Calling frontmatter_update/edit here would acquire it recursively.
+            previous = await asyncio.to_thread(target.read_bytes)
+            post = frontmatter.loads(previous.decode("utf-8"))
+            # A no-op must not change formatting, mtime or user bytes.
+            if self._merge_image_links(post, previous_links, image_paths):
+                await atomic_write(target, frontmatter.dumps(post), overwrite=True, expected=previous)
+
+    def _merge_image_links(self, post, previous_links: list[str], image_paths: list[str]) -> bool:
+        """Retarget verified links in the caller's locked note snapshot."""
         existing_links = post.get("image_notes", [])
         if not isinstance(existing_links, list) or not all(isinstance(link, str) for link in existing_links):
             raise ValueError("Existing image_notes frontmatter must be a list of links")
@@ -151,10 +178,9 @@ class AutoMemoryStep(BaseStep):
                 for link in [*previous_links, *existing_links, *(f"[[{path}]]" for path in image_paths)]
             ),
         )
-        if links != existing_links:
-            response = await self.run_job("frontmatter_update", path=note_path, metadata={"image_notes": links})
-            if not response.success:
-                raise RuntimeError("Could not preserve image-note references")
+        changed = links != existing_links
+        if changed:
+            post["image_notes"] = links
         body = post.content
         if relocated:
             for match in WikilinkHandler.iter_matches(post.content):
@@ -163,17 +189,9 @@ class AutoMemoryStep(BaseStep):
                 if old_link != new_link:
                     body, _ = WikilinkHandler.scan_and_rewrite(body, match.target, new_link[2:-2])
         if body != post.content:
-            # Use the normal body editor with a complete old-body match: do not
-            # silently apply a rewrite to concurrently changed user prose.
-            response = await self.run_job(
-                "edit",
-                path=note_path,
-                old=post.content,
-                new=body,
-                _allowed_paths=[note_path],
-            )
-            if not response.success:
-                raise RuntimeError("Could not retarget the session's known image-note links")
+            post.content = body
+            changed = True
+        return changed
 
     def _current_image_link(self, link: str, relocated: dict[str, str]) -> str:
         """Retarget only a missing canonical card with a verified current owner.
@@ -302,6 +320,13 @@ class AutoMemoryStep(BaseStep):
         for msg in existing:
             by_id[msg.id] = msg
         for msg in messages:
+            saved = by_id.get(msg.id)
+            if saved is not None and (saved.metadata or {}).get(_IMAGE_SOURCES_KEY) and not self._persist_image_sources:
+                # Without image processing we cannot reconcile a replacement
+                # attachment or its positions. Preserve the complete durable
+                # source message, including its provenance, on history rewrites
+                # as well as appends. New text messages merge normally.
+                continue
             by_id[msg.id] = msg
         merged = sorted(by_id.values(), key=lambda m: m.created_at)
 

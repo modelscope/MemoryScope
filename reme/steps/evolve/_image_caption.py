@@ -136,11 +136,35 @@ def validate_image(data: bytes) -> str:
         return _SOURCE_MEDIA_TYPES[source_format]
 
 
+@contextmanager
+def _linear_16_bit_grayscale(image):
+    """Map unsigned 0..65535 samples to 0..255 before filtered downscaling.
+
+    Use the fixed full range, with rounding, rather than stretching each image's
+    extrema. Pillow's direct RGB conversion clips everything above 255. The
+    I-to-L lookup also works for Pillow 10's PNG mode I and both TIFF byte orders.
+    """
+    with ExitStack() as owned:
+        integers = image if image.mode == "I" else owned.enter_context(closing(image.convert("I")))
+        grayscale = owned.enter_context(closing(integers.point([(value + 128) // 257 for value in range(65536)], "L")))
+        # PNG tRNS identifies an exact 16-bit sample, not its quantized gray.
+        # Build alpha before quantizing so neighboring samples stay opaque.
+        transparency = image.info.get("transparency")
+        grayscale.info.pop("transparency", None)
+        if isinstance(transparency, int):
+            alpha = owned.enter_context(
+                closing(integers.point([0 if value == transparency else 255 for value in range(65536)], "L")),
+            )
+            grayscale.putalpha(alpha)
+        yield grayscale
+
+
 def normalize_image(data: bytes) -> tuple[bytes, str, str]:
     """Return (provider bytes, provider MIME, source MIME), preserving source bytes.
 
     Validate and decode the first frame once. A provider copy has EXIF orientation
-    applied, a maximum side of 2048 pixels, and no inherited metadata.
+    applied, a maximum side of 2048 pixels, and no inherited metadata. Unsigned
+    16-bit grayscale uses a fixed linear full-range mapping to 8-bit grayscale.
     """
     with _decoded_image(data, reduce_jpeg=True) as (image, source_format):
         from PIL import Image, ImageOps
@@ -148,12 +172,12 @@ def normalize_image(data: bytes) -> tuple[bytes, str, str]:
         # In-place orientation avoids an extra full-size decoded image copy.
         ImageOps.exif_transpose(image, in_place=True)
         with ExitStack() as owned:
+            if image.mode.startswith("I;16") or (image.mode == "I" and source_format == "PNG"):
+                image = owned.enter_context(_linear_16_bit_grayscale(image))
             if max(image.size) > MAX_IMAGE_SIDE and image.mode in ("P", "1"):
                 # Pillow otherwise forces NEAREST and drops thin strokes/alpha.
                 image = owned.enter_context(closing(image.convert("RGBA" if image.mode == "P" else "L")))
-            # Pillow 10 cannot resize I;16 with LANCZOS before RGB conversion.
-            resize_filter = Image.Resampling.NEAREST if image.mode.startswith("I;16") else Image.Resampling.LANCZOS
-            image.thumbnail((MAX_IMAGE_SIDE, MAX_IMAGE_SIDE), resize_filter)
+            image.thumbnail((MAX_IMAGE_SIDE, MAX_IMAGE_SIDE), Image.Resampling.LANCZOS)
             encoded, media_type = _provider_image(image, source_format)
             return encoded, media_type, _SOURCE_MEDIA_TYPES[source_format]
 

@@ -26,6 +26,7 @@ class _SnapshotChangedError(ValueError):
 class _Day:
     signature: tuple
     notes: dict[str, dict]
+    stamps: dict[str, tuple]
 
 
 @dataclass(frozen=True)
@@ -50,6 +51,11 @@ class ImageNoteLookup:
     notes always have their current body and identity reread under their lock.
     Same-process publishers share the daily-root catalog lock during their
     filesystem publication only, never while awaiting a caption model.
+    Publication checks enumerate file stamps, including otherwise unchanged
+    dates, so an external in-place restore during the model call is visible.
+    Changed dates reuse unchanged identities: a batch reads each stable old
+    note once and each new note once, though file enumeration/stats still scale
+    with the number of publications times the number of historical notes.
     A changing scan is rebuilt at most twice (three attempts total); unrelated
     IO, metadata, and selected-note validation errors are never retried.
     """
@@ -71,7 +77,6 @@ class ImageNoteLookup:
         self._snapshot: _Snapshot | None = None
         self._dirty: dict[str, int] = {}
         self._generation = 0
-        self._lock = asyncio.Lock()
 
     def invalidate_day(self, day: str) -> None:
         """Invalidate after a possible write, including a partially failed write."""
@@ -182,19 +187,26 @@ class ImageNoteLookup:
         except ValueError:
             return False
 
-    def _scan_day(self, day: str, signature: tuple) -> _Day:
+    def _scan_day(self, day: str, signature: tuple, previous: _Day | None = None) -> _Day:
         relative = f"{self.daily_dir}/{day}"
-        notes = {}
+        notes, stamps = {}, {}
         for path in sorted(self._path(relative).iterdir()):
             if path.suffix != ".md":
                 continue
             # Keep the logical path through an authorized internal directory
             # symlink, not its canonical target's potentially different name.
             note_path = f"{relative}/{path.name}"
-            notes[note_path] = self._read_identity(note_path)
+            stamp = self._signature(self._path(note_path))
+            if previous is not None and previous.stamps.get(note_path) == stamp:
+                notes[note_path] = previous.notes[note_path]
+            else:
+                notes[note_path] = self._read_identity(note_path)
+                if self._signature(self._path(note_path)) != stamp:
+                    raise _SnapshotChangedError("Image-note metadata changed during lookup")
+            stamps[note_path] = stamp
         if self._directory_signature(relative) != signature:
             raise _SnapshotChangedError("Image-note directory changed during lookup")
-        return _Day(signature, notes)
+        return _Day(signature, notes, stamps)
 
     def _refresh(self, dirty: set[str], *, rebuild: bool = False) -> _Snapshot:
         old = None if rebuild else self._snapshot
@@ -216,7 +228,7 @@ class ImageNoteLookup:
             signature = self._directory_signature(f"{self.daily_dir}/{day}")
             previous = old.days.get(day) if old is not None else None
             if previous is None or previous.signature != signature or day in dirty:
-                days[day] = self._scan_day(day, signature)
+                days[day] = self._scan_day(day, signature, previous)
                 changed = True
             else:
                 days[day] = previous
@@ -249,6 +261,28 @@ class ImageNoteLookup:
                 if attempts == 3:
                     raise
 
+    async def _update_snapshot(self, *, recheck_files: bool = False) -> _Snapshot:
+        """Publish one complete differential snapshot while the catalog is held."""
+        dirty = dict(self._dirty)
+        inspect_days = set(dirty)
+        if recheck_files and self._snapshot is not None:
+            inspect_days.update(self._snapshot.days)
+        snapshot = await self._stable_snapshot(inspect_days)
+        self._snapshot = snapshot
+        for day, generation in dirty.items():
+            if self._dirty.get(day) == generation:
+                del self._dirty[day]
+        return snapshot
+
+    @staticmethod
+    def _candidate(snapshot: _Snapshot, fingerprint: str) -> str | None:
+        if not isinstance(fingerprint, str) or not _FINGERPRINT.fullmatch(fingerprint):
+            raise ValueError("Image fingerprint must be a lowercase SHA-256 hex digest")
+        candidates = set(snapshot.owners.get(fingerprint, ())) | set(snapshot.occupied.get(fingerprint, ()))
+        if len(candidates) > 1:
+            raise ValueError("Multiple daily notes claim the same session image fingerprint")
+        return next(iter(candidates), None)
+
     @staticmethod
     def _validate(post: frontmatter.Post, fingerprint: str, record: dict) -> None:
         if post.get("kind") != "session_image" or post.get("image_fingerprint") != fingerprint:
@@ -261,28 +295,59 @@ class ImageNoteLookup:
         if not post.content.strip():
             raise ValueError("Stored image note is empty; restore its caption before reusing it")
 
+    async def _read_candidate(
+        self,
+        relative: str | None,
+        fingerprint: str,
+        record: dict,
+    ) -> tuple[str, frontmatter.Post] | None:
+        if relative is None:
+            return None
+        target = await asyncio.to_thread(self._path, relative)
+        lock = await get_path_lock(target)
+        async with lock:
+            post = await asyncio.to_thread(self._read_post, relative, target)
+            self._validate(post, fingerprint, record)
+        return relative, post
+
     async def find(self, fingerprint: str, record: dict) -> tuple[str, frontmatter.Post] | None:
-        """Return one current, source-validated note, or a refreshed negative."""
-        if not isinstance(fingerprint, str) or not _FINGERPRINT.fullmatch(fingerprint):
-            raise ValueError("Image fingerprint must be a lowercase SHA-256 hex digest")
-        async with self._lock:
-            async with await self.get_catalog_lock():
-                dirty = dict(self._dirty)
-                # No partial directory scan or dirty-day update is ever published.
-                snapshot = await self._stable_snapshot(set(dirty))
-                self._snapshot = snapshot
-                for day, generation in dirty.items():
-                    if self._dirty.get(day) == generation:
-                        del self._dirty[day]
-            candidates = set(snapshot.owners.get(fingerprint, ())) | set(snapshot.occupied.get(fingerprint, ()))
-            if not candidates:
-                return None
-            if len(candidates) != 1:
-                raise ValueError("Multiple daily notes claim the same session image fingerprint")
-            relative = next(iter(candidates))
-            target = await asyncio.to_thread(self._path, relative)
-            lock = await get_path_lock(target)
-            async with lock:
-                post = await asyncio.to_thread(self._read_post, relative, target)
-                self._validate(post, fingerprint, record)
-            return relative, post
+        """Return one current note; release the catalog before reading its body."""
+        async with await self.get_catalog_lock():
+            snapshot = await self._update_snapshot()
+            relative = self._candidate(snapshot, fingerprint)
+        return await self._read_candidate(relative, fingerprint, record)
+
+    async def find_locked(self, fingerprint: str, record: dict) -> tuple[str, frontmatter.Post] | None:
+        """Recheck ownership before publication; caller holds fingerprint/catalog.
+
+        Unlike ordinary hits, check every file stamp, including unselected notes
+        edited in place while awaiting the model. Identity bytes are read only
+        for added or changed files. Only filesystem work holds the catalog.
+        """
+        snapshot = await self._update_snapshot(recheck_files=True)
+        relative = self._candidate(snapshot, fingerprint)
+        return await self._read_candidate(relative, fingerprint, record)
+
+    async def record_committed(self, relative: str, post: frontmatter.Post) -> None:
+        """Incorporate a real publication, without trusting a guessed directory stamp.
+
+        Caller holds the catalog, after successful atomic publication. Compare
+        actual file stamps and reread changed identities instead of absorbing
+        concurrent external writes into an optimistic self-write signature.
+        Never retain the provided caption body in the rebuildable snapshot.
+        """
+        parts = Path(relative).relative_to(self.daily_dir).parts
+        if len(parts) != 2 or not self._valid_day(parts[0]) or Path(parts[1]).suffix != ".md":
+            raise ValueError("Published image note must use a legal daily note path")
+        day = parts[0]
+        self.invalidate_day(day)
+        try:
+            snapshot = await self._update_snapshot(recheck_files=True)
+            selected = self._candidate(snapshot, post.get("image_fingerprint"))
+            state = snapshot.days.get(day)
+            metadata = state.notes.get(relative) if state is not None else None
+            if selected != relative or metadata != {key: post.get(key) for key in _IDENTITY_KEYS}:
+                raise ValueError("Published image note identity changed before its snapshot update")
+        except BaseException:
+            self.invalidate_day(day)
+            raise

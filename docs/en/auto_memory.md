@@ -85,6 +85,8 @@ This example requires a configured `components.as_llm.vision` model. Supported i
 BMP, and TIFF. The source limit is 50 MiB and 40 million pixels. Only the first frame of animated or multi-page images is
 captioned. The provider copy is orientation-corrected, reduced to at most 2048 pixels on its longest side, and limited to
 5 MiB; the saved original remains unchanged.
+Unsigned 16-bit grayscale uses a fixed linear mapping from the full 0–65535 range to 8 bits, without per-image contrast
+stretching.
 
 The original image bytes are copied into the configured session directory, and the caption is stored as a daily card:
 
@@ -106,6 +108,9 @@ Reuse follows the card's frontmatter identity, including after a rename or move 
 body is read again, so user edits remain authoritative. Conflicting owners, a changed original, or inconsistent source links
 fail explicitly without overwriting the evidence. Lookup metadata is scoped to one invocation; ordinary creates and renames
 refresh it, while in-place identity edits to unselected cards are guaranteed to be discovered on the next invocation.
+Reuse and link retargeting are separate: known, missing default hash-filename links can be repaired, but arbitrary old
+custom names are not guessed. After repeated custom renames, use normal link retargeting or maintain old links manually;
+occupied paths and user links with unverified identities are left untouched.
 
 Caption text appears only in the memory-extraction copy, never in the saved source conversation. The saved image block
 points to the local copy, allowing it to be processed again without the caller resending Base64 bytes or a remote URL
@@ -120,6 +125,9 @@ With `include_images=false`, Auto Memory uses its original text-only input and d
 for images. It adds no image placeholder or fallback caption. Enabling the switch on a conversation with no image blocks
 also uses the text-only path. Turning the switch off does not remove image facts already stored in the workspace; use
 separate workspaces when comparing image-on and image-off runs.
+Without image processing, resubmitting the same message ID preserves its existing complete image-bearing source record,
+including when history backfills reorder the JSONL. New messages still merge normally. This does not read or recaption
+the original; enable image processing when replacing that message's image.
 
 Image-enabled calls include `auto_memory_images` response metadata, with the image count and per-image processing results,
 plus `image_note_paths`. These paths report written or reused image cards; normal background indexing still determines when

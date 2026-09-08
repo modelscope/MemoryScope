@@ -201,6 +201,7 @@ async def test_continuous_directory_changes_stop_after_three_attempts(tmp_path, 
     previous = lookup._snapshot
     lookup.invalidate_day("2026-01-01")
     dirty = dict(lookup._dirty)
+    _note(tmp_path, body="Changed before the retry probe.")
     original_read = lookup._read_identity
     count = 0
 
@@ -240,6 +241,93 @@ async def test_source_errors_do_not_trigger_snapshot_retries(tmp_path, error):
             await lookup.find(_FP, _RECORD)
     assert refresh.call_count == 1
     assert lookup._snapshot is None
+
+
+@pytest.mark.asyncio
+async def test_committed_cards_only_read_new_identity_bytes(tmp_path):
+    """Real new files do not trigger repeated parsing of stable historical notes."""
+    day = tmp_path / "daily/2026-01-01"
+    day.mkdir(parents=True)
+    for index in range(100):
+        (day / f"old-{index}.md").write_text("User note.", encoding="utf-8")
+    lookup = _lookup(tmp_path)
+    with patch.object(lookup, "_read_identity", wraps=lookup._read_identity) as read:
+        for index in range(10):
+            fingerprint = f"{index:064x}"
+            assert await lookup.find(fingerprint, _RECORD) is None
+            async with await lookup.get_catalog_lock():
+                assert await lookup.find_locked(fingerprint, _RECORD) is None
+                path = _note(tmp_path, name=f"new-{index}.md", fingerprint=fingerprint)
+                await lookup.record_committed(path.relative_to(tmp_path).as_posix(), frontmatter.load(path))
+        assert read.call_count == 110
+    assert len(lookup._snapshot.days["2026-01-01"].notes) == 110
+
+
+@pytest.mark.asyncio
+async def test_prepublication_lookup_detects_in_place_restored_owner(tmp_path):
+    """A plain note changed to an owner while the model waits is not a negative."""
+    path = _note(tmp_path, fingerprint=_OTHER)
+    lookup = _lookup(tmp_path)
+    assert await lookup.find(_FP, _RECORD) is None
+    parent_signature = lookup._directory_signature("daily/2026-01-01")
+    _note(tmp_path, body="Restored by user.")
+    assert lookup._directory_signature("daily/2026-01-01") == parent_signature
+    with patch.object(lookup, "_read_identity", wraps=lookup._read_identity) as read:
+        async with await lookup.get_catalog_lock():
+            found = await lookup.find_locked(_FP, _RECORD)
+        assert read.call_count == 1
+    assert found[0] == path.relative_to(tmp_path).as_posix()
+    assert found[1].content == "Restored by user."
+
+
+@pytest.mark.asyncio
+async def test_commit_update_preserves_external_rename_and_new_owner(tmp_path):
+    """Publish acknowledgment does not absorb unrelated directory changes."""
+    old = _note(tmp_path, name="old.md", fingerprint=_OTHER)
+    lookup = _lookup(tmp_path)
+    assert await lookup.find(_FP, _RECORD) is None
+    async with await lookup.get_catalog_lock():
+        assert await lookup.find_locked(_FP, _RECORD) is None
+        path = _note(tmp_path, name="own.md")
+        old.rename(old.with_name("external-name.md"))
+        external_fp = "d" * 64
+        _note(tmp_path, name="external-new.md", fingerprint=external_fp)
+        await lookup.record_committed(path.relative_to(tmp_path).as_posix(), frontmatter.load(path))
+    assert (await lookup.find(_OTHER, _RECORD))[0].endswith("external-name.md")
+    assert (await lookup.find(external_fp, _RECORD))[0].endswith("external-new.md")
+    assert "daily/2026-01-01/old.md" not in lookup._snapshot.days["2026-01-01"].notes
+
+
+@pytest.mark.asyncio
+async def test_commit_update_rejects_external_duplicate_in_place(tmp_path):
+    """A same-path identity edit inside the publication window remains visible."""
+    _note(tmp_path, name="ordinary.md", fingerprint=_OTHER)
+    lookup = _lookup(tmp_path)
+    assert await lookup.find(_FP, _RECORD) is None
+    async with await lookup.get_catalog_lock():
+        assert await lookup.find_locked(_FP, _RECORD) is None
+        path = _note(tmp_path, name="own.md")
+        _note(tmp_path, name="ordinary.md")
+        with pytest.raises(ValueError, match="Multiple daily notes"):
+            await lookup.record_committed(path.relative_to(tmp_path).as_posix(), frontmatter.load(path))
+    assert "2026-01-01" in lookup._dirty
+
+
+@pytest.mark.asyncio
+async def test_failed_commit_update_keeps_complete_snapshot_and_dirty_day(tmp_path):
+    """A failed differential read cannot bless a partial committed-file index."""
+    _note(tmp_path, fingerprint=_OTHER)
+    lookup = _lookup(tmp_path)
+    assert await lookup.find(_FP, _RECORD) is None
+    previous = lookup._snapshot
+    async with await lookup.get_catalog_lock():
+        path = _note(tmp_path, name="own.md")
+        with patch.object(lookup, "_read_identity", side_effect=PermissionError("fixture")):
+            with pytest.raises(PermissionError):
+                await lookup.record_committed(path.relative_to(tmp_path).as_posix(), frontmatter.load(path))
+    assert lookup._snapshot is previous
+    assert "2026-01-01" in lookup._dirty
+    assert await lookup.find(_FP, _RECORD)
 
 
 @pytest.mark.asyncio

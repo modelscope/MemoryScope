@@ -6,6 +6,8 @@ import io
 import inspect
 import json
 import os
+import struct
+import zlib
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
@@ -28,6 +30,16 @@ def image_bytes(image_format="PNG", size=(12, 8), **kwargs):
     output = io.BytesIO()
     Image.new("RGB", size, "red").save(output, format=image_format, **kwargs)
     return output.getvalue()
+
+
+def transparent_16_bit_png():
+    """Encode an exact tRNS sample, including with Pillow 10's limited writer."""
+    with Image.frombytes("I;16", (2, 1), struct.pack("<2H", 16384, 16385)) as image, io.BytesIO() as output:
+        image.save(output, format="PNG")
+        source = output.getvalue()
+    chunk = b"tRNS" + struct.pack(">H", 16384)
+    # Insert the valid two-byte transparency chunk after PNG's mandatory IHDR.
+    return source[:33] + struct.pack(">I", 2) + chunk + struct.pack(">I", zlib.crc32(chunk)) + source[33:]
 
 
 class CaptionModel:
@@ -318,6 +330,91 @@ def test_normalization_resizes_16_bit_tiff_on_pillow_10(mode):
         assert result.size == (2048, 683)
         assert result.getpixel((0, 0)) == (0, 0, 0)
         assert result.getpixel((2047, 682)) == (255, 255, 255)
+
+
+@pytest.mark.parametrize(("source_format", "mode"), [("PNG", "I;16"), ("TIFF", "I;16"), ("TIFF", "I;16B")])
+def test_normalization_maps_16_bit_midtones_without_clipping_or_contrast_stretch(source_format, mode):
+    """Unsigned samples use the full 16-bit range, not this image's extrema."""
+    values = (16384, 24576, 32768, 40960, 49152)
+    pixels = struct.pack((">" if mode.endswith("B") else "<") + "5H", *values)
+    with Image.frombytes(mode, (5, 1), pixels) as image, io.BytesIO() as output:
+        image.save(output, format=source_format)
+        source = output.getvalue()
+    original = bytes(source)
+
+    prepared, provider_mime, source_mime = normalize_image(source)
+
+    assert source == original
+    assert source_mime == Image.MIME[source_format]
+    assert provider_mime == "image/png"
+    with Image.open(io.BytesIO(source)) as image:
+        assert [image.getpixel((x, 0)) for x in range(5)] == list(values)
+    with Image.open(io.BytesIO(prepared)) as result:
+        assert [result.getpixel((x, 0)) for x in range(5)] == [(value,) * 3 for value in (64, 96, 128, 159, 191)]
+
+
+@pytest.mark.parametrize(("source_format", "mode"), [("PNG", "I;16"), ("TIFF", "I;16"), ("TIFF", "I;16B")])
+def test_normalization_filters_16_bit_midgray_thin_strokes(source_format, mode):
+    """Downscaling retains thin non-black strokes rather than choosing NEAREST."""
+    with Image.new(mode, (4096, 64), 49152) as image, io.BytesIO() as output:
+        image.paste(16384, (2000, 0, 2001, 64))
+        image.save(output, format=source_format)
+        source = output.getvalue()
+
+    prepared, _, _ = normalize_image(source)
+
+    with Image.open(io.BytesIO(prepared)) as result:
+        assert result.size == (2048, 32)
+        assert result.getpixel((0, 16)) == (191, 191, 191)
+        assert 64 < result.getpixel((1000, 16))[0] < 191
+        assert result.getextrema()[0][0] < 191
+
+
+def test_normalization_preserves_16_bit_png_transparency_before_quantizing():
+    """Different source samples that map to one gray value retain distinct alpha."""
+    source = transparent_16_bit_png()
+
+    prepared, _, _ = normalize_image(source)
+
+    with Image.open(io.BytesIO(prepared)) as result:
+        assert result.mode == "RGBA"
+        assert result.getpixel((0, 0)) == (64, 64, 64, 0)
+        assert result.getpixel((1, 0)) == (64, 64, 64, 255)
+
+
+@pytest.mark.parametrize("failure", [None, "point", "putalpha", "thumbnail", "save"])
+def test_normalization_closes_16_bit_conversion_frames(failure, monkeypatch):
+    """The integer, mapped gray and exact-alpha frames close on every exit."""
+    source = transparent_16_bit_png()
+    frames = []
+
+    def record(method, name):
+        def invoke(*args, **kwargs):
+            if failure == name:
+                raise OSError("Synthetic image conversion failure")
+            frame = method(*args, **kwargs)
+            if name == "open" or inspect.currentframe().f_back.f_code.co_filename == caption_module.__file__:
+                frames.append(frame)
+            return frame
+
+        return invoke
+
+    monkeypatch.setattr(Image, "open", record(Image.open, "open"))
+    for name in ("point", "convert"):
+        monkeypatch.setattr(Image.Image, name, record(getattr(Image.Image, name), name))
+    if failure in {"putalpha", "thumbnail", "save"}:
+        monkeypatch.setattr(Image.Image, failure, lambda *_args, **_kwargs: (_ for _ in ()).throw(OSError("Synthetic")))
+
+    if failure:
+        with pytest.raises(ValueError, match="Invalid or unsupported"):
+            normalize_image(source)
+    else:
+        normalize_image(source)
+
+    assert len(frames) >= 2
+    for frame in frames:
+        with pytest.raises(ValueError, match="closed image"):
+            frame.getpixel((0, 0))
 
 
 def test_normalization_uses_only_first_frame():
