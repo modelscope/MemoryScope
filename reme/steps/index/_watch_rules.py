@@ -1,6 +1,7 @@
 """Shared watch-rule logic for init_changes and watch_changes steps."""
 
 from dataclasses import dataclass, field
+from fnmatch import fnmatchcase
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -17,6 +18,7 @@ class WatchRule:
 
     path: Path
     suffixes: list[str] = field(default_factory=list)
+    exclude_patterns: list[str] = field(default_factory=list)
 
 
 def build_watch_rules(
@@ -25,8 +27,19 @@ def build_watch_rules(
     *,
     watch_dirs: list[str],
     watch_suffixes: list[str],
+    watch_exclude_patterns: list[str] | None = None,
 ) -> list[WatchRule]:
-    """Build watch rules from application config fields and suffix whitelist."""
+    """Build rules; exclusions are case-sensitive fnmatch globs relative to each watch root.
+
+    Paths use POSIX separators. ``*`` can match separators, as in ``fnmatch``;
+    ``*/_session_images/*`` excludes session attachments below any date directory.
+    """
+    patterns = watch_exclude_patterns if watch_exclude_patterns is not None else []
+    if not isinstance(patterns, list) or any(
+        not isinstance(pattern, str) or not pattern or pattern.startswith("/") or "\\" in pattern
+        for pattern in patterns
+    ):
+        raise ValueError("watch_exclude_patterns must be a list of relative POSIX glob strings")
     rules: list[WatchRule] = []
     for dir_field in watch_dirs:
         literal_path = Path(dir_field)
@@ -41,7 +54,7 @@ def build_watch_rules(
                 dir_value = normalize_posix_path(f"{dir_value}/{child_path}")
             dir_name = Path(dir_value)
             rule_path = dir_name if dir_name.is_absolute() else workspace_path / dir_name
-        rules.append(WatchRule(path=rule_path, suffixes=list(watch_suffixes)))
+        rules.append(WatchRule(path=rule_path, suffixes=list(watch_suffixes), exclude_patterns=list(patterns)))
     return rules
 
 
@@ -50,14 +63,20 @@ def build_context_watch_rules(
     workspace_path: Path,
     context: "RuntimeContext",
 ) -> list[WatchRule]:
-    """Build watch rules from context-level watch_dirs/watch_suffixes."""
+    """Build watch rules from context-level directories, suffixes, and exclusions."""
     if app_config is None:
         return []
     watch_dirs: list[str] = context.get("watch_dirs", [])
     watch_suffixes: list[str] = context.get("watch_suffixes", [])
     if not watch_dirs:
         return []
-    return build_watch_rules(app_config, workspace_path, watch_dirs=watch_dirs, watch_suffixes=watch_suffixes)
+    return build_watch_rules(
+        app_config,
+        workspace_path,
+        watch_dirs=watch_dirs,
+        watch_suffixes=watch_suffixes,
+        watch_exclude_patterns=context.get("watch_exclude_patterns", []),
+    )
 
 
 def collect_existing(rules: list[WatchRule], recursive: bool) -> dict[str, float]:
@@ -91,8 +110,25 @@ def match_file(file_path: str, rules: list[WatchRule]) -> bool:
 
 
 def _match_rule(p: Path, rule: WatchRule) -> bool:
-    """Check if a single path matches a rule's suffix constraint."""
+    """Apply identical suffix and exclusion rules to initial scans and live changes."""
     filename = p.name.casefold()
     if rule.suffixes and not any(filename.endswith("." + suffix.strip(".").casefold()) for suffix in rule.suffixes):
         return False
-    return True
+    return not _matches_exclusion(p, rule)
+
+
+def _matches_exclusion(path: Path, rule: WatchRule) -> bool:
+    """Match exclusions even for deleted files; no filesystem lookup is needed."""
+    if not rule.exclude_patterns:
+        return False
+    try:
+        relative = path.relative_to(rule.path).as_posix()
+    except ValueError:
+        return False
+    return any(fnmatchcase(relative, pattern) for pattern in rule.exclude_patterns)
+
+
+def is_excluded_file(file_path: str, rules: list[WatchRule]) -> bool:
+    """Ignore excluded catalog entries, unless another overlapping rule includes them."""
+    path = Path(file_path)
+    return any(_matches_exclusion(path, rule) for rule in rules) and not match_file(file_path, rules)
