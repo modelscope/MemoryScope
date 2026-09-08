@@ -22,7 +22,6 @@ jobs:
   resource_watch_loop:
     backend: background
     watch_dirs: [resource_dir]
-    watch_exclude_patterns: ["*/_session_images/*"]
     watch_suffixes: [md, txt, json, jsonl, csv, yaml, html, png, jpg, jpeg, webp, gif, bmp, tiff, heic]
     steps:
       - backend: init_changes_step
@@ -187,9 +186,9 @@ jobs:
           default: false
         image_mode:
           type: string
-          enum: [resource, caption-only]
-          description: "resource saves originals and image notes; caption-only uses temporary captions"
-          default: resource
+          enum: [caption-only]
+          description: "Image processing mode; currently only caption-only (temporary captions, no image resource writes)"
+          default: caption-only
         date:
           type: string
           description: "YYYY-MM-DD daily note date; empty = infer from message timestamps or today"
@@ -200,7 +199,7 @@ jobs:
       - backend: auto_memory_step
         enable_tags: false
         include_images: false
-        image_mode: resource
+        image_mode: caption-only
 
   auto_memory_cc:
     backend: base

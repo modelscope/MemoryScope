@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Iterable
 
 from ._change_batch import coalesce_changes
-from ._watch_rules import WatchRule, build_context_watch_rules, collect_existing, is_excluded_file
+from ._watch_rules import WatchRule, build_context_watch_rules, collect_existing
 from ..base_step import BaseStep
 from ...components import R
 from ...schema import FileNode
@@ -68,16 +68,6 @@ class InitChangesStep(BaseStep):
         rules = self._get_watch_rules()
         existing = collect_existing(rules, recursive=self.recursive)
         nodes = await self._load_indexed_nodes()
-        if any(rule.exclude_patterns for rule in rules):
-            # Excluded files are unmanaged by this watcher, not deleted resources.
-            nodes = [
-                node
-                for node in nodes
-                if not is_excluded_file(
-                    str(Path(node.path) if Path(node.path).is_absolute() else self.workspace_path / node.path),
-                    rules,
-                )
-            ]
         changes, counts = self.diff(existing, nodes, self.workspace_path)
         changes = coalesce_changes(changes)
         self.context["changes"] = changes

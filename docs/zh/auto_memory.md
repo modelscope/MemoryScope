@@ -76,50 +76,42 @@ daily note 会指向对应的对话记录。持久化时会排除 tool-result bl
 默认不开启图像。调用时即可开启，不需要修改 YAML 或重新编译 ReMe：
 
 ```bash
-reme auto_memory session_id=session-a include_images=true image_mode=resource messages='[...]'
+reme auto_memory session_id=session-a include_images=true messages='[...]'
 ```
+
+单次 CLI 调用可使用 `reme start job=auto_memory`，其余参数相同。
+`include_images=false` 保持原有纯文本行为，不调用图像 caption。开启时，`image_mode` 默认为 `caption-only`，
+也是当前唯一支持的值。`resource` 模式暂不实现；开启图像时显式选择它或其他不支持的模式会报配置错误，不会降级为纯文本。
 
 `messages` 使用 AgentScope 格式，处理顶层图像 `DataBlock`（`source.media_type` 以 `image/` 开头）。
 支持 Base64、HTTP(S) URL 和 workspace 内的 `file://` URI；本地读取遵守 `_allowed_paths`。
 Caption 需要支持视觉的模型：共用 Auto Resource 的模型选择逻辑，优先 `vision`，其次 `default`，也可通过 Step 的
-`as_llm` 显式选择。字节/像素限制和格式转换复用现有图像资源处理流程。
+`as_llm` 显式选择。图像预处理、模型调用和 caption prompt 与 `auto_image_resource` 共用；Auto Memory
+不运行 `auto_resource` Job，也不依赖其 watcher。
 
-| 设置 | 提取 memory 时的输入 | 额外持久文件 |
-| --- | --- | --- |
-| `include_images=false` | 原有纯文本行为，不生成 caption | 无 |
-| `include_images=true image_mode=resource` | Caption、图像笔记链接、原图资源链接 | 原图和 Auto Resource 图像笔记 |
-| `include_images=true image_mode=caption-only` | 只有 caption | 无 |
-
-开启后的两种模式都只在临时消息副本中，将图像块原位替换为 AgentScope 标准 `TextBlock`，不改变其他块或调用方消息。
-它们共用内置 Auto Resource caption prompt 和模型调用基建；`resource` 把笔记生成交给配置的 `auto_resource` Job。
-`caption-only` 的 caption 仅在提取时存在，不单独保存。
-
-**所有模式的源 JSONL 保存行为完全相同。** 不补充 caption、资源链接或图像 metadata，仍执行上文的过滤规则。
-因此，重放已保存的 JSONL 无法恢复被过滤掉的 Base64 图像；再次处理这些图像需要重新提交原始带图消息。
-
-`resource` 将原始字节保存到 `{resource_dir}/YYYY-MM-DD/_session_images/<sha256>.<ext>`，按 `source_resource`
-复用同一天的图像笔记。同一次调用中相同字节只做一次 caption；已有的同日图像卡片直接复用，不改写正文。
-`_session_images` 是同步入口管理的保留附件目录，默认 resource watcher 的启动扫描和实时监听都排除它。
-手动修改或删除其中的原图不会自动重新生成或删除 caption 卡片；普通资源的 watcher 行为不变。
-
+每个 caption 都只在临时消息副本中，将对应图像块原位替换为 AgentScope 标准 `TextBlock`，不改变其他块或调用方消息。
 临时文本使用英文标签：
 
 ```text
 [Image]
-Image note: [[daily/2026-09-09/project-architecture.md]]
-Image resource: [[resource/2026-09-09/_session_images/<sha256>.png]]
 Caption (model-generated):
 ...
 [/Image]
 ```
 
-`caption-only` 不包含其中的两行链接。Memory prompt 要求 Agent 在相关事实旁引用提供的图像笔记，但这是模型生成行为，
-不是确定性的结果检查或规则补写。图像处理失败会明确中止 memory 提取；已保存的 JSONL，以及后续失败前已生成的原图或卡片
-仍会保留，不自动回滚。
+Auto Memory 随后使用这个补充 caption 的副本提取记忆。不额外保存原图文件或独立 caption 卡片，也不提供图像资源链接；
+相关图像事实仍可被提取进普通的 daily 记忆笔记。
 
-若需持久默认值，在应用配置（或 `reme start` 对应覆盖项）中设置 `jobs.auto_memory.include_images=true` 和
-`jobs.auto_memory.image_mode=resource`。调用时参数优先，无需编译。本适配针对 AgentScope 消息，不扩展 Claude Code
-原始 transcript 的解析。
+**开启与关闭图像时的源 JSONL 保存行为完全不变。** 不补充 caption、资源链接或图像 metadata，仍执行上文的过滤规则。
+重放已保存的 JSONL 无法恢复被过滤掉的 Base64 图像；再次处理这些图像需要重新提交原始带图消息。
+
+图像读取、预处理或 caption 失败时，Auto Memory 会记录 warning，并在响应的 `auto_memory_images` metadata 中说明降级。
+本次请求的所有临时 caption 都会被丢弃，然后使用原始纯文本输入继续提取记忆，不会混入部分成功的 caption。
+只要普通 memory 操作成功，CLI 仍可成功；需查看 metadata 区分纯文本降级与图像处理成功。
+取消操作、开启图像时的无效模式配置，以及图像阶段以外的错误，不会被这个降级逻辑吞掉。
+
+若需持久默认值，在应用配置（或 `reme start` 对应覆盖项）中设置 `jobs.auto_memory.include_images=true`。
+调用时参数优先，无需编译。本适配针对 AgentScope 消息，不扩展 Claude Code 原始 transcript 的解析。
 
 ## 消息时间
 

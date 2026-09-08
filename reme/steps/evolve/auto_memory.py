@@ -9,7 +9,7 @@ import frontmatter
 from agentscope.message import Msg
 
 from ._evolve import agent_reply_result_text, format_history, now
-from ._session_images import prepare_image_messages
+from ._auto_memory_image import prepare_image_messages
 from ..base_step import BaseStep
 from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
@@ -365,8 +365,12 @@ class AutoMemoryStep(BaseStep):
         include_images = self.context.get("include_images", self.kwargs.get("include_images", False))
         if not isinstance(include_images, bool):
             raise ValueError("include_images must be a boolean")
-        image_mode = self.context.get("image_mode", self.kwargs.get("image_mode", "resource"))
-        memory_messages = await prepare_image_messages(self, messages, day, image_mode) if include_images else messages
+        memory_messages, has_image_captions = messages, False
+        if include_images:
+            image_mode = self.context.get("image_mode", self.kwargs.get("image_mode", "caption-only"))
+            if image_mode != "caption-only":
+                raise ValueError("image_mode currently supports only 'caption-only'")
+            memory_messages, has_image_captions = await prepare_image_messages(self, messages, day)
 
         try:
             note = await self._list_session_note(day, session_id)
@@ -409,9 +413,7 @@ class AutoMemoryStep(BaseStep):
             system_prompt=self.prompt_format(
                 "system_prompt",
                 enable_tags=self._tags_enabled(),
-                include_images=memory_messages is not messages,
-                image_resources=memory_messages is not messages and image_mode == "resource",
-                image_captions=memory_messages is not messages and image_mode == "caption-only",
+                include_images=has_image_captions,
             ),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,
