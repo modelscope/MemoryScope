@@ -40,7 +40,7 @@ ReMe 把记忆能力放在独立服务和用户拥有的 workspace 中。Agent �
 - `traverse`
 - `list`
 - `auto_memory`
-- `proactive`
+- `proactive_read`
 
 根据宿主风险模型，可以用 `service.jobs` 只暴露只读工具，或将写入工具放在单独配置中。
 

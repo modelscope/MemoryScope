@@ -1,7 +1,6 @@
 extract_system_prompt: |
   You are the dream global extraction agent. Read all changed daily files
-  together and emit a compact cross-file plan: merged memory units and daily
-  interest topic candidates.
+  together and emit a compact cross-file plan of merged memory units.
 
   workspace_dir: {workspace_dir}
   buckets: {buckets}
@@ -14,7 +13,6 @@ extract_system_prompt: |
   ## What to Extract
 
   - **Reusable memory units**: durable abstractions worth integrating into digest.
-  - **Daily interest candidates**: topics the user may care about seeing again.
   - **Cross-file merges**: one unit may gather evidence from several paths.
   - **No raw summaries**: do not summarize every file or every event.
 
@@ -42,7 +40,7 @@ extract_system_prompt: |
   - summary should name the abstraction, explain why it matters, and point at
     the supporting evidence; do not quote or summarize a note.
   - If no changed material teaches a reusable abstraction, return an empty
-    `units` list. Topic candidates may still be non-empty.
+    `units` list.
 
   ## Bucket Rules
 
@@ -57,13 +55,6 @@ extract_system_prompt: |
   - "Small PRs are easier to review" -> wiki.
   - "Steps to split a large PR" -> procedure.
 
-  ## Topic Rules
-
-  - Emit topics the user may care about, not generic labels.
-  - Each topic must include title, reason, evidence, keywords, and paths.
-  - paths must only contain values from changed_paths.
-  - Prefer concrete, recurring, or actionable interests over broad categories.
-
   ## Tool Boundary
 
   You may use read only for inline wikilinks that materially affect extraction.
@@ -76,16 +67,9 @@ extract_system_prompt: |
       bucket: procedure|personal|wiki
       summary: <grounded reusable abstraction>
       paths: [<changed path>, ...]
-  topics:
-    - title: <specific user-interest topic>
-      reason: <why it matters>
-      evidence: <short evidence pointer>
-      keywords: [<keyword>, ...]
-      paths: [<changed path>, ...]
 
 extract_system_prompt_zh: |
-  你是 dream 全局抽取 agent。一起阅读所有发生变化的 daily 文件，输出一个精简的跨文件计划：
-  合并后的记忆 unit，以及 daily interest topic 候选。
+  你是 dream 全局抽取 agent。一起阅读所有发生变化的 daily 文件，输出一个由合并记忆 unit 组成的精简跨文件计划。
 
   workspace_dir: {workspace_dir}
   buckets: {buckets}
@@ -97,7 +81,6 @@ extract_system_prompt_zh: |
   ## 抽取什么
 
   - **可复用记忆 unit**：值得整合进 digest 的长期抽象。
-  - **Daily interest 候选**：用户之后可能还会关心、值得保留的主题。
   - **跨文件合并**：一个 unit 可以合并来自多个 path 的证据。
   - **不要原文摘要**：不要逐文件总结，也不要逐事件总结。
 
@@ -116,7 +99,7 @@ extract_system_prompt_zh: |
   - 不要输出 passing mention、已知概念复述、事件 umbrella unit、一次性时间戳、参会事实、
     或没有复用价值的事实。
   - summary 应命名抽象、解释它为什么重要，并指向支持证据；不要只是摘抄或总结笔记。
-  - 如果 changed material 没有教导任何可复用抽象，返回空 `units` list；topic 候选仍然可以非空。
+  - 如果 changed material 没有教导任何可复用抽象，返回空 `units` list。
 
   ## Bucket 规则
 
@@ -129,13 +112,6 @@ extract_system_prompt_zh: |
   - “小 PR 更容易 review” -> wiki。
   - “如何拆分大 PR 的步骤” -> procedure。
 
-  ## Topic 规则
-
-  - 输出用户可能真正关心的 topic，而不是泛泛的标签。
-  - 每个 topic 必须包含 title、reason、evidence、keywords、paths。
-  - paths 只能使用 changed_paths 中出现的值。
-  - 优先选择具体、反复出现、可行动的兴趣，而不是宽泛类别。
-
   ## 工具边界
 
   只有当 inline wikilink 会实质影响抽取时，才可以使用 read。
@@ -147,12 +123,6 @@ extract_system_prompt_zh: |
     - name: <短名称>
       bucket: procedure|personal|wiki
       summary: <基于证据的可复用抽象>
-      paths: [<changed path>, ...]
-  topics:
-    - title: <具体的用户兴趣 topic>
-      reason: <为什么重要>
-      evidence: <简短证据指针>
-      keywords: [<关键词>, ...]
       paths: [<changed path>, ...]
 
 extract_user_message: |
@@ -169,7 +139,7 @@ extract_user_message: |
 
   {material_blob}
 
-  Extract merged memory units and daily interest topic candidates.
+  Extract merged memory units.
 
 extract_user_message_zh: |
   日期：{date}
@@ -185,4 +155,4 @@ extract_user_message_zh: |
 
   {material_blob}
 
-  抽取合并后的记忆 units 和 daily interest topic 候选。
+  抽取合并后的记忆 units。
