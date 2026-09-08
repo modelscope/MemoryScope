@@ -28,9 +28,8 @@ async def _stop_task(task):
 
 
 def _assert_no_active_batches(env):
-    """Completed and cancelled invocations must release application subscriptions."""
-    state = env.app_context.metadata.get("_auto_resource_lookup_state")
-    assert state is None or not state.batches
+    """Lookup state stays invocation-scoped, with no Application cache or subscriptions."""
+    assert env.app_context.metadata == {}
 
 
 @pytest.mark.parametrize("consumer_change", ["modified", "deleted"])
@@ -194,7 +193,7 @@ async def test_cancelled_batch_does_not_leak_lookup_into_reused_context(
 
 
 async def test_cancelled_writer_invalidates_other_batch_after_partial_write(auto_resource_env, monkeypatch):
-    """Cancelling after a card is saved still notifies an overlapping reader."""
+    """Cancelling after a card is saved still exposes its owner to an overlapping reader."""
     env = auto_resource_env
     env.app_context.metadata = {}
     env.write_note("daily/2025-12-01/archive.md", "[[resource/archive.txt]]")
