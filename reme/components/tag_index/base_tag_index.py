@@ -42,6 +42,15 @@ class BaseTagIndex(BaseComponent):
     def normalize_tags(self, value: object) -> list[str]:
         """Return canonical tags according to this index's configured limits."""
 
+    def normalize_query_tags(self, value: object) -> list[str]:
+        """Return canonical lookup tags.
+
+        Existing third-party indexes remain compatible by inheriting their
+        normal tag canonicalization. Implementations with per-file count limits
+        should override this method so lookup expressions are not truncated.
+        """
+        return self.normalize_tags(value)
+
     @abstractmethod
     async def rebuild(self, nodes: list[FileNode]) -> None:
         """Replace the complete index with relationships derived from ``nodes``."""

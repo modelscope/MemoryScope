@@ -134,6 +134,48 @@ class SearchStep(BaseStep):
             "ttl_seconds": ttl,
         }
 
+    async def _resolve_tag_filter(
+        self,
+        raw_tags: object,
+        search_filter: dict,
+    ) -> tuple[set[str] | None, dict | None, str | None]:
+        """Build a tag-aware chunk domain, or describe a safe fallback."""
+        if not raw_tags:
+            return None, None, None
+
+        tag_index = getattr(self.file_store, "tag_index", None)
+        tag_index_available = tag_index is not None and bool(getattr(tag_index, "is_healthy", True))
+        resolve_chunk_ids = getattr(self.file_store, "resolve_filtered_chunk_ids", None)
+        filtered_search_available = callable(resolve_chunk_ids) and all(
+            callable(getattr(self.file_store, method, None))
+            for method in ("filtered_vector_search", "filtered_keyword_search")
+        )
+        if not tag_index_available or not filtered_search_available:
+            reason = "tag_index_unavailable" if not tag_index_available else "file_store_unsupported"
+            self.logger.warning(f"[{self.name}] tags requested but {reason}; falling back to unfiltered search")
+            return None, {"requested": True, "applied": False, "reason": reason}, None
+
+        normalized_tags = tag_index.normalize_query_tags(raw_tags)
+        if not normalized_tags:
+            return None, None, "Error: tags contained no valid values"
+
+        allowed_paths = set(await tag_index.paths_for_tags(normalized_tags, match_all=False))
+        if not bool(getattr(tag_index, "is_healthy", True)):
+            self.logger.warning(
+                f"[{self.name}] tag index became unhealthy during lookup; falling back to unfiltered search",
+            )
+            return None, {"requested": True, "applied": False, "reason": "tag_index_unavailable"}, None
+
+        eligible_chunk_ids = resolve_chunk_ids(allowed_paths, search_filter)
+        metadata = {
+            "requested": True,
+            "applied": True,
+            "tags": normalized_tags,
+            "matched_paths": len(allowed_paths),
+            "eligible_chunks": len(eligible_chunk_ids),
+        }
+        return eligible_chunk_ids, metadata, None
+
     async def execute(self):
         assert self.context is not None
         query: str = (self.context.get("query", "") or "").strip()
@@ -170,6 +212,7 @@ class SearchStep(BaseStep):
 
         candidates = min(_MAX_CANDIDATES, max(1, int(limit * candidate_multiplier)))
         search_filter: dict = dict(self.context.get("search_filter", {}) or {})
+        raw_tags = self.context.get("tags", []) or []
 
         # Promote top-level date parameters into search_filter for file_store.
         for date_key in ("start_date", "end_date"):
@@ -208,11 +251,31 @@ class SearchStep(BaseStep):
         if strict_date_filter:
             search_filter["strict_date_filter"] = True
 
+        eligible_chunk_ids, tag_filter_metadata, tag_error = await self._resolve_tag_filter(raw_tags, search_filter)
+        if tag_error is not None:
+            self.context.response.success = False
+            self.context.response.answer = tag_error
+            return self.context.response
+
         text_weight = 1.0 - vector_weight
         use_vector = vector_weight > 0.0
         use_keyword = text_weight > 0.0
 
-        if use_vector and use_keyword:
+        if eligible_chunk_ids is not None:
+            if not eligible_chunk_ids:
+                vector_results, keyword_results = [], []
+            elif use_vector and use_keyword:
+                vector_results, keyword_results = await asyncio.gather(
+                    self.file_store.filtered_vector_search(query, candidates, eligible_chunk_ids),
+                    self.file_store.filtered_keyword_search(query, candidates, eligible_chunk_ids),
+                )
+            elif use_vector:
+                vector_results = await self.file_store.filtered_vector_search(query, candidates, eligible_chunk_ids)
+                keyword_results = []
+            else:
+                vector_results = []
+                keyword_results = await self.file_store.filtered_keyword_search(query, candidates, eligible_chunk_ids)
+        elif use_vector and use_keyword:
             vector_results, keyword_results = await asyncio.gather(
                 self.file_store.vector_search(query, candidates, search_filter),
                 self.file_store.keyword_search(query, candidates, search_filter),
@@ -272,6 +335,8 @@ class SearchStep(BaseStep):
             "returned": len(fused),
             "hybrid": hybrid,
         }
+        if tag_filter_metadata is not None:
+            self.context.response.metadata["tag_filter"] = tag_filter_metadata
         if dedup is not None:
             self.context.response.metadata["dedup"] = dedup
         return self.context.response

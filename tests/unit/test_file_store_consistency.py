@@ -1519,6 +1519,37 @@ def test_search_filter_applies_to_vector_and_keyword_results(store_factory):
     run(go())
 
 
+@pytest.mark.parametrize("store_factory", [_new_local_store, _new_zvec_store])
+def test_filtered_search_uses_one_chunk_id_domain_for_vector_and_keyword(store_factory):
+    """Tag-aware vector and BM25 branches search the same resolved chunk IDs."""
+
+    async def go():
+        with tempfile.TemporaryDirectory() as tmp, temp_chdir(tmp):
+            store = store_factory(name="t_filtered_domain")
+            await store.start()
+            store.embedding_store = FakeEmbeddingStore()
+            _ensure_zvec_collection(store)
+            await store.upsert(
+                [
+                    (node("daily/a.md"), [chunk("a", "daily/a.md", "fresh topic", kind="daily")]),
+                    (node("daily/b.md"), [chunk("b", "daily/b.md", "fresh topic", kind="other")]),
+                    (node("resource/c.md"), [chunk("c", "resource/c.md", "fresh topic", kind="daily")]),
+                ],
+            )
+
+            eligible = store.resolve_filtered_chunk_ids(
+                {"daily/a.md", "daily/b.md"},
+                {"metadata": {"kind": "daily"}},
+            )
+
+            assert eligible == {"a"}
+            assert [item.id for item in await store.filtered_vector_search("fresh", 5, eligible)] == ["a"]
+            assert [item.id for item in await store.filtered_keyword_search("fresh", 5, eligible)] == ["a"]
+            await store.close()
+
+    run(go())
+
+
 def test_faiss_rebuilds_stale_sidecar_and_updates_same_id_text():
     """FAISS sidecar rebuilds when persisted rows no longer match chunks."""
 

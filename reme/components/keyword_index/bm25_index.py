@@ -22,7 +22,7 @@ import math
 import pickle
 import re
 from collections import Counter
-from collections.abc import KeysView
+from collections.abc import Collection, KeysView
 from pathlib import Path
 from uuid import uuid4
 
@@ -306,6 +306,44 @@ class BM25Index(BaseKeywordIndex):
             scores[self._deleted] = 0.0
         return scores
 
+    def _score_query_documents(
+        self,
+        query_ids: list[int],
+        document_ids: Collection[str],
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Score live selected documents while retaining global BM25 statistics."""
+        candidate_idxs = np.array(
+            sorted({self._doc_id_to_idx[doc_id] for doc_id in document_ids if doc_id in self._doc_id_to_idx}),
+            dtype=np.int32,
+        )
+        scores = np.zeros(candidate_idxs.size, dtype=np.float32)
+        n_docs = self.n_docs
+        if candidate_idxs.size == 0 or n_docs == 0:
+            return candidate_idxs, scores
+
+        avg_len = self.total_len / n_docs
+        denom_base = self.k1 * (1.0 - self.b)
+        denom_norm = self.k1 * self.b / avg_len if avg_len > 0 else 0.0
+        for tid in query_ids:
+            posting_idxs = self._posting_doc_idxs.get(tid)
+            if posting_idxs is None or posting_idxs.size == 0:
+                continue
+            _common, posting_positions, candidate_positions = np.intersect1d(
+                posting_idxs,
+                candidate_idxs,
+                assume_unique=True,
+                return_indices=True,
+            )
+            if posting_positions.size == 0:
+                continue
+            idf = self._get_idf(tid, n_docs)
+            if idf == 0.0:
+                continue
+            tfs = self._posting_tfs[tid][posting_positions].astype(np.float32)
+            doc_lens = self._doc_lens[candidate_idxs[candidate_positions]].astype(np.float32)
+            scores[candidate_positions] += idf * tfs * (self.k1 + 1.0) / (tfs + denom_base + denom_norm * doc_lens)
+        return candidate_idxs, scores
+
     async def retrieve(self, query: str, limit: int = 3) -> dict[str, float]:
         """BM25 retrieval; returns {doc_id: score} sorted by score descending."""
         n_docs = self.n_docs
@@ -318,6 +356,31 @@ class BM25Index(BaseKeywordIndex):
         scores = self._score_query(query_ids, n_docs)
         top_idxs = self._top_k(scores, limit)
         return {self._doc_ids[int(i)]: float(scores[int(i)]) for i in top_idxs}
+
+    async def score_documents(self, query: str, document_ids: Collection[str]) -> dict[str, float]:
+        """Return every positive-scoring selected document in descending order."""
+        query_ids = self._encode_query(query)
+        if not query_ids:
+            return {}
+        candidate_idxs, scores = self._score_query_documents(query_ids, document_ids)
+        ranked = self._top_k(scores, scores.size)
+        return {self._doc_ids[int(candidate_idxs[i])]: float(scores[i]) for i in ranked}
+
+    async def retrieve_filtered(
+        self,
+        query: str,
+        limit: int,
+        document_ids: Collection[str],
+    ) -> dict[str, float]:
+        """Return exact BM25 top-k within selected documents."""
+        if limit <= 0:
+            return {}
+        query_ids = self._encode_query(query)
+        if not query_ids:
+            return {}
+        candidate_idxs, scores = self._score_query_documents(query_ids, document_ids)
+        ranked = self._top_k(scores, limit)
+        return {self._doc_ids[int(candidate_idxs[i])]: float(scores[i]) for i in ranked}
 
     # -- Persistence ----------------------------------------------------------
 

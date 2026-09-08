@@ -449,6 +449,12 @@ jobs:
           type: number
           description: "min fused score"
           default: 0.0
+        tags:
+          type: array
+          items:
+            type: string
+          description: "optional tags filter; a file matches when it contains at least one valid tag"
+          default: []
         start_date:
           type: string
           description: "optional inclusive start date filter (YYYY-MM-DD); results earlier than this date are excluded"

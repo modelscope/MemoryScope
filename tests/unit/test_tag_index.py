@@ -103,6 +103,17 @@ def test_queries_are_not_truncated_by_per_file_tag_limit() -> None:
     asyncio.run(run())
 
 
+def test_query_tag_normalization_is_public_and_not_count_limited() -> None:
+    """Search expressions reuse tag rules without the per-file tag cap."""
+    index = LocalTagIndex(max_tags_per_file=2, max_tag_length=8)
+
+    assert index.normalize_query_tags([" Alpha ", "BETA", "gamma", "alpha", "too-long-tag", " "]) == [
+        "alpha",
+        "beta",
+        "gamma",
+    ]
+
+
 def test_list_tags_paginates_and_applies_default_sort_orders() -> None:
     """List only active tags with compact counts and deterministic pagination."""
 
@@ -515,4 +526,5 @@ def test_default_config_enables_tag_index_with_explicit_key() -> None:
     assert "tag_index_loop" not in config["jobs"]
     assert config["components"]["tag_index"]["default"]["key"] == "tags"
     assert config["components"]["file_store"]["default"]["tag_index"] == "default"
+    assert config["jobs"]["search"]["parameters"]["properties"]["tags"]["default"] == []
     assert config["jobs"]["auto_memory"]["steps"][0]["enable_tags"] is True

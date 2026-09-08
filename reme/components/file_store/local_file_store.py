@@ -27,6 +27,8 @@ CachedEmbedding = tuple[str, np.ndarray]
 _EMBEDDING_F16_B64_FIELD = "_embedding_f16_b64"
 _EMBEDDING_F16_DTYPE = np.dtype("<f2")
 _VECTOR_SEARCH_BATCH_SIZE = 1024
+_FILTERED_EXACT_RATIO = 0.05
+_FILTERED_FULL_RANK_MULTIPLIER = 10
 _PROGRESS_LOG_PERCENT_STEP = 10
 _KEYWORD_REBUILD_BATCH_SIZE = 200
 
@@ -918,6 +920,110 @@ class LocalFileStore(BaseFileStore):
 
     # -- search ---------------------------------------------------------------
 
+    def resolve_filtered_chunk_ids(self, allowed_paths: set[str], search_filter: dict) -> set[str]:
+        """Resolve a tag-derived path set and existing filters to chunk IDs."""
+        return {
+            chunk_id
+            for chunk_id, chunk in self.file_chunks.items()
+            if chunk.path in allowed_paths and self._matches_search_filter(chunk, search_filter)
+        }
+
+    async def filtered_vector_search(
+        self,
+        query: str,
+        limit: int,
+        eligible_chunk_ids: set[str],
+    ) -> list[FileChunk]:
+        """Search a tag-filtered vector domain, choosing exact scan or ANN."""
+        if limit <= 0 or not eligible_chunk_ids or self.embedding_store is None or self._embedding_rebuild_pending:
+            return []
+
+        all_vector_chunks = [
+            chunk for chunk in self.file_chunks.values() if self._embedding_dim_matches(chunk.embedding)
+        ]
+        eligible = [chunk for chunk in all_vector_chunks if chunk.id in eligible_chunk_ids]
+        if not eligible:
+            return []
+
+        exact = len(eligible) < _FILTERED_EXACT_RATIO * len(all_vector_chunks) or len(eligible) < (
+            _FILTERED_FULL_RANK_MULTIPLIER * limit
+        )
+        if not exact:
+            return await self.vector_search(
+                query,
+                limit,
+                {"_eligible_chunk_ids": frozenset(eligible_chunk_ids)},
+            )
+
+        query_embedding = await self._get_query_embedding(query)
+        if query_embedding is None:
+            return []
+
+        return_all = len(eligible) <= _FILTERED_FULL_RANK_MULTIPLIER * limit
+        scored: list[tuple[float, int, FileChunk]] = []
+        for start in range(0, len(eligible), _VECTOR_SEARCH_BATCH_SIZE):
+            batch = eligible[start : start + _VECTOR_SEARCH_BATCH_SIZE]
+            matrix = np.stack([chunk.embedding for chunk in batch])
+            similarities = batch_cosine_similarity(query_embedding.reshape(1, -1), matrix)[0]
+            scored.extend(
+                (float(score), -(start + offset), chunk)
+                for offset, (chunk, score) in enumerate(zip(batch, similarities))
+            )
+        scored.sort(key=lambda item: (-item[0], -item[1]))
+        if not return_all:
+            scored = scored[:limit]
+        return [
+            chunk.model_copy(update={"scores": {"vector": score, "score": score}})
+            for score, _neg_order, chunk in scored
+        ]
+
+    async def filtered_keyword_search(
+        self,
+        query: str,
+        limit: int,
+        eligible_chunk_ids: set[str],
+    ) -> list[FileChunk]:
+        """Compute exact global-statistics BM25 scores inside a chunk domain."""
+        if not self.keyword_index or limit <= 0 or not eligible_chunk_ids:
+            return []
+        query = query.strip()
+        if not query:
+            return []
+
+        try:
+            eligible_keyword_ids = eligible_chunk_ids.intersection(self.keyword_index.document_ids)
+        except NotImplementedError:
+            # Compatibility path for a third-party keyword index that cannot
+            # expose its live document IDs.
+            return await self.keyword_search(
+                query,
+                limit,
+                {"_eligible_chunk_ids": frozenset(eligible_chunk_ids)},
+            )
+        if not eligible_keyword_ids:
+            return []
+
+        return_all = len(eligible_keyword_ids) <= _FILTERED_FULL_RANK_MULTIPLIER * limit
+        try:
+            if return_all:
+                doc_scores = await self.keyword_index.score_documents(query, eligible_keyword_ids)
+            else:
+                doc_scores = await self.keyword_index.retrieve_filtered(query, limit, eligible_keyword_ids)
+        except NotImplementedError:
+            # A third-party index may expose document IDs but not implement an
+            # efficient filtered scoring extension.
+            return await self.keyword_search(
+                query,
+                limit,
+                {"_eligible_chunk_ids": frozenset(eligible_chunk_ids)},
+            )
+
+        return [
+            chunk.model_copy(update={"scores": {"keyword": score, "score": score}})
+            for doc_id, score in doc_scores.items()
+            if (chunk := self.file_chunks.get(doc_id)) is not None
+        ]
+
     async def vector_search(self, query: str, limit: int, search_filter: dict) -> list[FileChunk]:
         if limit <= 0:
             return []
@@ -1032,11 +1138,14 @@ class LocalFileStore(BaseFileStore):
         if not search_filter:
             return True
 
+        eligible_chunk_ids = search_filter.get("_eligible_chunk_ids")
         exact_paths = set()
         for key in ("path", "paths"):
             if key in search_filter:
                 exact_paths.update(cls._as_filter_values(search_filter[key]))
-        if exact_paths and chunk.path not in exact_paths:
+        if (eligible_chunk_ids is not None and chunk.id not in eligible_chunk_ids) or (
+            exact_paths and chunk.path not in exact_paths
+        ):
             return False
 
         prefixes = []
@@ -1072,6 +1181,7 @@ class LocalFileStore(BaseFileStore):
             "start_date",
             "end_date",
             "strict_date_filter",
+            "_eligible_chunk_ids",
         }
         for key, value in search_filter.items():
             if key not in reserved:

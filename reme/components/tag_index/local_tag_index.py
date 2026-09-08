@@ -57,6 +57,10 @@ class LocalTagIndex(BaseTagIndex):
         """Normalize frontmatter tags according to the per-file count limit."""
         return self._normalize_tags(value, limit=self.max_tags_per_file)
 
+    def normalize_query_tags(self, value: object) -> list[str]:
+        """Normalize lookup tags without truncating the query expression."""
+        return self._normalize_tags(value, limit=None)
+
     @staticmethod
     def _validate_path(path: str) -> str:
         if not isinstance(path, str) or not path or "\\" in path:
@@ -127,7 +131,7 @@ class LocalTagIndex(BaseTagIndex):
         # ``max_tags_per_file`` constrains indexed documents, not lookup
         # expressions. Truncating here would silently weaken AND queries and
         # omit valid matches from OR queries.
-        normalized = self._normalize_tags(tags, limit=None)
+        normalized = self.normalize_query_tags(tags)
         if not normalized:
             return []
         async with self._maintenance_lock:

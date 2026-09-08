@@ -1,5 +1,7 @@
 """Unit tests for workspace search Steps without embedding or LLM dependencies."""
 
+# pylint: disable=protected-access
+
 import asyncio
 import importlib.util
 from pathlib import Path
@@ -7,6 +9,8 @@ from pathlib import Path
 from agentscope.message import Msg
 
 from reme.components.file_store import BaseFileStore
+from reme.components.file_store.local_file_store import LocalFileStore
+from reme.components.tag_index import LocalTagIndex
 from reme.components import ApplicationContext
 from reme.components.runtime_context import RuntimeContext
 from reme.enumeration import LinkScopeEnum
@@ -74,6 +78,46 @@ class FakeSearchStore(BaseFileStore):
     async def keyword_search(self, query: str, limit: int, search_filter: dict) -> list[FileChunk]:
         self.calls.append(("keyword", query, limit, search_filter))
         return self.keyword_results[:limit]
+
+
+class TaggedFakeSearchStore(FakeSearchStore):
+    """Fake store exposing the filtered-search extension used by LocalFileStore."""
+
+    def __init__(self, *, chunks: list[FileChunk]):
+        super().__init__(vector_results=chunks, keyword_results=chunks)
+        self.file_chunks = {chunk.id: chunk for chunk in chunks}
+        self.tag_index = LocalTagIndex()
+        self.filtered_ids: set[str] | None = None
+
+    def resolve_filtered_chunk_ids(self, allowed_paths: set[str], search_filter: dict) -> set[str]:
+        """Resolve paths and the existing filters like LocalFileStore."""
+        return {
+            chunk.id
+            for chunk in self.file_chunks.values()
+            if chunk.path in allowed_paths and LocalFileStore._matches_search_filter(chunk, search_filter)
+        }
+
+    async def filtered_vector_search(
+        self,
+        query: str,
+        limit: int,
+        eligible_chunk_ids: set[str],
+    ) -> list[FileChunk]:
+        """Return the vector-side members of the resolved domain."""
+        self.filtered_ids = set(eligible_chunk_ids)
+        self.calls.append(("filtered_vector", query, limit, {}))
+        return [chunk for chunk in self.vector_results if chunk.id in eligible_chunk_ids]
+
+    async def filtered_keyword_search(
+        self,
+        query: str,
+        limit: int,
+        eligible_chunk_ids: set[str],
+    ) -> list[FileChunk]:
+        """Return the keyword-side members of the resolved domain."""
+        self.filtered_ids = set(eligible_chunk_ids)
+        self.calls.append(("filtered_keyword", query, limit, {}))
+        return [chunk for chunk in self.keyword_results if chunk.id in eligible_chunk_ids]
 
 
 def _chunk(
@@ -894,6 +938,103 @@ def test_search_step_empty_query_fails_before_store_calls():
         assert resp.success is False
         assert resp.answer == "Error: query cannot be empty"
         assert not store.calls
+
+    asyncio.run(run())
+
+
+def test_search_step_missing_tag_index_preserves_legacy_search():
+    """A requested tag filter degrades to the unchanged search path without an index."""
+
+    async def run():
+        hit = _chunk("hit", "daily/a.md", "text", "keyword", 3.0)
+        store = FakeSearchStore(keyword_results=[hit])
+        step = SearchStep(file_store=store, expand_links=False)
+
+        resp = await step(RuntimeContext(query="hello", limit=5, tags=["python"]))
+
+        assert resp.success is True
+        assert [call[0] for call in store.calls] == ["vector", "keyword"]
+        assert resp.metadata["tag_filter"] == {
+            "requested": True,
+            "applied": False,
+            "reason": "tag_index_unavailable",
+        }
+
+    asyncio.run(run())
+
+
+def test_search_step_unhealthy_tag_index_preserves_legacy_search():
+    """An unhealthy derived tag index is treated like an unavailable index."""
+
+    async def run():
+        hit = _chunk("hit", "daily/a.md", "text", "keyword", 3.0)
+        store = TaggedFakeSearchStore(chunks=[hit])
+        store.tag_index.set_healthy(False)
+        step = SearchStep(file_store=store, expand_links=False)
+
+        resp = await step(RuntimeContext(query="hello", limit=5, tags=["python"]))
+
+        assert resp.success is True
+        assert {call[0] for call in store.calls} == {"vector", "keyword"}
+        assert resp.metadata["tag_filter"]["reason"] == "tag_index_unavailable"
+
+    asyncio.run(run())
+
+
+def test_search_step_rejects_nonempty_tags_that_normalize_to_empty():
+    """Malformed explicit tags fail instead of silently widening the search."""
+
+    async def run():
+        store = TaggedFakeSearchStore(chunks=[])
+        step = SearchStep(file_store=store, expand_links=False)
+
+        resp = await step(RuntimeContext(query="hello", limit=5, tags=["has whitespace", "!", "x" * 65]))
+
+        assert resp.success is False
+        assert resp.answer == "Error: tags contained no valid values"
+        assert not store.calls
+
+    asyncio.run(run())
+
+
+def test_search_step_combines_tags_with_existing_chunk_filters():
+    """Tags use OR internally and are ANDed with existing path/date behavior."""
+
+    async def run():
+        matching = _chunk("a", "daily/2024-03-01/a.md", "match", "keyword", 3.0)
+        old = _chunk("b", "daily/2023-03-01/b.md", "old", "keyword", 2.0)
+        wrong_prefix = _chunk("c", "resource/2024-03-01/c.md", "resource", "keyword", 1.0)
+        store = TaggedFakeSearchStore(chunks=[matching, old, wrong_prefix])
+        await store.tag_index.rebuild(
+            [
+                FileNode(path=matching.path, st_mtime=1.0, front_matter={"tags": ["Python"]}),
+                FileNode(path=old.path, st_mtime=1.0, front_matter={"tags": ["ReMe"]}),
+                FileNode(path=wrong_prefix.path, st_mtime=1.0, front_matter={"tags": ["python"]}),
+            ],
+        )
+        step = SearchStep(file_store=store, expand_links=False)
+
+        resp = await step(
+            RuntimeContext(
+                query="hello",
+                limit=5,
+                tags=[" PYTHON ", "REME"],
+                start_date="2024-01-01",
+                search_filter={"path_prefix": "daily/"},
+            ),
+        )
+
+        assert resp.success is True
+        assert store.filtered_ids == {"a"}
+        assert [result["id"] for result in resp.metadata["results"]] == ["a"]
+        assert resp.metadata["tag_filter"] == {
+            "requested": True,
+            "applied": True,
+            "tags": ["python", "reme"],
+            "matched_paths": 3,
+            "eligible_chunks": 1,
+        }
+        assert {call[0] for call in store.calls} == {"filtered_vector", "filtered_keyword"}
 
     asyncio.run(run())
 
