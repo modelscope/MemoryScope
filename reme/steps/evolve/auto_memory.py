@@ -9,6 +9,7 @@ import frontmatter
 from agentscope.message import Msg
 
 from ._evolve import agent_reply_result_text, format_history, now
+from ._session_images import prepare_image_messages
 from ..base_step import BaseStep
 from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
@@ -361,6 +362,12 @@ class AutoMemoryStep(BaseStep):
             self.logger.info(f"[{self.name}] Skipped: no messages session_id={session_id!r} modified=False")
             return
 
+        include_images = self.context.get("include_images", self.kwargs.get("include_images", False))
+        if not isinstance(include_images, bool):
+            raise ValueError("include_images must be a boolean")
+        image_mode = self.context.get("image_mode", self.kwargs.get("image_mode", "resource"))
+        memory_messages = await prepare_image_messages(self, messages, day, image_mode) if include_images else messages
+
         try:
             note = await self._list_session_note(day, session_id)
         except RuntimeError as exc:
@@ -387,7 +394,7 @@ class AutoMemoryStep(BaseStep):
             note_path=note_path,
             session_id=session_id,
             session_file=self._session_source_path(session_id),
-            history=self._format_history(messages),
+            history=self._format_history(memory_messages),
         )
 
         self.logger.info(f"[{self.name}] agent start path={note_path} template={template_key}")
@@ -399,7 +406,13 @@ class AutoMemoryStep(BaseStep):
             reply_kwargs["injected_job_kwargs"] = {"_allowed_paths": [note_path]}
         result = await self.agent_wrapper.reply(
             user_message,
-            system_prompt=self.prompt_format("system_prompt", enable_tags=self._tags_enabled()),
+            system_prompt=self.prompt_format(
+                "system_prompt",
+                enable_tags=self._tags_enabled(),
+                include_images=memory_messages is not messages,
+                image_resources=memory_messages is not messages and image_mode == "resource",
+                image_captions=memory_messages is not messages and image_mode == "caption-only",
+            ),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,
         )

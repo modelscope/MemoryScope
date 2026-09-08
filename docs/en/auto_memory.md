@@ -78,6 +78,59 @@ session/
 Each daily note points to its corresponding conversation record. Saved messages omit tool-result blocks and base64 data
 blocks, preventing recalled memory and binary payloads from being mistaken for user-provided evidence later.
 
+## Optional Session Images
+
+Images are disabled by default. Enable them per call without editing YAML or rebuilding ReMe:
+
+```bash
+reme auto_memory session_id=session-a include_images=true image_mode=resource messages='[...]'
+```
+
+Pass AgentScope messages in `messages`, with top-level `DataBlock` images (`source.media_type` starting with `image/`).
+Sources may be Base64, HTTP(S) URLs, or `file://` URIs inside the workspace. Local reads respect `_allowed_paths`.
+Captioning requires a vision-capable model; the shared Auto Resource resolver prefers `vision`, then `default`, unless
+the Step explicitly selects `as_llm`. Byte/pixel limits and format conversion use the existing image-resource pipeline.
+
+| Setting | Memory extraction input | Extra durable files |
+| --- | --- | --- |
+| `include_images=false` | Existing text-only behavior; no image captioning | None |
+| `include_images=true image_mode=resource` | Caption plus image-note and original-resource wikilinks | Original image and Auto Resource image note |
+| `include_images=true image_mode=caption-only` | Caption only | None |
+
+Both enabled modes replace each image block with a standard AgentScope `TextBlock` in a temporary message copy, at the
+same position. Non-image blocks and caller-owned messages are unchanged. Both use the built-in Auto Resource caption
+prompt and shared model-call infrastructure; `resource` delegates note creation to the configured `auto_resource` job.
+In `caption-only`, the caption exists only during extraction, not as a separate stored caption.
+
+**Source JSONL saving is identical in all modes.** No captions, resource links, or image metadata are added to it, and
+the existing filtering above still applies. In particular, replaying a saved JSONL cannot recover omitted Base64 images;
+resubmit the original image-bearing messages to process those images again.
+
+`resource` stores original bytes under `{resource_dir}/YYYY-MM-DD/_session_images/<sha256>.<ext>` and reuses same-day
+image notes by `source_resource`. Identical bytes are captioned once per call; same-day existing cards are reused without
+overwriting their content. The reserved `_session_images` attachments are processed synchronously, and the default resource
+watcher excludes them from both startup and live scans. Manual edits/deletions in that directory do not automatically
+regenerate or delete caption cards. Ordinary resource files retain their existing watcher behavior.
+
+The temporary text uses English labels:
+
+```text
+[Image]
+Image note: [[daily/2026-09-09/project-architecture.md]]
+Image resource: [[resource/2026-09-09/_session_images/<sha256>.png]]
+Caption (model-generated):
+...
+[/Image]
+```
+
+`caption-only` omits the two link lines. The memory prompt asks the Agent to cite supplied image notes beside relevant
+facts; this is model-driven, not a guaranteed post-processing repair. Image failures stop memory extraction explicitly;
+the already-saved JSONL and any resources/cards created before a later failure remain available, with no rollback.
+
+For a persistent default, set `jobs.auto_memory.include_images=true` and `jobs.auto_memory.image_mode=resource` in the
+application configuration (or the corresponding `reme start` overrides). Call-time options take precedence. No compilation
+is needed. This adapter targets AgentScope messages, not Claude Code transcript parsing.
+
 ## Message Timestamps
 
 Auto Memory preserves each retained message's `created_at` in both the prompt and the source conversation JSONL. When importing historical
