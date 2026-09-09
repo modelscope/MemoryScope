@@ -5,15 +5,26 @@ from pathlib import PurePosixPath
 
 from .base_tag_index import BaseTagIndex
 from ..component_registry import R
-from ...schema import FileNode
+from ...schema import FileFrontMatter, FileNode
 
 
 @R.register("local")
 class LocalTagIndex(BaseTagIndex):
     """Maintain bidirectional path/tag relationships without separate source I/O."""
 
-    def __init__(self, max_tags_per_file: int = 8, max_tag_length: int = 64, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        tag_key: object = "tags",
+        max_tags_per_file: int = 8,
+        max_tag_length: int = 64,
+        **kwargs,
+    ):
+        if not isinstance(tag_key, str) or not tag_key.strip():
+            raise ValueError("tag_key must be a non-empty string")
+        tag_key = tag_key.strip()
+        if tag_key in FileFrontMatter.model_fields:
+            raise ValueError(f"tag_key must not be a reserved frontmatter key: {tag_key!r}")
+        super().__init__(tag_key=tag_key, **kwargs)
         self.max_tags_per_file = self._positive_int("max_tags_per_file", max_tags_per_file)
         self.max_tag_length = self._positive_int("max_tag_length", max_tag_length)
         self.path_to_tags: dict[str, tuple[str, ...]] = {}
@@ -74,7 +85,7 @@ class LocalTagIndex(BaseTagIndex):
         prepared: list[tuple[str, tuple[str, ...]]] = []
         for node in nodes:
             path = self._validate_path(node.path)
-            tags = self.normalize_tags(node.front_matter.model_dump().get(self.key))
+            tags = self.normalize_tags(node.front_matter.model_dump().get(self.tag_key))
             prepared.append((path, tuple(tags)))
         return prepared
 

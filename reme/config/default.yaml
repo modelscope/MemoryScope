@@ -936,7 +936,7 @@ components:
   tag_index:
     default:
       backend: local
-      key: tags
+      tag_key: tags
       max_tags_per_file: 8
       max_tag_length: 64
 

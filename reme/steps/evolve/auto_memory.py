@@ -125,7 +125,7 @@ class AutoMemoryStep(BaseStep):
             return None
         try:
             tag_index = self.file_store.tag_index
-            key = tag_index.key if tag_index is not None else None
+            key = tag_index.tag_key if tag_index is not None else None
         except (AttributeError, KeyError, RuntimeError):
             key = None
         if key:

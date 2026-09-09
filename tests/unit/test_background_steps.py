@@ -2103,7 +2103,7 @@ def test_auto_memory_uses_tag_index_frontmatter_key():
             fs = LocalFileStore(name="test_store", embedding_store="", tag_index="default")
             wrapper = _FakeAgentWrapper()
             await fs.start()
-            fs.tag_index.key = "keywords"
+            fs.tag_index.tag_key = "keywords"
             _install_file_jobs(app_ctx, fs)
             try:
                 today = datetime.datetime.now().strftime("%Y-%m-%d")

@@ -12,22 +12,21 @@ class BaseTagIndex(BaseComponent):
 
     component_type = ComponentEnum.TAG_INDEX
 
-    def __init__(self, **kwargs):
-        key = kwargs.pop("key", "tags")
+    def __init__(self, tag_key="tags", **kwargs):
         super().__init__(**kwargs)
-        self.key = key
+        self.tag_key = tag_key
         self.is_healthy = True
 
     @property
-    def key(self) -> str:
+    def tag_key(self) -> str:
         """Frontmatter field from which this index derives tags."""
-        return self._key
+        return self._tag_key
 
-    @key.setter
-    def key(self, value: object) -> None:
+    @tag_key.setter
+    def tag_key(self, value: object) -> None:
         if not isinstance(value, str) or not value.strip():
-            raise ValueError("key must be a non-empty string")
-        self._key = value.strip()
+            raise ValueError("tag_key must be a non-empty string")
+        self._tag_key = value.strip()
 
     def set_healthy(self, healthy: bool) -> None:
         """Mark whether lookups can safely use the current derived state."""

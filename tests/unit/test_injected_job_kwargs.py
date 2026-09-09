@@ -244,7 +244,7 @@ def test_auto_memory_tags_are_disabled_by_default_and_enabled_through_kwargs():
     assert AutoMemoryStep()._tags_enabled() is False
     assert AutoMemoryCCStep()._tags_enabled() is False
     store = LocalFileStore(embedding_store="", tag_index="")
-    store.tag_index = LocalTagIndex(key="keywords")
+    store.tag_index = LocalTagIndex(tag_key="keywords")
     assert AutoMemoryStep(enable_tags=True, file_store=store)._tags_enabled() is True
     assert AutoMemoryStep(enable_tags=True)._tags_enabled() is False
 
@@ -280,7 +280,7 @@ def test_auto_memory_tags_prompt_follows_step_kwarg():
     assert '"tags"' not in disabled_update
 
     store = LocalFileStore(embedding_store="", tag_index="")
-    store.tag_index = LocalTagIndex(key="keywords")
+    store.tag_index = LocalTagIndex(tag_key="keywords")
     enabled_step = AutoMemoryStep(enable_tags=True, file_store=store)
     enabled_system = enabled_step.prompt_format(
         "system_prompt",

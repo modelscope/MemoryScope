@@ -235,7 +235,7 @@ def test_tag_index_reads_configured_frontmatter_key() -> None:
     """Derive relationships from the configured key instead of a fixed tags field."""
 
     async def run() -> None:
-        index = LocalTagIndex(key="keywords")
+        index = LocalTagIndex(tag_key="keywords")
         await index.rebuild(
             [
                 _node("daily/a.md", ["ignored"]),
@@ -243,28 +243,40 @@ def test_tag_index_reads_configured_frontmatter_key() -> None:
             ],
         )
 
-        assert index.key == "keywords"
+        assert index.tag_key == "keywords"
         assert await index.paths_for_tags(["python"]) == ["daily/b.md"]
         assert await index.paths_for_tags(["ignored"]) == []
 
     asyncio.run(run())
 
 
-@pytest.mark.parametrize("key", ["", "   ", None, 123])
-def test_tag_index_rejects_invalid_frontmatter_key(key) -> None:
+@pytest.mark.parametrize("tag_key", ["", "   ", None, 123])
+def test_tag_index_rejects_invalid_frontmatter_key(tag_key) -> None:
     """Reject keys that cannot identify a frontmatter field."""
-    with pytest.raises(ValueError, match="key must be a non-empty string"):
-        LocalTagIndex(key=key)
+    with pytest.raises(ValueError, match="tag_key must be a non-empty string"):
+        LocalTagIndex(tag_key=tag_key)
+
+
+@pytest.mark.parametrize("tag_key", ["name", "description"])
+def test_tag_index_rejects_reserved_frontmatter_key(tag_key) -> None:
+    """Reject fields declared by FileFrontMatter as reserved metadata."""
+    with pytest.raises(ValueError, match="tag_key must not be a reserved frontmatter key"):
+        LocalTagIndex(tag_key=tag_key)
+
+
+def test_tag_index_allows_model_config_as_frontmatter_key() -> None:
+    """Pydantic configuration is not a declared frontmatter field."""
+    assert LocalTagIndex(tag_key="model_config").tag_key == "model_config"
 
 
 def test_tag_index_rejects_invalid_runtime_frontmatter_key() -> None:
     """Apply the same validation when a live component key is updated."""
     index = LocalTagIndex()
 
-    with pytest.raises(ValueError, match="key must be a non-empty string"):
-        index.key = ""
+    with pytest.raises(ValueError, match="tag_key must be a non-empty string"):
+        index.tag_key = ""
 
-    assert index.key == "tags"
+    assert index.tag_key == "tags"
 
 
 def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Path) -> None:
@@ -437,7 +449,7 @@ def test_explicit_reindex_uses_updated_tag_key(monkeypatch, tmp_path: Path) -> N
         await store.upsert([(_node("daily/a.md", ["old"]), [])])
         await store.file_graph.upsert_nodes([_node("daily/a.md", ["new"], key="keywords")])
 
-        store.tag_index.key = "keywords"
+        store.tag_index.tag_key = "keywords"
         await store.reindex("tag")
 
         assert await store.tag_index.paths_for_tags(["old"]) == []
@@ -524,7 +536,7 @@ def test_default_config_enables_tag_index_with_explicit_key() -> None:
 
     assert config["jobs"]["index_update_loop"]["watch_dirs"] == ["daily_dir", "digest_dir"]
     assert "tag_index_loop" not in config["jobs"]
-    assert config["components"]["tag_index"]["default"]["key"] == "tags"
+    assert config["components"]["tag_index"]["default"]["tag_key"] == "tags"
     assert config["components"]["file_store"]["default"]["tag_index"] == "default"
     assert config["jobs"]["search"]["parameters"]["properties"]["tags"]["default"] == []
     assert config["jobs"]["auto_memory"]["steps"][0]["enable_tags"] is True
