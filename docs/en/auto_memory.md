@@ -88,14 +88,13 @@ reme auto_memory session_id=session-a include_images=true messages='[...]'
 
 For a one-shot CLI invocation, use `reme start job=auto_memory` with the same arguments.
 `include_images=false` keeps the existing text-only behavior and makes no image-captioning calls. When enabled,
-`image_mode` defaults to `caption-only`, the only currently supported value. `resource` mode is deferred; explicitly
-selecting it or another unsupported mode while images are enabled is a configuration error, not a text fallback.
+`image_mode` defaults to `caption-only`, the only currently supported value. Other modes are not currently supported;
+selecting an unsupported mode while images are enabled is a configuration error, not a text fallback.
 
 Pass AgentScope messages in `messages`, with top-level `DataBlock` images (`source.media_type` starting with `image/`).
 Sources may be Base64, HTTP(S) URLs, or `file://` URIs inside the workspace. Local reads respect `_allowed_paths`.
-Captioning requires a vision-capable model; the shared Auto Resource resolver prefers `vision`, then `default`, unless
-the Step explicitly selects `as_llm`. Image preprocessing, model calls, and the caption prompt are shared with
-`auto_image_resource`; Auto Memory does not run the `auto_resource` job or depend on its watcher.
+Captioning requires a vision-capable model. Model selection prefers `vision`, then `default`, unless the Step explicitly
+selects `as_llm`.
 
 Each caption replaces its image block with a standard AgentScope `TextBlock` in a temporary message copy, at the same
 position. Non-image blocks and caller-owned messages are unchanged. The temporary text uses English labels:
@@ -108,10 +107,10 @@ Caption (model-generated):
 ```
 
 Auto Memory then extracts memory from the caption-enriched copy. It saves no original-image files or separate caption
-cards, and supplies no image-resource links. Relevant image facts may still become part of the normal daily memory note.
+cards. Relevant image facts may still become part of the normal daily memory note.
 
-**Source JSONL saving is unchanged whether images are enabled or disabled.** No captions, resource links, or image
-metadata are added to it; the existing filtering above still applies. Replaying a saved JSONL cannot recover omitted
+**Source JSONL saving is unchanged whether images are enabled or disabled.** No captions or image metadata are added to
+it; the existing filtering above still applies. Replaying a saved JSONL cannot recover omitted
 Base64 images. Resubmit the original image-bearing messages to process those images again.
 
 If image loading, preprocessing, or captioning fails, Auto Memory logs a warning and records the fallback in

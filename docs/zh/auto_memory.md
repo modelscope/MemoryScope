@@ -81,13 +81,11 @@ reme auto_memory session_id=session-a include_images=true messages='[...]'
 
 单次 CLI 调用可使用 `reme start job=auto_memory`，其余参数相同。
 `include_images=false` 保持原有纯文本行为，不调用图像 caption。开启时，`image_mode` 默认为 `caption-only`，
-也是当前唯一支持的值。`resource` 模式暂不实现；开启图像时显式选择它或其他不支持的模式会报配置错误，不会降级为纯文本。
+也是当前唯一支持的值。其他模式暂不支持；开启图像时显式选择不支持的模式会报配置错误，不会降级为纯文本。
 
 `messages` 使用 AgentScope 格式，处理顶层图像 `DataBlock`（`source.media_type` 以 `image/` 开头）。
 支持 Base64、HTTP(S) URL 和 workspace 内的 `file://` URI；本地读取遵守 `_allowed_paths`。
-Caption 需要支持视觉的模型：共用 Auto Resource 的模型选择逻辑，优先 `vision`，其次 `default`，也可通过 Step 的
-`as_llm` 显式选择。图像预处理、模型调用和 caption prompt 与 `auto_image_resource` 共用；Auto Memory
-不运行 `auto_resource` Job，也不依赖其 watcher。
+Caption 需要支持视觉的模型：优先选择 `vision`，其次 `default`，也可通过 Step 的 `as_llm` 显式选择。
 
 每个 caption 都只在临时消息副本中，将对应图像块原位替换为 AgentScope 标准 `TextBlock`，不改变其他块或调用方消息。
 临时文本使用英文标签：
@@ -99,10 +97,10 @@ Caption (model-generated):
 [/Image]
 ```
 
-Auto Memory 随后使用这个补充 caption 的副本提取记忆。不额外保存原图文件或独立 caption 卡片，也不提供图像资源链接；
-相关图像事实仍可被提取进普通的 daily 记忆笔记。
+Auto Memory 随后使用这个补充 caption 的副本提取记忆。不额外保存原图文件或独立 caption 卡片；相关图像事实仍可被
+提取进普通的 daily 记忆笔记。
 
-**开启与关闭图像时的源 JSONL 保存行为完全不变。** 不补充 caption、资源链接或图像 metadata，仍执行上文的过滤规则。
+**开启与关闭图像时的源 JSONL 保存行为完全不变。** 不补充 caption 或图像 metadata，仍执行上文的过滤规则。
 重放已保存的 JSONL 无法恢复被过滤掉的 Base64 图像；再次处理这些图像需要重新提交原始带图消息。
 
 图像读取、预处理或 caption 失败时，Auto Memory 会记录 warning，并在响应的 `auto_memory_images` metadata 中说明降级。
