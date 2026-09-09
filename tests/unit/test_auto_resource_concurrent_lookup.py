@@ -1,6 +1,7 @@
 """Concurrent resource invocations must not reuse another batch's stale ownership."""
 
 import asyncio
+from contextlib import asynccontextmanager
 
 import pytest
 
@@ -32,6 +33,41 @@ def _assert_no_active_batches(env):
     assert env.app_context.metadata == {}
 
 
+@asynccontextmanager
+async def _paused_between_resources(env, monkeypatch, consumer, *, change="deleted"):
+    """Pause a two-item batch after its gate lookup; yield an explicit resume operation."""
+    ready, resume = asyncio.Event(), asyncio.Event()
+    original_delete = consumer._handle_delete  # pylint: disable=protected-access
+
+    async def pause_gate(file_path, date_str, note_stem):
+        if file_path == "resource/gate.png":
+            ready.set()
+            await resume.wait()
+        await original_delete(file_path, date_str, note_stem)
+
+    monkeypatch.setattr(consumer, "_handle_delete", pause_gate)
+    task = asyncio.create_task(
+        env.run(
+            consumer,
+            [
+                {"change": "deleted", "path": "resource/gate.png"},
+                {"change": change, "path": "resource/photo.png"},
+            ],
+        ),
+    )
+
+    async def resume_consumer():
+        resume.set()
+        return await asyncio.wait_for(task, timeout=5)
+
+    try:
+        await asyncio.wait_for(ready.wait(), timeout=5)
+        yield resume_consumer
+    finally:
+        resume.set()
+        await _stop_task(task)
+
+
 @pytest.mark.parametrize("consumer_change", ["modified", "deleted"])
 @pytest.mark.parametrize("existing_day", [False, True], ids=["new-day", "existing-day"])
 async def test_another_batch_new_owner_is_seen_by_later_resource(
@@ -49,40 +85,19 @@ async def test_another_batch_new_owner_is_seen_by_later_resource(
     env.write_binary("resource/photo.png", image_bytes())
     consumer = _processor(env, "2026-01-02")
     producer = _processor(env, "2026-01-01")
-    ready, resume = asyncio.Event(), asyncio.Event()
-    original_delete = consumer._handle_delete  # pylint: disable=protected-access
 
-    async def pause_after_lookup(file_path, date_str, note_stem):
-        if file_path == "resource/gate.png":
-            ready.set()
-            await resume.wait()
-        await original_delete(file_path, date_str, note_stem)
-
-    monkeypatch.setattr(consumer, "_handle_delete", pause_after_lookup)
-    context = RuntimeContext(
-        changes=[
-            {"change": "deleted", "path": "resource/gate.png"},
-            {"change": consumer_change, "path": "resource/photo.png"},
-        ],
-    )
-    task = asyncio.create_task(consumer(context))
-    try:
-        await asyncio.wait_for(ready.wait(), timeout=5)
+    async with _paused_between_resources(env, monkeypatch, consumer, change=consumer_change) as resume:
         created = await env.run(producer, [{"change": "added", "path": "resource/photo.png"}])
         assert created.success is True
         card_path = created.metadata["results"][0]["metadata"]["path"]
         assert card_path.startswith("daily/2026-01-01/")
-        resume.set()
-        response = await asyncio.wait_for(task, timeout=5)
+        response = await resume()
         result = response.metadata["results"][-1]
         assert result["success"] is True
         assert result["metadata"]["action"] == consumer_change
         assert result["metadata"]["path"] == card_path
         assert (env.workspace / card_path).exists() is (consumer_change != "deleted")
         assert not list((env.workspace / "daily/2026-01-02").glob("*.md"))
-    finally:
-        resume.set()
-        await _stop_task(task)
     _assert_no_active_batches(env)
 
 
@@ -205,51 +220,30 @@ async def test_cancelled_writer_invalidates_other_batch_after_partial_write(auto
     env.write_binary("resource/photo.png", image_bytes())
     consumer = _processor(env, "2026-01-02")
     producer = _processor(env, "2026-01-01")
-    ready, resume, written = asyncio.Event(), asyncio.Event(), asyncio.Event()
-    original_delete = consumer._handle_delete  # pylint: disable=protected-access
-
-    async def pause_consumer(file_path, date_str, note_stem):
-        if file_path == "resource/gate.png":
-            ready.set()
-            await resume.wait()
-        await original_delete(file_path, date_str, note_stem)
+    written = asyncio.Event()
 
     async def pause_after_write(_day):
         written.set()
         await asyncio.Event().wait()
 
-    monkeypatch.setattr(consumer, "_handle_delete", pause_consumer)
     monkeypatch.setattr(producer, "_refresh_day_index", pause_after_write)
-    consumer_task = asyncio.create_task(
-        env.run(
-            consumer,
-            [
-                {"change": "deleted", "path": "resource/gate.png"},
-                {"change": "deleted", "path": "resource/photo.png"},
-            ],
-        ),
-    )
-    producer_task = None
-    try:
-        await asyncio.wait_for(ready.wait(), timeout=5)
+
+    async with _paused_between_resources(env, monkeypatch, consumer) as resume:
         producer_task = asyncio.create_task(env.run(producer, [{"change": "added", "path": "resource/photo.png"}]))
-        await asyncio.wait_for(written.wait(), timeout=5)
-        card = env.workspace / "daily/2026-01-01/caption.md"
-        assert card.exists()
-        producer_task.cancel()
-        with pytest.raises(asyncio.CancelledError):
-            await producer_task
-        resume.set()
-        response = await asyncio.wait_for(consumer_task, timeout=5)
-        result = response.metadata["results"][-1]
-        assert result["success"] is True
-        assert result["metadata"]["action"] == "deleted"
-        assert result["metadata"]["path"] == "daily/2026-01-01/caption.md"
-        assert not card.exists()
-    finally:
-        resume.set()
-        await _stop_task(consumer_task)
-        if producer_task is not None:
+        try:
+            await asyncio.wait_for(written.wait(), timeout=5)
+            card = env.workspace / "daily/2026-01-01/caption.md"
+            assert card.exists()
+            producer_task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await producer_task
+            response = await resume()
+            result = response.metadata["results"][-1]
+            assert result["success"] is True
+            assert result["metadata"]["action"] == "deleted"
+            assert result["metadata"]["path"] == "daily/2026-01-01/caption.md"
+            assert not card.exists()
+        finally:
             await _stop_task(producer_task)
     _assert_no_active_batches(env)
 
@@ -262,40 +256,17 @@ async def test_another_batch_deletion_removes_cached_day(auto_resource_env, monk
     env.write_binary("resource/photo.png", image_bytes())
     consumer = _processor(env, "2026-01-02")
     producer = _processor(env, "2026-01-01")
-    ready, resume = asyncio.Event(), asyncio.Event()
-    original_delete = consumer._handle_delete  # pylint: disable=protected-access
 
-    async def pause_consumer(file_path, date_str, note_stem):
-        if file_path == "resource/gate.png":
-            ready.set()
-            await resume.wait()
-        await original_delete(file_path, date_str, note_stem)
-
-    monkeypatch.setattr(consumer, "_handle_delete", pause_consumer)
-    task = asyncio.create_task(
-        env.run(
-            consumer,
-            [
-                {"change": "deleted", "path": "resource/gate.png"},
-                {"change": "added", "path": "resource/photo.png"},
-            ],
-        ),
-    )
-    try:
-        await asyncio.wait_for(ready.wait(), timeout=5)
+    async with _paused_between_resources(env, monkeypatch, consumer, change="added") as resume:
         removed = await env.run(producer, [{"change": "deleted", "path": "resource/photo.png"}])
         assert removed.success is True
         assert not old_card.exists()
-        resume.set()
-        response = await asyncio.wait_for(task, timeout=5)
+        response = await resume()
         result = response.metadata["results"][-1]
         assert result["success"] is True
         assert result["metadata"]["created"] is True
         assert result["metadata"]["path"] == "daily/2026-01-02/caption.md"
         assert not list((env.workspace / "daily/2026-01-01").glob("*.md"))
-    finally:
-        resume.set()
-        await _stop_task(task)
     _assert_no_active_batches(env)
 
 

@@ -168,16 +168,15 @@ class AutoResourceStep(BaseStep):
 
         route_counts = ", ".join(f"{spec['backend']}={len(batch)}" for spec, _, batch in routes)
         self.logger.info(f"[{self.name}] route changes={len(changes)} processors=({route_counts})")
-        # One common lookup scope covers every configured modality. Base builds
-        # history only when a loose-root resource needs it, regardless of order.
-        with _resource_lookup_scope(self.context):
-            try:
+        try:
+            # Base lazily builds history in a scope shared by every modality.
+            with _resource_lookup_scope(self.context):
                 for spec, _, indexed_changes in routes:
                     await self._dispatch_processor(spec, indexed_changes, result_slots)
-            finally:
-                # dispatch_steps merges the sub-batch into the shared context.
-                # Downstream steps and the result hook must see the original batch.
-                self.context["changes"] = changes
+        finally:
+            # dispatch_steps merges the sub-batch into the shared context.
+            # Downstream steps and the result hook must see the original batch.
+            self.context["changes"] = changes
 
         results = [item for item in result_slots if item is not None]
         success_count = sum(1 for item in results if item.get("success"))

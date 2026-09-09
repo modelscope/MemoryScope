@@ -7,7 +7,7 @@ import os
 import re
 import stat
 from abc import abstractmethod
-from collections.abc import Awaitable, Callable, Mapping
+from collections.abc import Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
@@ -29,26 +29,17 @@ _LOOKUP_BATCH_KEY = "_auto_resource_lookup_batch"
 _LookupKey = tuple[Path, str, int, int]
 
 
-def _stat_signature(value: os.stat_result) -> tuple[int, ...]:
-    """Detect replacement, in-place edits, and edits which restore mtime."""
-    return (value.st_dev, value.st_ino, value.st_mode, value.st_size, value.st_mtime_ns, value.st_ctime_ns)
-
-
 @dataclass(frozen=True)
 class _ResourceDaySnapshot:
     """Metadata only: all direct Markdown files, not just currently owned notes."""
 
     directory: Path
-    signature: tuple[int, ...]
-    files: dict[str, tuple]
+    files: dict[str, tuple[Path | None, int, int, int]]
 
 
 def _snapshot_note_day(workspace: Path, directory: Path) -> _ResourceDaySnapshot | None:
     """Inspect file metadata without reading bodies or parsing frontmatter."""
     try:
-        directory_stat = directory.stat()
-        if not stat.S_ISDIR(directory_stat.st_mode):
-            return None
         files = {}
         with os.scandir(directory) as entries:
             for entry in entries:
@@ -70,11 +61,8 @@ def _snapshot_note_day(workspace: Path, directory: Path) -> _ResourceDaySnapshot
                 try:
                     value = entry.stat()
                     if stat.S_ISREG(value.st_mode):
-                        files[entry.name] = (
-                            target,
-                            _stat_signature(value),
-                            _stat_signature(entry.stat(follow_symlinks=False)) if target is not None else None,
-                        )
+                        # ctime also catches edits which restore mtime on POSIX.
+                        files[entry.name] = (target, value.st_mtime_ns, value.st_size, value.st_ctime_ns)
                 except FileNotFoundError:
                     # A removed file or a dangling internal link is not a note.
                     continue
@@ -83,7 +71,7 @@ def _snapshot_note_day(workspace: Path, directory: Path) -> _ResourceDaySnapshot
                     if exc.errno == errno.ELOOP:
                         continue
                     raise
-        return _ResourceDaySnapshot(directory, _stat_signature(directory_stat), files)
+        return _ResourceDaySnapshot(directory, files)
     except (FileNotFoundError, NotADirectoryError):
         return None
     except OSError as exc:
@@ -102,7 +90,7 @@ class _ResourceDayLookup:
 
 
 class _ResourceLookupBatch:
-    """Own modality-independent index construction, refresh and invocation lifetime."""
+    """Keep lookup data and its refresh lock within one resource invocation."""
 
     def __init__(self):
         self.indexes: dict[_LookupKey, dict[str, _ResourceDayLookup]] = {}
@@ -111,33 +99,6 @@ class _ResourceLookupBatch:
     def close(self) -> None:
         """Drop ownership data; never carry it to another batch."""
         self.indexes.clear()
-
-    async def find_matches(
-        self,
-        key: _LookupKey,
-        source: str,
-        snapshot: Callable[[], dict[str, _ResourceDaySnapshot]],
-        read_day: Callable[[str], Awaitable[list[dict]]],
-    ) -> list[tuple[str, str]]:
-        """Refresh changed days before lookup, without making each scan a transaction."""
-        async with self.lock:
-            before = snapshot()
-            days = self.indexes.get(key, {}).copy()
-            for day in sorted(before.keys() | days.keys()):
-                if day not in before:
-                    days.pop(day)
-                elif day not in days or days[day].snapshot != before[day]:
-                    owners = {}
-                    for note in await read_day(day):
-                        owner = str(note.get(_SOURCE_RESOURCE_KEY, "")).strip()
-                        if owner and owner not in owners:
-                            owners[owner] = str(note["path"])
-                    # Keep the pre-read version: a write during this read must
-                    # invalidate the cache at the next resource's lookup.
-                    days[day] = _ResourceDayLookup(before[day], owners)
-            # Failed reads never publish a partial refresh or a new version.
-            self.indexes[key] = days
-            return sorted((day, cached.owners[source]) for day, cached in days.items() if source in cached.owners)
 
 
 @contextmanager
@@ -418,12 +379,27 @@ class BaseAutoResourceStep(BaseStep):
                 id(self.file_store),
                 id(self.app_context),
             )
-            matches = await batch.find_matches(
-                key,
-                self._source_resource_link(file_path),
-                self._resource_note_snapshot,
-                self._list_daily_notes,
-            )
+            async with batch.lock:
+                snapshots = self._resource_note_snapshot()
+                days = batch.indexes.get(key, {}).copy()
+                for day in sorted(snapshots.keys() | days.keys()):
+                    if day not in snapshots:
+                        days.pop(day)
+                    elif day not in days or days[day].snapshot != snapshots[day]:
+                        owners = {}
+                        for note in await self._list_daily_notes(day):
+                            owner = str(note.get(_SOURCE_RESOURCE_KEY, "")).strip()
+                            if owner and owner not in owners:
+                                owners[owner] = str(note["path"])
+                        # Save the pre-read version so later resources detect writes
+                        # during this read, without retrying the current lookup.
+                        days[day] = _ResourceDayLookup(snapshots[day], owners)
+                # Failed reads leave the previous cache available for a later retry.
+                batch.indexes[key] = days
+                source = self._source_resource_link(file_path)
+                matches = sorted(
+                    (day, cached.owners[source]) for day, cached in days.items() if source in cached.owners
+                )
         if len(matches) > 1:
             paths = ", ".join(path for _, path in matches)
             raise RuntimeError(f"Multiple daily resource notes claim {file_path}: {paths}")

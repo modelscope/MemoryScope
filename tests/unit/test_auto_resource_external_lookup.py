@@ -158,6 +158,37 @@ async def test_external_owner_removal_stops_reusing_previous_date(new_source, au
     assert card.read_bytes() == replacement
 
 
+@pytest.mark.parametrize("restore_mtime", [False, True], ids=["normal-save", "preserved-mtime"])
+async def test_atomic_replacement_refreshes_owner(restore_mtime, auto_resource_env, monkeypatch):
+    """Replacing a same-size file must not preserve its previous ownership in the cache."""
+    env = auto_resource_env
+    card = env.write_binary(_ORIGINAL_CARD, _note_text("resource/other.png").encode())
+    replacement = card.with_suffix(".tmp")
+
+    async def replace_card():
+        before = card.stat()
+        content = _note_text(_SOURCE).encode()
+        assert len(content) == before.st_size
+        replacement.write_bytes(content)
+        if restore_mtime:
+            os.utime(replacement, ns=(before.st_atime_ns, before.st_mtime_ns))
+        replacement.replace(card)
+        after = card.stat()
+        assert after.st_size == before.st_size
+        if restore_mtime:
+            assert after.st_mtime_ns == before.st_mtime_ns
+        if (after.st_mtime_ns, after.st_ctime_ns) == (before.st_mtime_ns, before.st_ctime_ns):
+            pytest.skip("Filesystem does not expose this replacement through a distinct mtime or ctime")
+
+    response, result = await _after_history_edit(env, monkeypatch, replace_card)
+
+    assert response.success is True
+    assert result["metadata"]["action"] == "deleted"
+    assert result["metadata"]["path"] == _ORIGINAL_CARD
+    assert not card.exists()
+    assert not replacement.exists()
+
+
 @pytest.mark.parametrize("operation", ["move", "delete"])
 async def test_external_move_or_delete_updates_cached_owner(operation, auto_resource_env, monkeypatch):
     """Manual moves and deletion cannot leave a cached historical owner behind."""

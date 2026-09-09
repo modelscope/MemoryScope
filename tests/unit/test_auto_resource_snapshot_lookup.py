@@ -4,7 +4,6 @@ import asyncio
 import errno
 from collections import Counter
 from contextlib import nullcontext
-from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock
 
@@ -251,14 +250,32 @@ async def test_failed_changed_day_read_does_not_accept_new_fingerprint(auto_reso
     assert not card.exists()
 
 
-async def test_unchanged_snapshots_do_not_reparse_historical_notes(auto_resource_env, monkeypatch):
-    """Every resource checks metadata, but unchanged historical days are parsed once."""
+@pytest.mark.parametrize("irrelevant_edit", ["none", "non-markdown", "same-target-link"])
+async def test_unchanged_snapshots_do_not_reparse_historical_notes(irrelevant_edit, auto_resource_env, monkeypatch):
+    """Only changes to note contents or targets require another historical read."""
     env = auto_resource_env
     env.app_context.metadata = {}
     days = ("2025-12-01", "2025-12-02")
     for day in days:
         for index in range(8):
             env.write_note(f"daily/{day}/archive-{index}.md", f"[[resource/archive-{day}-{index}.txt]]")
+    step = _processor(env)
+    original_delete = step._handle_delete  # pylint: disable=protected-access
+    alias = env.workspace / f"daily/{days[0]}/alias.md"
+    target = env.workspace / "storage/archive.md"
+    if irrelevant_edit == "same-target-link":
+        env.write_note("storage/archive.md", "[[resource/archive.txt]]")
+        _symlink(alias, target)
+
+    async def edit_unrelated_metadata(file_path, date_str, note_stem):
+        await original_delete(file_path, date_str, note_stem)
+        if irrelevant_edit == "non-markdown":
+            (alias.parent / "unrelated.txt").write_text(file_path, encoding="utf-8")
+        elif irrelevant_edit == "same-target-link":
+            alias.unlink()
+            _symlink(alias, target)
+
+    monkeypatch.setattr(step, "_handle_delete", edit_unrelated_metadata)
     daily_list = env.app_context.jobs["daily_list"]
     calls = Counter()
 
@@ -268,13 +285,49 @@ async def test_unchanged_snapshots_do_not_reparse_historical_notes(auto_resource
 
     monkeypatch.setitem(env.app_context.jobs, "daily_list", counted_daily_list)
     response = await env.run(
-        _processor(env),
+        step,
         [{"change": "deleted", "path": f"resource/missing-{index}.png"} for index in range(8)],
     )
     assert response.success is True
     assert response.metadata["modified"] is False
     assert response.metadata["processed"] == 8
     assert {day: calls[day] for day in days} == dict.fromkeys(days, 1)
+
+
+async def test_note_link_retarget_refreshes_cached_ownership(auto_resource_env, monkeypatch):
+    """A different safe target is discovered by the next resource lookup."""
+    env = auto_resource_env
+    old_target = env.write_note("storage/old.md", "[[resource/other.png]]")
+    new_target = env.write_note("storage/new.md", "[[resource/photo.png]]")
+    day = env.workspace / "daily/2026-01-01"
+    day.mkdir(parents=True)
+    alias = day / "photo.md"
+    _symlink(alias, old_target)
+    step = _processor(env)
+    original_delete = step._handle_delete  # pylint: disable=protected-access
+
+    async def retarget_after_first_resource(file_path, date_str, note_stem):
+        await original_delete(file_path, date_str, note_stem)
+        if file_path == "resource/missing.png":
+            alias.unlink()
+            _symlink(alias, new_target)
+
+    monkeypatch.setattr(step, "_handle_delete", retarget_after_first_resource)
+    response = await env.run(
+        step,
+        [
+            {"change": "deleted", "path": "resource/missing.png"},
+            {"change": "deleted", "path": "resource/photo.png"},
+        ],
+    )
+    assert response.success is True
+    assert response.metadata["results"][0]["metadata"]["action"] == "skipped"
+    result = response.metadata["results"][1]["metadata"]
+    assert result["action"] == "deleted"
+    assert result["path"] == "daily/2026-01-01/photo.md"
+    assert old_target.exists()
+    assert new_target.exists()
+    assert not alias.is_symlink()
 
 
 @pytest.mark.parametrize("cycle", ["self", "mutual"])
@@ -309,7 +362,7 @@ async def test_cyclic_daily_links_do_not_block_unrelated_resource(cycle, auto_re
     assert link.is_symlink()
 
 
-@pytest.mark.parametrize("failure_site", ["directory-stat", "scandir", "file-stat"])
+@pytest.mark.parametrize("failure_site", ["scandir", "file-stat"])
 @pytest.mark.parametrize("error_number", [errno.ELOOP, errno.EACCES, errno.EIO], ids=["loop", "permission", "io"])
 async def test_snapshot_handles_only_loop_errors(failure_site, error_number, tmp_path, monkeypatch):
     """Exercise late OS errors on every Python version, without bypassing safety failures."""
@@ -317,19 +370,11 @@ async def test_snapshot_handles_only_loop_errors(failure_site, error_number, tmp
     day.mkdir(parents=True)
     (day / "valid.md").write_text("A normal note.", encoding="utf-8")
     error = OSError(error_number, "snapshot probe failed")
-    original_stat = Path.stat
     with base_auto_resource.os.scandir(day) as entries:
         valid_entries = list(entries)
 
-    def stat_with_failure(path, *args, **kwargs):
-        if path == day:
-            raise error
-        return original_stat(path, *args, **kwargs)
-
     with monkeypatch.context() as patch:
-        if failure_site == "directory-stat":
-            patch.setattr(Path, "stat", stat_with_failure)
-        elif failure_site == "scandir":
+        if failure_site == "scandir":
             patch.setattr(base_auto_resource.os, "scandir", Mock(side_effect=error))
         else:
             unreadable = SimpleNamespace(
