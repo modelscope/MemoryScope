@@ -21,56 +21,40 @@ from ._evolve import now
 _SOURCE_RESOURCE_KEY = "source_resource"
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _UNSAFE_FILENAME_CHARS = re.compile(r'[<>:"/\\|?*\x00-\x1f]+')
-_LOOKUP_BATCH_KEY = "_auto_resource_lookup_batch"
-
-
-def _resource_note_owners(notes: list[dict]) -> dict[str, str]:
-    """Preserve daily_list's first-match ordering for each exact source link."""
-    owners = {}
-    for note in notes:
-        source = str(note.get(_SOURCE_RESOURCE_KEY, "")).strip()
-        if source:
-            owners.setdefault(source, str(note["path"]))
-    return owners
+_LOOKUP_TABLE_KEY = "_auto_resource_lookup_table"
 
 
 @dataclass
-class _ResourceLookupBatch:
-    """Cache historical ownership only for this sequential resource invocation.
+class _ResourceLookupTable:
+    """Initial source → day/path ownership, shared by this invocation's processors.
 
-    Refresh our own changes; external edits are read by the next invocation.
-    None means history has not been built, while an empty dict is valid history.
+    Build once without refreshes. Repeated sources use the original live lookup.
+    None means history has not been read; an empty dict is a valid result.
     """
 
-    days: dict[str, dict[str, str]] | None = None
-    dirty_days: set[str] = field(default_factory=set)
-
-    def replace_day(self, day: str, notes: list[dict]) -> None:
-        """Reuse a successful daily_list read without publishing partial history."""
-        if self.days is not None:
-            self.days[day] = _resource_note_owners(notes)
-            self.dirty_days.discard(day)
+    owners: dict[str, dict[str, str]] | None = None
+    seen_sources: set[str] = field(default_factory=set)
 
 
 @contextmanager
 def _resource_lookup_scope(context: RuntimeContext, *, reuse: bool = False):
     """Share a router's index with processors, never with the next watch batch."""
-    previous = context.get(_LOOKUP_BATCH_KEY)
-    if reuse and isinstance(previous, _ResourceLookupBatch):
+    previous = context.get(_LOOKUP_TABLE_KEY)
+    if reuse and isinstance(previous, _ResourceLookupTable):
         yield previous
         return
-    existed = _LOOKUP_BATCH_KEY in context
-    batch = _ResourceLookupBatch()
-    context[_LOOKUP_BATCH_KEY] = batch
+    existed = _LOOKUP_TABLE_KEY in context
+    table = _ResourceLookupTable()
+    context[_LOOKUP_TABLE_KEY] = table
     try:
-        yield batch
+        yield table
     finally:
-        batch.days = None
-        batch.dirty_days.clear()
+        table.owners = None
+        table.seen_sources.clear()
         if existed:
-            context[_LOOKUP_BATCH_KEY] = previous
+            context[_LOOKUP_TABLE_KEY] = previous
         else:
-            del context[_LOOKUP_BATCH_KEY]
+            del context[_LOOKUP_TABLE_KEY]
 
 
 @dataclass(frozen=True)
@@ -153,6 +137,7 @@ def _sanitize_note_name(raw: str, fallback: str) -> str:
 class BaseAutoResourceStep(BaseStep):
     """Shared source-linked daily-note lifecycle for resource processors."""
 
+    _resource_lookup: _ResourceLookupTable | None = None
     resource_fallback = False
     resource_suffixes: frozenset[str] = frozenset()
     router_inherit_keys = frozenset({"file_store", "language"})
@@ -285,16 +270,21 @@ class BaseAutoResourceStep(BaseStep):
         notes = await self._list_daily_notes(day)
         return self._find_resource_note(notes, file_path)
 
+    async def _lookup_resource_note_path(self, day: str, file_path: str) -> str | None:
+        """Reuse the initial path before processing a source, not after writing it."""
+        if self._resource_lookup is not None:
+            assert self._resource_lookup.owners is not None
+            source = self._source_resource_link(file_path)
+            return self._resource_lookup.owners.get(source, {}).get(day)
+        note = await self._list_resource_note(day, file_path)
+        return str(note["path"]) if note is not None else None
+
     async def _list_daily_notes(self, day: str) -> list[dict]:
         """Use the configured daily_list job for both history and targeted checks."""
         list_response = await self.run_job("daily_list", date=day)
         if not list_response.success:
             raise RuntimeError(f"daily_list failed: {list_response.answer}")
-        notes = list_response.metadata.get("notes") or []
-        batch = self.context.get(_LOOKUP_BATCH_KEY)
-        if isinstance(batch, _ResourceLookupBatch):
-            batch.replace_day(day, notes)
-        return notes
+        return list_response.metadata.get("notes") or []
 
     def _daily_note_days(self) -> list[str]:
         """Return safe, deterministic daily subdirectories available for lookup."""
@@ -318,26 +308,32 @@ class BaseAutoResourceStep(BaseStep):
                 continue
         return sorted(days)
 
-    def _invalidate_resource_day(self, day: str) -> None:
-        """Reload only a day changed by this batch, if history was already built."""
-        batch = self.context.get(_LOOKUP_BATCH_KEY)
-        if isinstance(batch, _ResourceLookupBatch) and batch.days is not None:
-            batch.dirty_days.add(day)
-
     async def _find_loose_resource_day(self, file_path: str) -> str | None:
-        """Resolve ownership through the common batch index, for any resource modality."""
+        """Use initial ownership once per source; repeat events retain the original lookup."""
         assert self.context is not None
-        with _resource_lookup_scope(self.context, reuse=True) as batch:
-            if batch.days is None:
-                days = {}
+        self._resource_lookup = None
+        with _resource_lookup_scope(self.context, reuse=True) as table:
+            if file_path in table.seen_sources:
+                matches = []
                 for day in self._daily_note_days():
-                    days[day] = _resource_note_owners(await self._list_daily_notes(day))
-                # Publish only after the entire initial scan succeeds.
-                batch.days = days
-            for day in sorted(batch.dirty_days):
-                await self._list_daily_notes(day)
-            source = self._source_resource_link(file_path)
-            matches = sorted((day, owners[source]) for day, owners in batch.days.items() if source in owners)
+                    note = await self._list_resource_note(day, file_path)
+                    if note is not None:
+                        matches.append((day, str(note["path"])))
+            else:
+                table.seen_sources.add(file_path)
+                if table.owners is None:
+                    owners = {}
+                    for day in self._daily_note_days():
+                        for note in await self._list_daily_notes(day):
+                            source = str(note.get(_SOURCE_RESOURCE_KEY, "")).strip()
+                            if source:
+                                # Preserve daily_list's first match within each day.
+                                owners.setdefault(source, {}).setdefault(day, str(note["path"]))
+                    # Publish only after the entire initial scan succeeds.
+                    table.owners = owners
+                self._resource_lookup = table
+                source = self._source_resource_link(file_path)
+                matches = sorted(table.owners.get(source, {}).items())
         if len(matches) > 1:
             paths = ", ".join(path for _, path in matches)
             raise RuntimeError(f"Multiple daily resource notes claim {file_path}: {paths}")
@@ -345,9 +341,8 @@ class BaseAutoResourceStep(BaseStep):
 
     async def _prepare_resource_note(self, day: str, file_path: str, note_stem: str) -> _ResourceNoteState:
         """Find the owned note or allocate a safe path before the first write."""
-        note = await self._list_resource_note(day, file_path)
-        if note is not None:
-            note_path = str(note["path"])
+        note_path = await self._lookup_resource_note_path(day, file_path)
+        if note_path is not None:
             return _ResourceNoteState(path=note_path, created=False, before_bytes=self._note_bytes(note_path))
 
         _, note_path = self._unique_daily_note_path(day, note_stem, file_path, current_path="")
@@ -508,8 +503,8 @@ class BaseAutoResourceStep(BaseStep):
         return note_path
 
     async def _handle_delete(self, file_path: str, date_str: str, note_stem: str) -> None:
-        note = await self._list_resource_note(date_str, file_path)
-        if note is None:
+        note_rel = await self._lookup_resource_note_path(date_str, file_path)
+        if note_rel is None:
             self.context.response.success = True
             self.context.response.answer = f"No linked resource note to delete: {file_path}"
             self.context.response.metadata.update(
@@ -525,7 +520,6 @@ class BaseAutoResourceStep(BaseStep):
             self.logger.info(f"[{self.name}] delete skipped; no owned note file_path={file_path}")
             return
 
-        note_rel = str(note["path"])
         note_abs = self.workspace_path / note_rel
         note_existed = note_abs.is_file()
         self.logger.info(f"[{self.name}] delete start note={note_rel}")
@@ -564,6 +558,7 @@ class BaseAutoResourceStep(BaseStep):
 
     async def _handle_change(self, file_path: str, raw_change) -> dict:
         assert self.context is not None
+        self._resource_lookup = None
         # Handlers write item-scoped fields into the shared response. Start each
         # change with a fresh mapping so one result cannot inherit another's metadata.
         self.context.response.metadata = {}
@@ -616,23 +611,16 @@ class BaseAutoResourceStep(BaseStep):
         note_stem = _compute_note_stem(filename)
         self.logger.info(f"[{self.name}] {change.name} file_path={file_path} note_stem={note_stem}")
 
-        try:
-            if change == Change.deleted:
-                await self._handle_delete(file_path, date_str, note_stem)
-            else:
-                await self._handle_upsert(
-                    file_path,
-                    date_str,
-                    note_stem,
-                    change == Change.added,
-                    source_path,
-                )
-        except Exception:
-            # A processor or post-processing job may have written before failing.
-            self._invalidate_resource_day(date_str)
-            raise
-        if self.context.response.metadata.get("modified"):
-            self._invalidate_resource_day(date_str)
+        if change == Change.deleted:
+            await self._handle_delete(file_path, date_str, note_stem)
+        else:
+            await self._handle_upsert(
+                file_path,
+                date_str,
+                note_stem,
+                change == Change.added,
+                source_path,
+            )
         return {
             "success": self.context.response.success,
             "path": file_path,
