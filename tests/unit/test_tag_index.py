@@ -539,4 +539,7 @@ def test_default_config_enables_tag_index_with_explicit_key() -> None:
     assert config["components"]["tag_index"]["default"]["tag_key"] == "tags"
     assert config["components"]["file_store"]["default"]["tag_index"] == "default"
     assert config["jobs"]["search"]["parameters"]["properties"]["tags"]["default"] == []
-    assert config["jobs"]["auto_memory"]["steps"][0]["enable_tags"] is True
+    assert config["jobs"]["auto_memory"]["steps"] == [
+        {"backend": "auto_memory_step"},
+        {"backend": "auto_tag_step"},
+    ]

@@ -188,7 +188,7 @@ jobs:
         - messages
     steps:
       - backend: auto_memory_step
-        enable_tags: true
+      - backend: auto_tag_step
 
   auto_memory_cc:
     backend: base

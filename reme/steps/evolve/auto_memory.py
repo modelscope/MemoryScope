@@ -17,8 +17,6 @@ from ...components import R
 
 _SESSION_ID_KEY = "session_id"
 _SOURCE_CONVERSATION_KEY = "source_conversation"
-_MAX_TAGS = 8
-_MAX_TAG_LENGTH = 64
 _MESSAGE_TIME_ALIASES = ("time_created", "timestamp", "createdAt", "timeCreated", "created_time")
 
 
@@ -61,39 +59,6 @@ def _normalize_msg_timestamp(item: dict) -> dict:
     return item
 
 
-def _normalize_tags(value) -> list[str]:
-    """Return up to eight unique, retrieval-friendly frontmatter tags.
-
-    Tags are stored uniformly as strings. Technical tokens such as ``GPT-5``,
-    ``C++``, ``C#``, and ``.NET`` are valid; whitespace-delimited phrases and
-    punctuation-only values are not.
-    """
-    if not isinstance(value, list):
-        return []
-
-    tags: list[str] = []
-    seen: set[str] = set()
-    for item in value:
-        if isinstance(item, bool) or not isinstance(item, (str, int)):
-            continue
-        tag = str(item).strip()
-        if not tag or len(tag) > _MAX_TAG_LENGTH:
-            continue
-        if any(char.isspace() for char in tag):
-            continue
-        if not any(char.isalnum() for char in tag):
-            continue
-
-        dedupe_key = tag.casefold()
-        if dedupe_key in seen:
-            continue
-        seen.add(dedupe_key)
-        tags.append(tag)
-        if len(tags) >= _MAX_TAGS:
-            break
-    return tags
-
-
 @R.register("auto_memory_step")
 class AutoMemoryStep(BaseStep):
     """Record conversation facts into a daily note via an Agent."""
@@ -102,7 +67,6 @@ class AutoMemoryStep(BaseStep):
         super().__init__(**kwargs)
         self.create_tools: list[str] = ["daily_write"]
         self.update_tools: list[str] = ["read", "edit", "frontmatter_update", "write"]
-        self._missing_tag_index_warned = False
 
     def _session_dir(self) -> str:
         return normalize_posix_path(str(self.config_value("session_dir")))
@@ -118,29 +82,6 @@ class AutoMemoryStep(BaseStep):
 
     def _daily_note_path(self, day: str, name: str) -> str:
         return f"{self.config_value('daily_dir')}/{day}/{name}.md"
-
-    def _tags_key(self) -> str | None:
-        """Return the configured tag frontmatter key when tag generation is usable."""
-        if not self.kwargs.get("enable_tags", False):
-            return None
-        try:
-            tag_index = self.file_store.tag_index
-            key = tag_index.tag_key if tag_index is not None else None
-        except (AttributeError, KeyError, RuntimeError):
-            key = None
-        if key:
-            return key
-        if not self._missing_tag_index_warned:
-            self.logger.warning(
-                f"[{self.name}] enable_tags is true but no tag_index is configured on file_store; "
-                "tag generation is disabled",
-            )
-            self._missing_tag_index_warned = True
-        return None
-
-    def _tags_enabled(self) -> bool:
-        """Whether this step should generate and normalize frontmatter tags."""
-        return self._tags_key() is not None
 
     def _frontmatter(self, path: str) -> dict:
         post = frontmatter.loads((self.file_store.workspace_path / path).read_text(encoding="utf-8"))
@@ -183,9 +124,6 @@ class AutoMemoryStep(BaseStep):
             _SESSION_ID_KEY: session_id,
             _SOURCE_CONVERSATION_KEY: self._session_link(session_id),
         }
-        tags_key = self._tags_key()
-        if tags_key is not None:
-            metadata[tags_key] = _normalize_tags(current.get(tags_key))
         if all(current.get(key) == value for key, value in metadata.items()):
             return
         response = await self.run_job(
@@ -338,6 +276,7 @@ class AutoMemoryStep(BaseStep):
     # pylint: disable=too-many-return-statements
     async def execute(self):
         assert self.context is not None
+        self.context["modified_paths"] = []
         raw_messages = self.context.get("messages") or []
         session_id: str = self.context.get("session_id", "")
         memory_hint: str = self.context.get("memory_hint", "")
@@ -399,12 +338,8 @@ class AutoMemoryStep(BaseStep):
             f"created={created} msgs={len(messages)} hint={bool(memory_hint)}",
         )
         template_key = "user_message_create" if created else "user_message_update"
-        tags_key = self._tags_key()
-        enable_tags = tags_key is not None
         user_message = self.prompt_format(
             template_key,
-            enable_tags=enable_tags,
-            tags_key=tags_key or "tags",
             today=day,
             note=memory_hint or "(none)",
             note_path=note_path,
@@ -422,11 +357,7 @@ class AutoMemoryStep(BaseStep):
             reply_kwargs["injected_job_kwargs"] = {"_allowed_paths": [note_path]}
         result = await self.agent_wrapper.reply(
             user_message,
-            system_prompt=self.prompt_format(
-                "system_prompt",
-                enable_tags=enable_tags,
-                tags_key=tags_key or "tags",
-            ),
+            system_prompt=self.prompt_format("system_prompt"),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,
         )
@@ -453,11 +384,14 @@ class AutoMemoryStep(BaseStep):
                 return
             note_path = str(note["path"])
         try:
-            if not created or enable_tags:
+            if not created:
                 await self._ensure_memory_frontmatter(note_path, session_id)
             if not created:
                 note_path = await self._rename_from_frontmatter_name(note_path, day)
         except RuntimeError as exc:
+            modified = self._note_modified(before_note_path, before_note_bytes, note_path)
+            if modified and note_path:
+                self.context["modified_paths"] = [note_path]
             self.context.response.success = False
             self.context.response.answer = str(exc)
             self.context.response.metadata.update(
@@ -465,7 +399,7 @@ class AutoMemoryStep(BaseStep):
                     "date": day,
                     "path": note_path,
                     "created": created,
-                    "modified": self._note_modified(before_note_path, before_note_bytes, note_path),
+                    "modified": modified,
                     "n_messages": len(messages),
                 },
             )
@@ -473,6 +407,8 @@ class AutoMemoryStep(BaseStep):
             return
 
         modified = self._note_modified(before_note_path, before_note_bytes, note_path)
+        if modified:
+            self.context["modified_paths"] = [note_path]
         daily_dir = self.config_value("daily_dir")
         self.logger.info(f"[{self.name}] refresh index start date={day} daily_dir={daily_dir}")
         index_payload = await refresh_day_index(self.file_store, day, daily_dir)
