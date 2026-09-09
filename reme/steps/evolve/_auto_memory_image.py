@@ -1,7 +1,6 @@
 """Temporary session image inputs; no resource writes or transcript changes."""
 
 import base64
-from fnmatch import fnmatchcase
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -19,20 +18,7 @@ from ._image_caption import (
 from ..file_io._path import _check_path_permission, resolve_path
 from ...components.agent_wrapper.as_agent_wrapper import AsAgentWrapper
 from ...components.prompt_handler import PromptHandler
-
-
-def _direct_input_types(model, supported: bool | None) -> list[list[str]]:
-    if model is None:
-        raise ValueError("Direct images require a started memory model")
-    model_input_types = ["image/*"]
-    if supported is None:
-        model_input_types = [
-            kind for card in model.list_models() if card.name == model.model for kind in card.input_types
-        ]
-        supported = any(kind.startswith("image/") for kind in model_input_types)
-    if supported is not True:
-        raise ValueError("The selected memory model must declare image support")
-    return [model_input_types, model.formatter.input_types]
+from ...enumeration import ComponentEnum
 
 
 async def prepare_direct_messages(
@@ -61,16 +47,13 @@ async def prepare_direct_messages(
         wrapper = step.agent_wrapper
         if not isinstance(wrapper, AsAgentWrapper):
             raise TypeError("Direct images require the AgentScope wrapper")
-        stage = "model-capability"
+        stage = "model"
         component = wrapper.as_llm
-        input_types = _direct_input_types(component.model, component.supports_images)
-        # Match the wrapper's call-over-component shallow merge. A fallback
-        # receives the same UserMsg after provider errors and must not drop it.
-        model_config = (reply_kwargs or {}).get("model_config", wrapper.kwargs.get("model_config")) or {}
-        fallback = model_config.get("fallback_model")
-        if fallback is not None and fallback is not component.model:
-            stage = "fallback-model-capability"
-            input_types.extend(_direct_input_types(fallback, None))
+        if step.app_context is not None:
+            component = step.app_context.components.get(ComponentEnum.AS_LLM, {}).get("vision", component)
+        model = component.model if component is not None else None
+        if model is None:
+            raise ValueError("Direct images require a started memory model")
         stage = "context-image-limit"
         context_config = dict(
             (reply_kwargs or {}).get("context_config", wrapper.kwargs.get("context_config")) or {},
@@ -86,9 +69,6 @@ async def prepare_direct_messages(
             data = await _image_bytes(step, block.source)
             stage = "decode"
             payload = _build_image_request_payload(data, "")
-            stage = "formatter-capability"
-            if not all(any(fnmatchcase(payload["mime"], kind) for kind in types) for types in input_types):
-                raise ValueError("The selected memory model formatter does not support this image MIME")
             label = f"[Image {number}]"
             prepared[message_index].content[block_index] = TextBlock(text=label)
             attachments.extend(
@@ -104,13 +84,13 @@ async def prepare_direct_messages(
         reason = f"{stage}: {type(exc).__name__}"
         metadata.update(status="fallback", reason=reason)
         step.logger.warning(
-            f"[{step.name}] Direct image preparation failed ({reason}); continuing with text-only memory. "
-            "Direct mode requires an AgentScope memory model with image support; for custom model IDs, "
-            "declare supports_images on its as_llm component.",
+            f"[{step.name}] Direct image preparation failed ({reason}); continuing with text-only memory.",
         )
         return messages, []
     if reply_kwargs is not None:
         reply_kwargs["context_config"] = context_config
+        # Override only this Agent invocation; never rebind the shared wrapper.
+        reply_kwargs["_model"] = model
     metadata["status"] = "prepared"
     return prepared, attachments
 

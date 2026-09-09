@@ -812,8 +812,6 @@ components:
     default:
       backend: ${LLM_BACKEND:-openai}
       model: ${LLM_MODEL_NAME:-qwen3.7-plus}
-      # null: use this provider's AgentScope model card; custom vision deployments can declare true.
-      supports_images: null
       stream: true
       context_size: 200000
       max_retries: 3
@@ -824,9 +822,10 @@ components:
         max_tokens: 65536
         thinking_enable: false
 
-    # Optional dedicated vision model for image resources (auto_image_resource_step).
-    # Falls back to the "default" instance above when absent; uncomment to
-    # decouple the vision model from the main LLM.
+    # Optional vision model for image resources and Auto Memory image inputs.
+    # Direct Auto Memory uses it only for the current image-bearing Agent call;
+    # when absent, it keeps the model already bound to that Agent wrapper.
+    # Image resource/caption processing otherwise falls back to "default".
     # vision:
     #   backend: ${VLM_BACKEND:-openai}
     #   model: ${VLM_MODEL_NAME:-}

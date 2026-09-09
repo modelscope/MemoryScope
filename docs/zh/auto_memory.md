@@ -98,27 +98,17 @@ Auto Memory 将渲染后的 memory 提示与图像 `DataBlock` 组合成 AgentSc
 若显式设置的 `context_config.max_image_num` 小于输入图像数，会整次显式回退为纯文本，不静默移除较早图像。
 模型和 provider 自身的上下文限制仍然适用。
 
-直接模式要求 AgentScope wrapper，且**该 wrapper 实际绑定的模型**支持视觉。ReMe 检查 AgentScope 模型卡与
-formatter 支持的图像类型。对于不在对应 provider 模型卡中的自定义或 OpenAI-compatible 模型 ID，需要在其
-`as_llm` 组件配置中显式声明实际部署的能力：
+直接模式要求 AgentScope wrapper。输入中含有图像时，优先使用已配置的 `components.as_llm.vision`，
+未配置时使用 wrapper 当前绑定的 `as_llm`。此选择仅用于当前这次记忆 Agent 调用；没有图像的调用仍使用
+wrapper 原有模型。非 AgentScope wrapper 会记录 warning 并显式回退纯文本。
 
-```yaml
-components:
-  as_llm:
-    default:
-      supports_images: true
-```
-
-此片段用于合并到已有模型配置，不是完整模型配置。`false` 显式关闭能力；未设置或 null 则检查匹配的模型卡。
-非 AgentScope wrapper、未知或关闭的视觉能力、不兼容的 formatter，均会记录 warning 并显式回退纯文本。
-直接模式不使用独立的 `vision` 模型。
-如果通过编程方式给 wrapper 配置了 fallback 模型，它的模型卡和 formatter 也必须支持输入图像；否则在记忆 Agent
-运行前，整次输入会显式回退为纯文本。
+请自行选择支持输入图像的模型与 formatter，ReMe 不会自动校验其视觉能力。
 
 ### Caption-only 模式
 
-使用 `include_images=true image_mode=caption-only`。Caption 模型优先选择 `vision`，其次 `default`，
-也可通过 Step 的 `as_llm` 显式选择；它需要支持视觉。记忆 wrapper 仍收到字符串。
+使用 `include_images=true image_mode=caption-only`。Caption 模型依次选择 Step 显式指定的 `as_llm`、
+`components.as_llm.vision`、`components.as_llm.default`。请选用支持视觉的模型；该模型仅用于 caption 阶段，
+记忆 Agent 仍使用原有模型并收到字符串。
 
 每个 caption 都只在临时消息副本中，将对应图像块原位替换为 AgentScope 标准 `TextBlock`，不改变其他块或调用方消息。
 临时文本使用英文标签：
@@ -137,7 +127,7 @@ Auto Memory 随后使用这个补充 caption 的副本提取记忆。两种模�
 **开启与关闭图像时的源 JSONL 保存行为完全不变。** 不补充 caption 或图像 metadata，仍执行上文的过滤规则。
 重放已保存的 JSONL 无法恢复被过滤掉的 Base64 图像；再次处理这些图像需要重新提交原始带图消息。
 
-图像能力检查、读取、预处理或 caption 失败时，Auto Memory 会记录 warning，并在响应的 `auto_memory_images` metadata 中说明降级。
+图像读取、预处理或 caption 失败时，Auto Memory 会记录 warning，并在响应的 `auto_memory_images` metadata 中说明降级。
 本次请求的所有临时图像增强都会被丢弃，然后使用原始纯文本输入继续提取记忆，不会混入部分成功的结果。
 只要普通 memory 操作成功，CLI 仍可成功；需查看 metadata 区分纯文本降级与图像处理成功。
 取消操作、开启图像时的无效模式配置，以及图像阶段以外的错误，不会被这个降级逻辑吞掉。

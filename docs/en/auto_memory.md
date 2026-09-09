@@ -106,28 +106,19 @@ When no image-count limit is explicitly configured, direct mode reserves room fo
 context. An explicit `context_config.max_image_num` below the incoming count causes a visible whole-input text fallback,
 not silent removal of older images. Model/provider context limits still apply.
 
-Direct mode requires an AgentScope wrapper and a vision-capable model bound to **that wrapper**. ReMe checks the model's
-AgentScope model card and the formatter's supported image types. For a custom or OpenAI-compatible model ID absent from
-that provider's model cards, explicitly declare the deployment's capability on its `as_llm` component:
+Direct mode requires an AgentScope wrapper. When the input contains images, it uses `components.as_llm.vision` if
+configured, otherwise the wrapper's currently bound `as_llm`. This selection applies only to the current memory Agent
+invocation. Calls without images keep the wrapper's original model. A non-AgentScope wrapper produces a warning and a
+visible text-only fallback.
 
-```yaml
-components:
-  as_llm:
-    default:
-      supports_images: true
-```
-
-This is an override to merge into your existing model configuration, not a complete model configuration. `false`
-explicitly disables this capability; omitted/null uses the matching model card. A non-AgentScope wrapper, unknown or
-disabled vision capability, or an incompatible formatter produces a warning and a visible text-only fallback.
-No separate `vision` model is used in direct mode.
-If a programmatic wrapper configuration supplies a fallback model, its model card and formatter must also support the
-image inputs; otherwise the whole invocation falls back to text before the memory Agent runs.
+Choose a model and formatter that support your image inputs. ReMe does not automatically validate their vision
+capabilities.
 
 ### Caption-only alternative
 
-Use `include_images=true image_mode=caption-only`. Caption model selection prefers `vision`, then `default`, unless the
-Step explicitly selects `as_llm`; it must support vision. The memory wrapper still receives a string.
+Use `include_images=true image_mode=caption-only`. Caption model selection uses the Step's explicit `as_llm` first,
+then `components.as_llm.vision`, then `components.as_llm.default`. Choose a model that supports vision. Only captioning
+uses that model; the memory Agent keeps its original model and receives a string.
 
 Each caption replaces its image block with a standard AgentScope `TextBlock` in a temporary message copy, at the same
 position. Non-image blocks and caller-owned messages are unchanged. The temporary text uses English labels:
@@ -147,7 +138,7 @@ also saves its internal Agent state under `mem_session/agentscope`; in direct mo
 it; the existing filtering above still applies. Replaying a saved JSONL cannot recover omitted
 Base64 images. Resubmit the original image-bearing messages to process those images again.
 
-If image capability checking, loading, preprocessing, or captioning fails, Auto Memory logs a warning and records the fallback in
+If image loading, preprocessing, or captioning fails, Auto Memory logs a warning and records the fallback in
 `auto_memory_images` response metadata. It discards all temporary image enrichment for that request and continues with the
 original text-only memory input, not a partially enriched conversation. The CLI can still succeed when that normal
 memory operation succeeds; inspect the metadata to distinguish text fallback from successful image processing.

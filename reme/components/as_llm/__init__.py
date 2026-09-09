@@ -27,13 +27,8 @@ class BaseAsLLM(BaseComponent):
     component_type = ComponentEnum.AS_LLM
     credential_cls: type[CredentialBase]
 
-    def __init__(self, supports_images: bool | None = None, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        if supports_images is not None and not isinstance(supports_images, bool):
-            raise ValueError("supports_images must be a boolean or null")
-        # Deployment capability for model IDs absent from AgentScope's cards.
-        # Consume it here rather than forwarding it to the provider SDK.
-        self.supports_images = supports_images
         self.model: ChatModelBase | None = None
 
     async def _start(self) -> None:
