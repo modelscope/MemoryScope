@@ -9,7 +9,7 @@ import stat
 from abc import abstractmethod
 from collections.abc import Awaitable, Callable, Mapping
 from contextlib import contextmanager
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -78,85 +78,66 @@ def _snapshot_note_day(workspace: Path, directory: Path) -> _ResourceDaySnapshot
                 except FileNotFoundError:
                     # A removed file or a dangling internal link is not a note.
                     continue
+                except OSError as exc:
+                    # Python 3.13 can report loops at stat rather than resolve.
+                    if exc.errno == errno.ELOOP:
+                        continue
+                    raise
         return _ResourceDaySnapshot(directory, _stat_signature(directory_stat), files)
     except (FileNotFoundError, NotADirectoryError):
         return None
+    except OSError as exc:
+        # Cyclic date directories are not readable history either.
+        if exc.errno == errno.ELOOP:
+            return None
+        raise
 
 
-@dataclass
+@dataclass(frozen=True)
 class _ResourceDayLookup:
-    """Small, rebuildable ownership index; note bodies never enter the cache."""
+    """One day's first owner per source, paired with its pre-read metadata."""
 
-    owners: dict[str, dict[str, str]] = field(default_factory=dict)
-    day_sources: dict[str, set[str]] = field(default_factory=dict)
-    snapshots: dict[str, _ResourceDaySnapshot] = field(default_factory=dict)
-
-    def replace_day(self, day: str, notes: list[dict]) -> None:
-        """Replace one day's owners, preserving daily_list's first-match order."""
-        day_owners: dict[str, str] = {}
-        for note in notes:
-            source = str(note.get(_SOURCE_RESOURCE_KEY, "")).strip()
-            if source and source not in day_owners:
-                day_owners[source] = str(note["path"])
-        for source in self.day_sources.pop(day, set()):
-            owners = self.owners[source]
-            owners.pop(day, None)
-            if not owners:
-                del self.owners[source]
-        for source, path in day_owners.items():
-            self.owners.setdefault(source, {})[day] = path
-        self.day_sources[day] = set(day_owners)
+    snapshot: _ResourceDaySnapshot
+    owners: dict[str, str]
 
 
 class _ResourceLookupBatch:
     """Own modality-independent index construction, refresh and invocation lifetime."""
 
     def __init__(self):
-        self.indexes: dict[_LookupKey, _ResourceDayLookup] = {}
+        self.indexes: dict[_LookupKey, dict[str, _ResourceDayLookup]] = {}
         self.lock = asyncio.Lock()
 
     def close(self) -> None:
         """Drop ownership data; never carry it to another batch."""
         self.indexes.clear()
 
-    async def get_lookup(
+    async def find_matches(
         self,
         key: _LookupKey,
+        source: str,
         snapshot: Callable[[], dict[str, _ResourceDaySnapshot]],
         read_day: Callable[[str], Awaitable[list[dict]]],
-    ) -> _ResourceDayLookup:
-        """Reuse parsed ownership, checking disk changes from any writer before each lookup.
-
-        Metadata checks still visit the files; unchanged days avoid daily_list
-        and frontmatter parsing. Before/after snapshots detect writes during
-        awaited reads, without requiring writers to cooperate with this batch.
-        """
+    ) -> list[tuple[str, str]]:
+        """Refresh changed days before lookup, without making each scan a transaction."""
         async with self.lock:
-            lookup = self.indexes.get(key) or _ResourceDayLookup()
             before = snapshot()
-            for _ in range(4):
-                changed_days = {
-                    day
-                    for day in before.keys() | lookup.snapshots.keys()
-                    if before.get(day) != lookup.snapshots.get(day)
-                }
-                if not changed_days:
-                    self.indexes[key] = lookup
-                    return lookup
-                for day in sorted(changed_days):
-                    lookup.replace_day(day, await read_day(day) if day in before else [])
-                    if day in before:
-                        lookup.snapshots[day] = before[day]
-                    else:
-                        lookup.snapshots.pop(day, None)
-                after = snapshot()
-                if before == after:
-                    # Publish only a complete, stable scan. On failure the
-                    # recorded pre-read snapshots ensure the next call retries.
-                    self.indexes[key] = lookup
-                    return lookup
-                before = after
-            raise RuntimeError("Resource note ownership kept changing during lookup; retry the resource")
+            days = self.indexes.get(key, {}).copy()
+            for day in sorted(before.keys() | days.keys()):
+                if day not in before:
+                    days.pop(day)
+                elif day not in days or days[day].snapshot != before[day]:
+                    owners = {}
+                    for note in await read_day(day):
+                        owner = str(note.get(_SOURCE_RESOURCE_KEY, "")).strip()
+                        if owner and owner not in owners:
+                            owners[owner] = str(note["path"])
+                    # Keep the pre-read version: a write during this read must
+                    # invalidate the cache at the next resource's lookup.
+                    days[day] = _ResourceDayLookup(before[day], owners)
+            # Failed reads never publish a partial refresh or a new version.
+            self.indexes[key] = days
+            return sorted((day, cached.owners[source]) for day, cached in days.items() if source in cached.owners)
 
 
 @contextmanager
@@ -398,21 +379,8 @@ class BaseAutoResourceStep(BaseStep):
             raise RuntimeError(f"daily_list failed: {list_response.answer}")
         return list_response.metadata.get("notes") or []
 
-    def _resource_lookup_cache(self) -> tuple[_ResourceLookupBatch | None, tuple]:
-        """Keep overridden stores/configurations from sharing another lookup domain."""
-        batch = self.context.get(_LOOKUP_BATCH_KEY) if self.context is not None else None
-        if not isinstance(batch, _ResourceLookupBatch):
-            return None, ()
-        key = (
-            self.workspace_path.resolve(),
-            str(self.config_value("daily_dir")),
-            id(self.file_store),
-            id(self.app_context),
-        )
-        return batch, key
-
     def _resource_note_snapshot(self) -> dict[str, _ResourceDaySnapshot]:
-        """Fingerprint daily notes, including unowned files, using metadata only."""
+        """Inspect daily-note metadata, including files without resource ownership."""
         workspace = self.workspace_path.resolve()
         daily_dir = str(self.config_value("daily_dir"))
         daily_root, error = resolve_path(workspace, daily_dir)
@@ -441,13 +409,21 @@ class BaseAutoResourceStep(BaseStep):
 
     async def _find_loose_resource_day(self, file_path: str) -> str | None:
         """Resolve ownership through the common batch index, for any resource modality."""
-        batch, key = self._resource_lookup_cache()
-        if batch is None:
-            assert self.context is not None
-            with _resource_lookup_scope(self.context):
-                return await self._find_loose_resource_day(file_path)
-        lookup = await batch.get_lookup(key, self._resource_note_snapshot, self._list_daily_notes)
-        matches = sorted(lookup.owners.get(self._source_resource_link(file_path), {}).items())
+        assert self.context is not None
+        with _resource_lookup_scope(self.context, reuse=True) as batch:
+            # Overridden stores/configurations must not share lookup contents.
+            key = (
+                self.workspace_path.resolve(),
+                str(self.config_value("daily_dir")),
+                id(self.file_store),
+                id(self.app_context),
+            )
+            matches = await batch.find_matches(
+                key,
+                self._source_resource_link(file_path),
+                self._resource_note_snapshot,
+                self._list_daily_notes,
+            )
         if len(matches) > 1:
             paths = ", ".join(path for _, path in matches)
             raise RuntimeError(f"Multiple daily resource notes claim {file_path}: {paths}")

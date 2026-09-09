@@ -87,12 +87,12 @@ async def test_another_batch_new_owner_is_seen_by_later_resource(
 
 
 @pytest.mark.parametrize("read_phase", ["history", "dirty-day"])
-async def test_concurrent_write_during_daily_list_does_not_lose_invalidation(
+async def test_concurrent_write_during_lookup_is_seen_by_next_resource(
     read_phase,
     auto_resource_env,
     monkeypatch,
 ):
-    """An awaited stale scan must not erase an invalidation arriving while it runs."""
+    """A stale read keeps its pre-read fingerprint, so the next resource refreshes it."""
     env = auto_resource_env
     env.app_context.metadata = {}
     env.write_note("daily/2026-01-01/gate.md", "[[resource/gate.png]]")
@@ -102,6 +102,7 @@ async def test_concurrent_write_during_daily_list_does_not_lose_invalidation(
     ready, resume = asyncio.Event(), asyncio.Event()
     daily_list = env.app_context.jobs["daily_list"]
     consumer_reads = 0
+    # Deleting gate takes a history read and a targeted read; its dirty refresh is third.
     blocked_read = 1 if read_phase == "history" else 3
     task = None
 
@@ -116,7 +117,10 @@ async def test_concurrent_write_during_daily_list_does_not_lose_invalidation(
         return response
 
     monkeypatch.setitem(env.app_context.jobs, "daily_list", pause_stale_response)
-    changes = [{"change": "deleted", "path": "resource/photo.png"}]
+    changes = [
+        {"change": "deleted", "path": "resource/missing.png"},
+        {"change": "deleted", "path": "resource/photo.png"},
+    ]
     if read_phase == "dirty-day":
         changes.insert(0, {"change": "deleted", "path": "resource/gate.png"})
     task = asyncio.create_task(env.run(consumer, changes))
@@ -127,6 +131,7 @@ async def test_concurrent_write_during_daily_list_does_not_lose_invalidation(
         card_path = created.metadata["results"][0]["metadata"]["path"]
         resume.set()
         response = await asyncio.wait_for(task, timeout=5)
+        assert response.metadata["results"][-2]["metadata"]["action"] == "skipped"
         result = response.metadata["results"][-1]
         assert result["success"] is True
         assert result["metadata"]["action"] == "deleted"
@@ -295,8 +300,8 @@ async def test_another_batch_deletion_removes_cached_day(auto_resource_env, monk
 
 
 @pytest.mark.parametrize("mutation", [False, True], ids=["no-op", "continuous-writes"])
-async def test_concurrent_activity_does_not_cause_unbounded_refresh(mutation, auto_resource_env, monkeypatch):
-    """No-ops preserve a scan; uninterrupted real writes fail closed in bounded reads."""
+async def test_concurrent_activity_refreshes_only_on_next_resource(mutation, auto_resource_env, monkeypatch):
+    """Do not chase concurrent writes within a lookup; recheck them for the next resource."""
     env = auto_resource_env
     env.app_context.metadata = {}
     card = env.write_note("daily/2026-01-01/photo.md", "[[resource/photo.png]]")
@@ -314,7 +319,7 @@ async def test_concurrent_activity_does_not_cause_unbounded_refresh(mutation, au
         response = await daily_list(**kwargs)
         if asyncio.current_task() is task and kwargs["date"] == "2026-01-01":
             consumer_reads += 1
-            assert consumer_reads <= 5, "lookup failed to bound its refresh attempts"
+            assert consumer_reads <= 3, "lookup retried instead of leaving freshness to the next resource"
             if mutation:
                 model.text = caption_json("churn", "Changed image", f"version {consumer_reads}")
                 changes = [{"change": "modified", "path": "resource/churn.png"}]
@@ -326,21 +331,23 @@ async def test_concurrent_activity_does_not_cause_unbounded_refresh(mutation, au
         return response
 
     monkeypatch.setitem(env.app_context.jobs, "daily_list", inject_concurrent_activity)
-    task = asyncio.create_task(env.run(consumer, [{"change": "deleted", "path": "resource/photo.png"}]))
+    task = asyncio.create_task(
+        env.run(
+            consumer,
+            [
+                {"change": "deleted", "path": "resource/missing.png"},
+                {"change": "deleted", "path": "resource/photo.png"},
+            ],
+        ),
+    )
     try:
         response = await asyncio.wait_for(task, timeout=5)
-        result = response.metadata["results"][0]
-        if mutation:
-            assert result["success"] is False
-            assert result["metadata"]["action"] == "failed"
-            assert "ownership kept changing" in result["metadata"]["error"]
-            assert 2 <= consumer_reads <= 4
-            assert card.exists()
-        else:
-            assert result["success"] is True
-            assert result["metadata"]["action"] == "deleted"
-            assert consumer_reads == 2  # One history scan and one fresh, targeted ownership check.
-            assert not card.exists()
+        assert response.success is True
+        assert [item["metadata"]["action"] for item in response.metadata["results"]] == ["skipped", "deleted"]
+        # One history scan and a targeted check; only real writes require a
+        # changed-day refresh when the second resource starts its lookup.
+        assert consumer_reads == (3 if mutation else 2)
+        assert not card.exists()
     finally:
         await _stop_task(task)
     _assert_no_active_batches(env)

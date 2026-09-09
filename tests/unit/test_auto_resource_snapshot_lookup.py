@@ -3,10 +3,15 @@
 import asyncio
 import errno
 from collections import Counter
+from contextlib import nullcontext
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
 
 from reme.schema import Response
+from reme.steps.evolve import base_auto_resource
 
 from .auto_resource_test_support import FakeVisionModel, caption_json, write_note
 
@@ -42,8 +47,8 @@ def _symlink(link, target, *, directory=False):
 
 
 @pytest.mark.parametrize("read_phase", ["history", "dirty-day", "new-day"])
-async def test_external_change_during_daily_list_is_reconciled(read_phase, auto_resource_env, monkeypatch):
-    """A write outside every ReMe mutation hook invalidates an in-flight scan."""
+async def test_external_change_during_lookup_is_seen_by_next_resource(read_phase, auto_resource_env, monkeypatch):
+    """Keep the pre-read version so an external write is detected by the next resource."""
     env = auto_resource_env
     env.app_context.metadata = {}
     env.write_note("daily/2026-01-01/gate.md", "[[resource/gate.png]]")
@@ -51,6 +56,7 @@ async def test_external_change_during_daily_list_is_reconciled(read_phase, auto_
     daily_list = env.app_context.jobs["daily_list"]
     ready, resume = asyncio.Event(), asyncio.Event()
     reads = 0
+    # Deleting gate takes a history read and a targeted read; its dirty refresh is third.
     blocked_read = 3 if read_phase == "dirty-day" else 1
 
     async def pause_stale_response(**kwargs):
@@ -64,7 +70,10 @@ async def test_external_change_during_daily_list_is_reconciled(read_phase, auto_
         return response
 
     monkeypatch.setitem(env.app_context.jobs, "daily_list", pause_stale_response)
-    changes = [{"change": "deleted", "path": "resource/photo.png"}]
+    changes = [
+        {"change": "deleted", "path": "resource/missing.png"},
+        {"change": "deleted", "path": "resource/photo.png"},
+    ]
     if read_phase == "dirty-day":
         changes.insert(0, {"change": "deleted", "path": "resource/gate.png"})
     task = asyncio.create_task(env.run(consumer, changes))
@@ -74,6 +83,7 @@ async def test_external_change_during_daily_list_is_reconciled(read_phase, auto_
         card = env.write_note(f"daily/{day}/photo.md", "[[resource/photo.png]]")
         resume.set()
         response = await asyncio.wait_for(task, timeout=5)
+        assert response.metadata["results"][-2]["metadata"]["action"] == "skipped"
         result = response.metadata["results"][-1]
         assert result["success"] is True
         assert result["metadata"]["action"] == "deleted"
@@ -196,63 +206,6 @@ async def test_snapshot_failure_remains_retryable(failure_phase, auto_resource_e
     assert not card.exists()
 
 
-@pytest.mark.parametrize("failure_phase", ["initial", "refresh"])
-async def test_post_read_snapshot_failure_rechecks_ownership(failure_phase, auto_resource_env, monkeypatch):
-    """A failed post-read check must not hide an ownership change made during the read."""
-    env = auto_resource_env
-    env.write_note("daily/2026-01-01/gate.md", "[[resource/gate.png]]")
-    card = env.write_note("daily/2026-01-01/photo.md", "[[resource/other.png]]")
-    consumer = _processor(env)
-    snapshot = consumer._resource_note_snapshot  # pylint: disable=protected-access
-    original_delete = consumer._handle_delete  # pylint: disable=protected-access
-    daily_list = env.app_context.jobs["daily_list"]
-    warmed = False
-    read_completed = False
-    failed = False
-
-    def fail_after_read():
-        nonlocal failed
-        if read_completed and not failed:
-            failed = True
-            raise OSError("temporary post-read snapshot failure")
-        return snapshot()
-
-    async def mark_warmed(file_path, date_str, note_stem):
-        nonlocal warmed
-        await original_delete(file_path, date_str, note_stem)
-        if file_path == "resource/gate.png":
-            warmed = True
-
-    async def change_owner_after_read(**kwargs):
-        nonlocal read_completed
-        response = await daily_list(**kwargs)
-        if kwargs["date"] == "2026-01-01" and not read_completed and (failure_phase == "initial" or warmed):
-            # The returned real daily_list result still contains the previous owner.
-            env.write_note("daily/2026-01-01/photo.md", "[[resource/photo.png]]")
-            read_completed = True
-        return response
-
-    monkeypatch.setattr(consumer, "_resource_note_snapshot", fail_after_read)
-    monkeypatch.setattr(consumer, "_handle_delete", mark_warmed)
-    monkeypatch.setitem(env.app_context.jobs, "daily_list", change_owner_after_read)
-    changes = [
-        {"change": "deleted", "path": "resource/photo.png"},
-        {"change": "deleted", "path": "resource/photo.png"},
-    ]
-    if failure_phase == "refresh":
-        changes.insert(0, {"change": "deleted", "path": "resource/gate.png"})
-    response = await env.run(consumer, changes)
-    results = response.metadata["results"]
-    assert read_completed and failed
-    assert results[-2]["success"] is False
-    assert results[-2]["metadata"]["modified"] is False
-    assert "temporary post-read snapshot failure" in results[-2]["metadata"]["error"]
-    assert results[-1]["success"] is True
-    assert results[-1]["metadata"]["action"] == "deleted"
-    assert results[-1]["metadata"]["path"] == "daily/2026-01-01/photo.md"
-    assert not card.exists()
-
-
 async def test_failed_changed_day_read_does_not_accept_new_fingerprint(auto_resource_env, monkeypatch):
     """A failed refresh must not mark an externally added owner as already indexed."""
     env = auto_resource_env
@@ -338,6 +291,70 @@ async def test_cyclic_note_links_do_not_block_unrelated_resource(cycle, auto_res
     assert response.metadata["results"][0]["metadata"]["action"] == "deleted"
     assert not card.exists()
     assert link.is_symlink()
+
+
+@pytest.mark.parametrize("cycle", ["self", "mutual"])
+async def test_cyclic_daily_links_do_not_block_unrelated_resource(cycle, auto_resource_env):
+    """Unresolvable date directories do not hide a normal historical owner."""
+    env = auto_resource_env
+    card = env.write_note("daily/2026-01-01/photo.md", "[[resource/photo.png]]")
+    link = card.parent.parent / "2025-12-01"
+    _symlink(link, "2025-12-01" if cycle == "self" else "2025-12-02", directory=True)
+    if cycle == "mutual":
+        _symlink(link.with_name("2025-12-02"), "2025-12-01", directory=True)
+    response = await env.run(_processor(env), [{"change": "deleted", "path": "resource/photo.png"}])
+    assert response.success is True
+    assert response.metadata["results"][0]["metadata"]["action"] == "deleted"
+    assert not card.exists()
+    assert link.is_symlink()
+
+
+@pytest.mark.parametrize("failure_site", ["directory-stat", "scandir", "file-stat"])
+@pytest.mark.parametrize("error_number", [errno.ELOOP, errno.EACCES, errno.EIO], ids=["loop", "permission", "io"])
+async def test_snapshot_handles_only_loop_errors(failure_site, error_number, tmp_path, monkeypatch):
+    """Exercise late OS errors on every Python version, without bypassing safety failures."""
+    day = tmp_path / "daily" / "2026-01-01"
+    day.mkdir(parents=True)
+    (day / "valid.md").write_text("A normal note.", encoding="utf-8")
+    error = OSError(error_number, "snapshot probe failed")
+    original_stat = Path.stat
+    with base_auto_resource.os.scandir(day) as entries:
+        valid_entries = list(entries)
+
+    def stat_with_failure(path, *args, **kwargs):
+        if path == day:
+            raise error
+        return original_stat(path, *args, **kwargs)
+
+    with monkeypatch.context() as patch:
+        if failure_site == "directory-stat":
+            patch.setattr(Path, "stat", stat_with_failure)
+        elif failure_site == "scandir":
+            patch.setattr(base_auto_resource.os, "scandir", Mock(side_effect=error))
+        else:
+            unreadable = SimpleNamespace(
+                name="unreadable.md",
+                is_symlink=lambda: False,
+                stat=Mock(side_effect=error),
+            )
+            patch.setattr(
+                base_auto_resource.os,
+                "scandir",
+                lambda _: nullcontext(iter([unreadable, *valid_entries])),
+            )
+        if error_number != errno.ELOOP:
+            with pytest.raises(OSError) as caught:
+                base_auto_resource._snapshot_note_day(tmp_path, day)  # pylint: disable=protected-access
+            assert caught.value is error
+            return
+        snapshot = base_auto_resource._snapshot_note_day(tmp_path, day)  # pylint: disable=protected-access
+
+    if failure_site == "file-stat":
+        assert snapshot is not None
+        assert set(snapshot.files) == {"valid.md"}
+    else:
+        assert snapshot is None
+    assert (day / "valid.md").read_text(encoding="utf-8") == "A normal note."
 
 
 async def test_escaping_note_link_fails_before_daily_list(auto_resource_env, monkeypatch):
