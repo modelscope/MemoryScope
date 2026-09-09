@@ -189,7 +189,7 @@ def _normalize_image_bytes(
                 resize_frame.close()
 
 
-def build_image_request_payload(
+def _build_image_request_payload(
     data: bytes,
     suffix: str,
     *,
@@ -327,7 +327,7 @@ async def generate_image_caption(
             return normalized
         logger.warning(f"[{name}] structured caption empty; retrying with a plain call")
     except Exception as exc:  # pylint: disable=broad-except
-        logger.warning(f"[{name}] structured caption failed ({type(exc).__name__}); retrying with a plain call")
+        logger.warning(f"[{name}] structured caption failed ({exc}); retrying with a plain call")
     result = await model([user_message])
     parsed = _parse_caption_json(await _response_text(result))
     if not parsed["caption"] and not parsed["description"]:

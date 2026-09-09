@@ -366,11 +366,13 @@ class AutoMemoryStep(BaseStep):
         if not isinstance(include_images, bool):
             raise ValueError("include_images must be a boolean")
         memory_messages, has_image_captions = messages, False
+        image_mode = None
         if include_images:
             image_mode = self.context.get("image_mode", self.kwargs.get("image_mode", "caption-only"))
-            if image_mode != "caption-only":
+            if image_mode == "caption-only":
+                memory_messages, has_image_captions = await prepare_image_messages(self, messages, day)
+            else:
                 raise ValueError("image_mode currently supports only 'caption-only'")
-            memory_messages, has_image_captions = await prepare_image_messages(self, messages, day)
 
         try:
             note = await self._list_session_note(day, session_id)
@@ -414,6 +416,7 @@ class AutoMemoryStep(BaseStep):
                 "system_prompt",
                 enable_tags=self._tags_enabled(),
                 include_images=has_image_captions,
+                caption_only=include_images and image_mode == "caption-only" and has_image_captions,
             ),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,

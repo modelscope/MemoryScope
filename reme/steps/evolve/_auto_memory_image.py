@@ -10,7 +10,7 @@ from agentscope.message import Msg, TextBlock
 
 from ._image_caption import (
     DEFAULT_MAX_IMAGE_INPUT_BYTES,
-    build_image_request_payload,
+    _build_image_request_payload,
     generate_image_caption,
     resolve_vision_model,
 )
@@ -96,7 +96,7 @@ async def prepare_image_messages(step, messages: list[Msg], day: str) -> tuple[l
             data = await _image_bytes(step, source)
             if data not in captions:
                 stage = "decode"
-                payload = build_image_request_payload(data, "")
+                payload = _build_image_request_payload(data, "")
                 stage = "caption"
                 parsed = await generate_image_caption(
                     model,

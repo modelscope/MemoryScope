@@ -9,7 +9,7 @@ from ..file_io._path import IMAGE_SUFFIXES
 from ._image_caption import (
     DEFAULT_MAX_IMAGE_INPUT_BYTES,
     DEFAULT_MAX_IMAGE_PIXELS,
-    build_image_request_payload,
+    _build_image_request_payload,
     generate_image_caption,
     resolve_vision_model,
 )
@@ -88,7 +88,7 @@ class AutoImageResourceStep(BaseAutoResourceStep):
         if len(data) > max_image_bytes:
             self._record_oversized_image(file_path, len(data), max_image_bytes)
             return None
-        payload = build_image_request_payload(
+        payload = _build_image_request_payload(
             data,
             Path(file_path).suffix.lower(),
             max_image_pixels=self._max_image_pixels(),

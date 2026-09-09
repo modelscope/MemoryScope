@@ -31,7 +31,7 @@ from reme.components.runtime_context import RuntimeContext
 from reme.enumeration import ComponentEnum
 from reme.steps.evolve._image_caption import (
     DEFAULT_MAX_IMAGE_PIXELS,
-    build_image_request_payload as _build_image_request_payload,
+    _build_image_request_payload,
     generate_image_caption,
     _normalize_image_bytes,
     _parse_caption_json,
@@ -1033,7 +1033,7 @@ def test_parse_caption_json(text, expected):
 
 @pytest.mark.parametrize("plain_fallback", [False, True])
 @pytest.mark.asyncio
-async def test_shared_caption_helper_preserves_request_without_workspace(plain_fallback):
+async def test_shared_caption_helper_preserves_request_without_workspace(plain_fallback, caplog):
     """The shared VLM path needs only bytes, a model and an already rendered prompt."""
     expected = {"name": "image", "description": "Visible text", "caption": "Invoice 482."}
     model = _StructuredVisionModel(
@@ -1062,6 +1062,12 @@ async def test_shared_caption_helper_preserves_request_without_workspace(plain_f
     assert base64.b64decode(message.content[1].source.data) == original
     if plain_fallback:
         assert model.plain_calls[0][0] is message
+        assert caplog.messages == [
+            "[shared-caption-test] structured caption failed (structured output unavailable); "
+            "retrying with a plain call",
+        ]
+    else:
+        assert not caplog.messages
 
 
 @pytest.mark.parametrize(
