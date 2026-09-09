@@ -182,13 +182,13 @@ jobs:
           description: "optional hint"
         include_images:
           type: boolean
-          description: "Caption session images for memory extraction only; source JSONL saving is unchanged"
+          description: "Use session images for memory extraction; source JSONL saving is unchanged"
           default: false
         image_mode:
           type: string
-          enum: [caption-only]
-          description: "Image processing mode; currently only caption-only (temporary captions, no image resource writes)"
-          default: caption-only
+          enum: [direct, caption-only]
+          description: "direct: multimodal AgentScope memory input; caption-only: temporary captions before text memory"
+          default: direct
         date:
           type: string
           description: "YYYY-MM-DD daily note date; empty = infer from message timestamps or today"
@@ -199,7 +199,7 @@ jobs:
       - backend: auto_memory_step
         enable_tags: false
         include_images: false
-        image_mode: caption-only
+        image_mode: direct
 
   auto_memory_cc:
     backend: base
@@ -812,6 +812,8 @@ components:
     default:
       backend: ${LLM_BACKEND:-openai}
       model: ${LLM_MODEL_NAME:-qwen3.7-plus}
+      # null: use this provider's AgentScope model card; custom vision deployments can declare true.
+      supports_images: null
       stream: true
       context_size: 200000
       max_retries: 3

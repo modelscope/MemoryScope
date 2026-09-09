@@ -1,12 +1,14 @@
-"""Temporary session image captions; no resource writes or transcript changes."""
+"""Temporary session image inputs; no resource writes or transcript changes."""
 
 import base64
+from fnmatch import fnmatchcase
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 import aiofiles
 import httpx
-from agentscope.message import Msg, TextBlock
+from agentscope.agent import ContextConfig
+from agentscope.message import Base64Source, DataBlock, Msg, TextBlock
 
 from ._image_caption import (
     DEFAULT_MAX_IMAGE_INPUT_BYTES,
@@ -15,7 +17,102 @@ from ._image_caption import (
     resolve_vision_model,
 )
 from ..file_io._path import _check_path_permission, resolve_path
+from ...components.agent_wrapper.as_agent_wrapper import AsAgentWrapper
 from ...components.prompt_handler import PromptHandler
+
+
+def _direct_input_types(model, supported: bool | None) -> list[list[str]]:
+    if model is None:
+        raise ValueError("Direct images require a started memory model")
+    model_input_types = ["image/*"]
+    if supported is None:
+        model_input_types = [
+            kind for card in model.list_models() if card.name == model.model for kind in card.input_types
+        ]
+        supported = any(kind.startswith("image/") for kind in model_input_types)
+    if supported is not True:
+        raise ValueError("The selected memory model must declare image support")
+    return [model_input_types, model.formatter.input_types]
+
+
+async def prepare_direct_messages(
+    step,
+    messages: list[Msg],
+    reply_kwargs: dict | None = None,
+) -> tuple[list[Msg], list[TextBlock | DataBlock]]:
+    """Bind image positions to attachments for one multimodal memory workflow.
+
+    Use the same bounded source loading and provider preprocessing as captions,
+    but retain image data instead of introducing a model-generated description.
+    No memory Agent has run yet, so preparation failures can safely fall back.
+    """
+    images = [
+        (message_index, block_index, block)
+        for message_index, message in enumerate(messages)
+        for block_index, block in enumerate(message.content)
+        if block.type == "data" and block.source.media_type.startswith("image/")
+    ]
+    metadata = {"mode": "direct", "status": "skipped", "image_count": len(images), "captioned_images": 0}
+    step.context.response.metadata["auto_memory_images"] = metadata
+    if not images:
+        return messages, []
+    stage = "backend"
+    try:
+        wrapper = step.agent_wrapper
+        if not isinstance(wrapper, AsAgentWrapper):
+            raise TypeError("Direct images require the AgentScope wrapper")
+        stage = "model-capability"
+        component = wrapper.as_llm
+        input_types = _direct_input_types(component.model, component.supports_images)
+        # Match the wrapper's call-over-component shallow merge. A fallback
+        # receives the same UserMsg after provider errors and must not drop it.
+        model_config = (reply_kwargs or {}).get("model_config", wrapper.kwargs.get("model_config")) or {}
+        fallback = model_config.get("fallback_model")
+        if fallback is not None and fallback is not component.model:
+            stage = "fallback-model-capability"
+            input_types.extend(_direct_input_types(fallback, None))
+        stage = "context-image-limit"
+        context_config = dict(
+            (reply_kwargs or {}).get("context_config", wrapper.kwargs.get("context_config")) or {},
+        )
+        if "max_image_num" not in context_config:
+            context_config["max_image_num"] = max(ContextConfig().max_image_num, len(images))
+        if ContextConfig(**context_config).max_image_num < len(images):
+            raise ValueError("The configured image limit would drop session images")
+        prepared = [message.model_copy(deep=True) for message in messages]
+        attachments: list[TextBlock | DataBlock] = []
+        for number, (message_index, block_index, block) in enumerate(images, 1):
+            stage = "source"
+            data = await _image_bytes(step, block.source)
+            stage = "decode"
+            payload = _build_image_request_payload(data, "")
+            stage = "formatter-capability"
+            if not all(any(fnmatchcase(payload["mime"], kind) for kind in types) for types in input_types):
+                raise ValueError("The selected memory model formatter does not support this image MIME")
+            label = f"[Image {number}]"
+            prepared[message_index].content[block_index] = TextBlock(text=label)
+            attachments.extend(
+                [
+                    TextBlock(text=label),
+                    block.model_copy(
+                        deep=True,
+                        update={"source": Base64Source(data=payload["data_b64"], media_type=payload["mime"])},
+                    ),
+                ],
+            )
+    except Exception as exc:  # pylint: disable=broad-except
+        reason = f"{stage}: {type(exc).__name__}"
+        metadata.update(status="fallback", reason=reason)
+        step.logger.warning(
+            f"[{step.name}] Direct image preparation failed ({reason}); continuing with text-only memory. "
+            "Direct mode requires an AgentScope memory model with image support; for custom model IDs, "
+            "declare supports_images on its as_llm component.",
+        )
+        return messages, []
+    if reply_kwargs is not None:
+        reply_kwargs["context_config"] = context_config
+    metadata["status"] = "prepared"
+    return prepared, attachments
 
 
 def _workspace_path(step, path: str) -> Path:

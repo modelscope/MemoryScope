@@ -80,12 +80,45 @@ reme auto_memory session_id=session-a include_images=true messages='[...]'
 ```
 
 单次 CLI 调用可使用 `reme start job=auto_memory`，其余参数相同。
-`include_images=false` 保持原有纯文本行为，不调用图像 caption。开启时，`image_mode` 默认为 `caption-only`，
-也是当前唯一支持的值。其他模式暂不支持；开启图像时显式选择不支持的模式会报配置错误，不会降级为纯文本。
+`include_images=false` 保持原有纯文本行为，不调用图像模型。开启时，`image_mode` 默认为 `direct`，
+也可显式选择 `image_mode=caption-only`。其他模式暂不支持；开启图像时选择不支持的模式会报配置错误，不会降级为纯文本。
 
 `messages` 使用 AgentScope 格式，处理顶层图像 `DataBlock`（`source.media_type` 以 `image/` 开头）。
 支持 Base64、HTTP(S) URL 和 workspace 内的 `file://` URI；本地读取遵守 `_allowed_paths`。
-Caption 需要支持视觉的模型：优先选择 `vision`，其次 `default`，也可通过 Step 的 `as_llm` 显式选择。
+两种模式复用相同的有界图像读取与 provider 预处理，包括已有的最长边 2048 像素限制、方向纠正和必要的格式转换。
+调用方原始消息与文件保持不变。
+
+### 直接多模态输入（开启图像后的默认模式）
+
+Auto Memory 将渲染后的 memory 提示与图像 `DataBlock` 组合成 AgentScope `UserMsg`。
+通过编号标记对应每张图像在会话中的位置，也支持只有图像的消息及重复 block ID。
+记忆 Agent 同时读取文本与图像，不单独调用 caption 模型。这是一次 Agent 工作流，不保证只有一次 API 请求：
+调用写笔记等工具后，后续模型轮次仍可能携带图像。
+未显式设置图像数量上限时，直接模式会为全部输入图像保留 Agent 上下文容量。
+若显式设置的 `context_config.max_image_num` 小于输入图像数，会整次显式回退为纯文本，不静默移除较早图像。
+模型和 provider 自身的上下文限制仍然适用。
+
+直接模式要求 AgentScope wrapper，且**该 wrapper 实际绑定的模型**支持视觉。ReMe 检查 AgentScope 模型卡与
+formatter 支持的图像类型。对于不在对应 provider 模型卡中的自定义或 OpenAI-compatible 模型 ID，需要在其
+`as_llm` 组件配置中显式声明实际部署的能力：
+
+```yaml
+components:
+  as_llm:
+    default:
+      supports_images: true
+```
+
+此片段用于合并到已有模型配置，不是完整模型配置。`false` 显式关闭能力；未设置或 null 则检查匹配的模型卡。
+非 AgentScope wrapper、未知或关闭的视觉能力、不兼容的 formatter，均会记录 warning 并显式回退纯文本。
+直接模式不使用独立的 `vision` 模型。
+如果通过编程方式给 wrapper 配置了 fallback 模型，它的模型卡和 formatter 也必须支持输入图像；否则在记忆 Agent
+运行前，整次输入会显式回退为纯文本。
+
+### Caption-only 模式
+
+使用 `include_images=true image_mode=caption-only`。Caption 模型优先选择 `vision`，其次 `default`，
+也可通过 Step 的 `as_llm` 显式选择；它需要支持视觉。记忆 wrapper 仍收到字符串。
 
 每个 caption 都只在临时消息副本中，将对应图像块原位替换为 AgentScope 标准 `TextBlock`，不改变其他块或调用方消息。
 临时文本使用英文标签：
@@ -97,16 +130,20 @@ Caption (model-generated):
 [/Image]
 ```
 
-Auto Memory 随后使用这个补充 caption 的副本提取记忆。不额外保存原图文件或独立 caption 卡片；相关图像事实仍可被
-提取进普通的 daily 记忆笔记。
+Auto Memory 随后使用这个补充 caption 的副本提取记忆。两种模式均不创建 resource 图像文件或独立 caption 卡片；
+相关图像事实仍可被提取进普通 daily 记忆笔记。AgentScope wrapper 仍按原有行为在 `mem_session/agentscope` 保存
+内部 Agent 状态，直接模式的状态中包含图像输入。
 
 **开启与关闭图像时的源 JSONL 保存行为完全不变。** 不补充 caption 或图像 metadata，仍执行上文的过滤规则。
 重放已保存的 JSONL 无法恢复被过滤掉的 Base64 图像；再次处理这些图像需要重新提交原始带图消息。
 
-图像读取、预处理或 caption 失败时，Auto Memory 会记录 warning，并在响应的 `auto_memory_images` metadata 中说明降级。
-本次请求的所有临时 caption 都会被丢弃，然后使用原始纯文本输入继续提取记忆，不会混入部分成功的 caption。
+图像能力检查、读取、预处理或 caption 失败时，Auto Memory 会记录 warning，并在响应的 `auto_memory_images` metadata 中说明降级。
+本次请求的所有临时图像增强都会被丢弃，然后使用原始纯文本输入继续提取记忆，不会混入部分成功的结果。
 只要普通 memory 操作成功，CLI 仍可成功；需查看 metadata 区分纯文本降级与图像处理成功。
 取消操作、开启图像时的无效模式配置，以及图像阶段以外的错误，不会被这个降级逻辑吞掉。
+记忆 Agent 开始运行后，错误按原有方式传播，不会再以纯文本重跑，以免重复执行已经写入记忆的工具。
+直接模式在调用 Agent 前记录 `prepared`，正常返回后记录 `completed`，`captioned_images` 始终为零。
+`completed` 表示图像处理完成，不保证一定生成了笔记。
 
 若需持久默认值，在应用配置（或 `reme start` 对应覆盖项）中设置 `jobs.auto_memory.include_images=true`。
 调用时参数优先，无需编译。本适配针对 AgentScope 消息，不扩展 Claude Code 原始 transcript 的解析。

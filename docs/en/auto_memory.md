@@ -87,14 +87,47 @@ reme auto_memory session_id=session-a include_images=true messages='[...]'
 ```
 
 For a one-shot CLI invocation, use `reme start job=auto_memory` with the same arguments.
-`include_images=false` keeps the existing text-only behavior and makes no image-captioning calls. When enabled,
-`image_mode` defaults to `caption-only`, the only currently supported value. Other modes are not currently supported;
+`include_images=false` keeps the existing text-only behavior and makes no image calls. When enabled,
+`image_mode` defaults to `direct`; select `image_mode=caption-only` for the caption-first alternative. Other modes are not supported;
 selecting an unsupported mode while images are enabled is a configuration error, not a text fallback.
 
 Pass AgentScope messages in `messages`, with top-level `DataBlock` images (`source.media_type` starting with `image/`).
 Sources may be Base64, HTTP(S) URLs, or `file://` URIs inside the workspace. Local reads respect `_allowed_paths`.
-Captioning requires a vision-capable model. Model selection prefers `vision`, then `default`, unless the Step explicitly
-selects `as_llm`.
+Both modes share bounded image loading and provider preprocessing (including the existing 2048-pixel maximum side,
+orientation correction and format conversion when needed). Original caller messages and files are unchanged.
+
+### Direct multimodal input (default when enabled)
+
+Auto Memory builds an AgentScope `UserMsg` containing the rendered memory prompt and image `DataBlock` attachments.
+Numbered markers preserve each image's position in the conversation, including image-only messages and repeated IDs.
+The memory Agent extracts facts from text and images together, without separate caption calls. This is one Agent
+workflow, not necessarily one API request: tool use can trigger further model turns that still include the images.
+When no image-count limit is explicitly configured, direct mode reserves room for all incoming images in the Agent
+context. An explicit `context_config.max_image_num` below the incoming count causes a visible whole-input text fallback,
+not silent removal of older images. Model/provider context limits still apply.
+
+Direct mode requires an AgentScope wrapper and a vision-capable model bound to **that wrapper**. ReMe checks the model's
+AgentScope model card and the formatter's supported image types. For a custom or OpenAI-compatible model ID absent from
+that provider's model cards, explicitly declare the deployment's capability on its `as_llm` component:
+
+```yaml
+components:
+  as_llm:
+    default:
+      supports_images: true
+```
+
+This is an override to merge into your existing model configuration, not a complete model configuration. `false`
+explicitly disables this capability; omitted/null uses the matching model card. A non-AgentScope wrapper, unknown or
+disabled vision capability, or an incompatible formatter produces a warning and a visible text-only fallback.
+No separate `vision` model is used in direct mode.
+If a programmatic wrapper configuration supplies a fallback model, its model card and formatter must also support the
+image inputs; otherwise the whole invocation falls back to text before the memory Agent runs.
+
+### Caption-only alternative
+
+Use `include_images=true image_mode=caption-only`. Caption model selection prefers `vision`, then `default`, unless the
+Step explicitly selects `as_llm`; it must support vision. The memory wrapper still receives a string.
 
 Each caption replaces its image block with a standard AgentScope `TextBlock` in a temporary message copy, at the same
 position. Non-image blocks and caller-owned messages are unchanged. The temporary text uses English labels:
@@ -106,19 +139,22 @@ Caption (model-generated):
 [/Image]
 ```
 
-Auto Memory then extracts memory from the caption-enriched copy. It saves no original-image files or separate caption
-cards. Relevant image facts may still become part of the normal daily memory note.
+Auto Memory then extracts memory from the caption-enriched copy. Neither mode creates resource image files or separate
+caption cards. Relevant image facts may become part of the normal daily memory note. The existing AgentScope wrapper
+also saves its internal Agent state under `mem_session/agentscope`; in direct mode that state includes image inputs.
 
 **Source JSONL saving is unchanged whether images are enabled or disabled.** No captions or image metadata are added to
 it; the existing filtering above still applies. Replaying a saved JSONL cannot recover omitted
 Base64 images. Resubmit the original image-bearing messages to process those images again.
 
-If image loading, preprocessing, or captioning fails, Auto Memory logs a warning and records the fallback in
-`auto_memory_images` response metadata. It discards all temporary captions for that request and continues with the
+If image capability checking, loading, preprocessing, or captioning fails, Auto Memory logs a warning and records the fallback in
+`auto_memory_images` response metadata. It discards all temporary image enrichment for that request and continues with the
 original text-only memory input, not a partially enriched conversation. The CLI can still succeed when that normal
 memory operation succeeds; inspect the metadata to distinguish text fallback from successful image processing.
 Cancellation, invalid enabled image-mode configuration, and failures outside the image stage are not swallowed by this
-fallback.
+fallback. Once the memory Agent starts, its failures propagate normally: ReMe does not rerun it as text, since its tools
+may already have written memory. Direct mode reports `prepared` before the Agent runs and `completed` after it returns;
+`captioned_images` is always zero for direct mode. `completed` describes image processing, not whether a note was written.
 
 For a persistent default, set `jobs.auto_memory.include_images=true` in the application configuration (or the corresponding
 `reme start` override). Call-time options take precedence. No compilation is needed. This adapter targets AgentScope

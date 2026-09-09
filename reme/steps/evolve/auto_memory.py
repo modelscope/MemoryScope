@@ -6,10 +6,10 @@ import zoneinfo
 
 import aiofiles
 import frontmatter
-from agentscope.message import Msg
+from agentscope.message import Msg, TextBlock, UserMsg
 
 from ._evolve import agent_reply_result_text, format_history, now
-from ._auto_memory_image import prepare_image_messages
+from ._auto_memory_image import prepare_direct_messages, prepare_image_messages
 from ..base_step import BaseStep
 from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
@@ -366,13 +366,18 @@ class AutoMemoryStep(BaseStep):
         if not isinstance(include_images, bool):
             raise ValueError("include_images must be a boolean")
         memory_messages, has_image_captions = messages, False
+        image_attachments = []
+        reply_kwargs = None
         image_mode = None
         if include_images:
-            image_mode = self.context.get("image_mode", self.kwargs.get("image_mode", "caption-only"))
-            if image_mode == "caption-only":
+            image_mode = self.context.get("image_mode", self.kwargs.get("image_mode", "direct"))
+            if image_mode == "direct":
+                reply_kwargs = dict(self._reply_extra_kwargs(day))
+                memory_messages, image_attachments = await prepare_direct_messages(self, messages, reply_kwargs)
+            elif image_mode == "caption-only":
                 memory_messages, has_image_captions = await prepare_image_messages(self, messages, day)
             else:
-                raise ValueError("image_mode currently supports only 'caption-only'")
+                raise ValueError("image_mode must be 'direct' or 'caption-only'")
 
         try:
             note = await self._list_session_note(day, session_id)
@@ -403,11 +408,15 @@ class AutoMemoryStep(BaseStep):
             history=self._format_history(memory_messages),
         )
 
+        if image_attachments:
+            user_message = UserMsg(name="user", content=[TextBlock(text=user_message), *image_attachments])
+
         self.logger.info(f"[{self.name}] agent start path={note_path} template={template_key}")
         # Existing-note updates are restricted to the resolved note path. New
         # notes retain the upstream ``daily_write`` date behavior, where the
         # model supplies the date from the prompt.
-        reply_kwargs = self._reply_extra_kwargs(day)
+        if reply_kwargs is None:
+            reply_kwargs = self._reply_extra_kwargs(day)
         if not created:
             reply_kwargs["injected_job_kwargs"] = {"_allowed_paths": [note_path]}
         result = await self.agent_wrapper.reply(
@@ -415,12 +424,15 @@ class AutoMemoryStep(BaseStep):
             system_prompt=self.prompt_format(
                 "system_prompt",
                 enable_tags=self._tags_enabled(),
-                include_images=has_image_captions,
+                include_images=has_image_captions or bool(image_attachments),
                 caption_only=include_images and image_mode == "caption-only" and has_image_captions,
+                direct_images=bool(image_attachments),
             ),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,
         )
+        if image_attachments:
+            self.context.response.metadata["auto_memory_images"]["status"] = "completed"
         self.logger.info(f"[{self.name}] agent done path={note_path} has_result={bool(result.get('result'))}")
 
         if created:

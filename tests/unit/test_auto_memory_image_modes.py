@@ -149,7 +149,7 @@ class _VisionModel(ChatModelBase):
 
 
 class _Harness:
-    """Real main session IO, mocked models, and no resource job configuration."""
+    """Explicit caption-only compatibility tests using real main session IO."""
 
     def __init__(self, workspace, monkeypatch):
         self.workspace = workspace
@@ -174,6 +174,7 @@ class _Harness:
 
     def step(self, **kwargs):
         options = {
+            "image_mode": "caption-only",
             "app_context": self.app_context,
             "file_store": self.store,
             "agent_wrapper": self.wrapper,
@@ -427,6 +428,7 @@ async def test_real_base_job_merges_call_job_and_step_switches(
                 "agent_wrapper": harness.wrapper,
                 "as_llm": harness.vision,
                 "include_images": step_enabled,
+                "image_mode": "caption-only",
             },
         ],
         **job_options,
