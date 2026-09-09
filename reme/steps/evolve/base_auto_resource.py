@@ -1,15 +1,11 @@
 """Shared lifecycle and helpers for automatic resource processors."""
 
-import asyncio
-import errno
 import hashlib
-import os
 import re
-import stat
 from abc import abstractmethod
 from collections.abc import Mapping
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -26,79 +22,34 @@ _SOURCE_RESOURCE_KEY = "source_resource"
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _UNSAFE_FILENAME_CHARS = re.compile(r'[<>:"/\\|?*\x00-\x1f]+')
 _LOOKUP_BATCH_KEY = "_auto_resource_lookup_batch"
-_LookupKey = tuple[Path, str, int, int]
 
 
-@dataclass(frozen=True)
-class _ResourceDaySnapshot:
-    """Metadata only: all direct Markdown files, not just currently owned notes."""
-
-    directory: Path
-    files: dict[str, tuple[Path | None, int, int, int]]
-
-
-def _snapshot_note_day(workspace: Path, directory: Path) -> _ResourceDaySnapshot | None:
-    """Inspect file metadata without reading bodies or parsing frontmatter."""
-    try:
-        files = {}
-        with os.scandir(directory) as entries:
-            for entry in entries:
-                if Path(entry.name).suffix != ".md":
-                    continue
-                target = None
-                if entry.is_symlink():
-                    try:
-                        target, error = resolve_path(workspace, entry.path)
-                    except RuntimeError:
-                        # Path.resolve reports symlink loops this way on 3.11/3.12.
-                        continue
-                    except OSError as exc:
-                        if exc.errno == errno.ELOOP:
-                            continue
-                        raise
-                    if error or target is None:
-                        raise ValueError(f"invalid resource note path {entry.path!r}: {error}")
-                try:
-                    value = entry.stat()
-                    if stat.S_ISREG(value.st_mode):
-                        # ctime also catches edits which restore mtime on POSIX.
-                        files[entry.name] = (target, value.st_mtime_ns, value.st_size, value.st_ctime_ns)
-                except FileNotFoundError:
-                    # A removed file or a dangling internal link is not a note.
-                    continue
-                except OSError as exc:
-                    # Python 3.13 can report loops at stat rather than resolve.
-                    if exc.errno == errno.ELOOP:
-                        continue
-                    raise
-        return _ResourceDaySnapshot(directory, files)
-    except (FileNotFoundError, NotADirectoryError):
-        return None
-    except OSError as exc:
-        # Cyclic date directories are not readable history either.
-        if exc.errno == errno.ELOOP:
-            return None
-        raise
+def _resource_note_owners(notes: list[dict]) -> dict[str, str]:
+    """Preserve daily_list's first-match ordering for each exact source link."""
+    owners = {}
+    for note in notes:
+        source = str(note.get(_SOURCE_RESOURCE_KEY, "")).strip()
+        if source:
+            owners.setdefault(source, str(note["path"]))
+    return owners
 
 
-@dataclass(frozen=True)
-class _ResourceDayLookup:
-    """One day's first owner per source, paired with its pre-read metadata."""
-
-    snapshot: _ResourceDaySnapshot
-    owners: dict[str, str]
-
-
+@dataclass
 class _ResourceLookupBatch:
-    """Keep lookup data and its refresh lock within one resource invocation."""
+    """Cache historical ownership only for this sequential resource invocation.
 
-    def __init__(self):
-        self.indexes: dict[_LookupKey, dict[str, _ResourceDayLookup]] = {}
-        self.lock = asyncio.Lock()
+    Refresh our own changes; external edits are read by the next invocation.
+    None means history has not been built, while an empty dict is valid history.
+    """
 
-    def close(self) -> None:
-        """Drop ownership data; never carry it to another batch."""
-        self.indexes.clear()
+    days: dict[str, dict[str, str]] | None = None
+    dirty_days: set[str] = field(default_factory=set)
+
+    def replace_day(self, day: str, notes: list[dict]) -> None:
+        """Reuse a successful daily_list read without publishing partial history."""
+        if self.days is not None:
+            self.days[day] = _resource_note_owners(notes)
+            self.dirty_days.discard(day)
 
 
 @contextmanager
@@ -114,7 +65,8 @@ def _resource_lookup_scope(context: RuntimeContext, *, reuse: bool = False):
     try:
         yield batch
     finally:
-        batch.close()
+        batch.days = None
+        batch.dirty_days.clear()
         if existed:
             context[_LOOKUP_BATCH_KEY] = previous
         else:
@@ -338,68 +290,54 @@ class BaseAutoResourceStep(BaseStep):
         list_response = await self.run_job("daily_list", date=day)
         if not list_response.success:
             raise RuntimeError(f"daily_list failed: {list_response.answer}")
-        return list_response.metadata.get("notes") or []
+        notes = list_response.metadata.get("notes") or []
+        batch = self.context.get(_LOOKUP_BATCH_KEY)
+        if isinstance(batch, _ResourceLookupBatch):
+            batch.replace_day(day, notes)
+        return notes
 
-    def _resource_note_snapshot(self) -> dict[str, _ResourceDaySnapshot]:
-        """Inspect daily-note metadata, including files without resource ownership."""
+    def _daily_note_days(self) -> list[str]:
+        """Return safe, deterministic daily subdirectories available for lookup."""
         workspace = self.workspace_path.resolve()
         daily_dir = str(self.config_value("daily_dir"))
         daily_root, error = resolve_path(workspace, daily_dir)
         if error or daily_root is None:
             raise ValueError(f"invalid daily_dir {daily_dir!r}: {error or 'cannot resolve path'}")
-        snapshots = {}
-        try:
-            with os.scandir(daily_root) as entries:
-                for entry in entries:
-                    if not _DATE_RE.fullmatch(entry.name):
-                        continue
-                    directory = Path(entry.path)
-                    if entry.is_symlink():
-                        try:
-                            directory, path_error = resolve_path(workspace, entry.path)
-                        except (OSError, RuntimeError):
-                            continue
-                        if path_error or directory is None:
-                            continue
-                    value = _snapshot_note_day(workspace, directory)
-                    if value is not None:
-                        snapshots[entry.name] = value
-        except (FileNotFoundError, NotADirectoryError):
-            return {}
-        return snapshots
+        if not daily_root.is_dir():
+            return []
+        days = []
+        for entry in daily_root.iterdir():
+            if not _DATE_RE.fullmatch(entry.name):
+                continue
+            try:
+                resolved, path_error = resolve_path(workspace, f"{daily_dir}/{entry.name}")
+                if not path_error and resolved is not None and resolved.is_dir():
+                    days.append(entry.name)
+            except (OSError, RuntimeError):
+                # Broken or cyclic links must not prevent lookup in other days.
+                continue
+        return sorted(days)
+
+    def _invalidate_resource_day(self, day: str) -> None:
+        """Reload only a day changed by this batch, if history was already built."""
+        batch = self.context.get(_LOOKUP_BATCH_KEY)
+        if isinstance(batch, _ResourceLookupBatch) and batch.days is not None:
+            batch.dirty_days.add(day)
 
     async def _find_loose_resource_day(self, file_path: str) -> str | None:
         """Resolve ownership through the common batch index, for any resource modality."""
         assert self.context is not None
         with _resource_lookup_scope(self.context, reuse=True) as batch:
-            # Overridden stores/configurations must not share lookup contents.
-            key = (
-                self.workspace_path.resolve(),
-                str(self.config_value("daily_dir")),
-                id(self.file_store),
-                id(self.app_context),
-            )
-            async with batch.lock:
-                snapshots = self._resource_note_snapshot()
-                days = batch.indexes.get(key, {}).copy()
-                for day in sorted(snapshots.keys() | days.keys()):
-                    if day not in snapshots:
-                        days.pop(day)
-                    elif day not in days or days[day].snapshot != snapshots[day]:
-                        owners = {}
-                        for note in await self._list_daily_notes(day):
-                            owner = str(note.get(_SOURCE_RESOURCE_KEY, "")).strip()
-                            if owner and owner not in owners:
-                                owners[owner] = str(note["path"])
-                        # Save the pre-read version so later resources detect writes
-                        # during this read, without retrying the current lookup.
-                        days[day] = _ResourceDayLookup(snapshots[day], owners)
-                # Failed reads leave the previous cache available for a later retry.
-                batch.indexes[key] = days
-                source = self._source_resource_link(file_path)
-                matches = sorted(
-                    (day, cached.owners[source]) for day, cached in days.items() if source in cached.owners
-                )
+            if batch.days is None:
+                days = {}
+                for day in self._daily_note_days():
+                    days[day] = _resource_note_owners(await self._list_daily_notes(day))
+                # Publish only after the entire initial scan succeeds.
+                batch.days = days
+            for day in sorted(batch.dirty_days):
+                await self._list_daily_notes(day)
+            source = self._source_resource_link(file_path)
+            matches = sorted((day, owners[source]) for day, owners in batch.days.items() if source in owners)
         if len(matches) > 1:
             paths = ", ".join(path for _, path in matches)
             raise RuntimeError(f"Multiple daily resource notes claim {file_path}: {paths}")
@@ -678,16 +616,23 @@ class BaseAutoResourceStep(BaseStep):
         note_stem = _compute_note_stem(filename)
         self.logger.info(f"[{self.name}] {change.name} file_path={file_path} note_stem={note_stem}")
 
-        if change == Change.deleted:
-            await self._handle_delete(file_path, date_str, note_stem)
-        else:
-            await self._handle_upsert(
-                file_path,
-                date_str,
-                note_stem,
-                change == Change.added,
-                source_path,
-            )
+        try:
+            if change == Change.deleted:
+                await self._handle_delete(file_path, date_str, note_stem)
+            else:
+                await self._handle_upsert(
+                    file_path,
+                    date_str,
+                    note_stem,
+                    change == Change.added,
+                    source_path,
+                )
+        except Exception:
+            # A processor or post-processing job may have written before failing.
+            self._invalidate_resource_day(date_str)
+            raise
+        if self.context.response.metadata.get("modified"):
+            self._invalidate_resource_day(date_str)
         return {
             "success": self.context.response.success,
             "path": file_path,
