@@ -78,7 +78,10 @@ class AutoTagStep(BaseStep):
             self.prompt_format("user_message", path=path, tags_key=tag_key),
             system_prompt=self.prompt_format("system_prompt", tags_key=tag_key),
             job_tools=self.tools,
-            injected_job_kwargs={"_allowed_paths": [path]},
+            injected_job_kwargs={
+                "_allowed_paths": [path],
+                "_allowed_frontmatter_keys": [tag_key],
+            },
         )
 
         target = Path(self.file_store.workspace_path or ".") / path
@@ -90,6 +93,7 @@ class AutoTagStep(BaseStep):
                 path=path,
                 metadata={tag_key: normalized},
                 _allowed_paths=[path],
+                _allowed_frontmatter_keys=[tag_key],
             )
             if not response.success:
                 raise RuntimeError(str(response.answer))

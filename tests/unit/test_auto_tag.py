@@ -95,8 +95,14 @@ async def test_auto_tag_filters_paths_and_continues_after_one_file_fails(tmp_pat
 
     assert response.success is False
     assert [call[1]["injected_job_kwargs"] for call in wrapper.calls] == [
-        {"_allowed_paths": ["daily/2026-09-09/failed.md"]},
-        {"_allowed_paths": ["daily/2026-09-09/first.md"]},
+        {
+            "_allowed_paths": ["daily/2026-09-09/failed.md"],
+            "_allowed_frontmatter_keys": ["tags"],
+        },
+        {
+            "_allowed_paths": ["daily/2026-09-09/first.md"],
+            "_allowed_frontmatter_keys": ["tags"],
+        },
     ]
     assert all(
         call[1]["job_tools"] == ["read", "list_tags", "frontmatter_read", "frontmatter_update"]
@@ -131,6 +137,7 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
 
     async def update_frontmatter(name, /, **kwargs):
         assert name == "frontmatter_update"
+        assert kwargs["_allowed_frontmatter_keys"] == ["keywords"]
         post = frontmatter.loads(note.read_text(encoding="utf-8"))
         post.metadata.update(kwargs["metadata"])
         note.write_text(frontmatter.dumps(post), encoding="utf-8")

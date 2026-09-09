@@ -19,17 +19,18 @@ class LocalTagIndex(BaseTagIndex):
         max_tag_length: int = 64,
         **kwargs,
     ):
-        if not isinstance(tag_key, str) or not tag_key.strip():
-            raise ValueError("tag_key must be a non-empty string")
-        tag_key = tag_key.strip()
-        if tag_key in FileFrontMatter.model_fields:
-            raise ValueError(f"tag_key must not be a reserved frontmatter key: {tag_key!r}")
         super().__init__(tag_key=tag_key, **kwargs)
         self.max_tags_per_file = self._positive_int("max_tags_per_file", max_tags_per_file)
         self.max_tag_length = self._positive_int("max_tag_length", max_tag_length)
         self.path_to_tags: dict[str, tuple[str, ...]] = {}
         self.tag_to_paths: dict[str, set[str]] = {}
         self._maintenance_lock = asyncio.Lock()
+
+    def _validate_tag_key(self, value: object) -> str:
+        tag_key = super()._validate_tag_key(value)
+        if tag_key in FileFrontMatter.model_fields:
+            raise ValueError(f"tag_key must not be a reserved frontmatter key: {tag_key!r}")
+        return tag_key
 
     @property
     def n_files(self) -> int:

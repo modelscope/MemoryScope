@@ -552,7 +552,7 @@ jobs:
 
   frontmatter_update:
     backend: base
-    description: "Merge key-values into a file's frontmatter."
+    description: "Merge key-value pairs into a Markdown file's frontmatter while preserving its body and unrelated fields."
     parameters:
       type: object
       properties:

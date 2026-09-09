@@ -279,6 +279,17 @@ def test_tag_index_rejects_invalid_runtime_frontmatter_key() -> None:
     assert index.tag_key == "tags"
 
 
+@pytest.mark.parametrize("tag_key", ["name", "description"])
+def test_tag_index_rejects_reserved_runtime_frontmatter_key(tag_key: str) -> None:
+    """Runtime updates preserve the same reserved-field invariant as construction."""
+    index = LocalTagIndex()
+
+    with pytest.raises(ValueError, match="tag_key must not be a reserved frontmatter key"):
+        index.tag_key = tag_key
+
+    assert index.tag_key == "tags"
+
+
 def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Path) -> None:
     """Keep daily and digest tags aligned through file-store mutations."""
 

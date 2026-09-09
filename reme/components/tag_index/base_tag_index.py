@@ -24,9 +24,13 @@ class BaseTagIndex(BaseComponent):
 
     @tag_key.setter
     def tag_key(self, value: object) -> None:
+        self._tag_key = self._validate_tag_key(value)
+
+    def _validate_tag_key(self, value: object) -> str:
+        """Validate and normalize the configured frontmatter tag field."""
         if not isinstance(value, str) or not value.strip():
             raise ValueError("tag_key must be a non-empty string")
-        self._tag_key = value.strip()
+        return value.strip()
 
     def set_healthy(self, healthy: bool) -> None:
         """Mark whether lookups can safely use the current derived state."""
