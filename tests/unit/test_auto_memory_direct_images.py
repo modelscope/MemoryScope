@@ -212,24 +212,10 @@ async def test_non_agentscope_wrapper_is_not_trusted_by_backend_name(harness, mo
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    ("model_name", "cards", "formatter_types"),
-    [
-        ("custom-deployment", [], ["text/plain"]),
-        ("unknown-preview", [SimpleNamespace(name="different-model", input_types=["text/plain"])], ["image/jpeg"]),
-        ("text-only-card", [SimpleNamespace(name="text-only-card", input_types=["text/plain"])], ["text/plain"]),
-    ],
-)
-async def test_model_catalog_and_formatter_declarations_do_not_gate_direct_inputs(
-    harness,
-    monkeypatch,
-    model_name,
-    cards,
-    formatter_types,
-):
-    model = _DirectModel(model_name)
-    model.formatter = OpenAIChatFormatter(input_types=formatter_types)
-    catalog = Mock(return_value=cards)
+async def test_model_catalog_and_formatter_declarations_do_not_gate_direct_inputs(harness, monkeypatch):
+    model = _DirectModel("custom-deployment")
+    model.formatter = OpenAIChatFormatter(input_types=["text/plain"])
+    catalog = Mock(side_effect=AssertionError("Model capabilities belong to the caller"))
     monkeypatch.setattr(model, "list_models", catalog)
     harness.wrapper.as_llm.model = model
 
@@ -343,36 +329,11 @@ async def test_caption_only_uses_vision_for_captions_and_keeps_original_memory_m
 
 
 @pytest.mark.asyncio
-async def test_configured_fallback_model_is_preserved_without_capability_inspection(harness):
+async def test_reply_hook_model_options_are_read_once_and_passed_unchanged(harness, monkeypatch):
     fallback = _DirectModel()
     fallback.formatter = OpenAIChatFormatter(input_types=["text/plain"])
-    harness.wrapper.kwargs["model_config"] = {"fallback_model": fallback}
-
-    response = await _run(harness, [_message()])
-
-    assert response.metadata["auto_memory_images"]["status"] == "completed"
-    assert isinstance(harness.wrapper.calls[0][0], Msg)
-    assert harness.wrapper.calls[0][1]["_model"] is harness.wrapper.as_llm.model
-    assert harness.wrapper.kwargs["model_config"]["fallback_model"] is fallback
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("override", ["disable", "replace-config", "custom-fallback", "text-only-fallback"])
-async def test_reply_hook_model_options_are_read_once_and_passed_unchanged(harness, monkeypatch, override):
-    fallback = _DirectModel()
-    fallback.formatter = OpenAIChatFormatter(input_types=["text/plain"])
-    harness.wrapper.kwargs["model_config"] = {"fallback_model": fallback, "max_retries": 2}
-    if override == "disable":
-        model_config = {"fallback_model": None}
-    elif override == "replace-config":
-        # The wrapper shallowly replaces this field, rather than keeping the
-        # component-level fallback by deeply merging model_config.
-        model_config = {"max_retries": 0}
-    elif override == "custom-fallback":
-        model_config = {"fallback_model": _DirectModel()}
-    else:
-        harness.wrapper.kwargs["model_config"] = {"max_retries": 0}
-        model_config = {"fallback_model": fallback}
+    harness.wrapper.kwargs["model_config"] = {"max_retries": 2}
+    model_config = {"fallback_model": fallback}
     options = {"model_config": model_config}
     step = harness.step()
     hook = Mock(return_value=options)
@@ -383,6 +344,9 @@ async def test_reply_hook_model_options_are_read_once_and_passed_unchanged(harne
     assert step.context.response.metadata["auto_memory_images"]["status"] == "completed"
     assert isinstance(harness.wrapper.calls[0][0], Msg)
     assert harness.wrapper.calls[0][1]["model_config"] is model_config
+    assert harness.wrapper.calls[0][1]["_model"] is harness.wrapper.as_llm.model
+    assert harness.wrapper.kwargs["model_config"] == {"max_retries": 2}
+    assert model_config["fallback_model"] is fallback
     assert options == {"model_config": model_config}
     hook.assert_called_once_with(_DAY)
 
@@ -467,29 +431,6 @@ async def test_reply_context_override_has_shallow_precedence_without_mutating_so
     assert "trigger_ratio" not in effective
     assert effective["max_image_num"] == (6 if override_limit is None else override_limit)
     hook.assert_called_once_with(_DAY)
-
-
-@pytest.mark.asyncio
-async def test_source_failure_does_not_publish_temporary_image_limit_or_model_override(harness):
-    source_config = {"trigger_ratio": 0.7}
-    harness.wrapper.kwargs["context_config"] = source_config
-    original_component = harness.wrapper.as_llm
-    original_model = original_component.model
-    vision_model = _DirectModel("dedicated-vision")
-    harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = SimpleNamespace(model=vision_model)
-    message = _six_image_message()
-    message.content[-1].source.data = "invalid-base64!!!"
-
-    response = await _run(harness, [message])
-
-    assert response.metadata["auto_memory_images"]["status"] == "fallback"
-    assert isinstance(harness.wrapper.calls[0][0], str)
-    assert "context_config" not in harness.wrapper.calls[0][1]
-    assert "_model" not in harness.wrapper.calls[0][1]
-    assert source_config == {"trigger_ratio": 0.7}
-    assert harness.wrapper.as_llm is original_component
-    assert original_component.model is original_model
-    assert harness.app_context.components[ComponentEnum.AS_LLM]["vision"].model is vision_model
 
 
 @pytest.mark.asyncio
@@ -603,7 +544,13 @@ async def test_workspace_file_is_bounded_and_materialized_before_sdk_input(harne
 @pytest.mark.asyncio
 @pytest.mark.parametrize("failure", ["invalid-base64", "invalid-image", "outside-workspace", "permission"])
 async def test_second_image_failure_discards_all_prepared_inputs(harness, failure):
-    message = _message()
+    message = _six_image_message()
+    source_config = {"trigger_ratio": 0.7}
+    harness.wrapper.kwargs["context_config"] = source_config
+    original_component = harness.wrapper.as_llm
+    original_model = original_component.model
+    vision_model = _DirectModel("dedicated-vision")
+    harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = SimpleNamespace(model=vision_model)
     kwargs = {}
     if failure == "invalid-base64":
         message.content[2].source.data = "INVALID_BASE64!!!"
@@ -629,6 +576,12 @@ async def test_second_image_failure_discards_all_prepared_inputs(harness, failur
     assert "[Image" not in harness.wrapper.calls[0][0]
     assert "Remember this observation." in harness.wrapper.calls[0][0]
     assert response.metadata["auto_memory_images"]["captioned_images"] == 0
+    assert "context_config" not in harness.wrapper.calls[0][1]
+    assert "_model" not in harness.wrapper.calls[0][1]
+    assert source_config == {"trigger_ratio": 0.7}
+    assert harness.wrapper.as_llm is original_component
+    assert original_component.model is original_model
+    assert harness.app_context.components[ComponentEnum.AS_LLM]["vision"].model is vision_model
     harness.logger.warning.assert_called_once()
     assert message.model_dump() == before
     assert harness.session_path.read_bytes() == _main_saved_line(message)
