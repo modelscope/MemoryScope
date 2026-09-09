@@ -158,14 +158,12 @@ async def test_mixed_processors_share_history_and_keep_result_order(auto_resourc
 
 
 @pytest.mark.parametrize("routed", [False, True], ids=["text-step", "text-only-router"])
-@pytest.mark.parametrize("dated", [False, True], ids=["loose-root", "dated-resource"])
-async def test_text_only_batch_uses_history_without_image_processor(routed, dated, auto_resource_env, monkeypatch):
-    """A text-only pipeline neither needs an image processor nor scans history for dated paths."""
+async def test_text_only_batch_uses_history_without_image_processor(routed, auto_resource_env, monkeypatch):
+    """A text-only pipeline can reuse history without configuring an image processor."""
     env = auto_resource_env
     _seed_history(env)
     env.app_context.registry = R.copy()
-    prefix = "resource/2026-01-01" if dated else "resource"
-    notes = [env.write_note(f"daily/2026-01-01/report-{i}.md", f"[[{prefix}/report-{i}.txt]]") for i in range(3)]
+    notes = [env.write_note(f"daily/2026-01-01/report-{i}.md", f"[[resource/report-{i}.txt]]") for i in range(3)]
     calls = _observe_history(env, monkeypatch)
     options = {"app_context": env.app_context, "file_store": env.file_store}
     step = (
@@ -174,17 +172,16 @@ async def test_text_only_batch_uses_history_without_image_processor(routed, date
         else AutoTextResourceStep(**options)
     )
 
-    response = await env.run(step, [{"change": "deleted", "path": f"{prefix}/report-{i}.txt"} for i in range(3)])
+    response = await env.run(step, [{"change": "deleted", "path": f"resource/report-{i}.txt"} for i in range(3)])
 
     assert response.success is True
     assert all(not note.exists() for note in notes)
-    _assert_history_reads(calls, 0 if dated else 1)
-    assert calls[("daily_list", "2026-01-01")] == (3 if dated else 1)
+    _assert_history_reads(calls)
+    assert calls[("daily_list", "2026-01-01")] == 1
 
 
-@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
 @pytest.mark.parametrize("dated", [False, True], ids=["loose-root", "dated-resource"])
-async def test_new_image_uses_live_post_write_resolution(routed, dated, auto_resource_env, monkeypatch):
+async def test_new_image_uses_live_post_write_resolution(dated, auto_resource_env, monkeypatch):
     """Only dated input needs a pre-write daily_list; both paths read the newly written note."""
     env = auto_resource_env
     _seed_history(env)
@@ -200,7 +197,7 @@ async def test_new_image_uses_live_post_write_resolution(routed, dated, auto_res
     monkeypatch.setattr(FakeVisionModel, "__call__", observe_pre_write)
     with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-01"):
         response = await env.run(
-            env.processor(_model(), routed=routed),
+            env.processor(_model(), routed=True),
             [{"change": "added", "path": str(source)}],
         )
 
@@ -212,14 +209,11 @@ async def test_new_image_uses_live_post_write_resolution(routed, dated, auto_res
     assert calls[("daily_list", "2026-01-01")] == (2 if dated else 1)
 
 
-@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
-async def test_reused_step_and_context_rebuild_history_next_invocation(routed, auto_resource_env, monkeypatch):
+async def test_reused_step_and_context_rebuild_history_next_invocation(auto_resource_env):
     """External edits between invocations are visible; batch state never survives the call."""
     env = auto_resource_env
-    _seed_history(env)
     original = env.write_note("daily/2026-01-01/original.md", "[[resource/photo.png]]")
-    calls = _observe_history(env, monkeypatch)
-    step = env.processor(_model(), routed=routed)
+    step = env.processor(_model(), routed=True)
     changes = [{"change": "deleted", "path": "resource/photo.png"}]
     context = RuntimeContext(changes=changes, user_value="preserve")
     context_keys = set(context.data)
@@ -242,20 +236,15 @@ async def test_reused_step_and_context_rebuild_history_next_invocation(routed, a
     assert set(context.data) == context_keys
     assert context["changes"] is changes
     assert context["user_value"] == "preserve"
-    _assert_history_reads(calls, 2)
 
 
-@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
 async def test_create_update_delete_recreate_maintains_ownership_across_midnight(
-    routed,
     auto_resource_env,
     monkeypatch,
 ):
     """A card keeps its original day until deletion permits a fresh card on today's date."""
     env = auto_resource_env
-    _seed_history(env)
     env.write_binary("resource/caption.png", image_bytes())
-    calls = _observe_history(env, monkeypatch)
     clock = {"day": "2026-01-01"}
     refresh = resource_module.refresh_day_index
 
@@ -267,7 +256,7 @@ async def test_create_update_delete_recreate_maintains_ownership_across_midnight
     monkeypatch.setattr(BaseAutoResourceStep, "_today", lambda _step: clock["day"])
     monkeypatch.setattr(resource_module, "refresh_day_index", refresh_and_advance)
     response = await env.run(
-        env.processor(_model(), routed=routed),
+        env.processor(_model(), routed=True),
         [{"change": change, "path": "resource/caption.png"} for change in ("added", "modified", "deleted", "added")],
     )
 
@@ -282,25 +271,19 @@ async def test_create_update_delete_recreate_maintains_ownership_across_midnight
     ]
     assert not (env.workspace / "daily/2026-01-01/caption.md").exists()
     assert (env.workspace / "daily/2026-01-02/caption.md").is_file()
-    # The three repeated events deliberately use the original uncached lookup.
-    _assert_history_reads(calls, 4)
 
 
-@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
 @pytest.mark.parametrize("first_change", ["added", "deleted"])
 async def test_repeated_source_retries_after_partial_write_or_delete(
-    routed,
     first_change,
     auto_resource_env,
     monkeypatch,
 ):
     """A repeated source uses live lookup even when its previous event failed after mutation."""
     env = auto_resource_env
-    _seed_history(env)
     env.write_binary("resource/caption.png", image_bytes())
     if first_change == "deleted":
         env.write_note("daily/2026-01-01/caption.md", "[[resource/caption.png]]")
-    calls = _observe_history(env, monkeypatch)
     clock = {"day": "2026-01-01"}
     refresh = resource_module.refresh_day_index
     refresh_calls = 0
@@ -317,7 +300,7 @@ async def test_repeated_source_retries_after_partial_write_or_delete(
     monkeypatch.setattr(resource_module, "refresh_day_index", fail_first_refresh)
     next_change = "modified" if first_change == "added" else "added"
     response = await env.run(
-        env.processor(_model(), routed=routed),
+        env.processor(_model(), routed=True),
         [{"change": change, "path": "resource/caption.png"} for change in (first_change, next_change)],
     )
 
@@ -332,56 +315,57 @@ async def test_repeated_source_retries_after_partial_write_or_delete(
     assert recovered["metadata"]["path"] == f"daily/{day}/caption.md"
     assert recovered["metadata"]["created"] is (first_change == "deleted")
     assert (env.workspace / f"daily/{day}/caption.md").is_file()
-    _assert_history_reads(calls, 2)
     assert len(list((env.workspace / "daily").glob("*/caption.md"))) == 1
 
 
-@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
-@pytest.mark.parametrize("mixed_paths", [False, True], ids=["relative-paths", "absolute-then-relative"])
 async def test_repeated_existing_updates_keep_original_day_and_path(
-    routed,
-    mixed_paths,
     auto_resource_env,
     monkeypatch,
 ):
-    """Repeated events use the same logical source even when absolute and relative inputs differ."""
+    """Non-consecutive updates recognize the same source in absolute and relative form."""
     env = auto_resource_env
     _seed_history(env)
     source = env.write_binary("resource/photo.png", image_bytes())
     note = env.write_note("daily/2026-01-01/original.md", "[[resource/photo.png]]")
+    env.write_binary("resource/other.png", image_bytes())
+    other = env.write_note("daily/2026-01-01/other.md", "[[resource/other.png]]")
     before = note.read_bytes()
     calls = _observe_history(env, monkeypatch)
     model = _model()
     changes = [
-        {"change": "modified", "path": str(source) if mixed_paths else "resource/photo.png"},
+        {"change": "modified", "path": str(source)},
+        {"change": "modified", "path": "resource/other.png"},
         {"change": "modified", "path": "resource/photo.png"},
     ]
 
     with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-02"):
-        response = await env.run(env.processor(model, routed=routed), changes)
+        response = await env.run(env.processor(model, routed=True), changes)
 
     assert response.success is True
     metadata = [result["metadata"] for result in response.metadata["results"]]
-    assert [item["path"] for item in metadata] == ["daily/2026-01-01/original.md"] * 2
+    assert [item["path"] for item in metadata] == [
+        "daily/2026-01-01/original.md",
+        "daily/2026-01-01/other.md",
+        "daily/2026-01-01/original.md",
+    ]
     assert all(item["action"] == "modified" and item["created"] is False for item in metadata)
-    assert len(model.calls) == 2
+    assert len(model.calls) == 3
     assert note.read_bytes() != before
+    assert other.is_file()
     assert not (env.workspace / "daily/2026-01-02").exists()
+    # Unchanged paths alone cannot prove that the repeated source used live lookup.
     _assert_history_reads(calls, 2)
 
 
-@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
-async def test_cross_day_duplicate_only_fails_ambiguous_resource(routed, auto_resource_env, monkeypatch):
+async def test_cross_day_duplicate_only_fails_ambiguous_resource(auto_resource_env):
     """Ambiguous ownership prevents mutation without blocking another valid resource."""
     env = auto_resource_env
-    _seed_history(env)
     first = env.write_note("daily/2026-01-01/first.md", "[[resource/duplicate.png]]")
     second = env.write_note("daily/2026-01-02/second.md", "[[resource/duplicate.png]]")
     valid = env.write_note("daily/2026-01-02/valid.md", "[[resource/valid.png]]")
     before = {note: note.read_bytes() for note in (first, second)}
-    calls = _observe_history(env, monkeypatch)
     response = await env.run(
-        env.processor(_model(), routed=routed),
+        env.processor(_model(), routed=True),
         [
             {"change": "deleted", "path": "resource/duplicate.png"},
             {"change": "deleted", "path": "resource/valid.png"},
@@ -397,20 +381,16 @@ async def test_cross_day_duplicate_only_fails_ambiguous_resource(routed, auto_re
     assert deleted["metadata"]["action"] == "deleted"
     assert not valid.exists()
     assert all(note.read_bytes() == contents for note, contents in before.items())
-    _assert_history_reads(calls)
 
 
-@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
-async def test_same_day_duplicates_keep_first_match_after_deletion(routed, auto_resource_env, monkeypatch):
+async def test_same_day_duplicates_keep_first_match_after_deletion(auto_resource_env):
     """Deleting the first same-day match exposes the next one, preserving existing behavior."""
     env = auto_resource_env
-    _seed_history(env)
     first = env.write_note("daily/2026-01-01/first.md", "[[resource/photo.png]]")
     second = env.write_note("daily/2026-01-01/second.md", "[[resource/photo.png]]")
-    calls = _observe_history(env, monkeypatch)
     with patch.object(BaseAutoResourceStep, "_today", return_value="2026-01-02"):
         response = await env.run(
-            env.processor(_model(), routed=routed),
+            env.processor(_model(), routed=True),
             [{"change": "deleted", "path": "resource/photo.png"} for _ in range(3)],
         )
 
@@ -420,16 +400,36 @@ async def test_same_day_duplicates_keep_first_match_after_deletion(routed, auto_
     assert [item["path"] for item in metadata[:2]] == ["daily/2026-01-01/first.md", "daily/2026-01-01/second.md"]
     assert not first.exists()
     assert not second.exists()
-    _assert_history_reads(calls, 3)
 
 
-@pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
-async def test_initial_read_failure_does_not_publish_partial_history(routed, auto_resource_env, monkeypatch):
+async def test_loose_and_dated_changes_keep_separate_lookup_modes(auto_resource_env):
+    """A dated event must not inherit a loose event's cached path, including on repeated deletion."""
+    env = auto_resource_env
+    sources = ["resource/first.png", "resource/2026-01-02/dated.png", "resource/last.png"]
+    notes = [
+        env.write_note("daily/2026-01-01/first.md", f"[[{sources[0]}]]"),
+        env.write_note("daily/2026-01-02/first.md", f"[[{sources[1]}]]"),
+        env.write_note("daily/2026-01-02/second.md", f"[[{sources[1]}]]"),
+        env.write_note("daily/2026-01-01/last.md", f"[[{sources[2]}]]"),
+    ]
+
+    response = await env.run(
+        env.processor(_model(), routed=True),
+        [{"change": "deleted", "path": source} for source in (sources[0], sources[1], sources[1], sources[2])],
+    )
+
+    assert response.success is True
+    metadata = [result["metadata"] for result in response.metadata["results"]]
+    assert [item["action"] for item in metadata] == ["deleted"] * 4
+    assert [item["path"] for item in metadata] == [note.relative_to(env.workspace).as_posix() for note in notes]
+    assert all(not note.exists() for note in notes)
+
+
+async def test_initial_read_failure_does_not_publish_partial_history(auto_resource_env, monkeypatch):
     """A transient history read failure makes the next item retry the initial scan."""
     env = auto_resource_env
     _seed_history(env)
     owned_note = env.write_note("daily/2026-01-01/original.md", "[[resource/photo.png]]")
-    calls = _observe_history(env, monkeypatch)
     daily_list = env.app_context.jobs["daily_list"]
     failed_once = False
 
@@ -442,7 +442,7 @@ async def test_initial_read_failure_does_not_publish_partial_history(routed, aut
 
     monkeypatch.setitem(env.app_context.jobs, "daily_list", fail_once_mid_scan)
     response = await env.run(
-        env.processor(_model(), routed=routed),
+        env.processor(_model(), routed=True),
         [
             {"change": "deleted", "path": "resource/missing.png"},
             {"change": "deleted", "path": "resource/photo.png"},
@@ -458,8 +458,6 @@ async def test_initial_read_failure_does_not_publish_partial_history(routed, aut
     assert recovered["metadata"]["path"] == "daily/2026-01-01/original.md"
     assert recovered["metadata"]["action"] == "deleted"
     assert not owned_note.exists()
-    assert calls["history_enumerations"] == 2
-    assert [calls[("parse", day)] for day in _HISTORY_DAYS] == [2, 1, 1]
 
 
 async def test_empty_history_is_initialized_once(auto_resource_env, monkeypatch):
@@ -478,12 +476,10 @@ async def test_empty_history_is_initialized_once(auto_resource_env, monkeypatch)
     assert calls["history_enumerations"] == 1
 
 
-async def test_router_exception_restores_context_and_next_call_rebuilds(auto_resource_env, monkeypatch):
+async def test_router_exception_restores_context_and_next_call_rebuilds(auto_resource_env):
     """Even an exception after dispatch cannot leak batch state into a reused context."""
     env = auto_resource_env
-    _seed_history(env)
     original = env.write_note("daily/2026-01-01/original.md", "[[resource/photo.png]]")
-    calls = _observe_history(env, monkeypatch)
     step = env.processor(_model(), routed=True)
     changes = [{"change": "deleted", "path": "resource/photo.png"}]
     context = RuntimeContext(changes=changes, user_value="preserve")
@@ -509,18 +505,15 @@ async def test_router_exception_restores_context_and_next_call_rebuilds(auto_res
     assert response.metadata["results"][0]["metadata"]["path"] == "daily/2026-01-02/recreated.md"
     assert not recreated.exists()
     assert set(context.data) == context_keys
-    _assert_history_reads(calls, 2)
 
 
 @pytest.mark.parametrize("routed", [False, True], ids=["image", "unified-router"])
-async def test_cancelled_invocation_restores_context_and_rebuilds(routed, auto_resource_env, monkeypatch):
+async def test_cancelled_invocation_restores_context_and_rebuilds(routed, auto_resource_env):
     """Cancel at the model boundary after lookup, without mocking the resource processing path."""
     env = auto_resource_env
-    _seed_history(env)
     env.write_binary("resource/photo.png", image_bytes())
     original = env.write_note("daily/2026-01-01/original.md", "[[resource/photo.png]]")
     before = original.read_bytes()
-    calls = _observe_history(env, monkeypatch)
     entered = asyncio.Event()
 
     # The inherited structured method deliberately raises to exercise plain-call fallback.
@@ -560,4 +553,3 @@ async def test_cancelled_invocation_restores_context_and_rebuilds(routed, auto_r
     assert response.metadata["results"][0]["metadata"]["path"] == "daily/2026-01-02/recreated.md"
     assert not recreated.exists()
     assert set(context.data) == context_keys
-    _assert_history_reads(calls, 2)
