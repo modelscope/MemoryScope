@@ -27,9 +27,7 @@ def _chunk(chunk_id: str, path: str, text: str) -> FileChunk:
 
 
 def _standalone_file_store_with_tag_index(**kwargs) -> LocalFileStore:
-    store = LocalFileStore(tag_index="", **kwargs)
-    store.tag_index = LocalTagIndex()
-    return store
+    return LocalFileStore(tag_index="default", **kwargs)
 
 
 def test_tag_normalization_and_bidirectional_mutations() -> None:
@@ -289,14 +287,20 @@ def test_configured_frontmatter_key_contract() -> None:
     assert not index.is_healthy
 
 
-def test_file_store_tag_index_binding_has_no_default_factory() -> None:
-    """Require configured tag indexes instead of silently constructing one."""
-    store = LocalFileStore(name="test", embedding_store="", tag_index="custom")
-    dependency = store.dependency_bindings["tag_index"]
+def test_file_store_tag_index_binding_only_defaults_for_default_name() -> None:
+    """Support standalone defaults without silently substituting named dependencies."""
+    default_store = LocalFileStore(name="default-store", embedding_store="", tag_index="default")
+    custom_store = LocalFileStore(name="custom-store", embedding_store="", tag_index="custom")
 
-    assert dependency.name == "custom"
-    assert dependency.default_factory is None
-    assert dependency.optional is False
+    default_dependency = default_store.dependency_bindings["tag_index"]
+    assert default_dependency.name == "default"
+    assert default_dependency.default_factory is LocalTagIndex
+    assert default_dependency.optional is False
+
+    custom_dependency = custom_store.dependency_bindings["tag_index"]
+    assert custom_dependency.name == "custom"
+    assert custom_dependency.default_factory is None
+    assert custom_dependency.optional is False
 
 
 def test_file_store_without_tag_index_name_disables_tag_index() -> None:
