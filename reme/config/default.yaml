@@ -392,7 +392,7 @@ jobs:
     backend: base
     description: >-
       List active tags with file counts. Returns {total_tags, total_pages, page, range, items}; range is the inclusive
-      1-based item range and each item is [tag, file_count]. An oversized page returns the last page.
+      1-based item range and each item is [tag, file_count]. A page past the end returns empty items and range [0, 0].
     parameters:
       type: object
       properties:
@@ -400,7 +400,7 @@ jobs:
           type: integer
           minimum: 1
           default: 1
-          description: "1-based page; values past the end use the last page"
+          description: "1-based page; values past the end return an empty page"
         order_by:
           type: string
           enum: [tag, file_count]
@@ -936,8 +936,8 @@ components:
   tag_index:
     default:
       backend: local
-      tag_key: tags
-      max_tags_per_file: 8
+      tag_key: memory_tags
+      max_tags_per_file: 3
       max_tag_length: 64
 
   file_store:

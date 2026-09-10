@@ -118,12 +118,12 @@ class AutoMemoryStep(BaseStep):
         notes = list_response.metadata.get("notes") or []
         return self._find_session_note(notes, session_id)
 
-    async def _ensure_memory_frontmatter(self, path: str, session_id: str) -> None:
-        current = self._frontmatter(path)
+    async def _ensure_session_frontmatter(self, path: str, session_id: str) -> None:
         metadata = {
             _SESSION_ID_KEY: session_id,
             _SOURCE_CONVERSATION_KEY: self._session_link(session_id),
         }
+        current = self._frontmatter(path)
         if all(current.get(key) == value for key, value in metadata.items()):
             return
         response = await self.run_job(
@@ -276,7 +276,7 @@ class AutoMemoryStep(BaseStep):
     # pylint: disable=too-many-return-statements
     async def execute(self):
         assert self.context is not None
-        self.context["modified_paths"] = []
+        self.context["changes"] = []
         raw_messages = self.context.get("messages") or []
         session_id: str = self.context.get("session_id", "")
         memory_hint: str = self.context.get("memory_hint", "")
@@ -383,32 +383,28 @@ class AutoMemoryStep(BaseStep):
                 self.logger.info(f"[{self.name}] done without note session_id={session_id!r} modified=False")
                 return
             note_path = str(note["path"])
-        try:
-            if not created:
-                await self._ensure_memory_frontmatter(note_path, session_id)
-            if not created:
+        else:
+            try:
+                await self._ensure_session_frontmatter(note_path, session_id)
                 note_path = await self._rename_from_frontmatter_name(note_path, day)
-        except RuntimeError as exc:
-            modified = self._note_modified(before_note_path, before_note_bytes, note_path)
-            if modified and note_path:
-                self.context["modified_paths"] = [note_path]
-            self.context.response.success = False
-            self.context.response.answer = str(exc)
-            self.context.response.metadata.update(
-                {
-                    "date": day,
-                    "path": note_path,
-                    "created": created,
-                    "modified": modified,
-                    "n_messages": len(messages),
-                },
-            )
-            self.logger.info(f"[{self.name}] post-write failed path={note_path} answer={str(exc)!r}")
-            return
+            except RuntimeError as exc:
+                self.context.response.success = False
+                self.context.response.answer = str(exc)
+                self.context.response.metadata.update(
+                    {
+                        "date": day,
+                        "path": note_path,
+                        "created": created,
+                        "modified": self._note_modified(before_note_path, before_note_bytes, note_path),
+                        "n_messages": len(messages),
+                    },
+                )
+                self.logger.info(f"[{self.name}] post-update failed path={note_path} answer={str(exc)!r}")
+                return
 
         modified = self._note_modified(before_note_path, before_note_bytes, note_path)
         if modified:
-            self.context["modified_paths"] = [note_path]
+            self.context["changes"] = [{"change": "added" if created else "modified", "path": note_path}]
         daily_dir = self.config_value("daily_dir")
         self.logger.info(f"[{self.name}] refresh index start date={day} daily_dir={daily_dir}")
         index_payload = await refresh_day_index(self.file_store, day, daily_dir)

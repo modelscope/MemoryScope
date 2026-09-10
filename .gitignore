@@ -77,9 +77,6 @@ benchmark/*/dataset/
 # Benchmark outputs (created on demand by run.py via mkdir)
 benchmark/*/results/
 
-# Meta-ReMe generated bundles (build artifacts)
-meta-reme/bundles/
-
 # integration tests outputs
 tests/integration/logs/
 daily/

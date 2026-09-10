@@ -3,7 +3,7 @@
 import asyncio
 from pathlib import PurePosixPath
 
-from .base_tag_index import BaseTagIndex
+from .base_tag_index import BaseTagIndex, TagListItem, TagListResult, TagOrder, TagOrderBy
 from ..component_registry import R
 from ...schema import FileFrontMatter, FileNode
 
@@ -12,10 +12,12 @@ from ...schema import FileFrontMatter, FileNode
 class LocalTagIndex(BaseTagIndex):
     """Maintain bidirectional path/tag relationships without separate source I/O."""
 
+    reserved_tag_keys = frozenset(FileFrontMatter.model_fields)
+
     def __init__(
         self,
-        tag_key: object = "tags",
-        max_tags_per_file: int = 8,
+        tag_key: object = "memory_tags",
+        max_tags_per_file: int = 3,
         max_tag_length: int = 64,
         **kwargs,
     ):
@@ -25,12 +27,6 @@ class LocalTagIndex(BaseTagIndex):
         self.path_to_tags: dict[str, tuple[str, ...]] = {}
         self.tag_to_paths: dict[str, set[str]] = {}
         self._maintenance_lock = asyncio.Lock()
-
-    def _validate_tag_key(self, value: object) -> str:
-        tag_key = super()._validate_tag_key(value)
-        if tag_key in FileFrontMatter.model_fields:
-            raise ValueError(f"tag_key must not be a reserved frontmatter key: {tag_key!r}")
-        return tag_key
 
     @property
     def n_files(self) -> int:
@@ -51,8 +47,8 @@ class LocalTagIndex(BaseTagIndex):
         for item in value:
             if isinstance(item, bool) or not isinstance(item, (str, int)):
                 continue
-            raw = str(item).strip()
-            if not raw or len(raw) > self.max_tag_length or any(char.isspace() for char in raw):
+            raw = " ".join(str(item).split())
+            if not raw or len(raw) > self.max_tag_length:
                 continue
             if not any(char.isalnum() for char in raw):
                 continue
@@ -86,7 +82,8 @@ class LocalTagIndex(BaseTagIndex):
         prepared: list[tuple[str, tuple[str, ...]]] = []
         for node in nodes:
             path = self._validate_path(node.path)
-            tags = self.normalize_tags(node.front_matter.model_dump().get(self.tag_key))
+            frontmatter = node.front_matter.model_extra or {}
+            tags = self.normalize_tags(frontmatter.get(self.tag_key))
             prepared.append((path, tuple(tags)))
         return prepared
 
@@ -162,41 +159,45 @@ class LocalTagIndex(BaseTagIndex):
         self,
         *,
         page: int = 1,
-        order_by: str = "tag",
-        order: str | None = None,
+        order_by: TagOrderBy = "tag",
+        order: TagOrder | None = None,
         page_size: int = 100,
-    ) -> dict[str, object]:
+    ) -> TagListResult:
         """Return a deterministic page of active tags, counts, and its 1-based range."""
         page = self._positive_int("page", page)
         page_size = self._positive_int("page_size", page_size)
         if page_size > 1000:
             raise ValueError("page_size must be less than or equal to 1000")
 
-        order_by = str(order_by).lower()
+        if not isinstance(order_by, str):
+            raise ValueError("order_by must be one of ['file_count', 'tag']")
+        order_by = order_by.lower()
         if order_by not in {"tag", "file_count"}:
             raise ValueError("order_by must be one of ['file_count', 'tag']")
         if order is None:
             order = "asc" if order_by == "tag" else "desc"
-        order = str(order).lower()
+        if not isinstance(order, str):
+            raise ValueError("order must be one of ['asc', 'desc']")
+        order = order.lower()
         if order not in {"asc", "desc"}:
             raise ValueError("order must be one of ['asc', 'desc']")
 
         async with self._maintenance_lock:
-            items = [[tag, len(paths)] for tag, paths in self.tag_to_paths.items()] if self.is_healthy else []
+            items: list[TagListItem] = (
+                [(tag, len(paths)) for tag, paths in self.tag_to_paths.items()] if self.is_healthy else []
+            )
 
         if order_by == "tag":
             items.sort(key=lambda item: item[0], reverse=order == "desc")
         else:
-            # Keep tag ascending as a stable, deterministic tiebreaker.
-            items.sort(key=lambda item: item[0])
-            items.sort(key=lambda item: item[1], reverse=order == "desc")
+            direction = 1 if order == "asc" else -1
+            items.sort(key=lambda item: (direction * item[1], item[0]))
 
         total_tags = len(items)
         total_pages = (total_tags + page_size - 1) // page_size
-        page = min(page, max(total_pages, 1))
         start = (page - 1) * page_size
         page_items = items[start : start + page_size]
-        item_range = [start + 1, start + len(page_items)] if page_items else [0, 0]
+        item_range = (start + 1, start + len(page_items)) if page_items else (0, 0)
         return {
             "total_tags": total_tags,
             "total_pages": total_pages,

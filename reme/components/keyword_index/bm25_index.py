@@ -280,29 +280,50 @@ class BM25Index(BaseKeywordIndex):
             self._remove_doc(doc_id)
         self._idf_cache = {}
 
-    def _score_query(self, query_ids: list[int], n_docs: int) -> np.ndarray:
-        """Compute BM25 scores across all docs; deleted docs zeroed out."""
+    def _score_query(self, query_ids: list[int], candidate_idxs: np.ndarray | None = None) -> np.ndarray:
+        """Compute BM25 scores globally or for selected live document indexes."""
+        n_docs = self.n_docs
+        if n_docs == 0:
+            size = self._doc_lens.size if candidate_idxs is None else candidate_idxs.size
+            return np.zeros(size, dtype=np.float32)
+
         avg_len = self.total_len / n_docs
         k1, b = self.k1, self.b
         denom_base = k1 * (1.0 - b)
         denom_norm = k1 * b / avg_len if avg_len > 0 else 0.0
 
-        scores = np.zeros(self._doc_lens.size, dtype=np.float32)
+        size = self._doc_lens.size if candidate_idxs is None else candidate_idxs.size
+        scores = np.zeros(size, dtype=np.float32)
         for tid in query_ids:
-            doc_idxs = self._posting_doc_idxs.get(tid)
-            if doc_idxs is None or doc_idxs.size == 0:
+            posting_idxs = self._posting_doc_idxs.get(tid)
+            if posting_idxs is None or posting_idxs.size == 0:
                 continue
             idf = self._get_idf(tid, n_docs)
             if idf == 0.0:
                 continue
-            tfs = self._posting_tfs[tid].astype(np.float32)
-            d_lens = self._doc_lens[doc_idxs].astype(np.float32)
+
+            if candidate_idxs is None:
+                posting_positions = slice(None)
+                score_positions = posting_idxs
+            else:
+                _common, posting_positions, score_positions = np.intersect1d(
+                    posting_idxs,
+                    candidate_idxs,
+                    assume_unique=True,
+                    return_indices=True,
+                )
+                if score_positions.size == 0:
+                    continue
+
+            doc_idxs = posting_idxs[posting_positions]
+            tfs = self._posting_tfs[tid][posting_positions].astype(np.float32)
+            doc_lens = self._doc_lens[doc_idxs].astype(np.float32)
             # Each doc_idx appears at most once per posting list (Counter dedups
             # within a doc, and updates allocate fresh idxs), so fancy-index
             # accumulation is safe here.
-            scores[doc_idxs] += idf * tfs * (k1 + 1.0) / (tfs + denom_base + denom_norm * d_lens)
+            scores[score_positions] += idf * tfs * (k1 + 1.0) / (tfs + denom_base + denom_norm * doc_lens)
 
-        if self._deleted.any():
+        if candidate_idxs is None and self._deleted.any():
             scores[self._deleted] = 0.0
         return scores
 
@@ -316,33 +337,7 @@ class BM25Index(BaseKeywordIndex):
             sorted({self._doc_id_to_idx[doc_id] for doc_id in document_ids if doc_id in self._doc_id_to_idx}),
             dtype=np.int32,
         )
-        scores = np.zeros(candidate_idxs.size, dtype=np.float32)
-        n_docs = self.n_docs
-        if candidate_idxs.size == 0 or n_docs == 0:
-            return candidate_idxs, scores
-
-        avg_len = self.total_len / n_docs
-        denom_base = self.k1 * (1.0 - self.b)
-        denom_norm = self.k1 * self.b / avg_len if avg_len > 0 else 0.0
-        for tid in query_ids:
-            posting_idxs = self._posting_doc_idxs.get(tid)
-            if posting_idxs is None or posting_idxs.size == 0:
-                continue
-            _common, posting_positions, candidate_positions = np.intersect1d(
-                posting_idxs,
-                candidate_idxs,
-                assume_unique=True,
-                return_indices=True,
-            )
-            if posting_positions.size == 0:
-                continue
-            idf = self._get_idf(tid, n_docs)
-            if idf == 0.0:
-                continue
-            tfs = self._posting_tfs[tid][posting_positions].astype(np.float32)
-            doc_lens = self._doc_lens[candidate_idxs[candidate_positions]].astype(np.float32)
-            scores[candidate_positions] += idf * tfs * (self.k1 + 1.0) / (tfs + denom_base + denom_norm * doc_lens)
-        return candidate_idxs, scores
+        return candidate_idxs, self._score_query(query_ids, candidate_idxs)
 
     async def retrieve(self, query: str, limit: int = 3) -> dict[str, float]:
         """BM25 retrieval; returns {doc_id: score} sorted by score descending."""
@@ -353,7 +348,7 @@ class BM25Index(BaseKeywordIndex):
         if not query_ids:
             return {}
 
-        scores = self._score_query(query_ids, n_docs)
+        scores = self._score_query(query_ids)
         top_idxs = self._top_k(scores, limit)
         return {self._doc_ids[int(i)]: float(scores[int(i)]) for i in top_idxs}
 

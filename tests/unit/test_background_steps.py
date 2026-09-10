@@ -837,6 +837,7 @@ def test_update_catalog_yields_to_event_loop_while_building_batch():
 class _CountingEmbeddingStore:
     dimensions = 2
     max_batch_size = 10
+    is_healthy = True
 
     def __init__(self):
         self.calls = 0
@@ -2023,7 +2024,7 @@ def test_auto_memory_reports_modified_for_create_and_false_for_skip():
                 assert resp.success is True
                 assert resp.metadata["created"] is True
                 assert resp.metadata["modified"] is True
-                assert context["modified_paths"] == [f"daily/{today}/memory.md"]
+                assert context["changes"] == [{"change": "added", "path": f"daily/{today}/memory.md"}]
                 assert "tags:" not in (cwd / "daily" / today / "memory.md").read_text(encoding="utf-8")
 
                 wrapper.on_reply = None
@@ -2034,7 +2035,7 @@ def test_auto_memory_reports_modified_for_create_and_false_for_skip():
                 assert resp.success is True
                 assert resp.metadata["modified"] is False
                 assert resp.metadata["n_messages"] == 0
-                assert context["modified_paths"] == []
+                assert context["changes"] == []
             finally:
                 await fs.close()
         print("✓ test_auto_memory_reports_modified_for_create_and_false_for_skip passed")

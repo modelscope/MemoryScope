@@ -1,6 +1,8 @@
-"""auto_tag — generate frontmatter tags for modified Markdown files."""
+"""Generate entity-oriented memory tags for added or modified Markdown files."""
 
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 import frontmatter
 
@@ -11,88 +13,107 @@ from ..file_io._path import display_path, resolve_path
 from ..index import normalize_posix_path
 from ...components import R
 
-_MAX_TAGS = 8
-_MAX_TAG_LENGTH = 64
+_MAX_MEMORY_TAGS = 3
+_MAX_MEMORY_TAG_LENGTH = 64
+_SUPPORTED_CHANGES = {"added", "modified"}
 
 
-def normalize_tags(value) -> list[str]:
-    """Return unique retrieval-friendly tags that satisfy the storage contract."""
+@dataclass(frozen=True)
+class _TagTarget:
+    change: Literal["added", "modified"]
+    path: str
+
+
+def normalize_memory_tags(value: object) -> list[str]:
+    """Normalize up to three human-readable entity labels for frontmatter storage."""
     if not isinstance(value, list):
         return []
 
     tags: list[str] = []
     seen: set[str] = set()
     for item in value:
-        if isinstance(item, bool) or not isinstance(item, (str, int)):
+        if not isinstance(item, str):
             continue
-        tag = str(item).strip()
-        if not tag or len(tag) > _MAX_TAG_LENGTH:
+        tag = " ".join(item.split())
+        if not tag or len(tag) > _MAX_MEMORY_TAG_LENGTH or not any(char.isalnum() for char in tag):
             continue
-        if any(char.isspace() for char in tag):
+        canonical = tag.casefold()
+        if canonical in seen:
             continue
-        if not any(char.isalnum() for char in tag):
-            continue
-        dedupe_key = tag.casefold()
-        if dedupe_key in seen:
-            continue
-        seen.add(dedupe_key)
+        seen.add(canonical)
         tags.append(tag)
-        if len(tags) >= _MAX_TAGS:
+        if len(tags) >= _MAX_MEMORY_TAGS:
             break
     return tags
 
 
 @R.register("auto_tag_step")
 class AutoTagStep(BaseStep):
-    """Generate tags for each eligible path produced by an earlier Step."""
+    """Update memory tags for Markdown files described by the common ``changes`` contract."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.tools = ["read", "list_tags", "frontmatter_read", "frontmatter_update"]
 
-    def _eligible_paths(self) -> tuple[list[str], list[str]]:
+    def _targets(self) -> tuple[list[_TagTarget], list[dict[str, str]]]:
+        """Validate, normalize, and de-duplicate added/modified Markdown changes."""
         assert self.context is not None
-        raw_paths = self.context.get("modified_paths") or []
-        if not isinstance(raw_paths, list):
-            raw_paths = [raw_paths]
+        raw_changes = self.context.get("changes") or []
+        if not isinstance(raw_changes, list):
+            raise ValueError("AutoTagStep requires changes: list[dict]")
 
         workspace = Path(self.file_store.workspace_path or ".").resolve()
-        eligible: list[str] = []
-        ignored: list[str] = []
-        seen: set[str] = set()
-        for raw_path in raw_paths:
-            raw = str(raw_path or "").strip()
-            target, err = resolve_path(workspace, raw)
-            if err or target is None or not target.is_file() or target.suffix.lower() != ".md":
-                ignored.append(raw)
+        targets: dict[str, _TagTarget] = {}
+        ignored: list[dict[str, str]] = []
+        for item in raw_changes:
+            if not isinstance(item, dict):
+                ignored.append({"path": "", "reason": "change must be an object"})
                 continue
-            path = normalize_posix_path(display_path(workspace, target))
-            if path in seen:
-                continue
-            seen.add(path)
-            eligible.append(path)
-        return eligible, ignored
 
-    async def _process_path(self, path: str, tag_key: str) -> str:
+            change = str(item.get("change") or "").strip().lower()
+            raw_path = str(item.get("path") or "").strip()
+            if change not in _SUPPORTED_CHANGES:
+                ignored.append({"path": raw_path, "reason": f"unsupported change: {change or 'missing'}"})
+                continue
+
+            target, error = resolve_path(workspace, raw_path)
+            if error or target is None:
+                ignored.append({"path": raw_path, "reason": error or "invalid path"})
+                continue
+            if not target.is_file():
+                ignored.append({"path": raw_path, "reason": "not a file"})
+                continue
+            if target.suffix.lower() != ".md":
+                ignored.append({"path": raw_path, "reason": "not a Markdown file"})
+                continue
+
+            path = normalize_posix_path(display_path(workspace, target))
+            previous = targets.get(path)
+            was_added = previous is not None and previous.change == "added"
+            normalized_change: Literal["added", "modified"] = "added" if change == "added" or was_added else "modified"
+            targets[path] = _TagTarget(change=normalized_change, path=path)
+        return list(targets.values()), ignored
+
+    async def _process_target(self, target: _TagTarget, tag_key: str) -> str:
         result = await self.agent_wrapper.reply(
-            self.prompt_format("user_message", path=path, tags_key=tag_key),
-            system_prompt=self.prompt_format("system_prompt", tags_key=tag_key),
+            self.prompt_format("user_message", path=target.path, change=target.change, tag_key=tag_key),
+            system_prompt=self.prompt_format("system_prompt", tag_key=tag_key),
             job_tools=self.tools,
             injected_job_kwargs={
-                "_allowed_paths": [path],
+                "_allowed_paths": [target.path],
                 "_allowed_frontmatter_keys": [tag_key],
             },
         )
 
-        target = Path(self.file_store.workspace_path or ".") / path
-        metadata = dict(frontmatter.loads(target.read_text(encoding="utf-8")).metadata or {})
-        normalized = normalize_tags(metadata.get(tag_key))
+        path = Path(self.file_store.workspace_path or ".") / target.path
+        metadata = dict(frontmatter.loads(path.read_text(encoding="utf-8")).metadata or {})
+        normalized = normalize_memory_tags(metadata.get(tag_key))
         if metadata.get(tag_key) != normalized:
             response = await self.run_job(
                 "frontmatter_update",
-                path=path,
+                path=target.path,
                 metadata={tag_key: normalized},
-                _allowed_paths=[path],
+                _allowed_paths=[target.path],
                 _allowed_frontmatter_keys=[tag_key],
             )
             if not response.success:
@@ -104,49 +125,62 @@ class AutoTagStep(BaseStep):
         prefix = f"{daily_dir}/"
         if not path.startswith(prefix):
             return None
-        remainder = path[len(prefix) :]
-        parts = remainder.split("/")
-        if len(parts) != 2:
-            return None
-        return parse_daily_date(parts[0])
+        parts = path[len(prefix) :].split("/")
+        return parse_daily_date(parts[0]) if len(parts) == 2 else None
 
     async def execute(self):
         assert self.context is not None
         initial_success = self.context.response.success
-        tag_index = getattr(self.file_store, "tag_index", None)
-        if tag_index is None:
+        initial_answer = self.context.response.answer
+        try:
+            targets, ignored = self._targets()
+        except ValueError as exc:
             self.context.response.success = False
-            self.context.response.answer = "Error: tag index is not configured"
+            self.context.response.answer = str(exc)
             return self.context.response
 
-        eligible, ignored = self._eligible_paths()
-        tagged: list[str] = []
-        failed: list[dict[str, str]] = []
-        summaries: list[str] = []
+        results: list[dict] = []
+        indexes: list[dict] = []
+        if targets and not self.file_store.tag_index_enabled:
+            self.context.response.success = False
+            if initial_success:
+                self.context.response.answer = "Error: tag index is not configured"
+            return self.context.response
+
+        tag_index = self.file_store.require_tag_index() if targets else None
         dates: set[str] = set()
-        for path in eligible:
-            if day := self._daily_date(path):
+        for target in targets:
+            if day := self._daily_date(target.path):
                 dates.add(day)
             try:
-                summaries.append(await self._process_path(path, tag_index.tag_key))
-                tagged.append(path)
+                summary = await self._process_target(target, tag_index.tag_key)
+                results.append(
+                    {"change": target.change, "path": target.path, "success": True, "summary": summary},
+                )
             except Exception as exc:  # pylint: disable=broad-exception-caught
-                failed.append({"path": path, "error": str(exc)})
-                self.logger.warning(f"[{self.name}] failed path={path}: {exc}")
+                results.append(
+                    {"change": target.change, "path": target.path, "success": False, "error": str(exc)},
+                )
+                self.logger.warning(f"[{self.name}] failed path={target.path}: {exc}")
 
-        indexes = [
-            await refresh_day_index(self.file_store, day, self.config_value("daily_dir")) for day in sorted(dates)
-        ]
-        self.context.response.success = initial_success and not failed
-        if failed:
-            self.context.response.answer = f"Tagged {len(tagged)} file(s); {len(failed)} failed"
-        elif tagged:
-            self.context.response.answer = f"Tagged {len(tagged)} file(s)"
+        for day in sorted(dates):
+            indexes.append(await refresh_day_index(self.file_store, day, self.config_value("daily_dir")))
+
+        failed = sum(not item["success"] for item in results)
+        succeeded = len(results) - failed
+        self.context.response.success = initial_success and failed == 0
+        if initial_success and failed:
+            self.context.response.answer = f"Tagged {succeeded} file(s); {failed} failed"
+        elif initial_success and not initial_answer and succeeded:
+            self.context.response.answer = f"Tagged {succeeded} file(s)"
+        else:
+            self.context.response.answer = initial_answer
         self.context.response.metadata["auto_tag"] = {
-            "tagged_paths": tagged,
-            "ignored_paths": ignored,
-            "failed_paths": failed,
+            "processed": len(results),
+            "succeeded": succeeded,
+            "failed": failed,
+            "ignored": ignored,
+            "results": results,
             "indexes": indexes,
-            "summaries": [summary for summary in summaries if summary],
         }
         return self.context.response
