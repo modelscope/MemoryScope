@@ -5,6 +5,7 @@
 import base64
 import copy
 import io
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
@@ -13,6 +14,7 @@ from agentscope.message import Msg
 from agentscope.model import ChatModelBase
 from PIL import Image
 import pytest
+import yaml
 
 from reme.components.agent_wrapper import BaseAgentWrapper
 from reme.components.agent_wrapper.as_agent_wrapper import AsAgentWrapper
@@ -20,10 +22,13 @@ from reme.components.as_llm import BaseAsLLM
 from reme.components.file_store import LocalFileStore
 from reme.components import R
 from reme.components.job import BaseJob
+from reme.components.tag_index import LocalTagIndex
 from reme.enumeration import ComponentEnum
 from reme.schema import ApplicationConfig
 from reme.steps.evolve import _auto_memory_image
 from reme.steps.evolve.auto_memory import AutoMemoryStep
+
+from .test_auto_tag import _TaggingWrapper, _write_note
 
 _DAY = "2026-09-01"
 _SESSION = "image-modes"
@@ -231,18 +236,67 @@ async def test_history_merge_keeps_main_append_and_rewrite_contract(harness, ena
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("enabled,enable_tags", [(False, False), (False, True), (True, False), (True, True)])
-async def test_image_switch_preserves_upstream_tag_prompt(harness, enabled, enable_tags):
-    step = harness.step(enable_tags=enable_tags)
-    await step(session_id=_SESSION, date=_DAY, messages=[_message()], include_images=enabled)
+@pytest.mark.parametrize("scenario", ["off", "direct", "fallback"])
+async def test_default_memory_chain_passes_changes_to_auto_tag_without_losing_image_metadata(
+    harness,
+    monkeypatch,
+    scenario,
+):
+    path = f"daily/{_DAY}/image-memory.md"
+    target = harness.workspace / path
+    harness.store.tag_index = LocalTagIndex(max_tags_per_file=3)
+    tagger = _TaggingWrapper(harness.workspace, tags=["OpenAI"])
 
-    assert step.context.response.success is True
-    prompt, kwargs = harness.wrapper.calls[0]
-    text = prompt.get_text_content() if isinstance(prompt, Msg) else prompt
-    assert ("`tags`" in kwargs["system_prompt"]) is enable_tags
-    assert ('metadata={"tags"' in text) is enable_tags
-    assert kwargs["job_tools"] == ["daily_write"]
-    assert "injected_job_kwargs" not in kwargs
+    async def find_note(_step, _day, _session_id):
+        return {"path": path} if target.exists() else None
+
+    async def write_memory(inputs, **kwargs):
+        harness.wrapper.calls.append((inputs, kwargs))
+        _write_note(target)
+        return {"result": "Memory written."}
+
+    monkeypatch.setattr(AutoMemoryStep, "_list_session_note", find_note)
+    monkeypatch.setattr(harness.wrapper, "reply", write_memory)
+    defaults = Path(__file__).resolve().parents[2] / "reme/config/default.yaml"
+    steps = yaml.safe_load(defaults.read_text(encoding="utf-8"))["jobs"]["auto_memory"]["steps"]
+    assert [step["backend"] for step in steps] == ["auto_memory_step", "auto_tag_step"]
+    for step, wrapper in zip(steps, (harness.wrapper, tagger)):
+        step.update(file_store=harness.store, agent_wrapper=wrapper)
+    job = BaseJob(app_context=harness.app_context, steps=steps)
+    message = _message()
+    if scenario == "fallback":
+        message.content[1].source.data = "invalid-base64"
+    await job.start()
+    try:
+        response = await job(
+            session_id=_SESSION,
+            date=_DAY,
+            messages=[message],
+            include_images=scenario != "off",
+            supports_vision=True,
+            changes=[{"change": "added", "path": "daily/stale.md"}],
+        )
+    finally:
+        await job.close()
+
+    assert response.success is True
+    assert response.answer == "Memory written."
+    assert response.metadata["auto_tag"]["processed"] == response.metadata["auto_tag"]["succeeded"] == 1
+    assert response.metadata["auto_tag"]["ignored"] == []
+    assert response.metadata["auto_tag"]["results"][0]["change"] == "added"
+    assert response.metadata["auto_tag"]["results"][0]["path"] == response.metadata["path"] == path
+    assert len(tagger.calls) == 1
+    inputs, options = harness.wrapper.calls[0]
+    assert isinstance(inputs, Msg if scenario == "direct" else str)
+    assert "[enable_tags]" not in options["system_prompt"] and "`tags`" not in options["system_prompt"]
+    image_metadata = response.metadata.get("auto_memory_images")
+    if scenario == "off":
+        assert image_metadata is None
+    else:
+        assert image_metadata["status"] == ("completed" if scenario == "direct" else "fallback")
+        assert image_metadata["mode"] == "direct"
+        assert image_metadata["image_count"] == 2 and image_metadata["captioned_images"] == 0
+    assert harness.session_path.read_bytes() == _main_saved_line(message)
 
 
 @pytest.mark.asyncio

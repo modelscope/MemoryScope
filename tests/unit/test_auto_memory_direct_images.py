@@ -56,6 +56,9 @@ def test_default_config_keeps_images_disabled_and_selects_direct_mode():
     assert job["steps"][0]["include_images"] is False
     assert job["steps"][0]["supports_vision"] is False
     assert job["steps"][0]["image_mode"] == "direct"
+    assert [step["backend"] for step in job["steps"]] == ["auto_memory_step", "auto_tag_step"]
+    assert "enable_tags" not in job["steps"][0]
+    assert job["steps"][1] == {"backend": "auto_tag_step", "max_tags_per_file": 3}
 
 
 @pytest.mark.asyncio
@@ -391,7 +394,7 @@ async def test_interleaving_keeps_localized_create_update_prompt_boundaries(harn
     note_path = f"daily/{_DAY}/existing.md"
     if existing:
         monkeypatch.setattr(step, "_list_session_note", AsyncMock(return_value={"path": note_path}))
-        monkeypatch.setattr(step, "_ensure_memory_frontmatter", AsyncMock())
+        monkeypatch.setattr(step, "_ensure_session_frontmatter", AsyncMock())
         monkeypatch.setattr(step, "_rename_from_frontmatter_name", AsyncMock(return_value=note_path))
         monkeypatch.setattr("reme.steps.evolve.auto_memory.refresh_day_index", AsyncMock(return_value={}))
     message = _message()
