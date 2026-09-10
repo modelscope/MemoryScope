@@ -98,9 +98,9 @@ orientation correction and format conversion when needed). Original caller messa
 
 ### Direct multimodal input (default when enabled)
 
-Auto Memory builds an AgentScope `UserMsg` with text and image `DataBlock` values interleaved within the rendered
-conversation history. It keeps their original order and each message's speaker and timestamp boundaries, including
-image-only messages and repeated block IDs. This describes the input ReMe passes to the wrapper; the selected
+With its standard history rendering, Auto Memory builds an AgentScope `UserMsg` with text and image `DataBlock` values
+interleaved within the conversation. It keeps their original order and each message's speaker and timestamp boundaries,
+including image-only messages and repeated block IDs. This describes the input ReMe passes to the wrapper; the selected
 AgentScope formatter determines how that input is represented in provider requests.
 The memory Agent extracts facts from text and images together, without separate caption calls. This is one Agent
 workflow, not necessarily one API request: tool use can trigger further model turns that still include the images.
