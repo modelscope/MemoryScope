@@ -46,15 +46,22 @@ class FakeSearchStore(BaseFileStore):
         self.calls: list[tuple[str, str, int, dict]] = []
 
     async def upsert(self, files: list[tuple[FileNode, list[FileChunk]]]) -> None:
-        raise NotImplementedError
+        """Ignore writes in this read-only search fixture."""
+        del files
 
     async def delete(self, path: str | list[str]) -> None:
-        raise NotImplementedError
+        """Ignore deletes in this read-only search fixture."""
+        del path
 
     async def clear(self) -> None:
-        raise NotImplementedError
+        """Clear the fixture's in-memory results and recorded calls."""
+        self.vector_results.clear()
+        self.keyword_results.clear()
+        self.calls.clear()
 
     async def get_nodes(self, paths: list[str] | None = None) -> list[FileNode]:
+        """Return no graph nodes for search-only tests."""
+        del paths
         return []
 
     async def get_outlinks(
@@ -62,6 +69,8 @@ class FakeSearchStore(BaseFileStore):
         path: str,
         scope: LinkScopeEnum = LinkScopeEnum.REAL,
     ) -> list[FileLink]:
+        """Return no outgoing links for search-only tests."""
+        del path, scope
         return []
 
     async def get_inlinks(
@@ -69,13 +78,17 @@ class FakeSearchStore(BaseFileStore):
         path: str,
         scope: LinkScopeEnum = LinkScopeEnum.REAL,
     ) -> list[FileLink]:
+        """Return no incoming links for search-only tests."""
+        del path, scope
         return []
 
     async def vector_search(self, query: str, limit: int, search_filter: dict) -> list[FileChunk]:
+        """Return the configured vector results."""
         self.calls.append(("vector", query, limit, search_filter))
         return self.vector_results[:limit]
 
     async def keyword_search(self, query: str, limit: int, search_filter: dict) -> list[FileChunk]:
+        """Return the configured keyword results."""
         self.calls.append(("keyword", query, limit, search_filter))
         return self.keyword_results[:limit]
 
