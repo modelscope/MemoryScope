@@ -936,30 +936,36 @@ def test_search_step_empty_query_fails_before_store_calls():
     asyncio.run(run())
 
 
-def test_search_step_rejects_unavailable_index_and_invalid_tags():
-    """A requested tag filter cannot silently widen search when it cannot be applied."""
+def test_search_step_falls_back_for_unavailable_index_and_rejects_invalid_tags():
+    """Unavailable optional indexes preserve search, while malformed tags still fail."""
 
     async def run():
         hit = _chunk("hit", "daily/a.md", "text", "keyword", 3.0)
         missing = FakeSearchStore(keyword_results=[hit])
         unhealthy = TaggedFakeSearchStore(chunks=[hit])
         unhealthy.tag_index.set_healthy(False)
-        invalid = TaggedFakeSearchStore(chunks=[])
 
-        cases = [
-            (missing, ["python"], "Error: tag index unavailable", "tag_index_unavailable"),
-            (unhealthy, ["python"], "Error: tag index unavailable", "tag_index_unavailable"),
-            (invalid, ["!", "++", "x" * 65], "Error: tags contained no valid values", None),
-        ]
-        for store, tags, answer, reason in cases:
+        for store in (missing, unhealthy):
             resp = await SearchStep(file_store=store, expand_links=False)(
-                RuntimeContext(query="hello", limit=5, tags=tags),
+                RuntimeContext(query="hello", limit=5, tags=["python"]),
             )
-            assert resp.success is False
-            assert resp.answer == answer
-            assert not store.calls
-            if reason:
-                assert resp.metadata["tag_filter"]["reason"] == reason
+            assert resp.success is True
+            assert [result["id"] for result in resp.metadata["results"]] == ["hit"]
+            assert {call[0] for call in store.calls} == {"vector", "keyword"}
+            assert all(call[3] == {} for call in store.calls)
+            assert resp.metadata["tag_filter"] == {
+                "requested": True,
+                "applied": False,
+                "reason": "tag_index_unavailable",
+            }
+
+        invalid = TaggedFakeSearchStore(chunks=[])
+        resp = await SearchStep(file_store=invalid, expand_links=False)(
+            RuntimeContext(query="hello", limit=5, tags=["!", "++", "x" * 65]),
+        )
+        assert resp.success is False
+        assert resp.answer == "Error: tags contained no valid values"
+        assert not invalid.calls
 
     asyncio.run(run())
 

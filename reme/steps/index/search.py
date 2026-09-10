@@ -157,7 +157,7 @@ class SearchStep(BaseStep):
             return (
                 search_filter,
                 {"requested": True, "applied": False, "reason": "tag_index_unavailable"},
-                "Error: tag index unavailable",
+                None,
             )
         tag_index = self.file_store.require_tag_index()
         if not tag_index.is_healthy:
@@ -165,7 +165,7 @@ class SearchStep(BaseStep):
             return (
                 search_filter,
                 {"requested": True, "applied": False, "reason": "tag_index_unavailable"},
-                "Error: tag index unavailable",
+                None,
             )
 
         normalized_tags = tag_index.normalize_query_tags(raw_tags)
@@ -181,7 +181,7 @@ class SearchStep(BaseStep):
             return (
                 search_filter,
                 {"requested": True, "applied": False, "reason": "tag_index_unavailable"},
-                "Error: tag index unavailable",
+                None,
             )
 
         exact_paths = set()
