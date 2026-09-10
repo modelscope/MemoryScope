@@ -111,7 +111,7 @@ def parse_config(values: dict[str, Any], *, hermes_home: str | Path) -> ReMeConf
             endpoint = normalize_http_endpoint(endpoint)
         except ValueError as exc:
             raise ReMeConfigError(
-                "ReMe endpoint must be an absolute http(s) URL"
+                "ReMe endpoint must be an absolute http(s) URL",
             ) from exc
 
     raw_workspace = str(
@@ -119,9 +119,7 @@ def parse_config(values: dict[str, Any], *, hermes_home: str | Path) -> ReMeConf
     ).strip()
     if mode == "embedded" and not raw_workspace:
         raise ReMeConfigError("'workspace_dir' is required in embedded mode")
-    workspace_dir = (
-        str(Path(raw_workspace).expanduser().absolute()) if raw_workspace else ""
-    )
+    workspace_dir = str(Path(raw_workspace).expanduser().absolute()) if raw_workspace else ""
 
     reme_config = str(values.get("reme_config", defaults.reme_config) or "").strip()
     if mode == "embedded" and not reme_config:
@@ -167,11 +165,7 @@ def parse_config(values: dict[str, Any], *, hermes_home: str | Path) -> ReMeConf
 
 def load_config(hermes_home: str | Path | None = None) -> ReMeConfig:
     """Load current config, falling back to the legacy file when necessary."""
-    home = (
-        Path(hermes_home).expanduser()
-        if hermes_home is not None
-        else _default_hermes_home()
-    )
+    home = Path(hermes_home).expanduser() if hermes_home is not None else _default_hermes_home()
     current = config_path(home)
     source = current if current.is_file() else legacy_config_path(home)
     return parse_config(_read_json_object(source), hermes_home=home)

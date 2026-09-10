@@ -23,9 +23,7 @@ from .http_backend import HttpReMeBackend
 
 logger = logging.getLogger(__name__)
 _NON_FILENAME_CHARS = re.compile(r"[^A-Za-z0-9._-]+")
-_SDK_INSTALL_HINT = (
-    'Embedded ReMe mode requires the SDK. Install it with: pip install "reme-ai[core]"'
-)
+_SDK_INSTALL_HINT = 'Embedded ReMe mode requires the SDK. Install it with: pip install "reme-ai[core]"'
 
 
 def _slug(value: str, fallback: str, *, limit: int) -> str:
@@ -122,11 +120,7 @@ class ReMeMemoryProvider(MemoryProvider):
         with self._backend_lock:
             self._close_backend_locked()
         self._config = config
-        self._backend_label = (
-            config.endpoint
-            if config.mode == "http"
-            else f"embedded:{config.workspace_dir}"
-        )
+        self._backend_label = config.endpoint if config.mode == "http" else f"embedded:{config.workspace_dir}"
         self._recall_timeout = config.recall_timeout
         self._health_timeout = config.health_timeout
         self._health_retry_seconds = config.health_retry_seconds
@@ -266,11 +260,7 @@ class ReMeMemoryProvider(MemoryProvider):
             config = load_config()
         except ReMeConfigError:
             return []
-        return (
-            [config.workspace_dir]
-            if config.mode == "embedded" and config.workspace_dir
-            else []
-        )
+        return [config.workspace_dir] if config.mode == "embedded" and config.workspace_dir else []
 
     def recall_status(self) -> Optional[RecallStatus]:
         """Describe only the content injected by the latest prefetch call."""
@@ -294,11 +284,11 @@ class ReMeMemoryProvider(MemoryProvider):
                     timeout=self._recall_timeout,
                 )
             except ReMeBackendError as exc:
-                self._next_recall_attempt = (
-                    time.monotonic() + self._health_retry_seconds
-                )
+                self._next_recall_attempt = time.monotonic() + self._health_retry_seconds
                 logger.warning(
-                    "ReMe retrieval failed at %s: %s", self._backend_label, exc
+                    "ReMe retrieval failed at %s: %s",
+                    self._backend_label,
+                    exc,
                 )
                 return ""
             finally:
@@ -320,11 +310,7 @@ class ReMeMemoryProvider(MemoryProvider):
         counts = metadata.get("counts")
         if isinstance(counts, dict):
             returned = counts.get("returned")
-            if (
-                isinstance(returned, int)
-                and not isinstance(returned, bool)
-                and returned >= 0
-            ):
+            if isinstance(returned, int) and not isinstance(returned, bool) and returned >= 0:
                 return returned
         results = metadata.get("results")
         return len(results) if isinstance(results, list) else 0
@@ -494,7 +480,9 @@ class ReMeMemoryProvider(MemoryProvider):
             except ReMeBackendError as exc:
                 self._next_write_attempt = time.monotonic() + self._health_retry_seconds
                 logger.warning(
-                    "ReMe recording failed at %s: %s", self._backend_label, exc
+                    "ReMe recording failed at %s: %s",
+                    self._backend_label,
+                    exc,
                 )
             finally:
                 self._close_backend_if_shutdown_locked()

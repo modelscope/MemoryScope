@@ -155,11 +155,7 @@ class EmbeddedReMeBackend:
             allowed = {_State.RUNNING}
             if allow_starting:
                 allowed.add(_State.STARTING)
-            if (
-                self._state not in allowed
-                or self._loop is None
-                or not self._loop.is_running()
-            ):
+            if self._state not in allowed or self._loop is None or not self._loop.is_running():
                 coroutine.close()
                 raise ReMeBackendError(
                     f"Embedded ReMe is not running (state: {self._state.value})",
@@ -236,7 +232,7 @@ class EmbeddedReMeBackend:
         )
         if not acquired:
             raise ReMeBackendError(
-                "Timed out waiting for an embedded ReMe operation to finish"
+                "Timed out waiting for an embedded ReMe operation to finish",
             )
         try:
             self._close_locked(deadline)
@@ -264,7 +260,7 @@ class EmbeddedReMeBackend:
             except concurrent.futures.TimeoutError:
                 future.cancel()
                 close_error = TimeoutError(
-                    "Timed out while closing the embedded ReMe Application"
+                    "Timed out while closing the embedded ReMe Application",
                 )
             except BaseException as exc:
                 close_error = exc
@@ -276,11 +272,7 @@ class EmbeddedReMeBackend:
             thread.join(timeout=max(0.0, deadline - time.monotonic()))
 
         with self._state_lock:
-            self._state = (
-                _State.CLOSED
-                if thread is None or not thread.is_alive()
-                else _State.FAILED
-            )
+            self._state = _State.CLOSED if thread is None or not thread.is_alive() else _State.FAILED
             if self._state is _State.FAILED and self._failure is None:
                 self._failure = TimeoutError(
                     "Timed out while stopping the embedded ReMe event loop",
