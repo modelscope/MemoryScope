@@ -10,11 +10,6 @@ from ..base_step import BaseStep
 from ..file_io._path import display_path, resolve_path
 from ..index import normalize_posix_path
 from ...components import R
-from ...constants import (
-    DEFAULT_MAX_MEMORY_TAG_LENGTH,
-    DEFAULT_MAX_MEMORY_TAGS,
-    DEFAULT_MEMORY_TAG_KEY,
-)
 
 _SUPPORTED_CHANGES = {"added", "modified"}
 
@@ -25,59 +20,12 @@ class _TagTarget:
     path: str
 
 
-def _positive_int(value: object, *, name: str) -> int:
-    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
-        raise ValueError(f"{name} must be a positive integer")
-    return value
-
-
-def normalize_memory_tags(
-    value: object,
-    *,
-    max_tags_per_file: int = DEFAULT_MAX_MEMORY_TAGS,
-    max_tag_length: int = DEFAULT_MAX_MEMORY_TAG_LENGTH,
-) -> list[str]:
-    """Normalize human-readable entity labels for frontmatter storage."""
-    max_tags_per_file = _positive_int(max_tags_per_file, name="max_tags_per_file")
-    max_tag_length = _positive_int(max_tag_length, name="max_tag_length")
-    if not isinstance(value, list):
-        return []
-
-    tags: list[str] = []
-    seen: set[str] = set()
-    for item in value:
-        if not isinstance(item, str):
-            continue
-        tag = "_".join(item.split())
-        if not tag or len(tag) > max_tag_length or not any(char.isalnum() for char in tag):
-            continue
-        canonical = tag.casefold()
-        if canonical in seen:
-            continue
-        seen.add(canonical)
-        tags.append(tag)
-        if len(tags) >= max_tags_per_file:
-            break
-    return tags
-
-
 @R.register("auto_tag_step")
 class AutoTagStep(BaseStep):
     """Update memory tags for Markdown files described by the common ``changes`` contract."""
 
-    def __init__(
-        self,
-        tag_key: str = DEFAULT_MEMORY_TAG_KEY,
-        max_tags_per_file: int = DEFAULT_MAX_MEMORY_TAGS,
-        max_tag_length: int = DEFAULT_MAX_MEMORY_TAG_LENGTH,
-        **kwargs,
-    ):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.tag_key = str(tag_key).strip()
-        if not self.tag_key:
-            raise ValueError("tag_key must be a non-empty string")
-        self.max_tags_per_file = _positive_int(max_tags_per_file, name="max_tags_per_file")
-        self.max_tag_length = _positive_int(max_tag_length, name="max_tag_length")
         self.tools = ["read", "list_tags", "frontmatter_read", "frontmatter_update"]
 
     def _targets(self) -> tuple[list[_TagTarget], list[dict[str, str]]]:
@@ -125,34 +73,34 @@ class AutoTagStep(BaseStep):
         return list(targets.values()), ignored
 
     async def _process_target(self, target: _TagTarget) -> str:
+        file_store = self.file_store
+        tag_index = file_store.require_tag_index()
+        tag_key = tag_index.tag_key
+        tool_context = {
+            "file_store": file_store.name,
+            "_allowed_paths": [target.path],
+            "_allowed_frontmatter_keys": [tag_key],
+        }
         result = await self.agent_wrapper.reply(
-            self.prompt_format("user_message", path=target.path, change=target.change, tag_key=self.tag_key),
+            self.prompt_format("user_message", path=target.path, change=target.change, tag_key=tag_key),
             system_prompt=self.prompt_format(
                 "system_prompt",
-                tag_key=self.tag_key,
-                max_tags_per_file=self.max_tags_per_file,
+                tag_key=tag_key,
+                max_tags_per_file=tag_index.max_tags_per_file,
             ),
             job_tools=self.tools,
-            injected_job_kwargs={
-                "_allowed_paths": [target.path],
-                "_allowed_frontmatter_keys": [self.tag_key],
-            },
+            injected_job_kwargs=tool_context,
         )
 
         path = self.workspace_path / target.path
         metadata = dict(frontmatter.loads(path.read_text(encoding="utf-8")).metadata or {})
-        normalized = normalize_memory_tags(
-            metadata.get(self.tag_key),
-            max_tags_per_file=self.max_tags_per_file,
-            max_tag_length=self.max_tag_length,
-        )
-        if metadata.get(self.tag_key) != normalized:
+        normalized = tag_index.normalize_tags(metadata.get(tag_key))
+        if metadata.get(tag_key) != normalized:
             response = await self.run_job(
                 "frontmatter_update",
                 path=target.path,
-                metadata={self.tag_key: normalized},
-                _allowed_paths=[target.path],
-                _allowed_frontmatter_keys=[self.tag_key],
+                metadata={tag_key: normalized},
+                **tool_context,
             )
             if not response.success:
                 raise RuntimeError(str(response.answer))

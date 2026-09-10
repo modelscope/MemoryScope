@@ -5,7 +5,6 @@ from pathlib import PurePosixPath
 
 from .base_tag_index import BaseTagIndex, TagListItem, TagListResult, TagOrder, TagOrderBy
 from ..component_registry import R
-from ...constants import DEFAULT_MAX_MEMORY_TAG_LENGTH, DEFAULT_MAX_MEMORY_TAGS, DEFAULT_MEMORY_TAG_KEY
 from ...schema import FileFrontMatter, FileNode
 
 
@@ -21,16 +20,8 @@ class LocalTagIndex(BaseTagIndex):
         "status",
     }
 
-    def __init__(
-        self,
-        tag_key: object = DEFAULT_MEMORY_TAG_KEY,
-        max_tags_per_file: int = DEFAULT_MAX_MEMORY_TAGS,
-        max_tag_length: int = DEFAULT_MAX_MEMORY_TAG_LENGTH,
-        **kwargs,
-    ):
-        super().__init__(tag_key=tag_key, **kwargs)
-        self.max_tags_per_file = self._positive_int("max_tags_per_file", max_tags_per_file)
-        self.max_tag_length = self._positive_int("max_tag_length", max_tag_length)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.path_to_tags: dict[str, tuple[str, ...]] = {}
         self.tag_to_paths: dict[str, set[str]] = {}
         self._maintenance_lock = asyncio.Lock()
@@ -38,12 +29,6 @@ class LocalTagIndex(BaseTagIndex):
     @property
     def n_files(self) -> int:
         return len(self.path_to_tags)
-
-    @staticmethod
-    def _positive_int(name: str, value: object) -> int:
-        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
-            raise ValueError(f"{name} must be a positive integer")
-        return value
 
     def _normalize_tags(self, value: object, *, limit: int | None) -> list[str]:
         """Normalize a strict tag list, optionally limiting the result count."""

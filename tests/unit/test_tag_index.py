@@ -217,6 +217,28 @@ def test_list_tags_paginates_and_applies_default_sort_orders() -> None:
     assert "empty page" in job["parameters"]["properties"]["page"]["description"]
 
 
+@pytest.mark.asyncio
+async def test_list_tags_resolves_named_file_store_from_runtime_context(tmp_path) -> None:
+    """Injected tool context can route list_tags to the AutoTag Step's file store."""
+    context = ApplicationContext(workspace_dir=str(tmp_path))
+    default_store = LocalFileStore(name="default", embedding_store="", tag_index="")
+    archive_store = LocalFileStore(name="archive", embedding_store="", tag_index="")
+    default_store.tag_index = LocalTagIndex()
+    archive_store.tag_index = LocalTagIndex()
+    await default_store.tag_index.rebuild([_node("daily/default.md", ["default-tag"])])
+    await archive_store.tag_index.rebuild([_node("daily/archive.md", ["archive-tag"])])
+    context.components = {
+        ComponentEnum.FILE_STORE: {
+            "default": default_store,
+            "archive": archive_store,
+        },
+    }
+
+    response = await ListTagsStep(app_context=context)(file_store="archive")
+
+    assert response.answer["items"] == [("archive-tag", 1)]
+
+
 def test_configured_frontmatter_key_contract() -> None:
     """Validate, apply, and invalidate changes to the configured source key."""
 
@@ -275,6 +297,17 @@ def test_file_store_tag_index_binding_has_no_default_factory() -> None:
     assert dependency.name == "custom"
     assert dependency.default_factory is None
     assert dependency.optional is False
+
+
+def test_file_store_without_tag_index_name_disables_tag_index() -> None:
+    """Treat both an omitted tag-index setting and an explicit empty name as disabled."""
+    omitted = LocalFileStore(name="omitted", embedding_store="")
+    explicit = LocalFileStore(name="explicit", embedding_store="", tag_index="")
+
+    assert omitted.tag_index is None
+    assert omitted.tag_index_enabled is False
+    assert explicit.tag_index is None
+    assert explicit.tag_index_enabled is False
 
 
 @pytest.mark.parametrize("tag_index_name", ["", "custom", "missing"])
