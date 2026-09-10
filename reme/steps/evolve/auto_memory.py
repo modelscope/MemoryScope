@@ -9,6 +9,7 @@ import frontmatter
 from agentscope.message import Msg
 
 from ._evolve import agent_reply_result_text, format_history, now
+from ._auto_memory_image import prepare_direct_message
 from ..base_step import BaseStep
 from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
@@ -320,6 +321,21 @@ class AutoMemoryStep(BaseStep):
             self.logger.info(f"[{self.name}] Skipped: no messages session_id={session_id!r} modified=False")
             return
 
+        include_images = self.context.get("include_images", self.kwargs.get("include_images", False))
+        if not isinstance(include_images, bool):
+            raise ValueError("include_images must be a boolean")
+        supports_vision = self.context.get("supports_vision", self.kwargs.get("supports_vision", False))
+        if not isinstance(supports_vision, bool):
+            raise ValueError("supports_vision must be a boolean")
+        direct_message = None
+        reply_kwargs = None
+        if include_images:
+            image_mode = self.context.get("image_mode", self.kwargs.get("image_mode", "direct"))
+            if image_mode == "direct":
+                reply_kwargs = dict(self._reply_extra_kwargs(day))
+            else:
+                raise ValueError("image_mode must be 'direct'")
+
         try:
             note = await self._list_session_note(day, session_id)
         except RuntimeError as exc:
@@ -338,29 +354,44 @@ class AutoMemoryStep(BaseStep):
             f"created={created} msgs={len(messages)} hint={bool(memory_hint)}",
         )
         template_key = "user_message_create" if created else "user_message_update"
-        user_message = self.prompt_format(
-            template_key,
-            today=day,
-            note=memory_hint or "(none)",
-            note_path=note_path,
-            session_id=session_id,
-            session_file=self._session_source_path(session_id),
-            history=self._format_history(messages),
-        )
+
+        def render_user_message(history_messages: list[Msg]) -> str:
+            return self.prompt_format(
+                template_key,
+                today=day,
+                note=memory_hint or "(none)",
+                note_path=note_path,
+                session_id=session_id,
+                session_file=self._session_source_path(session_id),
+                history=self._format_history(history_messages),
+            )
+
+        user_message = render_user_message(messages)
+        if include_images:
+            direct_message = await prepare_direct_message(self, messages, render_user_message, reply_kwargs)
+            if direct_message is not None:
+                user_message = direct_message
 
         self.logger.info(f"[{self.name}] agent start path={note_path} template={template_key}")
         # Existing-note updates are restricted to the resolved note path. New
         # notes retain the upstream ``daily_write`` date behavior, where the
         # model supplies the date from the prompt.
-        reply_kwargs = self._reply_extra_kwargs(day)
+        if reply_kwargs is None:
+            reply_kwargs = self._reply_extra_kwargs(day)
         if not created:
             reply_kwargs["injected_job_kwargs"] = {"_allowed_paths": [note_path]}
         result = await self.agent_wrapper.reply(
             user_message,
-            system_prompt=self.prompt_format("system_prompt"),
+            system_prompt=self.prompt_format(
+                "system_prompt",
+                include_images=direct_message is not None,
+                direct_images=direct_message is not None,
+            ),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,
         )
+        if direct_message is not None:
+            self.context.response.metadata["auto_memory_images"]["status"] = "completed"
         self.logger.info(f"[{self.name}] agent done path={note_path} has_result={bool(result.get('result'))}")
 
         if created:
