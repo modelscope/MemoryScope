@@ -12,10 +12,9 @@ import httpx
 from agentscope.agent import ContextConfig
 from agentscope.message import Base64Source, DataBlock, Msg, TextBlock, UserMsg
 
-from ._image_caption import DEFAULT_MAX_IMAGE_INPUT_BYTES, _build_image_request_payload
+from .auto_image_resource import DEFAULT_MAX_IMAGE_INPUT_BYTES, _build_image_request_payload
 from ..file_io._path import _check_path_permission, resolve_path
 from ...components.agent_wrapper.as_agent_wrapper import AsAgentWrapper
-from ...enumeration import ComponentEnum
 
 
 async def prepare_direct_message(
@@ -49,15 +48,8 @@ async def prepare_direct_message(
             f"[{step.name}] supports_vision is false; continuing with text-only memory without reading images.",
         )
         return None
-    stage = "model"
+    stage = "context-image-limit"
     try:
-        component = wrapper.as_llm
-        if step.app_context is not None:
-            component = step.app_context.components.get(ComponentEnum.AS_LLM, {}).get("vision", component)
-        model = component.model if component is not None else None
-        if model is None:
-            raise ValueError("Direct images require a started memory model")
-        stage = "context-image-limit"
         context_config = dict(
             (reply_kwargs or {}).get("context_config", wrapper.kwargs.get("context_config")) or {},
         )
@@ -99,8 +91,6 @@ async def prepare_direct_message(
         return None
     if reply_kwargs is not None:
         reply_kwargs["context_config"] = context_config
-        # Override only this Agent invocation; never rebind the shared wrapper.
-        reply_kwargs["_model"] = model
     metadata["status"] = "prepared"
     return result
 

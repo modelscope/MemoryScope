@@ -89,7 +89,8 @@ reme auto_memory session_id=session-a include_images=true supports_vision=true m
 
 For a one-shot CLI invocation, use `reme start job=auto_memory` with the same arguments.
 No YAML edit or rebuild is needed. `include_images` controls whether Auto Memory considers images;
-`supports_vision` is the caller's declaration about the selected model, not automatic capability detection.
+`supports_vision` declares whether the AgentScope wrapper's bound `as_llm` supports images; it does not detect capabilities
+or select a different model.
 Only `include_images=true supports_vision=true` sends images. Choose a model and AgentScope formatter that support them.
 
 `include_images=false` keeps the existing text-only behavior on every wrapper, regardless of `supports_vision`.
@@ -119,9 +120,9 @@ When no image-count limit is explicitly configured, direct mode reserves room fo
 context. An explicit `context_config.max_image_num` below the incoming count causes a visible whole-input text fallback,
 not silent removal of older images. Model/provider context limits still apply.
 
-When sending images, Auto Memory uses `components.as_llm.vision` if configured, otherwise the wrapper's currently
-bound `as_llm`. `supports_vision=true` must describe that selected model. This selection applies only to the current
-memory Agent invocation; calls without image inputs keep the wrapper's original model.
+Text-only and image-bearing Auto Memory calls use the same model bound through the AgentScope wrapper's `as_llm`.
+`supports_vision=true` must describe that model. The optional `components.as_llm.vision` used for image resources
+does not change Auto Memory's model.
 
 Auto Memory does not create resource image files or separate caption cards. Relevant image facts may become part of
 the normal daily memory note. The existing AgentScope wrapper also saves its internal Agent state under

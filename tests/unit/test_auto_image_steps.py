@@ -9,7 +9,6 @@ with PIL inside a temporary workspace.
 import base64
 import hashlib
 import io
-import logging
 import struct
 import subprocess
 import sys
@@ -29,14 +28,13 @@ from reme.components.component_registry import ComponentRegistry
 from reme.components.job import BaseJob
 from reme.components.runtime_context import RuntimeContext
 from reme.enumeration import ComponentEnum
-from reme.steps.evolve._image_caption import (
+from reme.steps.evolve.auto_image_resource import (
+    AutoImageResourceStep,
     DEFAULT_MAX_IMAGE_PIXELS,
     _build_image_request_payload,
-    generate_image_caption,
     _normalize_image_bytes,
     _parse_caption_json,
 )
-from reme.steps.evolve.auto_image_resource import AutoImageResourceStep
 from reme.steps.evolve.auto_resource import AutoResourceStep
 from reme.steps.evolve.auto_text_resource import AutoTextResourceStep
 from .auto_resource_test_support import (
@@ -1029,45 +1027,6 @@ async def test_auto_image_uniquifies_conflicting_note_name(auto_resource_env):
 def test_parse_caption_json(text, expected):
     """Plain fallback parsing normalizes useful fields without leaking unusable JSON."""
     assert _parse_caption_json(text) == expected
-
-
-@pytest.mark.parametrize("plain_fallback", [False, True])
-@pytest.mark.asyncio
-async def test_shared_caption_helper_preserves_request_without_workspace(plain_fallback, caplog):
-    """The shared VLM path needs only bytes, a model and an already rendered prompt."""
-    expected = {"name": "image", "description": "Visible text", "caption": "Invoice 482."}
-    model = _StructuredVisionModel(
-        content=expected,
-        error=RuntimeError("structured output unavailable") if plain_fallback else None,
-        plain_text="```json\n" + _caption_json(**expected) + "\n```",
-    )
-    original = _png_bytes()
-    payload = _build_image_request_payload(original, ".png")
-    prompt = "Describe visible facts. Keep invoice numbers verbatim."
-
-    result = await generate_image_caption(
-        model,
-        payload,
-        prompt,
-        logger=logging.getLogger(__name__),
-        name="shared-caption-test",
-    )
-
-    assert result == expected
-    assert len(model.structured_calls) == 1
-    assert len(model.plain_calls) == int(plain_fallback)
-    message = model.structured_calls[0][0]
-    assert message.content[0].text == prompt
-    assert message.content[1].source.media_type == "image/png"
-    assert base64.b64decode(message.content[1].source.data) == original
-    if plain_fallback:
-        assert model.plain_calls[0][0] is message
-        assert caplog.messages == [
-            "[shared-caption-test] structured caption failed (structured output unavailable); "
-            "retrying with a plain call",
-        ]
-    else:
-        assert not caplog.messages
 
 
 @pytest.mark.parametrize(

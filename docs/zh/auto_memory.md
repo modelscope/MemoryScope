@@ -81,8 +81,9 @@ reme auto_memory session_id=session-a include_images=true supports_vision=true m
 ```
 
 单次 CLI 调用可使用 `reme start job=auto_memory`，其余参数相同。
-不需要修改 YAML 或重新编译。`include_images` 控制是否考虑图像；`supports_vision` 是调用方对所选模型的视觉能力声明，
-不是自动探测。仅当 `include_images=true supports_vision=true` 时才发送图像；请选用支持这些图像的模型与 AgentScope formatter。
+不需要修改 YAML 或重新编译。`include_images` 控制是否考虑图像；`supports_vision` 声明 AgentScope wrapper 绑定的 `as_llm`
+是否支持图像，不会自动探测能力或切换模型。仅当 `include_images=true supports_vision=true` 时才发送图像；
+请选用支持这些图像的模型与 AgentScope formatter。
 
 `include_images=false` 时，无论 `supports_vision` 如何设置，各种 wrapper 都保持原有纯文本行为。
 纯文本仍通过已有的 `agent_wrapper.reply()` 字符串输入路径执行，无需为其他 wrapper 改造多模态接口。
@@ -109,9 +110,9 @@ reme auto_memory session_id=session-a include_images=true supports_vision=true m
 若显式设置的 `context_config.max_image_num` 小于输入图像数，会整次显式回退为纯文本，不静默移除较早图像。
 模型和 provider 自身的上下文限制仍然适用。
 
-发送图像时优先使用已配置的 `components.as_llm.vision`，未配置时使用 wrapper 当前绑定的 `as_llm`。
-`supports_vision=true` 应当对应这个实际选中的模型。模型选择仅用于当前这次记忆 Agent 调用；
-没有图像输入的调用仍使用 wrapper 原有模型。
+纯文本与图文 Auto Memory 均使用 AgentScope wrapper 通过 `as_llm` 绑定的同一个模型。
+`supports_vision=true` 应当描述这个模型的能力。图像资源处理使用的可选 `components.as_llm.vision`
+不会改变 Auto Memory 的模型。
 
 Auto Memory 不创建 resource 图像文件或独立 caption 卡片；
 相关图像事实仍可被提取进普通 daily 记忆笔记。AgentScope wrapper 仍按原有行为在 `mem_session/agentscope` 保存

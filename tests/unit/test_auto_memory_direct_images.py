@@ -1,4 +1,4 @@
-"""Direct image inputs select a per-call AgentScope model without caption calls."""
+"""Direct image inputs preserve native model binding and session contracts."""
 
 # pylint: disable=protected-access,missing-function-docstring
 
@@ -7,11 +7,9 @@ import base64
 import copy
 import io
 from pathlib import Path
-from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock
 
 from agentscope.agent import Agent, ContextConfig
-from agentscope.formatter import OpenAIChatFormatter
 from agentscope.message import Base64Source, Msg, TextBlock, URLSource
 from PIL import Image
 import pytest
@@ -20,7 +18,7 @@ import yaml
 from reme.components.as_llm import BaseAsLLM
 from reme.components.runtime_context import RuntimeContext
 from reme.enumeration import ComponentEnum
-from reme.steps.evolve import _auto_memory_image, _image_caption
+from reme.steps.evolve import _auto_memory_image, auto_image_resource
 
 from .test_auto_memory_image_modes import (
     _DAY,
@@ -63,7 +61,7 @@ def test_default_config_keeps_images_disabled_and_selects_direct_mode():
 @pytest.mark.asyncio
 async def test_enabled_default_is_direct_with_a_single_memory_reply(harness, monkeypatch):
     caption = AsyncMock(side_effect=AssertionError("Direct mode must not caption images"))
-    monkeypatch.setattr(_image_caption, "generate_image_caption", caption)
+    monkeypatch.setattr(auto_image_resource.AutoImageResourceStep, "_caption_with_retry", caption)
     message = _message()
     message.content[0].text += " Keep literal [Image 1]; image ID: gallery-before."
     message.content.insert(2, TextBlock(text="Between observations; image ID: gallery-after."))
@@ -102,7 +100,7 @@ async def test_enabled_default_is_direct_with_a_single_memory_reply(harness, mon
     assert harness.session_path.read_bytes() == _main_saved_line(message)
     assert not (harness.workspace / "resource").exists()
     caption.assert_not_called()
-    assert kwargs["_model"] is harness.wrapper.as_llm.model
+    assert "_model" not in kwargs
     assert "supports_vision" not in kwargs
 
     formatted = await harness.wrapper.as_llm.model.formatter.format([inputs])
@@ -128,9 +126,6 @@ async def test_enabled_default_is_direct_with_a_single_memory_reply(harness, mon
 async def test_disabled_keeps_original_string_and_does_not_prepare(harness, monkeypatch, include_images):
     prepare = AsyncMock(side_effect=AssertionError("Disabled images must not be inspected"))
     monkeypatch.setattr("reme.steps.evolve.auto_memory.prepare_direct_message", prepare)
-    original_component = harness.wrapper.as_llm
-    original_model = original_component.model
-    harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = SimpleNamespace(model=_DirectModel("vision"))
     step = harness.step()
     kwargs = {} if include_images is None else {"include_images": include_images}
     message = _message()
@@ -143,16 +138,12 @@ async def test_disabled_keeps_original_string_and_does_not_prepare(harness, monk
     assert "[Image" not in harness.wrapper.calls[0][0]
     assert "auto_memory_images" not in step.context.response.metadata
     assert "_model" not in harness.wrapper.calls[0][1]
-    assert harness.wrapper.as_llm is original_component
-    assert original_component.model is original_model
     assert harness.session_path.read_bytes() == _main_saved_line(message)
     prepare.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_no_images_skips_model_selection_and_source_checks(harness, monkeypatch):
-    original_model = harness.wrapper.as_llm.model
-    harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = None
+async def test_no_images_skips_source_checks(harness, monkeypatch):
     loader = AsyncMock(side_effect=AssertionError("No image should be loaded"))
     monkeypatch.setattr(_auto_memory_image, "_image_bytes", loader)
 
@@ -163,7 +154,6 @@ async def test_no_images_skips_model_selection_and_source_checks(harness, monkey
     assert response.metadata["auto_memory_images"]["status"] == "skipped"
     assert response.metadata["auto_memory_images"]["image_count"] == 0
     assert "_model" not in harness.wrapper.calls[0][1]
-    assert harness.wrapper.as_llm.model is original_model
     harness.logger.warning.assert_not_called()
     loader.assert_not_called()
 
@@ -203,7 +193,7 @@ async def test_non_agentscope_wrapper_still_accepts_original_text_only_calls(har
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("declared,images", [(None, True), (False, True), (None, False)])
-async def test_missing_vision_declaration_does_not_read_images_or_choose_a_model(
+async def test_missing_vision_declaration_does_not_read_images(
     harness,
     monkeypatch,
     declared,
@@ -213,8 +203,6 @@ async def test_missing_vision_declaration_does_not_read_images_or_choose_a_model
     monkeypatch.setattr(_auto_memory_image, "_image_bytes", loader)
     step = harness.step()
     step.kwargs.pop("supports_vision")
-    harness.wrapper.as_llm.model = None
-    harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = None
     message = _message(images=images)
     if images:
         message.content[1].source.data = "invalid-base64"
@@ -245,117 +233,28 @@ async def test_missing_vision_declaration_does_not_read_images_or_choose_a_model
 
 
 @pytest.mark.asyncio
-async def test_model_catalog_and_formatter_declarations_do_not_gate_direct_inputs(harness, monkeypatch):
-    model = _DirectModel("custom-deployment")
-    model.formatter = OpenAIChatFormatter(input_types=["text/plain"])
-    catalog = Mock(side_effect=AssertionError("Model capabilities belong to the caller"))
-    monkeypatch.setattr(model, "list_models", catalog)
-    harness.wrapper.as_llm.model = model
-
-    response = await _run(harness, [_message()])
-
-    assert response.metadata["auto_memory_images"]["status"] == "completed"
-    assert isinstance(harness.wrapper.calls[0][0], Msg)
-    assert harness.wrapper.calls[0][1]["_model"] is model
-    catalog.assert_not_called()
-    harness.logger.warning.assert_not_called()
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("wrapper_binding", ["default", "custom"])
-async def test_dedicated_vision_model_is_preferred_without_rebinding_shared_components(harness, wrapper_binding):
+@pytest.mark.parametrize("include_images", [False, True])
+async def test_memory_uses_bound_as_llm_even_when_another_vision_component_exists(harness, include_images):
     models = harness.app_context.components[ComponentEnum.AS_LLM]
-    default_component = models["default"]
-    custom_component = BaseAsLLM()
-    custom_component.model = _DirectModel("custom-memory")
-    vision_component = BaseAsLLM()
-    vision_component.model = _DirectModel("dedicated-vision")
-    models.update(custom=custom_component, vision=vision_component)
-    harness.wrapper.as_llm = models[wrapper_binding]
-    original_components = dict(models)
-    original_models = {name: component.model for name, component in models.items()}
-    wrapper_options = {"context_config": {"trigger_ratio": 0.7}, "model_config": {"max_retries": 2}}
-    harness.wrapper.kwargs.update(wrapper_options)
-
-    response = await _run(harness, [_message()])
-
-    assert response.metadata["auto_memory_images"]["status"] == "completed"
-    assert harness.wrapper.calls[0][1]["_model"] is vision_component.model
-    assert harness.wrapper.as_llm is original_components[wrapper_binding]
-    assert all(models[name] is component for name, component in original_components.items())
-    assert all(models[name].model is model for name, model in original_models.items())
-    assert harness.wrapper.kwargs["context_config"] is wrapper_options["context_config"]
-    assert harness.wrapper.kwargs["model_config"] is wrapper_options["model_config"]
-    assert wrapper_options == {"context_config": {"trigger_ratio": 0.7}, "model_config": {"max_retries": 2}}
-    assert default_component.model is original_models["default"]
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("application_context", [True, False])
-async def test_absent_vision_uses_actual_custom_wrapper_binding(harness, application_context):
-    default_component = harness.app_context.components[ComponentEnum.AS_LLM]["default"]
-    custom_component = BaseAsLLM()
-    custom_component.model = _DirectModel("custom-memory")
-    harness.wrapper.as_llm = custom_component
+    bound = BaseAsLLM()
+    bound.model = _DirectModel("bound-memory")
+    vision = BaseAsLLM()
+    vision.model = _DirectModel("unused-resource-vision")
+    models.update(custom=bound, vision=vision)
+    harness.wrapper.as_llm = bound
     step = harness.step()
-    if not application_context:
-        step.app_context = None
 
-    await step(session_id=_SESSION, date=_DAY, messages=[_message()], include_images=True)
+    await step(session_id=_SESSION, date=_DAY, messages=[_message()], include_images=include_images)
 
-    assert step.context.response.metadata["auto_memory_images"]["status"] == "completed"
-    assert harness.wrapper.calls[0][1]["_model"] is custom_component.model
-    assert harness.wrapper.calls[0][1]["_model"] is not default_component.model
-    assert harness.wrapper.as_llm is custom_component
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("unavailable", ["bound-model", "vision-model", "vision-component"])
-async def test_selected_model_must_be_started_without_silent_model_substitution(harness, monkeypatch, unavailable):
-    if unavailable == "bound-model":
-        harness.wrapper.as_llm.model = None
-    elif unavailable == "vision-model":
-        harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = BaseAsLLM()
-    else:
-        harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = None
-    original_component = harness.wrapper.as_llm
-    original_model = original_component.model
-    loader = AsyncMock(side_effect=AssertionError("Missing model must be rejected before image IO"))
-    monkeypatch.setattr(_auto_memory_image, "_image_bytes", loader)
-
-    response = await _run(harness, [_message()])
-
-    assert response.metadata["auto_memory_images"]["status"] == "fallback"
-    assert response.metadata["auto_memory_images"]["reason"] == "model: ValueError"
-    assert isinstance(harness.wrapper.calls[0][0], str)
-    assert "_model" not in harness.wrapper.calls[0][1]
-    assert "context_config" not in harness.wrapper.calls[0][1]
-    assert harness.wrapper.as_llm is original_component
-    assert original_component.model is original_model
-    loader.assert_not_called()
-
-
-@pytest.mark.asyncio
-async def test_reply_hook_model_options_are_read_once_and_passed_unchanged(harness, monkeypatch):
-    fallback = _DirectModel()
-    fallback.formatter = OpenAIChatFormatter(input_types=["text/plain"])
-    harness.wrapper.kwargs["model_config"] = {"max_retries": 2}
-    model_config = {"fallback_model": fallback}
-    options = {"model_config": model_config}
-    step = harness.step()
-    hook = Mock(return_value=options)
-    monkeypatch.setattr(step, "_reply_extra_kwargs", hook)
-
-    await step(session_id=_SESSION, date=_DAY, messages=[_message()], include_images=True)
-
-    assert step.context.response.metadata["auto_memory_images"]["status"] == "completed"
-    assert isinstance(harness.wrapper.calls[0][0], Msg)
-    assert harness.wrapper.calls[0][1]["model_config"] is model_config
-    assert harness.wrapper.calls[0][1]["_model"] is harness.wrapper.as_llm.model
-    assert harness.wrapper.kwargs["model_config"] == {"max_retries": 2}
-    assert model_config["fallback_model"] is fallback
-    assert options == {"model_config": model_config}
-    hook.assert_called_once_with(_DAY)
+    inputs, kwargs = harness.wrapper.calls[0]
+    assert isinstance(inputs, Msg if include_images else str)
+    assert "_model" not in kwargs and "supports_vision" not in kwargs
+    # Exercise native Agent construction without resolving the test's file tools.
+    agent, _ = await harness.wrapper._build_agent(inputs, **{**kwargs, "job_tools": []})
+    assert agent.model is bound.model
+    assert harness.wrapper.as_llm is bound
+    assert models["default"] is not bound
+    assert models["vision"] is vision
 
 
 def _six_image_message():
@@ -518,10 +417,8 @@ async def test_interleaving_keeps_localized_create_update_prompt_boundaries(harn
 @pytest.mark.parametrize("template", ["No history requested.", "{history}\n{history}"])
 async def test_missing_or_repeated_history_falls_back_without_direct_overrides(harness, monkeypatch, template):
     step = harness.step(prompt_dict={"user_message_create": template})
-    original_model = harness.wrapper.as_llm.model
     original_options = {"context_config": {"trigger_ratio": 0.7}, "model_config": {"max_retries": 2}}
     monkeypatch.setattr(step, "_reply_extra_kwargs", Mock(return_value=original_options))
-    harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = SimpleNamespace(model=_DirectModel("vision"))
     message = _message()
 
     await step(session_id=_SESSION, date=_DAY, messages=[message], include_images=True)
@@ -536,7 +433,6 @@ async def test_missing_or_repeated_history_falls_back_without_direct_overrides(h
     assert "_model" not in options
     assert options["context_config"] is original_options["context_config"]
     assert original_options == {"context_config": {"trigger_ratio": 0.7}, "model_config": {"max_retries": 2}}
-    assert harness.wrapper.as_llm.model is original_model
     harness.logger.warning.assert_called_once()
     assert harness.session_path.read_bytes() == _main_saved_line(message)
 
@@ -570,7 +466,7 @@ async def test_direct_uses_shared_normalized_provider_bytes(harness):
     before = message.model_dump()
     step = harness.step()
     step.context = RuntimeContext()
-    expected = _image_caption._build_image_request_payload(original_data, "")
+    expected = auto_image_resource._build_image_request_payload(original_data, "")
 
     direct_message = await _auto_memory_image.prepare_direct_message(step, [message], step._format_history)
 
@@ -578,7 +474,7 @@ async def test_direct_uses_shared_normalized_provider_bytes(harness):
     assert image_input.media_type == expected["mime"] == "image/jpeg"
     assert image_input.data == expected["data_b64"]
     with Image.open(io.BytesIO(base64.b64decode(image_input.data))) as image:
-        assert max(image.size) == _image_caption.MAX_IMAGE_REQUEST_DIMENSION
+        assert max(image.size) == auto_image_resource.MAX_IMAGE_REQUEST_DIMENSION
     assert message.model_dump() == before
 
 
@@ -607,10 +503,6 @@ async def test_second_image_failure_discards_all_prepared_inputs(harness, failur
     message = _six_image_message()
     source_config = {"trigger_ratio": 0.7}
     harness.wrapper.kwargs["context_config"] = source_config
-    original_component = harness.wrapper.as_llm
-    original_model = original_component.model
-    vision_model = _DirectModel("dedicated-vision")
-    harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = SimpleNamespace(model=vision_model)
     kwargs = {}
     if failure == "invalid-base64":
         message.content[2].source.data = "INVALID_BASE64!!!"
@@ -637,11 +529,7 @@ async def test_second_image_failure_discards_all_prepared_inputs(harness, failur
     assert "Remember this observation." in harness.wrapper.calls[0][0]
     assert response.metadata["auto_memory_images"]["captioned_images"] == 0
     assert "context_config" not in harness.wrapper.calls[0][1]
-    assert "_model" not in harness.wrapper.calls[0][1]
     assert source_config == {"trigger_ratio": 0.7}
-    assert harness.wrapper.as_llm is original_component
-    assert original_component.model is original_model
-    assert harness.app_context.components[ComponentEnum.AS_LLM]["vision"].model is vision_model
     harness.logger.warning.assert_called_once()
     assert message.model_dump() == before
     assert harness.session_path.read_bytes() == _main_saved_line(message)

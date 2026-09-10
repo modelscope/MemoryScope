@@ -37,7 +37,6 @@ from agentscope.event import (
     ToolResultTextDeltaEvent,
 )
 from agentscope.message import TextBlock, ToolResultState, UserMsg
-from agentscope.model import ChatModelBase
 from agentscope.permission import PermissionBehavior, PermissionContext, PermissionDecision, PermissionMode
 from agentscope.state import AgentState
 from agentscope.tool import (
@@ -300,20 +299,11 @@ class AsAgentWrapper(BaseAgentWrapper):
         """Resolve configured skill names to AgentScope local skill directories."""
         return [str(path) for path in self._resolve_project_skills(skills).values()]
 
-    def _resolve_model(self, kwargs: dict[str, Any]) -> ChatModelBase:
-        """Use an internal, caller-owned model override for this invocation only."""
-        if (model := kwargs.get("_model")) is not None:
-            if not isinstance(model, ChatModelBase):
-                raise TypeError("_model must be an initialized AgentScope ChatModelBase instance.")
-            return model
+    async def _build_agent(self, inputs: Any, **kwargs) -> tuple[Agent, Any]:
+        """Build an Agent instance from kwargs. Returns (agent, processed_inputs)."""
         model = self.as_llm.model if self.as_llm else None
         if model is None:
             raise ValueError("AsAgentWrapper requires a bound as_llm component with a valid model.")
-        return model
-
-    async def _build_agent(self, inputs: Any, **kwargs) -> tuple[Agent, Any]:
-        """Build an Agent instance from kwargs. Returns (agent, processed_inputs)."""
-        model = self._resolve_model(kwargs)
 
         self._cleanup_expired_sessions()
 
@@ -373,7 +363,9 @@ class AsAgentWrapper(BaseAgentWrapper):
 
         output_schema: dict | None = kwargs.get("output_schema")
         if output_schema is not None:
-            model = self._resolve_model(kwargs)
+            assert self.as_llm is not None, "AsAgentWrapper requires a bound as_llm component with a valid model."
+            model = self.as_llm.model
+            assert model is not None, "AsAgentWrapper requires a bound as_llm component with a valid model."
             res = await model.generate_structured_output(
                 messages=agent.state.context,
                 structured_model=output_schema,

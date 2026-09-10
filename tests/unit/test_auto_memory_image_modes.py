@@ -112,16 +112,12 @@ class _MemoryWrapper(BaseAgentWrapper):
 
 
 class _DirectModel(ChatModelBase):
-    """Local model with no API client or model-catalog requirement."""
+    """Local model with no API client."""
 
     def __init__(self, name="custom-memory-model"):
         self.model = name
         self.context_size = 200000
         self.formatter = OpenAIChatFormatter()
-
-    def list_models(self, custom_yaml_dir=None):
-        del custom_yaml_dir
-        raise AssertionError("Direct image routing must not inspect model catalogs")
 
 
 class _DirectWrapper(AsAgentWrapper):
