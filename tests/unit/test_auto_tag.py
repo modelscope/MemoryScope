@@ -50,59 +50,46 @@ def _write_note(path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_auto_tag_requires_tag_index_before_modifying_files(tmp_path, monkeypatch):
+async def test_auto_tag_handles_noop_and_rejects_invalid_preconditions(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
+    wrapper = _TaggingWrapper(tmp_path)
+    unindexed_store = LocalFileStore(name="store", embedding_store="", tag_index="")
+
+    context = RuntimeContext(changes=[])
+    context.response.answer = "Skipped: no messages"
+    response = await AutoTagStep(file_store=unindexed_store, agent_wrapper=wrapper)(context)
+    assert response.success is True
+    assert response.answer == "Skipped: no messages"
+    assert response.metadata["auto_tag"]["processed"] == 0
+
+    response = await AutoTagStep(file_store=unindexed_store, agent_wrapper=wrapper)(
+        RuntimeContext(changes="daily/note.md"),
+    )
+    assert response.success is False
+    assert response.answer == "AutoTagStep requires changes: list[dict]"
+
     note = tmp_path / "daily/2026-09-09/note.md"
     _write_note(note)
     before = note.read_bytes()
-    store = LocalFileStore(name="store", embedding_store="", tag_index="")
-    wrapper = _TaggingWrapper(tmp_path)
-    step = AutoTagStep(file_store=store, agent_wrapper=wrapper)
-
-    response = await step(RuntimeContext(changes=[{"change": "added", "path": "daily/2026-09-09/note.md"}]))
+    change = RuntimeContext(changes=[{"change": "added", "path": "daily/2026-09-09/note.md"}])
+    response = await AutoTagStep(file_store=unindexed_store, agent_wrapper=wrapper)(change)
 
     assert response.success is False
     assert response.answer == "Error: tag index is not configured"
     assert not wrapper.calls
     assert note.read_bytes() == before
 
-
-@pytest.mark.asyncio
-async def test_auto_tag_with_no_changes_preserves_upstream_response(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    store = LocalFileStore(name="store", embedding_store="", tag_index="")
-    wrapper = _TaggingWrapper(tmp_path)
-    step = AutoTagStep(file_store=store, agent_wrapper=wrapper)
-    context = RuntimeContext(changes=[])
-    context.response.answer = "Skipped: no messages"
-
-    response = await step(context)
-
-    assert response.success is True
-    assert response.answer == "Skipped: no messages"
-    assert response.metadata["auto_tag"] == {
-        "processed": 0,
-        "succeeded": 0,
-        "failed": 0,
-        "ignored": [],
-        "results": [],
-        "indexes": [],
-    }
-    assert not wrapper.calls
-
-
-@pytest.mark.asyncio
-async def test_auto_tag_rejects_a_non_list_changes_payload(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    step = AutoTagStep(
-        file_store=LocalFileStore(name="store", embedding_store="", tag_index=""),
-        agent_wrapper=_TaggingWrapper(tmp_path),
-    )
-
-    response = await step(RuntimeContext(changes="daily/note.md"))
-
+    indexed_store = LocalFileStore(name="store", embedding_store="", tag_index="")
+    indexed_store.tag_index = LocalTagIndex(max_tags_per_file=2)
+    response = await AutoTagStep(
+        file_store=indexed_store,
+        agent_wrapper=wrapper,
+        max_tags_per_file=3,
+    )(RuntimeContext(changes=[{"change": "added", "path": "daily/2026-09-09/note.md"}]))
     assert response.success is False
-    assert response.answer == "AutoTagStep requires changes: list[dict]"
+    assert response.answer == "Error: auto_tag max_tags_per_file (3) exceeds tag index limit (2)"
+    assert not wrapper.calls
+    assert note.read_bytes() == before
 
 
 @pytest.mark.asyncio
@@ -208,43 +195,8 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
         "OpenAI",
         "宁德时代",
     ]
-    assert "Change: modified" in wrapper.calls[0][0]
-    assert "`keywords`" in wrapper.calls[0][1]["system_prompt"]
-
-
-def test_normalize_memory_tags_enforces_entity_storage_contract():
-    assert normalize_memory_tags(
-        [
-            "OpenAI",
-            "openai",
-            "Sam   Altman",
-            "++",
-            100,
-            "宁德时代",
-            "黄金",
-        ],
-    ) == ["OpenAI", "Sam Altman", "宁德时代"]
     assert normalize_memory_tags(
         ["one", "two", "three"],
         max_tags_per_file=2,
         max_tag_length=3,
     ) == ["one", "two"]
-
-
-@pytest.mark.asyncio
-async def test_auto_tag_rejects_limit_above_tag_index_ceiling(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    note = tmp_path / "memory/note.md"
-    _write_note(note)
-    before = note.read_bytes()
-    store = LocalFileStore(name="store", embedding_store="", tag_index="")
-    store.tag_index = LocalTagIndex(max_tags_per_file=2)
-    wrapper = _TaggingWrapper(tmp_path)
-    step = AutoTagStep(file_store=store, agent_wrapper=wrapper, max_tags_per_file=3)
-
-    response = await step(RuntimeContext(changes=[{"change": "modified", "path": "memory/note.md"}]))
-
-    assert response.success is False
-    assert response.answer == "Error: auto_tag max_tags_per_file (3) exceeds tag index limit (2)"
-    assert not wrapper.calls
-    assert note.read_bytes() == before

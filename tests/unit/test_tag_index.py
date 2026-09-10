@@ -86,7 +86,7 @@ def test_queries_are_not_truncated_by_per_file_tag_limit() -> None:
     """Apply the count limit to indexed files without dropping lookup conditions."""
 
     async def run() -> None:
-        index = LocalTagIndex(max_tags_per_file=2)
+        index = LocalTagIndex(max_tags_per_file=2, max_tag_length=8)
         await index.rebuild(
             [
                 _node("daily/a.md", ["a", "b"]),
@@ -99,19 +99,9 @@ def test_queries_are_not_truncated_by_per_file_tag_limit() -> None:
             "daily/a.md",
             "daily/c.md",
         ]
+        assert index.normalize_query_tags([" A ", "B", "c", "a", "too-long-tag", " "]) == ["a", "b", "c"]
 
     asyncio.run(run())
-
-
-def test_query_tag_normalization_is_public_and_not_count_limited() -> None:
-    """Search expressions reuse tag rules without the per-file tag cap."""
-    index = LocalTagIndex(max_tags_per_file=2, max_tag_length=8)
-
-    assert index.normalize_query_tags([" Alpha ", "BETA", "gamma", "alpha", "too-long-tag", " "]) == [
-        "alpha",
-        "beta",
-        "gamma",
-    ]
 
 
 def test_list_tags_paginates_and_applies_default_sort_orders() -> None:
@@ -179,34 +169,17 @@ def test_list_tags_paginates_and_applies_default_sort_orders() -> None:
             "items": [],
         }
 
-    asyncio.run(run())
+        invalid_cases = [
+            ({"page": 0}, "page must be a positive integer"),
+            ({"page_size": True}, "page_size must be a positive integer"),
+            ({"page_size": 1001}, "page_size must be less than or equal to 1000"),
+            ({"order_by": "unknown"}, "order_by must be one of"),
+            ({"order": "sideways"}, "order must be one of"),
+        ]
+        for kwargs, message in invalid_cases:
+            with pytest.raises(ValueError, match=message):
+                await index.list_tags(**kwargs)
 
-
-@pytest.mark.parametrize(
-    ("kwargs", "message"),
-    [
-        ({"page": 0}, "page must be a positive integer"),
-        ({"page_size": True}, "page_size must be a positive integer"),
-        ({"page_size": 1001}, "page_size must be less than or equal to 1000"),
-        ({"order_by": "unknown"}, "order_by must be one of"),
-        ({"order": "sideways"}, "order must be one of"),
-    ],
-)
-def test_list_tags_rejects_invalid_parameters(kwargs, message) -> None:
-    """Reject invalid pagination and sorting parameters at the index boundary."""
-
-    async def run() -> None:
-        index = LocalTagIndex()
-        with pytest.raises(ValueError, match=message):
-            await index.list_tags(**kwargs)
-
-    asyncio.run(run())
-
-
-def test_list_tags_step_and_tool_schema_expose_compact_result_contract() -> None:
-    """Expose list_tags through a registered step with self-describing tool parameters."""
-
-    async def run() -> None:
         store = LocalFileStore(name="test", embedding_store="", tag_index="")
         store.tag_index = LocalTagIndex()
         await store.tag_index.rebuild([_node("daily/a.md", ["ReMe"])])
@@ -232,8 +205,8 @@ def test_list_tags_step_and_tool_schema_expose_compact_result_contract() -> None
     assert "empty page" in job["parameters"]["properties"]["page"]["description"]
 
 
-def test_tag_index_reads_configured_frontmatter_key() -> None:
-    """Derive relationships from the configured key instead of a fixed tags field."""
+def test_configured_frontmatter_key_contract() -> None:
+    """Validate, apply, and invalidate changes to the configured source key."""
 
     async def run() -> None:
         index = LocalTagIndex(tag_key="keywords")
@@ -249,11 +222,7 @@ def test_tag_index_reads_configured_frontmatter_key() -> None:
         assert await index.paths_for_tags(["ignored"]) == []
 
     asyncio.run(run())
-
-
-@pytest.mark.parametrize(
-    ("tag_key", "message", "at_runtime"),
-    [
+    invalid_cases = [
         ("", "tag_key must be a non-empty string", False),
         ("   ", "tag_key must be a non-empty string", False),
         (None, "tag_key must be a non-empty string", False),
@@ -263,32 +232,20 @@ def test_tag_index_reads_configured_frontmatter_key() -> None:
         ("", "tag_key must be a non-empty string", True),
         ("name", "tag_key must not be a reserved frontmatter key", True),
         ("description", "tag_key must not be a reserved frontmatter key", True),
-    ],
-)
-def test_tag_index_rejects_invalid_frontmatter_key(tag_key, message: str, at_runtime: bool) -> None:
-    """Apply the same frontmatter-key validation during construction and runtime updates."""
-    index = LocalTagIndex()
-
-    with pytest.raises(ValueError, match=message):
+    ]
+    for tag_key, message, at_runtime in invalid_cases:
+        index = LocalTagIndex()
+        with pytest.raises(ValueError, match=message):
+            if at_runtime:
+                index.tag_key = tag_key
+            else:
+                LocalTagIndex(tag_key=tag_key)
         if at_runtime:
-            index.tag_key = tag_key
-        else:
-            LocalTagIndex(tag_key=tag_key)
+            assert index.tag_key == "memory_tags"
 
-    if at_runtime:
-        assert index.tag_key == "memory_tags"
-
-
-def test_tag_index_allows_model_config_as_frontmatter_key() -> None:
-    """Pydantic configuration is not a declared frontmatter field."""
     assert LocalTagIndex(tag_key="model_config").tag_key == "model_config"
-
-
-def test_changing_tag_key_invalidates_the_derived_index() -> None:
-    """Do not serve stale relationships after changing the source field."""
     index = LocalTagIndex()
     index.tag_key = "keywords"
-
     assert index.tag_key == "keywords"
     assert not index.is_healthy
 
@@ -296,11 +253,18 @@ def test_changing_tag_key_invalidates_the_derived_index() -> None:
 def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Path) -> None:
     """Keep daily and digest tags aligned through file-store mutations."""
 
+    disabled_store = LocalFileStore(name="test", embedding_store="", tag_index="")
+    assert disabled_store.tag_index_enabled is False
+    with pytest.raises(RuntimeError, match="tag index is not configured"):
+        disabled_store.require_tag_index()
+
     async def run() -> None:
         monkeypatch.chdir(tmp_path)
         store = LocalFileStore(name="test", embedding_store="", tag_index="default")
         await store.start()
         assert isinstance(store.tag_index, LocalTagIndex)
+        assert store.tag_index_enabled is True
+        assert store.require_tag_index() is store.tag_index
 
         await store.upsert(
             [
@@ -324,20 +288,6 @@ def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Pat
         await store.close()
 
     asyncio.run(run())
-
-
-def test_file_store_exposes_tag_index_capability() -> None:
-    """Expose optional tag-index configuration without backend-specific getattr checks."""
-    store = LocalFileStore(name="test", embedding_store="", tag_index="")
-
-    assert store.tag_index_enabled is False
-    with pytest.raises(RuntimeError, match="tag index is not configured"):
-        store.require_tag_index()
-
-    index = LocalTagIndex()
-    store.tag_index = index
-    assert store.tag_index_enabled is True
-    assert store.require_tag_index() is index
 
 
 def test_tag_failures_do_not_block_other_indexes_and_retry_rebuild(monkeypatch, tmp_path: Path) -> None:
@@ -461,20 +411,6 @@ def test_explicit_reindex_restores_tag_index(monkeypatch, tmp_path: Path) -> Non
         result = await store.reindex("all")
         assert result["tag"] == {"indexed": 1, "scope": "tag"}
         assert await store.tag_index.paths_for_tags(["reme"]) == ["daily/a.md"]
-        await store.close()
-
-    asyncio.run(run())
-
-
-def test_explicit_reindex_uses_updated_tag_key(monkeypatch, tmp_path: Path) -> None:
-    """A key change takes effect when the derived tag index is rebuilt."""
-
-    async def run() -> None:
-        monkeypatch.chdir(tmp_path)
-        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
-        await store.start()
-        assert store.tag_index_enabled
-        await store.upsert([(_node("daily/a.md", ["old"]), [])])
         await store.file_graph.upsert_nodes([_node("daily/a.md", ["new"], key="keywords")])
 
         store.tag_index.tag_key = "keywords"

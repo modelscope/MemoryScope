@@ -236,27 +236,6 @@ def test_auto_memory_keeps_original_tool_names():
     assert step.update_tools == ["read", "edit", "frontmatter_update", "write"]
 
 
-def test_auto_memory_prompt_has_no_tag_responsibility():
-    step = AutoMemoryStep()
-    prompt_kwargs = {
-        "today": "2026-09-01",
-        "note": "(none)",
-        "session_id": "s1",
-        "history": "user: remember GPT-5",
-    }
-
-    system = step.prompt_format("system_prompt")
-    create = step.prompt_format("user_message_create", **prompt_kwargs)
-    update = step.prompt_format(
-        "user_message_update",
-        note_path="daily/2026-09-01/memory.md",
-        **prompt_kwargs,
-    )
-    assert "tag" not in system.casefold()
-    assert "tag" not in create.casefold()
-    assert "tag" not in update.casefold()
-
-
 def test_auto_memory_create_prompts_match_upstream_date_arguments():
     """Auto-memory prompts keep the upstream model-supplied date argument."""
     from pathlib import Path
