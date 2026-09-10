@@ -1,4 +1,4 @@
-"""BEAM benchmark judge backend."""
+"""BEAM benchmark judge plugin."""
 
 from .llm_judge import BeamRubricJudgeStep
 

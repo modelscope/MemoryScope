@@ -253,6 +253,7 @@ class BeamRubricJudgeStep(BaseStep):
     )
 
     async def execute(self):
+        """Evaluate a BEAM response against its rubric."""
         assert self.context is not None
         llm_response: str = self.context.get("llm_response", "")
         rubric: list[str] = self.context.get("rubric", [])
