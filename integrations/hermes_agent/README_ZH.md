@@ -60,8 +60,8 @@ Hermes Dashboard 的 **Plugins → Runtime provider plugins → Memory provider 
 
 ![Hermes 中处于 ready 和 active 状态的 ReMe provider](figures/hermes-provider-settings.jpg)
 
-配置主路径为 `$HERMES_HOME/reme/config.json`。旧 `$HERMES_HOME/reme.json` 在新路径不存在时仍可读取，后续保存使用
-新路径但不会删除旧文件。
+配置主路径为 `$HERMES_HOME/reme/config.json`。新文件未包含的字段仍会从旧 `$HERMES_HOME/reme.json` 继承，新文件中的
+值优先；后续 CLI 保存会写入完整的新配置，但不会删除旧文件。
 
 ## HTTP 模式
 

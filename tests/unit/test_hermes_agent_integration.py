@@ -99,6 +99,21 @@ def test_current_config_precedes_legacy(tmp_path):
     assert load_config(tmp_path).endpoint == "http://current:2"
 
 
+def test_sparse_dashboard_config_inherits_legacy_values(tmp_path):
+    (tmp_path / "reme.json").write_text(
+        '{"endpoint": "http://legacy:2444", "recall_limit": 3}',
+        encoding="utf-8",
+    )
+    current = config_path(tmp_path)
+    current.parent.mkdir()
+    current.write_text('{"recall_limit": 7}', encoding="utf-8")
+
+    config = load_config(tmp_path)
+
+    assert config.endpoint == "http://legacy:2444"
+    assert config.recall_limit == 7
+
+
 def test_embedded_config_normalizes_workspace(tmp_path):
     config = parse_config(
         {"mode": " EMBEDDED ", "workspace_dir": str(tmp_path / "workspace")},
@@ -376,6 +391,77 @@ def test_shutdown_defers_close_until_inflight_recall_finishes():
 
     assert recall.is_alive() is False
     assert backend.closed is True
+
+
+def test_shutdown_drains_all_accepted_writes_before_closing_backend():
+    entered = threading.Event()
+    release = threading.Event()
+
+    class BlockingBackend(_FakeBackend):
+        def auto_memory(self, session_id, messages, *, timeout):
+            del timeout
+            self.writes.append((session_id, messages))
+            if len(self.writes) == 1:
+                entered.set()
+                release.wait(timeout=2)
+
+    backend = BlockingBackend()
+    provider = ReMeMemoryProvider()
+    provider._config = ReMeConfig()
+    provider._backend = backend
+    provider._backend_available = True
+    provider._shutdown_timeout = 1
+    for index in range(3):
+        provider.sync_turn(f"user {index}", f"assistant {index}", session_id=f"session-{index}")
+    assert entered.wait(timeout=1)
+
+    shutdown = threading.Thread(target=provider.shutdown)
+    shutdown.start()
+    deadline = time.monotonic() + 1
+    while not provider._shutdown_started and time.monotonic() < deadline:
+        time.sleep(0.001)
+    assert provider._shutdown_started is True
+    release.set()
+    shutdown.join(timeout=2)
+
+    assert shutdown.is_alive() is False
+    assert len(backend.writes) == 3
+    assert backend.closed is True
+
+
+def test_recall_timeout_includes_waiting_for_background_write():
+    write_entered = threading.Event()
+    write_release = threading.Event()
+    search_entered = threading.Event()
+
+    class BlockingBackend(_FakeBackend):
+        def auto_memory(self, session_id, messages, *, timeout):
+            del session_id, messages, timeout
+            write_entered.set()
+            write_release.wait(timeout=2)
+
+        def search(self, query, *, limit, timeout):
+            del query, limit, timeout
+            search_entered.set()
+            return {"success": True, "answer": "remembered", "metadata": {}}
+
+    backend = BlockingBackend()
+    provider = ReMeMemoryProvider()
+    provider._config = ReMeConfig()
+    provider._backend = backend
+    provider._backend_available = True
+    provider._recall_timeout = 0.05
+    provider.sync_turn("user", "assistant", session_id="session")
+    assert write_entered.wait(timeout=1)
+
+    started = time.monotonic()
+    assert provider.prefetch("query") == ""
+    elapsed = time.monotonic() - started
+
+    assert elapsed < 0.2
+    assert search_entered.is_set() is False
+    write_release.set()
+    provider.shutdown()
 
 
 def test_shutdown_discard_keeps_sentinel_for_inflight_writer():

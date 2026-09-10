@@ -71,6 +71,13 @@ def _read_json_object(path: Path) -> dict[str, Any]:
     return loaded
 
 
+def _read_config_values(home: Path) -> dict[str, Any]:
+    """Merge legacy values under the current Dashboard-managed config."""
+    values = _read_json_object(legacy_config_path(home))
+    values.update(_read_json_object(config_path(home)))
+    return values
+
+
 def _positive_float(value: Any, key: str, default: float) -> float:
     if value in (None, ""):
         return default
@@ -164,19 +171,16 @@ def parse_config(values: dict[str, Any], *, hermes_home: str | Path) -> ReMeConf
 
 
 def load_config(hermes_home: str | Path | None = None) -> ReMeConfig:
-    """Load current config, falling back to the legacy file when necessary."""
+    """Load current config, inheriting omitted fields from the legacy file."""
     home = Path(hermes_home).expanduser() if hermes_home is not None else _default_hermes_home()
-    current = config_path(home)
-    source = current if current.is_file() else legacy_config_path(home)
-    return parse_config(_read_json_object(source), hermes_home=home)
+    return parse_config(_read_config_values(home), hermes_home=home)
 
 
 def save_config(values: dict[str, Any], hermes_home: str | Path) -> ReMeConfig:
     """Validate and atomically write config in the current Hermes layout."""
     home = Path(hermes_home).expanduser()
     current = config_path(home)
-    source = current if current.is_file() else legacy_config_path(home)
-    merged = _read_json_object(source)
+    merged = _read_config_values(home)
     merged.update(
         {key: value for key, value in dict(values or {}).items() if value is not None},
     )

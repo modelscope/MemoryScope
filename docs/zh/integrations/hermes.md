@@ -22,8 +22,8 @@ hermes memory setup
 Hermes Dashboard 会展示 provider 的模式相关字段和高级 recall、health、write、shutdown 设置；切换模式后只显示对应的
 HTTP endpoint 或 Embedded workspace 字段。
 
-配置主路径为 `$HERMES_HOME/reme/config.json`。旧 `$HERMES_HOME/reme.json` 在新路径不存在时仍可读取，后续保存使用
-新路径但不会删除旧文件。
+配置主路径为 `$HERMES_HOME/reme/config.json`。新文件未包含的字段仍会从旧 `$HERMES_HOME/reme.json` 继承，新文件中的
+值优先；后续 CLI 保存会写入完整的新配置，但不会删除旧文件。
 
 ## HTTP 模式
 

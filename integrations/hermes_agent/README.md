@@ -78,9 +78,9 @@ Configuration is profile-local at:
 $HERMES_HOME/reme/config.json
 ```
 
-The earlier `$HERMES_HOME/reme.json` location is still read when the current
-path does not exist. The next CLI setup save writes the current path without
-deleting the legacy file.
+The earlier `$HERMES_HOME/reme.json` location remains a fallback for fields
+omitted from the current file. Current values take precedence, and the next CLI
+setup save writes a complete current config without deleting the legacy file.
 
 ## HTTP mode
 

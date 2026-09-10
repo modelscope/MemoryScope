@@ -12,6 +12,7 @@ import re
 import threading
 import time
 
+from dataclasses import replace
 from typing import Any, Dict, List, Optional
 
 from agent.memory_provider import MemoryProvider, RecallStatus
@@ -76,6 +77,7 @@ class ReMeMemoryProvider(MemoryProvider):
         self._write_thread_lock = threading.Lock()
         self._backend_lock = threading.RLock()
         self._shutdown_started = False
+        self._deferred_backend_close = False
         self._atexit_registered = False
         self._recall_status: RecallStatus | None = None
         self._unavailable_reason = ""
@@ -143,6 +145,7 @@ class ReMeMemoryProvider(MemoryProvider):
         self._write_queue = queue.Queue()
         self._write_thread = None
         self._shutdown_started = False
+        self._deferred_backend_close = False
         self._recall_status = None
         if not self._atexit_registered:
             atexit.register(self._atexit_shutdown)
@@ -273,15 +276,31 @@ class ReMeMemoryProvider(MemoryProvider):
         query = str(query or "").strip()
         if not query or time.monotonic() < self._next_recall_attempt:
             return ""
-        with self._backend_lock:
-            if not self._ensure_backend():
+        deadline = time.monotonic() + self._recall_timeout
+        if not self._backend_lock.acquire(  # pylint: disable=consider-using-with
+            timeout=max(0.0, deadline - time.monotonic()),
+        ):
+            logger.warning(
+                "ReMe retrieval at %s timed out waiting for the backend",
+                self._backend_label,
+            )
+            return ""
+        try:
+            if not self._ensure_backend(deadline=deadline):
                 return ""
             assert self._backend is not None
             try:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    logger.warning(
+                        "ReMe retrieval at %s exhausted its timeout before search",
+                        self._backend_label,
+                    )
+                    return ""
                 response = self._backend.search(
                     query,
                     limit=self._recall_limit,
-                    timeout=self._recall_timeout,
+                    timeout=remaining,
                 )
             except ReMeBackendError as exc:
                 self._next_recall_attempt = time.monotonic() + self._health_retry_seconds
@@ -293,6 +312,8 @@ class ReMeMemoryProvider(MemoryProvider):
                 return ""
             finally:
                 self._close_backend_if_shutdown_locked()
+        finally:
+            self._backend_lock.release()
         answer = response.get("answer")
         answer = answer.strip() if isinstance(answer, str) else ""
         if answer:
@@ -382,12 +403,16 @@ class ReMeMemoryProvider(MemoryProvider):
                     self._shutdown_timeout,
                     abandoned,
                 )
+        self._deferred_backend_close = True
         # A context manager cannot express the bounded wait required by shutdown.
         if self._backend_lock.acquire(  # pylint: disable=consider-using-with
             timeout=max(0.0, deadline - time.monotonic()),
         ):
             try:
-                self._close_backend_locked()
+                self._close_backend_locked(
+                    timeout=max(0.0, deadline - time.monotonic()),
+                )
+                self._deferred_backend_close = False
             finally:
                 self._backend_lock.release()
         else:
@@ -464,7 +489,7 @@ class ReMeMemoryProvider(MemoryProvider):
             )
             return
         with self._backend_lock:
-            if not self._ensure_backend():
+            if not self._ensure_backend(allow_shutdown=True):
                 logger.warning(
                     "ReMe write for session %s skipped because backend is unavailable",
                     payload["session_id"],
@@ -487,18 +512,34 @@ class ReMeMemoryProvider(MemoryProvider):
             finally:
                 self._close_backend_if_shutdown_locked()
 
-    def _ensure_backend(self, *, force: bool = False) -> bool:
+    # pylint: disable-next=too-many-return-statements
+    def _ensure_backend(
+        self,
+        *,
+        force: bool = False,
+        allow_shutdown: bool = False,
+        deadline: float | None = None,
+    ) -> bool:
         with self._backend_lock:
             if self._backend_available and self._backend is not None and not force:
                 return True
-            if self._config is None or self._shutdown_started:
+            if self._config is None or (self._shutdown_started and not allow_shutdown):
                 return False
             now = time.monotonic()
             if not force and now < self._next_health_probe:
                 return False
             if self._backend is None:
                 try:
-                    self._backend = _backend_for(self._config)
+                    backend_config = self._config
+                    if deadline is not None:
+                        remaining = deadline - time.monotonic()
+                        if remaining <= 0:
+                            return False
+                        backend_config = replace(
+                            backend_config,
+                            request_timeout=min(backend_config.request_timeout, remaining),
+                        )
+                    self._backend = _backend_for(backend_config)
                     self._backend.start()
                 except (ReMeBackendError, TypeError, ValueError, OSError) as exc:
                     failed, self._backend = self._backend, None
@@ -513,7 +554,13 @@ class ReMeMemoryProvider(MemoryProvider):
                     self._mark_unavailable("startup", exc)
                     return False
             try:
-                self._backend.health(timeout=self._health_timeout)
+                health_timeout = self._health_timeout
+                if deadline is not None:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        return False
+                    health_timeout = min(health_timeout, remaining)
+                self._backend.health(timeout=health_timeout)
             except ReMeBackendError as exc:
                 self._mark_unavailable("health check", exc)
                 return False
@@ -522,14 +569,17 @@ class ReMeMemoryProvider(MemoryProvider):
             return True
 
     def _close_backend_if_shutdown_locked(self) -> None:
-        if self._shutdown_started:
+        if self._deferred_backend_close:
             self._close_backend_locked()
+            self._deferred_backend_close = False
 
-    def _close_backend_locked(self) -> None:
+    def _close_backend_locked(self, *, timeout: float | None = None) -> None:
         backend, self._backend = self._backend, None
         if backend is not None:
             try:
-                backend.close(timeout=self._shutdown_timeout)
+                backend.close(
+                    timeout=self._shutdown_timeout if timeout is None else timeout,
+                )
             except ReMeBackendError as exc:
                 logger.warning(
                     "ReMe backend shutdown failed at %s: %s",
