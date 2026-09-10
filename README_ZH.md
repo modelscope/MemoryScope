@@ -183,7 +183,7 @@ runtime 的能力，将记忆指引、召回和捕获接入 Agent 生命周期�
 | **OpenClaw**               | 使用 `openclaw plugins install @agentscope-ai/reme` 安装 [`@agentscope-ai/reme`](typescript/README_ZH.md#openclaw)。             | 原生记忆工具、用户触发运行前召回和自动对话捕获。                      |
 | **QwenPaw**                | 通过 Python API 在进程内嵌入 ReMe。                                                                                                       | 复用宿主生命周期和模型配置，同时保持记忆本地、文件化。                |
 | **Claude Code**            | 启动 streamable HTTP MCP service，并安装 [ReMe 插件](integrations/claude_code/reme)。                                                     | MCP 召回工具、`reme-memory` skill，以及自动记录会话的 Stop hook。     |
-| **Hermes**                 | 启动 HTTP service，并安装 [ReMe provider](integrations/hermes_agent)。                                                                    | 模型调用前召回，每轮对话完成后异步执行 `auto_memory`。                |
+| **Hermes**                 | 安装 [ReMe provider](integrations/hermes_agent)，并选择 HTTP 或 Embedded 模式。                                                           | 模型调用前召回，每轮对话完成后异步执行 `auto_memory`。                |
 | **Codex 及其他 CLI Agent** | 安装或复制 [ReMe Memory skill](skills/reme_memory/SKILL.md)。                                                                             | 通过 CLI 搜索、读取和写入记忆；自动捕获需要显式接入宿主生命周期。     |
 
 <p align="center"><b>集成演示</b></p>

@@ -52,7 +52,7 @@ The [`@agentscope-ai/reme` TypeScript package](./integrations/typescript.md) pro
 
 ## Hermes Agent
 
-`integrations/hermes_agent/` provides a memory provider that recalls context before model calls and asynchronously invokes `auto_memory` after each turn.
+`integrations/hermes_agent/` provides a memory provider with HTTP and embedded modes. It recalls context before model calls and asynchronously invokes `auto_memory` after each turn. Its `config_schema.py` is rendered by Hermes' generic memory settings UI.
 
 ## Production guidance
 
