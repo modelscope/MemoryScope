@@ -10,9 +10,7 @@ class ListTagsStep(BaseStep):
 
     async def execute(self):
         assert self.context is not None
-        tag_index = getattr(self.file_store, "tag_index", None)
-        if tag_index is None:
-            raise RuntimeError("tag index is not configured")
+        tag_index = self.file_store.require_tag_index()
 
         result = await tag_index.list_tags(
             page=self.context.get("page", 1),

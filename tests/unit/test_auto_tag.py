@@ -12,7 +12,7 @@ from reme.components.file_store import LocalFileStore
 from reme.components.runtime_context import RuntimeContext
 from reme.components.tag_index import LocalTagIndex
 from reme.schema import Response
-from reme.steps.evolve.auto_tag import AutoTagStep, normalize_tags
+from reme.steps.evolve.auto_tag import AutoTagStep, normalize_memory_tags
 
 
 class _TaggingWrapper(BaseAgentWrapper):
@@ -21,14 +21,14 @@ class _TaggingWrapper(BaseAgentWrapper):
         workspace: Path,
         *,
         fail_name: str = "",
-        tag_key: str = "tags",
+        tag_key: str = "memory_tags",
         tags: list[object] | None = None,
     ) -> None:
         super().__init__(name="tagger")
         self.workspace = workspace
         self.fail_name = fail_name
         self.tag_key = tag_key
-        self.tags = ["ReMe", "Python"] if tags is None else tags
+        self.tags = ["宁德时代", "黄金"] if tags is None else tags
         self.calls: list[tuple[str, dict]] = []
 
     async def reply(self, inputs, **kwargs) -> dict:
@@ -59,12 +59,50 @@ async def test_auto_tag_requires_tag_index_before_modifying_files(tmp_path, monk
     wrapper = _TaggingWrapper(tmp_path)
     step = AutoTagStep(file_store=store, agent_wrapper=wrapper)
 
-    response = await step(RuntimeContext(modified_paths=["daily/2026-09-09/note.md"]))
+    response = await step(RuntimeContext(changes=[{"change": "added", "path": "daily/2026-09-09/note.md"}]))
 
     assert response.success is False
     assert response.answer == "Error: tag index is not configured"
     assert not wrapper.calls
     assert note.read_bytes() == before
+
+
+@pytest.mark.asyncio
+async def test_auto_tag_with_no_changes_preserves_upstream_response(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    store = LocalFileStore(name="store", embedding_store="", tag_index="")
+    wrapper = _TaggingWrapper(tmp_path)
+    step = AutoTagStep(file_store=store, agent_wrapper=wrapper)
+    context = RuntimeContext(changes=[])
+    context.response.answer = "Skipped: no messages"
+
+    response = await step(context)
+
+    assert response.success is True
+    assert response.answer == "Skipped: no messages"
+    assert response.metadata["auto_tag"] == {
+        "processed": 0,
+        "succeeded": 0,
+        "failed": 0,
+        "ignored": [],
+        "results": [],
+        "indexes": [],
+    }
+    assert not wrapper.calls
+
+
+@pytest.mark.asyncio
+async def test_auto_tag_rejects_a_non_list_changes_payload(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    step = AutoTagStep(
+        file_store=LocalFileStore(name="store", embedding_store="", tag_index=""),
+        agent_wrapper=_TaggingWrapper(tmp_path),
+    )
+
+    response = await step(RuntimeContext(changes="daily/note.md"))
+
+    assert response.success is False
+    assert response.answer == "AutoTagStep requires changes: list[dict]"
 
 
 @pytest.mark.asyncio
@@ -82,12 +120,13 @@ async def test_auto_tag_filters_paths_and_continues_after_one_file_fails(tmp_pat
     wrapper = _TaggingWrapper(tmp_path, fail_name="failed.md")
     step = AutoTagStep(file_store=store, agent_wrapper=wrapper)
     context = RuntimeContext(
-        modified_paths=[
-            "daily/2026-09-09/failed.md",
-            "daily/2026-09-09/notes",
-            "daily/2026-09-09/plain.txt",
-            "daily/2026-09-09/first.md",
-            "daily/2026-09-09/first.md",
+        changes=[
+            {"change": "modified", "path": "daily/2026-09-09/failed.md"},
+            {"change": "added", "path": "daily/2026-09-09/notes"},
+            {"change": "added", "path": "daily/2026-09-09/plain.txt"},
+            {"change": "modified", "path": "daily/2026-09-09/first.md"},
+            {"change": "added", "path": "daily/2026-09-09/first.md"},
+            {"change": "deleted", "path": "daily/2026-09-09/deleted.md"},
         ],
     )
 
@@ -97,28 +136,42 @@ async def test_auto_tag_filters_paths_and_continues_after_one_file_fails(tmp_pat
     assert [call[1]["injected_job_kwargs"] for call in wrapper.calls] == [
         {
             "_allowed_paths": ["daily/2026-09-09/failed.md"],
-            "_allowed_frontmatter_keys": ["tags"],
+            "_allowed_frontmatter_keys": ["memory_tags"],
         },
         {
             "_allowed_paths": ["daily/2026-09-09/first.md"],
-            "_allowed_frontmatter_keys": ["tags"],
+            "_allowed_frontmatter_keys": ["memory_tags"],
         },
     ]
     assert all(
         call[1]["job_tools"] == ["read", "list_tags", "frontmatter_read", "frontmatter_update"]
         for call in wrapper.calls
     )
-    assert frontmatter.loads(first.read_text(encoding="utf-8")).metadata["tags"] == ["ReMe", "Python"]
-    assert "tags" not in frontmatter.loads(failed.read_text(encoding="utf-8")).metadata
-    assert response.metadata["auto_tag"]["tagged_paths"] == ["daily/2026-09-09/first.md"]
-    assert response.metadata["auto_tag"]["ignored_paths"] == [
-        "daily/2026-09-09/notes",
-        "daily/2026-09-09/plain.txt",
+    assert frontmatter.loads(first.read_text(encoding="utf-8")).metadata["memory_tags"] == ["宁德时代", "黄金"]
+    assert "memory_tags" not in frontmatter.loads(failed.read_text(encoding="utf-8")).metadata
+    assert response.metadata["auto_tag"]["processed"] == 2
+    assert response.metadata["auto_tag"]["succeeded"] == 1
+    assert response.metadata["auto_tag"]["failed"] == 1
+    assert response.metadata["auto_tag"]["ignored"] == [
+        {"path": "daily/2026-09-09/notes", "reason": "not a file"},
+        {"path": "daily/2026-09-09/plain.txt", "reason": "not a Markdown file"},
+        {"path": "daily/2026-09-09/deleted.md", "reason": "unsupported change: deleted"},
     ]
-    assert response.metadata["auto_tag"]["failed_paths"] == [
-        {"path": "daily/2026-09-09/failed.md", "error": "tagging failed"},
+    assert response.metadata["auto_tag"]["results"] == [
+        {
+            "change": "modified",
+            "path": "daily/2026-09-09/failed.md",
+            "success": False,
+            "error": "tagging failed",
+        },
+        {
+            "change": "added",
+            "path": "daily/2026-09-09/first.md",
+            "success": True,
+            "summary": "tagged daily/2026-09-09/first.md",
+        },
     ]
-    assert "tags: ['ReMe', 'Python']" in (tmp_path / "daily/2026-09-09.md").read_text(encoding="utf-8")
+    assert "memory_tags: ['宁德时代', '黄金']" in (tmp_path / "daily/2026-09-09.md").read_text(encoding="utf-8")
 
 
 @pytest.mark.asyncio
@@ -131,7 +184,7 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
     wrapper = _TaggingWrapper(
         tmp_path,
         tag_key="keywords",
-        tags=["ReMe", "reme", "memory system", "++", 100],
+        tags=["OpenAI", "openai", "Sam   Altman", "++", 100, "宁德时代", "黄金"],
     )
     step = AutoTagStep(file_store=store, agent_wrapper=wrapper)
 
@@ -145,28 +198,41 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
 
     monkeypatch.setattr(step, "run_job", update_frontmatter)
 
-    response = await step(RuntimeContext(modified_paths=["memory/note.md"]))
+    context = RuntimeContext(changes=[{"change": "modified", "path": "memory/note.md"}])
+    context.response.answer = "Created memory/note.md"
+    response = await step(context)
 
     assert response.success is True
-    assert frontmatter.loads(note.read_text(encoding="utf-8")).metadata["keywords"] == ["ReMe", "100"]
-    assert "Tag field: keywords" in wrapper.calls[0][0]
+    assert response.answer == "Created memory/note.md"
+    assert frontmatter.loads(note.read_text(encoding="utf-8")).metadata["keywords"] == [
+        "OpenAI",
+        "Sam Altman",
+        "宁德时代",
+    ]
+    assert "Change: modified" in wrapper.calls[0][0]
     assert "`keywords`" in wrapper.calls[0][1]["system_prompt"]
 
 
-def test_normalize_tags_enforces_storage_contract():
-    assert normalize_tags(
+def test_normalize_memory_tags_enforces_entity_storage_contract():
+    assert normalize_memory_tags(
         [
-            "GPT-5",
-            "C++",
-            "C#",
-            ".NET",
-            100,
-            "memory system",
+            "OpenAI",
+            "openai",
+            "Sam   Altman",
             "++",
-            "ReMe",
-            "reme",
-            "tag7",
-            "tag8",
-            "tag9",
+            100,
+            "宁德时代",
+            "黄金",
         ],
-    ) == ["GPT-5", "C++", "C#", ".NET", "100", "ReMe", "tag7", "tag8"]
+    ) == ["OpenAI", "Sam Altman", "宁德时代"]
+
+
+def test_auto_tag_prompt_prefers_one_existing_entity_and_yaml_list_storage():
+    step = AutoTagStep()
+    prompt = step.prompt_format("system_prompt", tag_key="memory_tags")
+
+    assert "Prefer one primary entity" in prompt
+    assert "never use more than three" in prompt
+    assert "list_tags" in prompt
+    assert "[宁德时代, 黄金]" in prompt
+    assert "never combine them into one comma-delimited string" in prompt

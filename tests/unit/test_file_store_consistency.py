@@ -49,6 +49,7 @@ class FakeEmbeddingStore:
 
     dimensions = 2
     max_batch_size = 10
+    is_healthy = True
 
     def _embed(self, text: str) -> np.ndarray:
         if "beta" in text or "fresh" in text:
@@ -1519,9 +1520,16 @@ def test_search_filter_applies_to_vector_and_keyword_results(store_factory):
     run(go())
 
 
+def test_empty_exact_path_filter_matches_nothing():
+    """An explicitly empty path domain must not widen into an unfiltered search."""
+    candidate = chunk("a", "daily/a.md", "fresh topic")
+
+    assert LocalFileStore._matches_search_filter(candidate, {"paths": []}) is False
+
+
 @pytest.mark.parametrize("store_factory", [_new_local_store, _new_zvec_store])
-def test_filtered_search_uses_one_chunk_id_domain_for_vector_and_keyword(store_factory):
-    """Tag-aware vector and BM25 branches search the same resolved chunk IDs."""
+def test_path_filter_uses_one_domain_for_vector_and_keyword(store_factory):
+    """Vector and BM25 branches apply the same ordinary path and metadata filters."""
 
     async def go():
         with tempfile.TemporaryDirectory() as tmp, temp_chdir(tmp):
@@ -1537,14 +1545,12 @@ def test_filtered_search_uses_one_chunk_id_domain_for_vector_and_keyword(store_f
                 ],
             )
 
-            eligible = store.resolve_filtered_chunk_ids(
-                {"daily/a.md", "daily/b.md"},
-                {"metadata": {"kind": "daily"}},
-            )
-
-            assert eligible == {"a"}
-            assert [item.id for item in await store.filtered_vector_search("fresh", 5, eligible)] == ["a"]
-            assert [item.id for item in await store.filtered_keyword_search("fresh", 5, eligible)] == ["a"]
+            search_filter = {
+                "paths": ["daily/a.md", "daily/b.md"],
+                "metadata": {"kind": "daily"},
+            }
+            assert [item.id for item in await store.vector_search("fresh", 5, search_filter)] == ["a"]
+            assert [item.id for item in await store.keyword_search("fresh", 5, search_filter)] == ["a"]
             await store.close()
 
     run(go())

@@ -15,7 +15,7 @@ from reme.schema import FileChunk, FileFrontMatter, FileNode
 from reme.steps.index.list_tags import ListTagsStep
 
 
-def _node(path: str, tags: object = None, *, key: str = "tags") -> FileNode:
+def _node(path: str, tags: object = None, *, key: str = "memory_tags") -> FileNode:
     metadata = {} if tags is None else {key: tags}
     return FileNode(path=path, st_mtime=1.0, front_matter=FileFrontMatter(**metadata))
 
@@ -131,33 +131,33 @@ def test_list_tags_paginates_and_applies_default_sort_orders() -> None:
             "total_tags": 4,
             "total_pages": 2,
             "page": 1,
-            "range": [1, 2],
-            "items": [["alpha", 1], ["beta", 2]],
+            "range": (1, 2),
+            "items": [("alpha", 1), ("beta", 2)],
         }
         assert await index.list_tags(page=2, page_size=2) == {
             "total_tags": 4,
             "total_pages": 2,
             "page": 2,
-            "range": [3, 4],
-            "items": [["delta", 1], ["gamma", 1]],
+            "range": (3, 4),
+            "items": [("delta", 1), ("gamma", 1)],
         }
         assert (await index.list_tags(order_by="file_count"))["items"] == [
-            ["beta", 2],
-            ["alpha", 1],
-            ["delta", 1],
-            ["gamma", 1],
+            ("beta", 2),
+            ("alpha", 1),
+            ("delta", 1),
+            ("gamma", 1),
         ]
         assert (await index.list_tags(order_by="file_count", order="asc"))["items"] == [
-            ["alpha", 1],
-            ["delta", 1],
-            ["gamma", 1],
-            ["beta", 2],
+            ("alpha", 1),
+            ("delta", 1),
+            ("gamma", 1),
+            ("beta", 2),
         ]
         assert (await index.list_tags(order="desc"))["items"] == [
-            ["gamma", 1],
-            ["delta", 1],
-            ["beta", 2],
-            ["alpha", 1],
+            ("gamma", 1),
+            ("delta", 1),
+            ("beta", 2),
+            ("alpha", 1),
         ]
 
         await index.delete(["daily/c.md"])
@@ -165,17 +165,17 @@ def test_list_tags_paginates_and_applies_default_sort_orders() -> None:
         assert result == {
             "total_tags": 3,
             "total_pages": 2,
-            "page": 2,
-            "range": [3, 3],
-            "items": [["gamma", 1]],
+            "page": 3,
+            "range": (0, 0),
+            "items": [],
         }
 
         await index.clear()
         assert await index.list_tags(page=9) == {
             "total_tags": 0,
             "total_pages": 0,
-            "page": 1,
-            "range": [0, 0],
+            "page": 9,
+            "range": (0, 0),
             "items": [],
         }
 
@@ -217,8 +217,8 @@ def test_list_tags_step_and_tool_schema_expose_compact_result_contract() -> None
             "total_tags": 1,
             "total_pages": 1,
             "page": 1,
-            "range": [1, 1],
-            "items": [["reme", 1]],
+            "range": (1, 1),
+            "items": [("reme", 1)],
         }
 
     asyncio.run(run())
@@ -229,6 +229,7 @@ def test_list_tags_step_and_tool_schema_expose_compact_result_contract() -> None
     assert job["parameters"]["properties"]["page_size"]["default"] == 100
     assert "[tag, file_count]" in job["description"]
     assert "range" in job["description"]
+    assert "empty page" in job["parameters"]["properties"]["page"]["description"]
 
 
 def test_tag_index_reads_configured_frontmatter_key() -> None:
@@ -269,14 +270,22 @@ def test_tag_index_allows_model_config_as_frontmatter_key() -> None:
     assert LocalTagIndex(tag_key="model_config").tag_key == "model_config"
 
 
+def test_changing_tag_key_invalidates_the_derived_index() -> None:
+    """Do not serve stale relationships after changing the source field."""
+    index = LocalTagIndex()
+    index.tag_key = "keywords"
+
+    assert index.tag_key == "keywords"
+    assert not index.is_healthy
+
+
 def test_tag_index_rejects_invalid_runtime_frontmatter_key() -> None:
     """Apply the same validation when a live component key is updated."""
     index = LocalTagIndex()
 
     with pytest.raises(ValueError, match="tag_key must be a non-empty string"):
         index.tag_key = ""
-
-    assert index.tag_key == "tags"
+    assert index.tag_key == "memory_tags"
 
 
 @pytest.mark.parametrize("tag_key", ["name", "description"])
@@ -287,7 +296,7 @@ def test_tag_index_rejects_reserved_runtime_frontmatter_key(tag_key: str) -> Non
     with pytest.raises(ValueError, match="tag_key must not be a reserved frontmatter key"):
         index.tag_key = tag_key
 
-    assert index.tag_key == "tags"
+    assert index.tag_key == "memory_tags"
 
 
 def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Path) -> None:
@@ -323,6 +332,20 @@ def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Pat
     asyncio.run(run())
 
 
+def test_file_store_exposes_tag_index_capability() -> None:
+    """Expose optional tag-index configuration without backend-specific getattr checks."""
+    store = LocalFileStore(name="test", embedding_store="", tag_index="")
+
+    assert store.tag_index_enabled is False
+    with pytest.raises(RuntimeError, match="tag index is not configured"):
+        store.require_tag_index()
+
+    index = LocalTagIndex()
+    store.tag_index = index
+    assert store.tag_index_enabled is True
+    assert store.require_tag_index() is index
+
+
 def test_tag_failures_do_not_block_other_indexes_and_retry_rebuild(monkeypatch, tmp_path: Path) -> None:
     """Keep core indexes writable and rebuild tags on the next mutation after a failed recovery."""
 
@@ -330,7 +353,7 @@ def test_tag_failures_do_not_block_other_indexes_and_retry_rebuild(monkeypatch, 
         monkeypatch.chdir(tmp_path)
         store = LocalFileStore(name="test", embedding_store="", tag_index="default")
         await store.start()
-        assert store.tag_index is not None
+        assert store.tag_index_enabled
         original_rebuild = store.tag_index.rebuild
 
         async def fail_incremental(_nodes) -> None:
@@ -370,7 +393,7 @@ def test_failed_tag_reconciliation_makes_queries_fail_closed(monkeypatch, tmp_pa
         monkeypatch.chdir(tmp_path)
         store = LocalFileStore(name="test", embedding_store="", tag_index="default")
         await store.start()
-        assert store.tag_index is not None
+        assert store.tag_index_enabled
         await store.upsert([(_node("daily/a.md", ["old"]), [])])
 
         async def fail(_items) -> None:
@@ -397,7 +420,7 @@ def test_tag_rebuild_graph_read_failure_does_not_block_upsert(monkeypatch, tmp_p
         monkeypatch.chdir(tmp_path)
         store = LocalFileStore(name="test", embedding_store="", tag_index="default")
         await store.start()
-        assert store.tag_index is not None
+        assert store.tag_index_enabled
         assert store.file_graph is not None
         store._tag_index_rebuild_required = True
         original_get_nodes = store.file_graph.get_nodes
@@ -427,7 +450,7 @@ def test_explicit_reindex_restores_tag_index(monkeypatch, tmp_path: Path) -> Non
         monkeypatch.chdir(tmp_path)
         store = LocalFileStore(name="test", embedding_store="", tag_index="default")
         await store.start()
-        assert store.tag_index is not None
+        assert store.tag_index_enabled
         await store.upsert(
             [
                 (_node("daily/a.md", ["ReMe"]), []),
@@ -456,7 +479,7 @@ def test_explicit_reindex_uses_updated_tag_key(monkeypatch, tmp_path: Path) -> N
         monkeypatch.chdir(tmp_path)
         store = LocalFileStore(name="test", embedding_store="", tag_index="default")
         await store.start()
-        assert store.tag_index is not None
+        assert store.tag_index_enabled
         await store.upsert([(_node("daily/a.md", ["old"]), [])])
         await store.file_graph.upsert_nodes([_node("daily/a.md", ["new"], key="keywords")])
 
@@ -477,7 +500,7 @@ def test_tag_delete_failures_do_not_block_core_deletion(monkeypatch, tmp_path: P
         monkeypatch.chdir(tmp_path)
         store = LocalFileStore(name="test", embedding_store="", tag_index="default")
         await store.start()
-        assert store.tag_index is not None
+        assert store.tag_index_enabled
         chunk = _chunk("chunk-a", "daily/a.md", "alpha memory")
         await store.upsert([(_node("daily/a.md", ["alpha"]), [chunk])])
 
@@ -507,7 +530,7 @@ def test_existing_markdown_chunker_supplies_frontmatter_tags(monkeypatch, tmp_pa
         monkeypatch.chdir(tmp_path)
         note = tmp_path / "daily" / "a.md"
         note.parent.mkdir()
-        note.write_text("---\ntags: [Python, ReMe]\n---\nbody\n", encoding="utf-8")
+        note.write_text("---\nmemory_tags: [Python, ReMe]\n---\nbody\n", encoding="utf-8")
         node, chunks = await MarkdownFileChunker().chunk(note)
 
         store = LocalFileStore(name="test", embedding_store="", tag_index="default")
@@ -547,7 +570,8 @@ def test_default_config_enables_tag_index_with_explicit_key() -> None:
 
     assert config["jobs"]["index_update_loop"]["watch_dirs"] == ["daily_dir", "digest_dir"]
     assert "tag_index_loop" not in config["jobs"]
-    assert config["components"]["tag_index"]["default"]["tag_key"] == "tags"
+    assert config["components"]["tag_index"]["default"]["tag_key"] == "memory_tags"
+    assert config["components"]["tag_index"]["default"]["max_tags_per_file"] == 3
     assert config["components"]["file_store"]["default"]["tag_index"] == "default"
     assert config["jobs"]["search"]["parameters"]["properties"]["tags"]["default"] == []
     assert config["jobs"]["auto_memory"]["steps"] == [

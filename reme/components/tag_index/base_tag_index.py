@@ -1,20 +1,36 @@
 """Abstract interface for file-level tag indexes derived from graph nodes."""
 
 from abc import abstractmethod
+from typing import ClassVar, Literal, TypedDict
 
 from ..base_component import BaseComponent
 from ...enumeration import ComponentEnum
 from ...schema import FileNode
+
+TagOrderBy = Literal["tag", "file_count"]
+TagOrder = Literal["asc", "desc"]
+TagListItem = tuple[str, int]
+
+
+class TagListResult(TypedDict):
+    """One page of active tags and their indexed-file counts."""
+
+    total_tags: int
+    total_pages: int
+    page: int
+    range: tuple[int, int]
+    items: list[TagListItem]
 
 
 class BaseTagIndex(BaseComponent):
     """A rebuildable index of normalized ``FileNode`` frontmatter tags."""
 
     component_type = ComponentEnum.TAG_INDEX
+    reserved_tag_keys: ClassVar[frozenset[str]] = frozenset()
 
-    def __init__(self, tag_key="tags", **kwargs):
+    def __init__(self, tag_key: object = "memory_tags", **kwargs):
         super().__init__(**kwargs)
-        self.tag_key = tag_key
+        self._tag_key = self._validate_tag_key(tag_key)
         self.is_healthy = True
 
     @property
@@ -24,13 +40,19 @@ class BaseTagIndex(BaseComponent):
 
     @tag_key.setter
     def tag_key(self, value: object) -> None:
-        self._tag_key = self._validate_tag_key(value)
+        tag_key = self._validate_tag_key(value)
+        if tag_key != self._tag_key:
+            self._tag_key = tag_key
+            self.set_healthy(False)
 
     def _validate_tag_key(self, value: object) -> str:
         """Validate and normalize the configured frontmatter tag field."""
         if not isinstance(value, str) or not value.strip():
             raise ValueError("tag_key must be a non-empty string")
-        return value.strip()
+        tag_key = value.strip()
+        if tag_key in self.reserved_tag_keys:
+            raise ValueError(f"tag_key must not be a reserved frontmatter key: {tag_key!r}")
+        return tag_key
 
     def set_healthy(self, healthy: bool) -> None:
         """Mark whether lookups can safely use the current derived state."""
@@ -45,14 +67,9 @@ class BaseTagIndex(BaseComponent):
     def normalize_tags(self, value: object) -> list[str]:
         """Return canonical tags according to this index's configured limits."""
 
+    @abstractmethod
     def normalize_query_tags(self, value: object) -> list[str]:
-        """Return canonical lookup tags.
-
-        Existing third-party indexes remain compatible by inheriting their
-        normal tag canonicalization. Implementations with per-file count limits
-        should override this method so lookup expressions are not truncated.
-        """
-        return self.normalize_tags(value)
+        """Return canonical lookup tags without per-file count limits."""
 
     @abstractmethod
     async def rebuild(self, nodes: list[FileNode]) -> None:
@@ -79,10 +96,10 @@ class BaseTagIndex(BaseComponent):
         self,
         *,
         page: int = 1,
-        order_by: str = "tag",
-        order: str | None = None,
+        order_by: TagOrderBy = "tag",
+        order: TagOrder | None = None,
         page_size: int = 100,
-    ) -> dict[str, object]:
+    ) -> TagListResult:
         """Return a page of active tags with counts and a 1-based result range."""
 
     @abstractmethod
