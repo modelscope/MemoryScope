@@ -27,6 +27,7 @@ class LmeAnswerJudgeStep(BaseStep):
         return raw_answer.strip().lower()
 
     async def execute(self):
+        """Evaluate an agent answer against the LongMemEval reference answer."""
         assert self.context is not None
         query: str = self.context.get("query", "")
         agent_answer: str = self.context.get("agent_answer", "")

@@ -1,4 +1,4 @@
-"""LongMemEval benchmark judge backend."""
+"""LongMemEval benchmark judge plugin."""
 
 from .llm_judge import LmeAnswerJudgeStep
 
