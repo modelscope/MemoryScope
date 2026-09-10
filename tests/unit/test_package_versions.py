@@ -62,6 +62,22 @@ def test_studio_packages_have_independent_identity() -> None:
     assert "reme_studio*" in main_config["tool"]["setuptools"]["packages"]["find"]["exclude"]
 
 
+def test_typescript_host_plugins_are_independent_packages() -> None:
+    """Keep each host adapter self-contained instead of restoring a shared npm package."""
+    manifests = {
+        host: json.loads((REPOSITORY / "integrations" / host / "package.json").read_text(encoding="utf-8"))
+        for host in ("dsh", "openclaw")
+    }
+
+    assert manifests["dsh"]["name"] == "@agentscope-ai/reme-dsh-plugin"
+    assert manifests["openclaw"]["name"] == "@agentscope-ai/reme-openclaw-plugin"
+    assert manifests["dsh"]["version"] == "0.1.0"
+    assert manifests["openclaw"]["version"] == "0.1.0"
+    assert manifests["dsh"].get("dependencies", {}) == {}
+    assert manifests["openclaw"].get("dependencies", {}) == {"typebox": "1.3.19"}
+    assert not (REPOSITORY / "typescript").exists()
+
+
 def _write_version_fixture(repository: Path) -> None:
     (repository / "reme").mkdir()
     (repository / "reme" / "__init__.py").write_text('__version__ = "1.2.3"\n', encoding="utf-8")
