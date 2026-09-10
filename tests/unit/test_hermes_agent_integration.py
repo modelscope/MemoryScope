@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import sys
 import types
+import asyncio
 import importlib
 import threading
 import time
@@ -462,6 +463,45 @@ def test_recall_timeout_includes_waiting_for_background_write():
     assert search_entered.is_set() is False
     write_release.set()
     provider.shutdown()
+
+
+def test_recall_timeout_includes_embedded_startup_failure_cleanup(monkeypatch, tmp_path):
+    import reme
+    import reme.config
+
+    class SlowApplication:
+        def __init__(self, **config):
+            del config
+
+        async def start(self):
+            await asyncio.sleep(10)
+
+        async def close(self):
+            await asyncio.sleep(0.4)
+
+    monkeypatch.setattr(reme, "Application", SlowApplication)
+    monkeypatch.setattr(reme.config, "resolve_app_config", lambda **kwargs: kwargs)
+    backend = EmbeddedReMeBackend(str(tmp_path), start_timeout=1)
+    monkeypatch.setattr(PLUGIN_MODULE, "_backend_for", lambda config: backend)
+    provider = ReMeMemoryProvider()
+    provider._config = ReMeConfig(
+        mode="embedded",
+        workspace_dir=str(tmp_path),
+        request_timeout=1,
+        recall_timeout=0.15,
+        shutdown_timeout=0.6,
+    )
+    provider._recall_timeout = 0.15
+    provider._shutdown_timeout = 0.6
+
+    started = time.monotonic()
+    assert provider.prefetch("query") == ""
+    elapsed = time.monotonic() - started
+
+    assert elapsed < 0.25
+    assert backend._thread is not None
+    backend._thread.join(timeout=1)
+    assert backend._thread.is_alive() is False
 
 
 def test_shutdown_discard_keeps_sentinel_for_inflight_writer():

@@ -15,8 +15,9 @@ class HttpReMeBackend:
         self._client = ReMeHttpClient(endpoint, timeout=request_timeout)
         self.label = self._client.endpoint
 
-    def start(self) -> None:
+    def start(self, *, deadline: float | None = None) -> None:
         """HTTP service lifecycle is managed outside Hermes."""
+        del deadline
 
     def _call(
         self,

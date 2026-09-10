@@ -540,12 +540,19 @@ class ReMeMemoryProvider(MemoryProvider):
                             request_timeout=min(backend_config.request_timeout, remaining),
                         )
                     self._backend = _backend_for(backend_config)
-                    self._backend.start()
+                    if deadline is None:
+                        self._backend.start()
+                    else:
+                        self._backend.start(deadline=deadline)
                 except (ReMeBackendError, TypeError, ValueError, OSError) as exc:
                     failed, self._backend = self._backend, None
                     if failed is not None:
                         try:
-                            failed.close(timeout=self._shutdown_timeout)
+                            cleanup_timeout = self._shutdown_timeout
+                            if deadline is not None:
+                                cleanup_timeout = max(0.0, deadline - time.monotonic())
+                            if deadline is None or cleanup_timeout > 0:
+                                failed.close(timeout=cleanup_timeout)
                         except ReMeBackendError as close_exc:
                             logger.warning(
                                 "Failed to clean up ReMe after startup error: %s",

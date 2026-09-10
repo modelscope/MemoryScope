@@ -51,8 +51,11 @@ class EmbeddedReMeBackend:
         with self._state_lock:
             return self._state.value
 
-    def start(self) -> None:
+    def start(self, *, deadline: float | None = None) -> None:
         """Start the loop thread and construct the Application on that loop."""
+        start_deadline = time.monotonic() + self.start_timeout
+        if deadline is not None:
+            start_deadline = min(start_deadline, deadline)
         with self._state_lock:
             if self._state is _State.RUNNING:
                 return
@@ -69,27 +72,34 @@ class EmbeddedReMeBackend:
             )
             self._thread.start()
 
-        if not self._loop_ready.wait(timeout=self.start_timeout):
-            self._fail(
-                TimeoutError("Timed out while starting the embedded ReMe event loop"),
-            )
-            self.close(timeout=self.start_timeout)
+        if not self._loop_ready.wait(timeout=max(0.0, start_deadline - time.monotonic())):
+            error = TimeoutError("Timed out while starting the embedded ReMe event loop")
+            self._fail(error)
+            self._close_after_failed_start(start_deadline)
             raise ReMeBackendError(
                 "Timed out while starting the embedded ReMe event loop",
-            )
+            ) from error
 
         try:
             self._submit(
                 self._start_application(),
-                timeout=self.start_timeout,
+                timeout=max(0.0, start_deadline - time.monotonic()),
                 allow_starting=True,
             )
         except ReMeBackendError as exc:
             self._fail(exc)
-            self.close(timeout=self.start_timeout)
+            self._close_after_failed_start(start_deadline)
             raise
         with self._state_lock:
             self._state = _State.RUNNING
+
+    def _close_after_failed_start(self, deadline: float) -> None:
+        """Begin cleanup without extending the startup caller's time budget."""
+        try:
+            self.close(timeout=max(0.0, deadline - time.monotonic()))
+        except ReMeBackendError:
+            # close() still requests loop shutdown before reporting a timeout.
+            pass
 
     def _run_loop(self) -> None:
         loop = asyncio.new_event_loop()
@@ -225,10 +235,10 @@ class EmbeddedReMeBackend:
 
     def close(self, *, timeout: float) -> None:
         """Close the Application, stop its loop, and join its thread."""
-        deadline = time.monotonic() + max(0.1, timeout)
+        deadline = time.monotonic() + max(0.0, timeout)
         # A context manager cannot express the bounded wait required by shutdown.
         acquired = self._operation_lock.acquire(  # pylint: disable=consider-using-with
-            timeout=max(0.1, deadline - time.monotonic()),
+            timeout=max(0.0, deadline - time.monotonic()),
         )
         if not acquired:
             raise ReMeBackendError(
@@ -253,10 +263,15 @@ class EmbeddedReMeBackend:
             thread = self._thread
 
         if loop is not None and loop.is_running() and self._app is not None:
-            remaining = max(0.1, deadline - time.monotonic())
+            remaining = max(0.0, deadline - time.monotonic())
             try:
-                future = asyncio.run_coroutine_threadsafe(self._app.close(), loop)
-                future.result(timeout=remaining)
+                if remaining > 0:
+                    future = asyncio.run_coroutine_threadsafe(self._app.close(), loop)
+                    future.result(timeout=remaining)
+                else:
+                    close_error = TimeoutError(
+                        "Timed out before closing the embedded ReMe Application",
+                    )
             except concurrent.futures.TimeoutError:
                 future.cancel()
                 close_error = TimeoutError(

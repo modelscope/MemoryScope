@@ -14,8 +14,8 @@ class ReMeBackend(Protocol):
 
     label: str
 
-    def start(self) -> None:
-        """Start resources owned by the backend."""
+    def start(self, *, deadline: float | None = None) -> None:
+        """Start owned resources before an optional absolute deadline."""
 
     def health(self, *, timeout: float) -> dict[str, Any]:
         """Return a semantically healthy ReMe response."""
