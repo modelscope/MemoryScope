@@ -1,6 +1,6 @@
 """Focused tests for the standalone automatic tagging Step."""
 
-# pylint: disable=missing-function-docstring,protected-access
+# pylint: disable=missing-function-docstring
 
 from pathlib import Path
 
@@ -8,9 +8,7 @@ import frontmatter
 import pytest
 
 from reme.components.agent_wrapper import BaseAgentWrapper
-from reme.components.file_store import LocalFileStore
 from reme.components.runtime_context import RuntimeContext
-from reme.components.tag_index import LocalTagIndex
 from reme.schema import Response
 from reme.steps.evolve.auto_tag import AutoTagStep, normalize_memory_tags
 
@@ -50,19 +48,18 @@ def _write_note(path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_auto_tag_handles_noop_and_rejects_invalid_preconditions(tmp_path, monkeypatch):
+async def test_auto_tag_handles_noop_invalid_changes_and_no_tag_index(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     wrapper = _TaggingWrapper(tmp_path)
-    unindexed_store = LocalFileStore(name="store", embedding_store="", tag_index="")
 
     context = RuntimeContext(changes=[])
     context.response.answer = "Skipped: no messages"
-    response = await AutoTagStep(file_store=unindexed_store, agent_wrapper=wrapper)(context)
+    response = await AutoTagStep(agent_wrapper=wrapper)(context)
     assert response.success is True
     assert response.answer == "Skipped: no messages"
     assert response.metadata["auto_tag"]["processed"] == 0
 
-    response = await AutoTagStep(file_store=unindexed_store, agent_wrapper=wrapper)(
+    response = await AutoTagStep(agent_wrapper=wrapper)(
         RuntimeContext(changes="daily/note.md"),
     )
     assert response.success is False
@@ -70,36 +67,13 @@ async def test_auto_tag_handles_noop_and_rejects_invalid_preconditions(tmp_path,
 
     note = tmp_path / "daily/2026-09-09/note.md"
     _write_note(note)
-    before = note.read_bytes()
     change = RuntimeContext(changes=[{"change": "added", "path": "daily/2026-09-09/note.md"}])
-    response = await AutoTagStep(file_store=unindexed_store, agent_wrapper=wrapper)(change)
+    response = await AutoTagStep(agent_wrapper=wrapper)(change)
 
-    assert response.success is False
-    assert response.answer == "Error: tag index is not configured"
-    assert not wrapper.calls
-    assert note.read_bytes() == before
-
-    indexed_store = LocalFileStore(name="store", embedding_store="", tag_index="")
-    indexed_store.tag_index = LocalTagIndex(max_tags_per_file=2)
-    response = await AutoTagStep(
-        file_store=indexed_store,
-        agent_wrapper=wrapper,
-        max_tags_per_file=3,
-    )(RuntimeContext(changes=[{"change": "added", "path": "daily/2026-09-09/note.md"}]))
-    assert response.success is False
-    assert response.answer == "Error: auto_tag max_tags_per_file (3) exceeds tag index limit (2)"
-    assert not wrapper.calls
-    assert note.read_bytes() == before
-
-    indexed_store.tag_index = LocalTagIndex()
-    indexed_store.tag_index.set_healthy(False)
-    response = await AutoTagStep(file_store=indexed_store, agent_wrapper=wrapper)(
-        RuntimeContext(changes=[{"change": "added", "path": "daily/2026-09-09/note.md"}]),
-    )
-    assert response.success is False
-    assert response.answer == "Error: tag index unavailable"
-    assert not wrapper.calls
-    assert note.read_bytes() == before
+    assert response.success is True
+    assert response.answer == "Tagged 1 file(s)"
+    assert len(wrapper.calls) == 1
+    assert frontmatter.loads(note.read_text(encoding="utf-8")).metadata["memory_tags"] == ["宁德时代", "黄金"]
 
 
 @pytest.mark.asyncio
@@ -112,10 +86,8 @@ async def test_auto_tag_filters_paths_and_continues_after_one_file_fails(tmp_pat
     (tmp_path / "daily/2026-09-09/notes").mkdir()
     (tmp_path / "daily/2026-09-09/plain.txt").write_text("text", encoding="utf-8")
 
-    store = LocalFileStore(name="store", embedding_store="", tag_index="")
-    store.tag_index = LocalTagIndex()
     wrapper = _TaggingWrapper(tmp_path, fail_name="failed.md")
-    step = AutoTagStep(file_store=store, agent_wrapper=wrapper)
+    step = AutoTagStep(agent_wrapper=wrapper)
     context = RuntimeContext(
         changes=[
             {"change": "modified", "path": "daily/2026-09-09/failed.md"},
@@ -168,7 +140,6 @@ async def test_auto_tag_filters_paths_and_continues_after_one_file_fails(tmp_pat
             "summary": "tagged daily/2026-09-09/first.md",
         },
     ]
-    assert "memory_tags: ['宁德时代', '黄金']" in (tmp_path / "daily/2026-09-09.md").read_text(encoding="utf-8")
 
 
 @pytest.mark.asyncio
@@ -176,14 +147,12 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
     monkeypatch.chdir(tmp_path)
     note = tmp_path / "memory/note.md"
     _write_note(note)
-    store = LocalFileStore(name="store", embedding_store="", tag_index="")
-    store.tag_index = LocalTagIndex(tag_key="keywords", max_tag_length=8)
     wrapper = _TaggingWrapper(
         tmp_path,
         tag_key="keywords",
         tags=["OpenAI", "openai", "Sam   Altman", "++", 100, "宁德时代", "黄金"],
     )
-    step = AutoTagStep(file_store=store, agent_wrapper=wrapper, max_tags_per_file=2)
+    step = AutoTagStep(agent_wrapper=wrapper, tag_key="keywords", max_tags_per_file=2, max_tag_length=8)
 
     async def update_frontmatter(name, /, **kwargs):
         assert name == "frontmatter_update"
@@ -210,38 +179,3 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
         max_tags_per_file=2,
         max_tag_length=3,
     ) == ["one", "two"]
-
-
-@pytest.mark.asyncio
-async def test_auto_tag_syncs_successful_targets_and_reports_index_failures(tmp_path, monkeypatch):
-    store = LocalFileStore(name="store", embedding_store="", tag_index="")
-    step = AutoTagStep(file_store=store, agent_wrapper=_TaggingWrapper(tmp_path))
-    synced: list[list[dict[str, str]]] = []
-
-    async def sync_file_index(changes):
-        synced.append(changes)
-        return [
-            {"success": True, "path": "daily/ok.md"},
-            {"success": False, "path": "daily/stale.md", "error": "parse failed"},
-        ]
-
-    monkeypatch.setattr(step, "_sync_file_index", sync_file_index)
-    results = [
-        {"change": "added", "path": "daily/ok.md", "success": True},
-        {"change": "modified", "path": "daily/stale.md", "success": True},
-        {"change": "added", "path": "daily/tag-failed.md", "success": False, "error": "tagging failed"},
-    ]
-
-    updates = await step._sync_results(results)
-
-    assert synced == [
-        [
-            {"change": "added", "path": "daily/ok.md"},
-            {"change": "modified", "path": "daily/stale.md"},
-        ],
-    ]
-    assert updates[1]["error"] == "parse failed"
-    assert results[0]["success"] is True
-    assert results[1]["success"] is False
-    assert results[1]["error"] == "index update failed: parse failed"
-    assert results[2]["error"] == "tagging failed"

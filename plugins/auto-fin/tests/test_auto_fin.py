@@ -266,7 +266,7 @@ def test_plugin_config_has_default_topics_and_no_intermediate_index_step():
         "auto_tag_step",
     ]
     assert job["steps"][2]["job_tools"] == ["search", "read"]
-    assert job["steps"][3]["max_tags_per_file"] == 3
+    assert job["steps"][3] == {"backend": "auto_tag_step"}
     assert jobs["auto_fin_cron"]["cron"] == "0 18 * * *"
     assert jobs["auto_fin_cron"]["steps"] == job["steps"]
     assert (

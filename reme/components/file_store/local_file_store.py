@@ -56,7 +56,6 @@ class LocalFileStore(BaseFileStore):
         from ..embedding_store import LocalEmbeddingStore
         from ..file_graph import LocalFileGraph
         from ..keyword_index import BM25Index
-        from ..tag_index import LocalTagIndex
 
         if not embedding_store and not keyword_index:
             raise ValueError("At least one of embedding_store or keyword_index must be set.")
@@ -66,7 +65,7 @@ class LocalFileStore(BaseFileStore):
         self.embedding_store = self.bind(embedding_store, BaseEmbeddingStore, default_factory=LocalEmbeddingStore)
         self.keyword_index = self.bind(keyword_index, BaseKeywordIndex, default_factory=BM25Index)
         self.file_graph = self.bind(file_graph, BaseFileGraph, default_factory=LocalFileGraph)
-        self.tag_index = self.bind(tag_index, BaseTagIndex, default_factory=LocalTagIndex)
+        self.tag_index = self.bind(tag_index, BaseTagIndex, optional=False)
 
         self.encoding = encoding
         self.store_version = store_version

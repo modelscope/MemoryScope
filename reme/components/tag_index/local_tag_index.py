@@ -5,6 +5,7 @@ from pathlib import PurePosixPath
 
 from .base_tag_index import BaseTagIndex, TagListItem, TagListResult, TagOrder, TagOrderBy
 from ..component_registry import R
+from ...constants import DEFAULT_MAX_MEMORY_TAG_LENGTH, DEFAULT_MAX_MEMORY_TAGS, DEFAULT_MEMORY_TAG_KEY
 from ...schema import FileFrontMatter, FileNode
 
 
@@ -22,9 +23,9 @@ class LocalTagIndex(BaseTagIndex):
 
     def __init__(
         self,
-        tag_key: object = "memory_tags",
-        max_tags_per_file: int = 3,
-        max_tag_length: int = 64,
+        tag_key: object = DEFAULT_MEMORY_TAG_KEY,
+        max_tags_per_file: int = DEFAULT_MAX_MEMORY_TAGS,
+        max_tag_length: int = DEFAULT_MAX_MEMORY_TAG_LENGTH,
         **kwargs,
     ):
         super().__init__(tag_key=tag_key, **kwargs)

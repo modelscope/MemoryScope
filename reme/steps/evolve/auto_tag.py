@@ -1,21 +1,21 @@
 """Generate entity-oriented memory tags for added or modified Markdown files."""
 
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Literal
 
 import frontmatter
 
 from ._evolve import agent_reply_result_text
 from ..base_step import BaseStep
-from ..file_io import parse_daily_date, refresh_day_index
 from ..file_io._path import display_path, resolve_path
 from ..index import normalize_posix_path
 from ...components import R
-from ...components.runtime_context import RuntimeContext
+from ...constants import (
+    DEFAULT_MAX_MEMORY_TAG_LENGTH,
+    DEFAULT_MAX_MEMORY_TAGS,
+    DEFAULT_MEMORY_TAG_KEY,
+)
 
-_DEFAULT_MAX_MEMORY_TAGS = 3
-_DEFAULT_MAX_MEMORY_TAG_LENGTH = 64
 _SUPPORTED_CHANGES = {"added", "modified"}
 
 
@@ -34,8 +34,8 @@ def _positive_int(value: object, *, name: str) -> int:
 def normalize_memory_tags(
     value: object,
     *,
-    max_tags_per_file: int = _DEFAULT_MAX_MEMORY_TAGS,
-    max_tag_length: int = _DEFAULT_MAX_MEMORY_TAG_LENGTH,
+    max_tags_per_file: int = DEFAULT_MAX_MEMORY_TAGS,
+    max_tag_length: int = DEFAULT_MAX_MEMORY_TAG_LENGTH,
 ) -> list[str]:
     """Normalize human-readable entity labels for frontmatter storage."""
     max_tags_per_file = _positive_int(max_tags_per_file, name="max_tags_per_file")
@@ -65,21 +65,20 @@ def normalize_memory_tags(
 class AutoTagStep(BaseStep):
     """Update memory tags for Markdown files described by the common ``changes`` contract."""
 
-    def __init__(self, max_tags_per_file: int = _DEFAULT_MAX_MEMORY_TAGS, **kwargs):
+    def __init__(
+        self,
+        tag_key: str = DEFAULT_MEMORY_TAG_KEY,
+        max_tags_per_file: int = DEFAULT_MAX_MEMORY_TAGS,
+        max_tag_length: int = DEFAULT_MAX_MEMORY_TAG_LENGTH,
+        **kwargs,
+    ):
         super().__init__(**kwargs)
+        self.tag_key = str(tag_key).strip()
+        if not self.tag_key:
+            raise ValueError("tag_key must be a non-empty string")
         self.max_tags_per_file = _positive_int(max_tags_per_file, name="max_tags_per_file")
+        self.max_tag_length = _positive_int(max_tag_length, name="max_tag_length")
         self.tools = ["read", "list_tags", "frontmatter_read", "frontmatter_update"]
-
-    @staticmethod
-    def _index_limit(tag_index, name: str, fallback: int | None) -> int | None:
-        """Read one positive integer index limit, falling back when unavailable or invalid."""
-        try:
-            value = getattr(tag_index, name)
-        except (AttributeError, TypeError, ValueError):
-            return fallback
-        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
-            return fallback
-        return value
 
     def _targets(self) -> tuple[list[_TagTarget], list[dict[str, str]]]:
         """Validate, normalize, and de-duplicate added/modified Markdown changes."""
@@ -88,7 +87,7 @@ class AutoTagStep(BaseStep):
         if not isinstance(raw_changes, list):
             raise ValueError("AutoTagStep requires changes: list[dict]")
 
-        workspace = Path(self.file_store.workspace_path or ".").resolve()
+        workspace = self.workspace_path.resolve()
         targets: dict[str, _TagTarget] = {}
         ignored: list[dict[str, str]] = []
         for item in raw_changes:
@@ -125,79 +124,39 @@ class AutoTagStep(BaseStep):
             targets[path] = _TagTarget(change=normalized_change, path=path)
         return list(targets.values()), ignored
 
-    async def _process_target(self, target: _TagTarget, tag_key: str, max_tag_length: int) -> str:
+    async def _process_target(self, target: _TagTarget) -> str:
         result = await self.agent_wrapper.reply(
-            self.prompt_format("user_message", path=target.path, change=target.change, tag_key=tag_key),
+            self.prompt_format("user_message", path=target.path, change=target.change, tag_key=self.tag_key),
             system_prompt=self.prompt_format(
                 "system_prompt",
-                tag_key=tag_key,
+                tag_key=self.tag_key,
                 max_tags_per_file=self.max_tags_per_file,
             ),
             job_tools=self.tools,
             injected_job_kwargs={
                 "_allowed_paths": [target.path],
-                "_allowed_frontmatter_keys": [tag_key],
+                "_allowed_frontmatter_keys": [self.tag_key],
             },
         )
 
-        path = Path(self.file_store.workspace_path or ".") / target.path
+        path = self.workspace_path / target.path
         metadata = dict(frontmatter.loads(path.read_text(encoding="utf-8")).metadata or {})
         normalized = normalize_memory_tags(
-            metadata.get(tag_key),
+            metadata.get(self.tag_key),
             max_tags_per_file=self.max_tags_per_file,
-            max_tag_length=max_tag_length,
+            max_tag_length=self.max_tag_length,
         )
-        if metadata.get(tag_key) != normalized:
+        if metadata.get(self.tag_key) != normalized:
             response = await self.run_job(
                 "frontmatter_update",
                 path=target.path,
-                metadata={tag_key: normalized},
+                metadata={self.tag_key: normalized},
                 _allowed_paths=[target.path],
-                _allowed_frontmatter_keys=[tag_key],
+                _allowed_frontmatter_keys=[self.tag_key],
             )
             if not response.success:
                 raise RuntimeError(str(response.answer))
         return agent_reply_result_text(result)
-
-    async def _sync_file_index(self, changes: list[dict[str, str]]) -> list[dict]:
-        """Synchronously expose freshly written tags through the file-store indexes."""
-        if not changes or self.app_context is None:
-            return []
-        step_cls, params = self._resolve_dispatch_step({"backend": "update_index_step", "persist": False})
-        response = await step_cls(**params)(RuntimeContext(changes=changes))
-        if not isinstance(response.answer, list):
-            raise RuntimeError(f"Unexpected update_index_step response: {response.answer!r}")
-        if not self.file_store.require_tag_index().is_healthy:
-            raise RuntimeError("tag index unavailable after update")
-        return response.answer
-
-    async def _sync_results(self, results: list[dict]) -> list[dict]:
-        """Sync successful targets and convert incremental-index errors into target failures."""
-        successful_changes = [{"change": item["change"], "path": item["path"]} for item in results if item["success"]]
-        index_updates: list[dict] = []
-        try:
-            index_updates = await self._sync_file_index(successful_changes)
-            index_failures = {
-                item["path"]: str(item.get("error") or "index update failed")
-                for item in index_updates
-                if not item.get("success")
-            }
-        except Exception as exc:  # pylint: disable=broad-exception-caught
-            index_failures = {item["path"]: str(exc) for item in successful_changes}
-            self.logger.warning(f"[{self.name}] failed to synchronize file index: {exc}")
-        for item in results:
-            if item["success"] and item["path"] in index_failures:
-                item["success"] = False
-                item["error"] = f"index update failed: {index_failures[item['path']]}"
-        return index_updates
-
-    def _daily_date(self, path: str) -> str | None:
-        daily_dir = normalize_posix_path(str(self.config_value("daily_dir"))).strip("/")
-        prefix = f"{daily_dir}/"
-        if not path.startswith(prefix):
-            return None
-        parts = path[len(prefix) :].split("/")
-        return parse_daily_date(parts[0]) if len(parts) == 2 else None
 
     async def execute(self):
         assert self.context is not None
@@ -211,36 +170,9 @@ class AutoTagStep(BaseStep):
             return self.context.response
 
         results: list[dict] = []
-        indexes: list[dict] = []
-        if targets and not self.file_store.tag_index_enabled:
-            self.context.response.success = False
-            if initial_success:
-                self.context.response.answer = "Error: tag index is not configured"
-            return self.context.response
-
-        tag_index = self.file_store.require_tag_index() if targets else None
-        if tag_index is not None and not tag_index.is_healthy:
-            self.context.response.success = False
-            if initial_success:
-                self.context.response.answer = "Error: tag index unavailable"
-            return self.context.response
-        max_tag_length = self._index_limit(tag_index, "max_tag_length", _DEFAULT_MAX_MEMORY_TAG_LENGTH)
-        index_max_tags = self._index_limit(tag_index, "max_tags_per_file", None)
-        if index_max_tags is not None and self.max_tags_per_file > index_max_tags:
-            self.context.response.success = False
-            if initial_success:
-                self.context.response.answer = (
-                    f"Error: auto_tag max_tags_per_file ({self.max_tags_per_file}) exceeds "
-                    f"tag index limit ({index_max_tags})"
-                )
-            return self.context.response
-
-        dates: set[str] = set()
         for target in targets:
-            if day := self._daily_date(target.path):
-                dates.add(day)
             try:
-                summary = await self._process_target(target, tag_index.tag_key, max_tag_length)
+                summary = await self._process_target(target)
                 results.append(
                     {
                         "change": target.change,
@@ -260,11 +192,6 @@ class AutoTagStep(BaseStep):
                 )
                 self.logger.warning(f"[{self.name}] failed path={target.path}: {exc}")
 
-        index_updates = await self._sync_results(results)
-
-        for day in sorted(dates):
-            indexes.append(await refresh_day_index(self.file_store, day, self.config_value("daily_dir")))
-
         failed = sum(not item["success"] for item in results)
         succeeded = len(results) - failed
         self.context.response.success = initial_success and failed == 0
@@ -280,7 +207,5 @@ class AutoTagStep(BaseStep):
             "failed": failed,
             "ignored": ignored,
             "results": results,
-            "index_updates": index_updates,
-            "indexes": indexes,
         }
         return self.context.response

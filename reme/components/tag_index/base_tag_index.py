@@ -4,6 +4,7 @@ from abc import abstractmethod
 from typing import ClassVar, Literal, TypedDict
 
 from ..base_component import BaseComponent
+from ...constants import DEFAULT_MEMORY_TAG_KEY
 from ...enumeration import ComponentEnum
 from ...schema import FileNode
 
@@ -28,7 +29,7 @@ class BaseTagIndex(BaseComponent):
     component_type = ComponentEnum.TAG_INDEX
     reserved_tag_keys: ClassVar[frozenset[str]] = frozenset()
 
-    def __init__(self, tag_key: object = "memory_tags", **kwargs):
+    def __init__(self, tag_key: object = DEFAULT_MEMORY_TAG_KEY, **kwargs):
         super().__init__(**kwargs)
         self._tag_key = self._validate_tag_key(tag_key)
         self.is_healthy = True

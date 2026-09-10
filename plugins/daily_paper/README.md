@@ -68,7 +68,7 @@ download and parse arXiv PDFs, then write three Chinese analyses
                  ↓
 use search + read to connect prior memory and generate a brief
                  ↓
-generate memory tags and synchronously refresh indexes
+generate memory tags; the background file watcher refreshes indexes
                  ↓
 optionally send the brief to DingTalk
 ```
@@ -87,9 +87,10 @@ PDFs and files without a text layer fail explicitly.
 
 `daily_paper_digest_step` treats those three analyses as the factual source and receives only the read-only
 `search` and `read` tools for linking earlier memory. Code validates historical wikilinks, appends links to all
-three source notes, and rebuilds the daily index. The workflow then runs `auto_tag_step` for all three analyses and the
-final brief before the optional `dingtalk_markdown_send_step` sends the brief. DingTalk delivery skips without side
-effects when conversation IDs are not configured.
+three source notes, and rebuilds the daily index. The workflow then runs `auto_tag_step` to update the memory-tag
+frontmatter of all three analyses and the final brief. The normal background file watcher observes those source-file
+changes and refreshes derived indexes before the optional `dingtalk_markdown_send_step` sends the brief. DingTalk
+delivery skips without side effects when conversation IDs are not configured.
 
 ## Parameters
 

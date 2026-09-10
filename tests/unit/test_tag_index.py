@@ -7,10 +7,12 @@ from pathlib import Path
 
 import pytest
 
+from reme.components.application_context import ApplicationContext
 from reme.components.file_chunker import MarkdownFileChunker
 from reme.components.file_store import LocalFileStore
 from reme.components.tag_index import LocalTagIndex
 from reme.config import resolve_app_config
+from reme.enumeration import ComponentEnum
 from reme.schema import FileChunk, FileFrontMatter, FileNode
 from reme.steps.index.list_tags import ListTagsStep
 
@@ -22,6 +24,12 @@ def _node(path: str, tags: object = None, *, key: str = "memory_tags") -> FileNo
 
 def _chunk(chunk_id: str, path: str, text: str) -> FileChunk:
     return FileChunk(id=chunk_id, path=path, text=text, start_line=1, end_line=1)
+
+
+def _standalone_file_store_with_tag_index(**kwargs) -> LocalFileStore:
+    store = LocalFileStore(tag_index="", **kwargs)
+    store.tag_index = LocalTagIndex()
+    return store
 
 
 def test_tag_normalization_and_bidirectional_mutations() -> None:
@@ -259,6 +267,38 @@ def test_configured_frontmatter_key_contract() -> None:
     assert not index.is_healthy
 
 
+def test_file_store_tag_index_binding_has_no_default_factory() -> None:
+    """Require configured tag indexes instead of silently constructing one."""
+    store = LocalFileStore(name="test", embedding_store="", tag_index="custom")
+    dependency = store.dependency_bindings["tag_index"]
+
+    assert dependency.name == "custom"
+    assert dependency.default_factory is None
+    assert dependency.optional is False
+
+
+@pytest.mark.parametrize("tag_index_name", ["", "custom", "missing"])
+def test_file_store_resolves_configured_tag_index(tag_index_name: str, tmp_path: Path) -> None:
+    """Resolve tag indexes by configured component name and fail on missing names."""
+
+    async def run() -> None:
+        context = ApplicationContext(workspace_dir=str(tmp_path))
+        index = LocalTagIndex(name="custom", tag_key="keywords")
+        context.components = {ComponentEnum.TAG_INDEX: {"custom": index}}
+        store = LocalFileStore(app_context=context, embedding_store="", tag_index=tag_index_name)
+
+        if tag_index_name == "missing":
+            with pytest.raises(ValueError, match="tag_index 'missing' not found"):
+                await store.start()
+            assert not store.is_started
+        else:
+            await store._resolve_bindings()
+            assert store.tag_index is (index if tag_index_name else None)
+            assert store.tag_index_enabled is bool(tag_index_name)
+
+    asyncio.run(run())
+
+
 def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Path) -> None:
     """Keep daily and digest tags aligned through file-store mutations."""
 
@@ -269,7 +309,7 @@ def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Pat
 
     async def run() -> None:
         monkeypatch.chdir(tmp_path)
-        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        store = _standalone_file_store_with_tag_index(name="test", embedding_store="")
         await store.start()
         assert isinstance(store.tag_index, LocalTagIndex)
         assert store.tag_index_enabled is True
@@ -304,7 +344,7 @@ def test_tag_failures_do_not_block_other_indexes_and_retry_rebuild(monkeypatch, 
 
     async def run() -> None:
         monkeypatch.chdir(tmp_path)
-        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        store = _standalone_file_store_with_tag_index(name="test", embedding_store="")
         await store.start()
         assert store.tag_index_enabled
         original_rebuild = store.tag_index.rebuild
@@ -344,7 +384,7 @@ def test_failed_tag_reconciliation_makes_queries_fail_closed(monkeypatch, tmp_pa
 
     async def run() -> None:
         monkeypatch.chdir(tmp_path)
-        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        store = _standalone_file_store_with_tag_index(name="test", embedding_store="")
         await store.start()
         assert store.tag_index_enabled
         await store.upsert([(_node("daily/a.md", ["old"]), [])])
@@ -371,7 +411,7 @@ def test_tag_rebuild_graph_read_failure_does_not_block_upsert(monkeypatch, tmp_p
 
     async def run() -> None:
         monkeypatch.chdir(tmp_path)
-        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        store = _standalone_file_store_with_tag_index(name="test", embedding_store="")
         await store.start()
         assert store.tag_index_enabled
         assert store.file_graph is not None
@@ -401,7 +441,7 @@ def test_explicit_reindex_restores_tag_index(monkeypatch, tmp_path: Path) -> Non
 
     async def run() -> None:
         monkeypatch.chdir(tmp_path)
-        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        store = _standalone_file_store_with_tag_index(name="test", embedding_store="")
         await store.start()
         assert store.tag_index_enabled
         await store.upsert(
@@ -437,7 +477,7 @@ def test_tag_delete_failures_do_not_block_core_deletion(monkeypatch, tmp_path: P
 
     async def run() -> None:
         monkeypatch.chdir(tmp_path)
-        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        store = _standalone_file_store_with_tag_index(name="test", embedding_store="")
         await store.start()
         assert store.tag_index_enabled
         chunk = _chunk("chunk-a", "daily/a.md", "alpha memory")
@@ -472,7 +512,7 @@ def test_existing_markdown_chunker_supplies_frontmatter_tags(monkeypatch, tmp_pa
         note.write_text("---\nmemory_tags: [Python, ReMe]\n---\nbody\n", encoding="utf-8")
         node, chunks = await MarkdownFileChunker().chunk(note)
 
-        store = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        store = _standalone_file_store_with_tag_index(name="test", embedding_store="")
         await store.start()
         await store.upsert([(node, chunks)])
 
@@ -487,14 +527,14 @@ def test_file_store_rebuilds_non_persistent_tag_index_from_graph(monkeypatch, tm
 
     async def run() -> None:
         monkeypatch.chdir(tmp_path)
-        first = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        first = _standalone_file_store_with_tag_index(name="test", embedding_store="")
         await first.start()
         await first.upsert([(_node("daily/a.md", ["ReMe"]), [])])
         await first.close()
 
         assert not list((tmp_path / "metadata").glob("tag_index/**/*"))
 
-        restored = LocalFileStore(name="test", embedding_store="", tag_index="default")
+        restored = _standalone_file_store_with_tag_index(name="test", embedding_store="")
         await restored.start()
         assert await restored.tag_index.paths_for_tags(["reme"]) == ["daily/a.md"]
         await restored.close()
@@ -515,9 +555,9 @@ def test_default_config_enables_tag_index_with_explicit_key() -> None:
     assert config["jobs"]["search"]["parameters"]["properties"]["tags"]["default"] == []
     assert config["jobs"]["auto_memory"]["steps"] == [
         {"backend": "auto_memory_step"},
-        {"backend": "auto_tag_step", "max_tags_per_file": 3},
+        {"backend": "auto_tag_step"},
     ]
     assert config["jobs"]["auto_memory_cc"]["steps"] == [
         {"backend": "auto_memory_cc_step"},
-        {"backend": "auto_tag_step", "max_tags_per_file": 3},
+        {"backend": "auto_tag_step"},
     ]

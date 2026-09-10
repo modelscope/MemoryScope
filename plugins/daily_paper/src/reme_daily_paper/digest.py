@@ -108,7 +108,7 @@ class DailyPaperDigestStep(DailyPaperStep):
         title = normalize_chinese_title(output.title, f"每日论文简报-{day}")
         existing_rel = str(self._state("existing_digest_path") or "").strip()
         existing_path = self.workspace_path / existing_rel if existing_rel else None
-        digest_change = "modified" if existing_path is not None and existing_path.is_file() else "added"
+        existing_was_file = existing_path is not None and existing_path.is_file()
         title, digest_path = resolve_unique_note_path(
             self.workspace_path / daily_dir / day,
             title,
@@ -136,9 +136,11 @@ class DailyPaperDigestStep(DailyPaperStep):
                 "generated_at": utc_now_iso(),
             },
         )
-        if existing_path is not None and existing_path != digest_path:
-            existing_path.unlink()
         changes = list(self.context.get("changes") or [])
+        if existing_was_file and existing_path != digest_path:
+            existing_path.unlink()
+            changes.append({"change": "deleted", "path": existing_rel})
+        digest_change = "modified" if existing_was_file and existing_path == digest_path else "added"
         changes.append({"change": digest_change, "path": digest_rel})
         self.context["changes"] = changes
         self._set_state("digest_path", digest_rel)

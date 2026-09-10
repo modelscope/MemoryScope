@@ -78,7 +78,7 @@ validate historical wikilinks in code
         ↓
 daily/YYYY-MM-DD/auto_fin.md
         ↓
-generate memory tags and synchronously refresh indexes
+generate memory tags; the background file watcher refreshes indexes
 ```
 
 `auto_fin_data_step` signs and paginates the same endpoint used by the CLS website. It starts at the decision time and
@@ -96,8 +96,9 @@ workspace-relative Markdown targets. Missing, absolute, escaping, backslash, and
 to their readable aliases.
 
 Same-day reruns use the existing report as context and replace it with the revised result. The final write is atomic and
-refreshes the daily index. The workflow then runs `auto_tag_step` for the generated report so its configured memory-tag
-frontmatter stays aligned with ReMe's tag index. No JSONL, intermediate Markdown, or structured Agent output is written.
+refreshes the daily index. The workflow then runs `auto_tag_step` to update the generated report's memory-tag
+frontmatter; the normal background file watcher observes that source-file change and refreshes derived indexes. No
+JSONL, intermediate Markdown, or structured Agent output is written.
 
 ## Parameters
 

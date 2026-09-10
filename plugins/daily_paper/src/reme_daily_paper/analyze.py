@@ -155,12 +155,14 @@ class DailyPaperAnalyzeStep(DailyPaperStep):
                 "pdf_text_truncated": truncated,
             },
         )
-        if existing_note is not None and existing_note != note_path:
-            existing_note.unlink()
         changes = list(self.context.get("changes") or [])
+        if existing_note is not None and existing_note != note_path:
+            existing_rel = existing_note.relative_to(self.workspace_path).as_posix()
+            existing_note.unlink()
+            changes.append({"change": "deleted", "path": existing_rel})
         changes.append(
             {
-                "change": "modified" if existing_note is not None else "added",
+                "change": "modified" if existing_note == note_path else "added",
                 "path": note_rel,
             },
         )

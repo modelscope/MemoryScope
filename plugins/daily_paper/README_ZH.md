@@ -64,7 +64,7 @@ RRF 排序后由 Agent 精选三篇
           ↓
 使用 search + read 关联历史记忆并生成简报
           ↓
-生成记忆标签并同步刷新索引
+生成记忆标签，由后台文件 watcher 刷新索引
           ↓
 按需发送到钉钉
 ```
@@ -79,8 +79,9 @@ RRF 排序后由 Agent 精选三篇
 文本。三篇中文解读按精选顺序写入当天目录；扫描版或没有文本层的 PDF 会明确失败。
 
 `daily_paper_digest_step` 以本次生成的三篇解读为事实来源，只开放只读的 `search` 和 `read` 来关联较早记忆。
-代码会校验历史 wikilink、追加三篇源笔记链接，并重建当日索引。随后 `auto_tag_step` 会为三篇解读及最终简报维护
-记忆标签，再由可选的 `dingtalk_markdown_send_step` 发送最终简报；未配置群会话时无副作用跳过。
+代码会校验历史 wikilink、追加三篇源笔记链接，并重建当日索引。随后 `auto_tag_step` 会更新三篇解读及最终简报的
+记忆标签 frontmatter，常规后台文件 watcher 会观察这些源文件变化并刷新派生索引，再由可选的
+`dingtalk_markdown_send_step` 发送最终简报；未配置群会话时无副作用跳过。
 
 ## 参数
 

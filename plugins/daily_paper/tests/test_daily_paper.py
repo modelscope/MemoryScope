@@ -74,7 +74,7 @@ def test_plugin_manifest_declares_complete_runtime_surface():
         "auto_tag_step",
         "dingtalk_markdown_send_step",
     ]
-    assert jobs["daily_paper"]["steps"][5]["max_tags_per_file"] == 3
+    assert jobs["daily_paper"]["steps"][5] == {"backend": "auto_tag_step"}
     assert jobs["daily_paper_cron"]["steps"] == jobs["daily_paper"]["steps"]
 
 
@@ -1002,6 +1002,10 @@ async def test_digest_force_migrates_old_fixed_filename_to_chinese_title(tmp_pat
     assert new_path.is_file()
     assert not old_path.exists()
     assert context["daily_paper_digest_path"] == "daily/2026-07-21/全新论文简报.md"
+    assert context["changes"] == [
+        {"change": "deleted", "path": "daily/2026-07-21/daily-paper-brief.md"},
+        {"change": "added", "path": "daily/2026-07-21/全新论文简报.md"},
+    ]
 
 
 @pytest.mark.asyncio

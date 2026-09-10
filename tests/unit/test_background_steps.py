@@ -1998,7 +1998,7 @@ def test_auto_memory_reports_modified_for_create_and_false_for_skip():
         with tempfile.TemporaryDirectory() as tmpdir, temp_chdir(tmpdir):
             cwd = Path.cwd()
             app_ctx = _make_app_context(cwd)
-            fs = LocalFileStore(name="test_store", embedding_store="", tag_index="default")
+            fs = LocalFileStore(name="test_store", embedding_store="", tag_index="")
             wrapper = _FakeAgentWrapper()
             await fs.start()
             _install_file_jobs(app_ctx, fs)

@@ -73,7 +73,7 @@ Research Agent 使用 search + read 检索历史记忆
         ↓
 daily/YYYY-MM-DD/auto_fin.md
         ↓
-生成记忆标签并同步刷新索引
+生成记忆标签，由后台文件 watcher 刷新索引
 ```
 
 `auto_fin_data_step` 使用财联社网页同源接口的签名和分页方式，从分析时刻开始向前翻页，直到完整覆盖严格的最近 24
@@ -87,7 +87,8 @@ Prompt 要求 Agent 只链接实际使用过的历史 Markdown；代码边界则
 workspace 的 Markdown 目标。不存在、绝对路径、越界、带反斜杠和自引用的目标都会降级为可读 alias。
 
 同日重跑会参考当天已有报告并覆盖为修订结果。最终写入使用原子替换并刷新当天索引，随后通过 `auto_tag_step`
-为报告维护与 ReMe tag index 配置一致的记忆标签；流程不会写入 JSONL、中间 Markdown 或 Agent 结构化输出。
+更新报告的记忆标签 frontmatter；常规后台文件 watcher 会观察该源文件变化并刷新派生索引。流程不会写入 JSONL、
+中间 Markdown 或 Agent 结构化输出。
 
 ## 参数
 

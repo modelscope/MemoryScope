@@ -19,14 +19,13 @@ sys.path.insert(0, str(INTEGRATION_DIR))
 # pylint: disable=wrong-import-position
 from _workspace_fixture import workspace_env  # noqa: E402
 
-from reme.enumeration import ComponentEnum  # noqa: E402
 from reme.utils import load_env  # noqa: E402
 
 AUTO_TAG_JOB = {
     "integration_auto_tag": {
         "backend": "base",
         "enable_serve": False,
-        "steps": [{"backend": "auto_tag_step", "max_tags_per_file": 3}],
+        "steps": [{"backend": "auto_tag_step"}],
     },
 }
 
@@ -170,11 +169,6 @@ async def _run_tag_job(env, changes: list[dict[str, str]]):
     return app, response
 
 
-def _tag_index(app):
-    file_store = app.context.components[ComponentEnum.FILE_STORE]["default"]
-    return file_store.require_tag_index()
-
-
 def test_auto_tag_auto_fin_report_uses_company_entity():
     """An Auto Fin report should be tagged with its company, not broad finance topics."""
 
@@ -185,16 +179,13 @@ def test_auto_tag_auto_fin_report_uses_company_entity():
             path = _write(env.workspace_dir, relative, AUTO_FIN_REPORT)
             before = _post(path)
             try:
-                app, response = await _run_tag_job(env, [{"change": "added", "path": relative}])
+                _app, _response = await _run_tag_job(env, [{"change": "added", "path": relative}])
                 tags = _tags(path)
                 _assert_any_tag(tags, {"宁德时代", "CATL"})
                 assert len(tags) == 1, f"single-entity report received extra tags: {tags!r}"
                 after = _post(path)
                 assert after.content == before.content
                 assert {key: value for key, value in after.metadata.items() if key != "memory_tags"} == before.metadata
-                indexed = await _tag_index(app).tags_for_path(relative)
-                assert indexed == [tags[0].casefold()]
-                assert response.metadata["auto_tag"]["indexes"][0]["date"] == "2026-09-10"
             finally:
                 await env.close_all()
 
@@ -216,7 +207,7 @@ def test_auto_tag_daily_paper_batch_tags_analyses_and_digest():
             before = {relative: _post(path) for relative, path in paths.items()}
             changes = [{"change": "added", "path": relative} for relative in paths]
             try:
-                app, response = await _run_tag_job(env, changes)
+                _app, response = await _run_tag_job(env, changes)
                 expected = {
                     "daily/2026-09-10/openai-agent-eval.md": "OpenAI",
                     "daily/2026-09-10/anthropic-context.md": "Anthropic",
@@ -239,12 +230,8 @@ def test_auto_tag_daily_paper_batch_tags_analyses_and_digest():
                     assert {key: value for key, value in after.metadata.items() if key != "memory_tags"} == before[
                         relative
                     ].metadata
-                    indexed = await _tag_index(app).tags_for_path(relative)
-                    assert {tag.casefold() for tag in indexed} == {tag.casefold() for tag in _tags(path)}
-
                 auto_tag = response.metadata["auto_tag"]
                 assert [item["path"] for item in auto_tag["results"]] == list(paths)
-                assert len(auto_tag["indexes"]) == 1, "one daily index refresh is enough for a same-day batch"
             finally:
                 await env.close_all()
 
@@ -281,14 +268,12 @@ status: reviewed
             )
             body_before = _post(target).content
             try:
-                app, response = await _run_tag_job(env, [{"change": "modified", "path": relative}])
+                _app, response = await _run_tag_job(env, [{"change": "modified", "path": relative}])
                 tags = _tags(target)
                 assert [tag.casefold() for tag in tags] == ["openai"]
                 post = _post(target)
                 assert post.content == body_before
                 assert post.metadata["status"] == "reviewed"
-                indexed = await _tag_index(app).tags_for_path(relative)
-                assert indexed == ["openai"]
                 assert response.metadata["auto_tag"]["results"][0]["change"] == "modified"
             finally:
                 await env.close_all()
