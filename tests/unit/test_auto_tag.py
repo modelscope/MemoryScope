@@ -91,6 +91,16 @@ async def test_auto_tag_handles_noop_and_rejects_invalid_preconditions(tmp_path,
     assert not wrapper.calls
     assert note.read_bytes() == before
 
+    indexed_store.tag_index = LocalTagIndex()
+    indexed_store.tag_index.set_healthy(False)
+    response = await AutoTagStep(file_store=indexed_store, agent_wrapper=wrapper)(
+        RuntimeContext(changes=[{"change": "added", "path": "daily/2026-09-09/note.md"}]),
+    )
+    assert response.success is False
+    assert response.answer == "Error: tag index unavailable"
+    assert not wrapper.calls
+    assert note.read_bytes() == before
+
 
 @pytest.mark.asyncio
 async def test_auto_tag_filters_paths_and_continues_after_one_file_fails(tmp_path, monkeypatch):

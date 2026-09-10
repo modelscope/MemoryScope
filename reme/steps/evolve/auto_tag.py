@@ -47,7 +47,7 @@ def normalize_memory_tags(
     for item in value:
         if not isinstance(item, str):
             continue
-        tag = " ".join(item.split())
+        tag = "_".join(item.split())
         if not tag or len(tag) > max_tag_length or not any(char.isalnum() for char in tag):
             continue
         canonical = tag.casefold()
@@ -181,6 +181,11 @@ class AutoTagStep(BaseStep):
             return self.context.response
 
         tag_index = self.file_store.require_tag_index() if targets else None
+        if tag_index is not None and not tag_index.is_healthy:
+            self.context.response.success = False
+            if initial_success:
+                self.context.response.answer = "Error: tag index unavailable"
+            return self.context.response
         max_tag_length = self._index_limit(tag_index, "max_tag_length", _DEFAULT_MAX_MEMORY_TAG_LENGTH)
         index_max_tags = self._index_limit(tag_index, "max_tags_per_file", None)
         if index_max_tags is not None and self.max_tags_per_file > index_max_tags:

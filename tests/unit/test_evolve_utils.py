@@ -88,7 +88,7 @@ def test_auto_tag_normalizes_frontmatter_tags():
             "宁德时代",
             "黄金",
         ],
-    ) == ["OpenAI", "Sam Altman", "宁德时代"]
+    ) == ["OpenAI", "Sam_Altman", "宁德时代"]
     # pylint: disable=use-implicit-booleaness-not-comparison
     assert normalize_memory_tags(None) == []
     assert normalize_memory_tags("OpenAI") == []

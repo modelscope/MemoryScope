@@ -30,12 +30,12 @@ def test_tag_normalization_and_bidirectional_mutations() -> None:
     async def run() -> None:
         index = LocalTagIndex(max_tags_per_file=3)
         await index.start()
-        await index.upsert_nodes([_node("daily/a.md", ["Python", "PYTHON", "C++", ".NET", "ignored"])])
+        await index.upsert_nodes([_node("daily/a.md", ["Python Tag", "PYTHON TAG", "C++", ".NET", "ignored"])])
 
-        assert await index.tags_for_path("daily/a.md") == ["python", "c++", ".net"]
-        assert await index.paths_for_tags(["PYTHON"]) == ["daily/a.md"]
+        assert await index.tags_for_path("daily/a.md") == ["python_tag", "c++", ".net"]
+        assert await index.paths_for_tags(["PYTHON TAG"]) == ["daily/a.md"]
         assert index.tag_to_paths == {
-            "python": {"daily/a.md"},
+            "python_tag": {"daily/a.md"},
             "c++": {"daily/a.md"},
             ".net": {"daily/a.md"},
         }
@@ -99,7 +99,7 @@ def test_queries_are_not_truncated_by_per_file_tag_limit() -> None:
             "daily/a.md",
             "daily/c.md",
         ]
-        assert index.normalize_query_tags([" A ", "B", "c", "a", "too-long-tag", " "]) == ["a", "b", "c"]
+        assert index.normalize_query_tags([" A ", "B", "c c", "a", "too-long-tag", " "]) == ["a", "b", "c_c"]
 
     asyncio.run(run())
 
@@ -180,6 +180,10 @@ def test_list_tags_paginates_and_applies_default_sort_orders() -> None:
             with pytest.raises(ValueError, match=message):
                 await index.list_tags(**kwargs)
 
+        index.set_healthy(False)
+        with pytest.raises(RuntimeError, match="tag index is unavailable"):
+            await index.list_tags()
+
         store = LocalFileStore(name="test", embedding_store="", tag_index="")
         store.tag_index = LocalTagIndex()
         await store.tag_index.rebuild([_node("daily/a.md", ["ReMe"])])
@@ -229,6 +233,11 @@ def test_configured_frontmatter_key_contract() -> None:
         (123, "tag_key must be a non-empty string", False),
         ("name", "tag_key must not be a reserved frontmatter key", False),
         ("description", "tag_key must not be a reserved frontmatter key", False),
+        ("kind", "tag_key must not be a reserved frontmatter key", False),
+        ("session_id", "tag_key must not be a reserved frontmatter key", False),
+        ("source_conversation", "tag_key must not be a reserved frontmatter key", False),
+        ("source_resource", "tag_key must not be a reserved frontmatter key", False),
+        ("status", "tag_key must not be a reserved frontmatter key", False),
         ("", "tag_key must be a non-empty string", True),
         ("name", "tag_key must not be a reserved frontmatter key", True),
         ("description", "tag_key must not be a reserved frontmatter key", True),
@@ -506,5 +515,9 @@ def test_default_config_enables_tag_index_with_explicit_key() -> None:
     assert config["jobs"]["search"]["parameters"]["properties"]["tags"]["default"] == []
     assert config["jobs"]["auto_memory"]["steps"] == [
         {"backend": "auto_memory_step"},
+        {"backend": "auto_tag_step", "max_tags_per_file": 3},
+    ]
+    assert config["jobs"]["auto_memory_cc"]["steps"] == [
+        {"backend": "auto_memory_cc_step"},
         {"backend": "auto_tag_step", "max_tags_per_file": 3},
     ]

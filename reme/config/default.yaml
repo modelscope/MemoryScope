@@ -207,6 +207,8 @@ jobs:
         - session_id
     steps:
       - backend: auto_memory_cc_step
+      - backend: auto_tag_step
+        max_tags_per_file: 3
 
   auto_resource:
     backend: base

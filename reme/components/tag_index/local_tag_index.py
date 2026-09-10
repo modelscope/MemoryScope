@@ -12,7 +12,13 @@ from ...schema import FileFrontMatter, FileNode
 class LocalTagIndex(BaseTagIndex):
     """Maintain bidirectional path/tag relationships without separate source I/O."""
 
-    reserved_tag_keys = frozenset(FileFrontMatter.model_fields)
+    reserved_tag_keys = frozenset(FileFrontMatter.model_fields) | {
+        "kind",
+        "session_id",
+        "source_conversation",
+        "source_resource",
+        "status",
+    }
 
     def __init__(
         self,
@@ -47,7 +53,7 @@ class LocalTagIndex(BaseTagIndex):
         for item in value:
             if isinstance(item, bool) or not isinstance(item, (str, int)):
                 continue
-            raw = " ".join(str(item).split())
+            raw = "_".join(str(item).split())
             if not raw or len(raw) > self.max_tag_length:
                 continue
             if not any(char.isalnum() for char in raw):
@@ -183,9 +189,9 @@ class LocalTagIndex(BaseTagIndex):
             raise ValueError("order must be one of ['asc', 'desc']")
 
         async with self._maintenance_lock:
-            items: list[TagListItem] = (
-                [(tag, len(paths)) for tag, paths in self.tag_to_paths.items()] if self.is_healthy else []
-            )
+            if not self.is_healthy:
+                raise RuntimeError("tag index is unavailable")
+            items: list[TagListItem] = [(tag, len(paths)) for tag, paths in self.tag_to_paths.items()]
 
         if order_by == "tag":
             items.sort(key=lambda item: item[0], reverse=order == "desc")

@@ -263,6 +263,10 @@ def test_configs_define_original_jobs_without_daily_variants():
         {"backend": "auto_memory_step"},
         {"backend": "auto_tag_step", "max_tags_per_file": 3},
     ]
+    assert default["jobs"]["auto_memory_cc"]["steps"] == [
+        {"backend": "auto_memory_cc_step"},
+        {"backend": "auto_tag_step", "max_tags_per_file": 3},
+    ]
 
 
 if __name__ == "__main__":
