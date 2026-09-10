@@ -180,13 +180,13 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
     note = tmp_path / "memory/note.md"
     _write_note(note)
     store = LocalFileStore(name="store", embedding_store="", tag_index="")
-    store.tag_index = LocalTagIndex(tag_key="keywords")
+    store.tag_index = LocalTagIndex(tag_key="keywords", max_tag_length=8)
     wrapper = _TaggingWrapper(
         tmp_path,
         tag_key="keywords",
         tags=["OpenAI", "openai", "Sam   Altman", "++", 100, "宁德时代", "黄金"],
     )
-    step = AutoTagStep(file_store=store, agent_wrapper=wrapper)
+    step = AutoTagStep(file_store=store, agent_wrapper=wrapper, max_tags_per_file=2)
 
     async def update_frontmatter(name, /, **kwargs):
         assert name == "frontmatter_update"
@@ -206,7 +206,6 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
     assert response.answer == "Created memory/note.md"
     assert frontmatter.loads(note.read_text(encoding="utf-8")).metadata["keywords"] == [
         "OpenAI",
-        "Sam Altman",
         "宁德时代",
     ]
     assert "Change: modified" in wrapper.calls[0][0]
@@ -225,3 +224,27 @@ def test_normalize_memory_tags_enforces_entity_storage_contract():
             "黄金",
         ],
     ) == ["OpenAI", "Sam Altman", "宁德时代"]
+    assert normalize_memory_tags(
+        ["one", "two", "three"],
+        max_tags_per_file=2,
+        max_tag_length=3,
+    ) == ["one", "two"]
+
+
+@pytest.mark.asyncio
+async def test_auto_tag_rejects_limit_above_tag_index_ceiling(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    note = tmp_path / "memory/note.md"
+    _write_note(note)
+    before = note.read_bytes()
+    store = LocalFileStore(name="store", embedding_store="", tag_index="")
+    store.tag_index = LocalTagIndex(max_tags_per_file=2)
+    wrapper = _TaggingWrapper(tmp_path)
+    step = AutoTagStep(file_store=store, agent_wrapper=wrapper, max_tags_per_file=3)
+
+    response = await step(RuntimeContext(changes=[{"change": "modified", "path": "memory/note.md"}]))
+
+    assert response.success is False
+    assert response.answer == "Error: auto_tag max_tags_per_file (3) exceeds tag index limit (2)"
+    assert not wrapper.calls
+    assert note.read_bytes() == before

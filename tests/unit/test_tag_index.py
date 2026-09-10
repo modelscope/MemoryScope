@@ -570,5 +570,5 @@ def test_default_config_enables_tag_index_with_explicit_key() -> None:
     assert config["jobs"]["search"]["parameters"]["properties"]["tags"]["default"] == []
     assert config["jobs"]["auto_memory"]["steps"] == [
         {"backend": "auto_memory_step"},
-        {"backend": "auto_tag_step"},
+        {"backend": "auto_tag_step", "max_tags_per_file": 3},
     ]
