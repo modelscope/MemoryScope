@@ -12,15 +12,9 @@ import httpx
 from agentscope.agent import ContextConfig
 from agentscope.message import Base64Source, DataBlock, Msg, TextBlock, UserMsg
 
-from ._image_caption import (
-    DEFAULT_MAX_IMAGE_INPUT_BYTES,
-    _build_image_request_payload,
-    generate_image_caption,
-    resolve_vision_model,
-)
+from ._image_caption import DEFAULT_MAX_IMAGE_INPUT_BYTES, _build_image_request_payload
 from ..file_io._path import _check_path_permission, resolve_path
 from ...components.agent_wrapper.as_agent_wrapper import AsAgentWrapper
-from ...components.prompt_handler import PromptHandler
 from ...enumeration import ComponentEnum
 
 
@@ -32,10 +26,13 @@ async def prepare_direct_message(
 ) -> Msg | None:
     """Interleave images with the existing rendered history and memory prompt.
 
-    Use the same bounded source loading and provider preprocessing as captions,
-    but retain image data instead of introducing a model-generated description.
+    Use shared bounded source loading and provider preprocessing, retaining image
+    data instead of introducing a model-generated description.
     No memory Agent has run yet, so preparation failures can safely fall back.
     """
+    wrapper = step.agent_wrapper
+    if not isinstance(wrapper, AsAgentWrapper):
+        raise NotImplementedError("Direct images require the AgentScope wrapper")
     images = [
         (message_index, block_index, block)
         for message_index, message in enumerate(messages)
@@ -46,12 +43,14 @@ async def prepare_direct_message(
     step.context.response.metadata["auto_memory_images"] = metadata
     if not images:
         return None
-    stage = "backend"
+    if not step.context.get("supports_vision", step.kwargs.get("supports_vision", False)):
+        metadata.update(status="fallback", reason="supports_vision=false")
+        step.logger.warning(
+            f"[{step.name}] supports_vision is false; continuing with text-only memory without reading images.",
+        )
+        return None
+    stage = "model"
     try:
-        wrapper = step.agent_wrapper
-        if not isinstance(wrapper, AsAgentWrapper):
-            raise TypeError("Direct images require the AgentScope wrapper")
-        stage = "model"
         component = wrapper.as_llm
         if step.app_context is not None:
             component = step.app_context.components.get(ComponentEnum.AS_LLM, {}).get("vision", component)
@@ -149,81 +148,3 @@ async def _image_bytes(step, source) -> bytes:
     if not data or len(data) > limit:
         raise ValueError("Image is empty or exceeds the byte limit")
     return data
-
-
-async def prepare_image_messages(step, messages: list[Msg], day: str) -> tuple[list[Msg], bool]:
-    """Caption image blocks in copies, or visibly fall back to the original input.
-
-    Identical bytes share a caption only within this invocation. Block positions,
-    not caller-supplied IDs, identify replacements. Cancellation propagates.
-    """
-    images = [
-        (message_index, block_index, block.source)
-        for message_index, message in enumerate(messages)
-        for block_index, block in enumerate(message.content)
-        if block.type == "data" and block.source.media_type.startswith("image/")
-    ]
-    metadata = {"mode": "caption-only", "status": "skipped", "image_count": len(images), "captioned_images": 0}
-    step.context.response.metadata["auto_memory_images"] = metadata
-    if not images:
-        return messages, False
-
-    captions: dict[bytes, str] = {}
-    positions: dict[tuple[int, int], str] = {}
-    stage = "model"
-    try:
-        model = resolve_vision_model(step)
-        if model is None:
-            raise ValueError("Image captioning requires a vision-capable model")
-        stage = "prompt"
-        prompt = PromptHandler(language=step.language).load_prompt_by_file(
-            Path(__file__).with_name("auto_image_resource.yaml"),
-        )
-        for message_index, block_index, source in images:
-            stage = "source"
-            data = await _image_bytes(step, source)
-            if data not in captions:
-                stage = "decode"
-                payload = _build_image_request_payload(data, "")
-                stage = "caption"
-                parsed = await generate_image_caption(
-                    model,
-                    payload,
-                    prompt.prompt_format(
-                        "user_message",
-                        file_path="(inline session image; not saved)",
-                        filename=f"session-image-{len(captions) + 1}",
-                        stem="session-image",
-                        date=day,
-                    ),
-                    logger=step.logger,
-                    name=step.name,
-                )
-                captions[data] = parsed["caption"]
-                metadata["captioned_images"] = len(captions)
-            positions[(message_index, block_index)] = captions[data]
-    except Exception as exc:  # pylint: disable=broad-except
-        # URLs and provider/decoder exceptions may contain credentials or image data.
-        reason = f"{stage}: {type(exc).__name__}"
-        metadata.update({"status": "fallback", "reason": reason})
-        step.logger.warning(
-            f"[{step.name}] Image processing failed ({reason}); falling back to the original "
-            f"text-only memory input for all {len(images)} image block(s)",
-        )
-        return messages, False
-
-    prepared = []
-    for message_index, message in enumerate(messages):
-        content = [
-            (
-                TextBlock(
-                    text=f"[Image]\nCaption (model-generated):\n{positions[(message_index, block_index)]}\n[/Image]",
-                )
-                if (message_index, block_index) in positions
-                else block
-            )
-            for block_index, block in enumerate(message.content)
-        ]
-        prepared.append(message.model_copy(update={"content": content}))
-    metadata["status"] = "completed"
-    return prepared, True

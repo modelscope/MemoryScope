@@ -9,7 +9,7 @@ import frontmatter
 from agentscope.message import Msg
 
 from ._evolve import agent_reply_result_text, format_history, now
-from ._auto_memory_image import prepare_direct_message, prepare_image_messages
+from ._auto_memory_image import prepare_direct_message
 from ..base_step import BaseStep
 from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
@@ -365,18 +365,17 @@ class AutoMemoryStep(BaseStep):
         include_images = self.context.get("include_images", self.kwargs.get("include_images", False))
         if not isinstance(include_images, bool):
             raise ValueError("include_images must be a boolean")
-        memory_messages, has_image_captions = messages, False
+        supports_vision = self.context.get("supports_vision", self.kwargs.get("supports_vision", False))
+        if not isinstance(supports_vision, bool):
+            raise ValueError("supports_vision must be a boolean")
         direct_message = None
         reply_kwargs = None
-        image_mode = None
         if include_images:
             image_mode = self.context.get("image_mode", self.kwargs.get("image_mode", "direct"))
             if image_mode == "direct":
                 reply_kwargs = dict(self._reply_extra_kwargs(day))
-            elif image_mode == "caption-only":
-                memory_messages, has_image_captions = await prepare_image_messages(self, messages, day)
             else:
-                raise ValueError("image_mode must be 'direct' or 'caption-only'")
+                raise ValueError("image_mode must be 'direct'")
 
         try:
             note = await self._list_session_note(day, session_id)
@@ -409,8 +408,8 @@ class AutoMemoryStep(BaseStep):
                 history=self._format_history(history_messages),
             )
 
-        user_message = render_user_message(memory_messages)
-        if include_images and image_mode == "direct":
+        user_message = render_user_message(messages)
+        if include_images:
             direct_message = await prepare_direct_message(self, messages, render_user_message, reply_kwargs)
             if direct_message is not None:
                 user_message = direct_message
@@ -428,8 +427,7 @@ class AutoMemoryStep(BaseStep):
             system_prompt=self.prompt_format(
                 "system_prompt",
                 enable_tags=self._tags_enabled(),
-                include_images=has_image_captions or direct_message is not None,
-                caption_only=include_images and image_mode == "caption-only" and has_image_captions,
+                include_images=direct_message is not None,
                 direct_images=direct_message is not None,
             ),
             job_tools=self.create_tools if created else self.update_tools,

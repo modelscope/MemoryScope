@@ -1,4 +1,4 @@
-"""Bounded and workspace-scoped image input for caption-only auto-memory."""
+"""Bounded and workspace-scoped image input for direct auto-memory."""
 
 # pylint: disable=protected-access,missing-function-docstring
 

@@ -80,23 +80,34 @@ blocks, preventing recalled memory and binary payloads from being mistaken for u
 
 ## Optional Session Images
 
-Images are disabled by default. Enable them per call without editing YAML or rebuilding ReMe:
+Images are disabled by default. Both boolean options, `include_images` and `supports_vision`, default to `false`.
+To send images, enable the feature and explicitly declare that your selected model supports vision:
 
 ```bash
-reme auto_memory session_id=session-a include_images=true messages='[...]'
+reme auto_memory session_id=session-a include_images=true supports_vision=true messages='[...]'
 ```
 
 For a one-shot CLI invocation, use `reme start job=auto_memory` with the same arguments.
-`include_images=false` keeps the existing text-only behavior and makes no image calls. When enabled,
-`image_mode` defaults to `direct`; select `image_mode=caption-only` for the caption-first alternative. Other modes are not supported;
-selecting an unsupported mode while images are enabled is a configuration error, not a text fallback.
+No YAML edit or rebuild is needed. `include_images` controls whether Auto Memory considers images;
+`supports_vision` is the caller's declaration about the selected model, not automatic capability detection.
+Only `include_images=true supports_vision=true` sends images. Choose a model and AgentScope formatter that support them.
+
+`include_images=false` keeps the existing text-only behavior on every wrapper, regardless of `supports_vision`.
+Text-only input still uses the existing string-based `agent_wrapper.reply()` path; other wrappers need no multimodal
+interface changes. With `include_images=true`, the wrapper must be AgentScope; other backends raise
+`NotImplementedError`, not a text fallback. `image_mode` defaults to `direct`, the only supported mode;
+selecting any other mode while images are enabled raises `ValueError`.
+
+When images are present but `supports_vision=false`, Auto Memory does not read them. It logs a warning and continues
+with the original text-only input, reporting `status=fallback` and `reason=supports_vision=false` in
+`auto_memory_images` metadata. An enabled call without image blocks reports `status=skipped`.
 
 Pass AgentScope messages in `messages`, with top-level `DataBlock` images (`source.media_type` starting with `image/`).
 Sources may be Base64, HTTP(S) URLs, or `file://` URIs inside the workspace. Local reads respect `_allowed_paths`.
-Both modes share bounded image loading and provider preprocessing (including the existing 2048-pixel maximum side,
+Image inputs use bounded loading and provider preprocessing (including the existing 2048-pixel maximum side,
 orientation correction and format conversion when needed). Original caller messages and files are unchanged.
 
-### Direct multimodal input (default when enabled)
+### Direct multimodal input
 
 With its standard history rendering, Auto Memory builds an AgentScope `UserMsg` with text and image `DataBlock` values
 interleaved within the conversation. It keeps their original order and each message's speaker and timestamp boundaries,
@@ -108,49 +119,30 @@ When no image-count limit is explicitly configured, direct mode reserves room fo
 context. An explicit `context_config.max_image_num` below the incoming count causes a visible whole-input text fallback,
 not silent removal of older images. Model/provider context limits still apply.
 
-Direct mode requires an AgentScope wrapper. When the input contains images, it uses `components.as_llm.vision` if
-configured, otherwise the wrapper's currently bound `as_llm`. This selection applies only to the current memory Agent
-invocation. Calls without images keep the wrapper's original model. A non-AgentScope wrapper produces a warning and a
-visible text-only fallback.
+When sending images, Auto Memory uses `components.as_llm.vision` if configured, otherwise the wrapper's currently
+bound `as_llm`. `supports_vision=true` must describe that selected model. This selection applies only to the current
+memory Agent invocation; calls without image inputs keep the wrapper's original model.
 
-Choose a model and formatter that support your image inputs. ReMe does not automatically validate their vision
-capabilities.
-
-### Caption-only alternative
-
-Use `include_images=true image_mode=caption-only`. Caption model selection uses the Step's explicit `as_llm` first,
-then `components.as_llm.vision`, then `components.as_llm.default`. Choose a model that supports vision. Only captioning
-uses that model; the memory Agent keeps its original model and receives a string.
-
-Each caption replaces its image block with a standard AgentScope `TextBlock` in a temporary message copy, at the same
-position. Non-image blocks and caller-owned messages are unchanged. The temporary text uses English labels:
-
-```text
-[Image]
-Caption (model-generated):
-...
-[/Image]
-```
-
-Auto Memory then extracts memory from the caption-enriched copy. Neither mode creates resource image files or separate
-caption cards. Relevant image facts may become part of the normal daily memory note. The existing AgentScope wrapper
-also saves its internal Agent state under `mem_session/agentscope`; in direct mode that state includes image inputs.
+Auto Memory does not create resource image files or separate caption cards. Relevant image facts may become part of
+the normal daily memory note. The existing AgentScope wrapper also saves its internal Agent state under
+`mem_session/agentscope`; in direct mode that state includes image inputs.
 
 **Source JSONL saving is unchanged whether images are enabled or disabled.** No captions or image metadata are added to
 it; the existing filtering above still applies. Replaying a saved JSONL cannot recover omitted
 Base64 images. Resubmit the original image-bearing messages to process those images again.
 
-If image loading, preprocessing, or captioning fails, Auto Memory logs a warning and records the fallback in
+If image loading or preprocessing fails, Auto Memory logs a warning and records the fallback in
 `auto_memory_images` response metadata. It discards all temporary image enrichment for that request and continues with the
 original text-only memory input, not a partially enriched conversation. The CLI can still succeed when that normal
 memory operation succeeds; inspect the metadata to distinguish text fallback from successful image processing.
-Cancellation, invalid enabled image-mode configuration, and failures outside the image stage are not swallowed by this
-fallback. Once the memory Agent starts, its failures propagate normally: ReMe does not rerun it as text, since its tools
+Cancellation, invalid enabled image-mode configuration, unsupported wrappers, and failures outside the image stage are
+not swallowed by this fallback. Once the memory Agent starts, its failures propagate normally: ReMe does not rerun it as text, since its tools
 may already have written memory. Direct mode reports `prepared` before the Agent runs and `completed` after it returns;
 `captioned_images` is always zero for direct mode. `completed` describes image processing, not whether a note was written.
 
-For a persistent default, set `jobs.auto_memory.include_images=true` in the application configuration (or the corresponding
-`reme start` override). Call-time options take precedence. No compilation is needed. This adapter targets AgentScope
+For persistent defaults, set `jobs.auto_memory.include_images` and `jobs.auto_memory.supports_vision` in the application
+configuration (or the corresponding `reme start` overrides). For each option, call-time values override Job defaults,
+which override Step configuration; both options default to `false`. No compilation is needed. This adapter targets AgentScope
 messages, not Claude Code transcript parsing.
 
 ## Message Timestamps

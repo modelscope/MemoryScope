@@ -182,12 +182,16 @@ jobs:
           description: "optional hint"
         include_images:
           type: boolean
-          description: "Use session images for memory extraction; source JSONL saving is unchanged"
+          description: "Use session images for memory extraction when supports_vision is true; source JSONL saving is unchanged"
+          default: false
+        supports_vision:
+          type: boolean
+          description: "Caller declares that the selected memory model supports images; does not enable images by itself"
           default: false
         image_mode:
           type: string
-          enum: [direct, caption-only]
-          description: "direct: multimodal AgentScope memory input; caption-only: temporary captions before text memory"
+          enum: [direct]
+          description: "direct: interleaved multimodal AgentScope memory input; other modes are not supported"
           default: direct
         date:
           type: string
@@ -199,6 +203,7 @@ jobs:
       - backend: auto_memory_step
         enable_tags: false
         include_images: false
+        supports_vision: false
         image_mode: direct
 
   auto_memory_cc:
