@@ -80,7 +80,7 @@ async def test_auto_tag_handles_noop_invalid_changes_and_no_tag_index(tmp_path, 
         change,
     )
 
-    assert response.success is False
+    assert response.success is True
     assert response.answer == "Tagged 0 file(s); 1 failed"
     assert not wrapper.calls
     assert "memory_tags" not in frontmatter.loads(note.read_text(encoding="utf-8")).metadata
@@ -109,10 +109,12 @@ async def test_auto_tag_filters_paths_and_continues_after_one_file_fails(tmp_pat
             {"change": "deleted", "path": "daily/2026-09-09/deleted.md"},
         ],
     )
+    context.response.answer = "Generated report"
 
     response = await step(context)
 
-    assert response.success is False
+    assert response.success is True
+    assert response.answer == "Generated report"
     assert [call[1]["injected_job_kwargs"] for call in wrapper.calls] == [
         {
             "file_store": "default",
@@ -186,7 +188,7 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
     assert response.success is True
     assert response.answer == "Created memory/note.md"
     assert frontmatter.loads(note.read_text(encoding="utf-8")).metadata["keywords"] == [
-        "openai",
-        "100",
+        "OpenAI",
+        "宁德时代",
     ]
     assert wrapper.calls[0][1]["injected_job_kwargs"]["file_store"] == "archive"

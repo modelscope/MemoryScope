@@ -10,6 +10,7 @@ from ..base_step import BaseStep
 from ..file_io._path import display_path, resolve_path
 from ..index import normalize_posix_path
 from ...components import R
+from ...constants import DEFAULT_MAX_MEMORY_TAG_LENGTH, DEFAULT_MAX_MEMORY_TAGS
 
 _SUPPORTED_CHANGES = {"added", "modified"}
 
@@ -18,6 +19,34 @@ _SUPPORTED_CHANGES = {"added", "modified"}
 class _TagTarget:
     change: Literal["added", "modified"]
     path: str
+
+
+def normalize_memory_tags(
+    value: object,
+    *,
+    max_tags_per_file: int = DEFAULT_MAX_MEMORY_TAGS,
+    max_tag_length: int = DEFAULT_MAX_MEMORY_TAG_LENGTH,
+) -> list[str]:
+    """Normalize source tags while preserving canonical display casing."""
+    if not isinstance(value, list):
+        return []
+
+    tags: list[str] = []
+    seen: set[str] = set()
+    for item in value:
+        if not isinstance(item, str):
+            continue
+        tag = "_".join(item.split())
+        if not tag or len(tag) > max_tag_length or not any(char.isalnum() for char in tag):
+            continue
+        canonical = tag.casefold()
+        if canonical in seen:
+            continue
+        seen.add(canonical)
+        tags.append(tag)
+        if len(tags) >= max_tags_per_file:
+            break
+    return tags
 
 
 @R.register("auto_tag_step")
@@ -94,7 +123,11 @@ class AutoTagStep(BaseStep):
 
         path = self.workspace_path / target.path
         metadata = dict(frontmatter.loads(path.read_text(encoding="utf-8")).metadata or {})
-        normalized = tag_index.normalize_tags(metadata.get(tag_key))
+        normalized = normalize_memory_tags(
+            metadata.get(tag_key),
+            max_tags_per_file=tag_index.max_tags_per_file,
+            max_tag_length=tag_index.max_tag_length,
+        )
         if metadata.get(tag_key) != normalized:
             response = await self.run_job(
                 "frontmatter_update",
@@ -142,10 +175,10 @@ class AutoTagStep(BaseStep):
 
         failed = sum(not item["success"] for item in results)
         succeeded = len(results) - failed
-        self.context.response.success = initial_success and failed == 0
-        if initial_success and failed:
+        self.context.response.success = initial_success
+        if not initial_answer and failed:
             self.context.response.answer = f"Tagged {succeeded} file(s); {failed} failed"
-        elif initial_success and not initial_answer and succeeded:
+        elif not initial_answer and succeeded:
             self.context.response.answer = f"Tagged {succeeded} file(s)"
         else:
             self.context.response.answer = initial_answer
