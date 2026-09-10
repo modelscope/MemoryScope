@@ -90,8 +90,9 @@ reme auto_memory session_id=session-a include_images=true messages='[...]'
 
 ### 直接多模态输入（开启图像后的默认模式）
 
-Auto Memory 将渲染后的 memory 提示与图像 `DataBlock` 组合成 AgentScope `UserMsg`。
-通过编号标记对应每张图像在会话中的位置，也支持只有图像的消息及重复 block ID。
+Auto Memory 构建 AgentScope `UserMsg`，在渲染后的会话历史中按原顺序交错放置文本与图像 `DataBlock`，
+保留每条消息的说话人和时间边界，也支持只有图像的消息及重复 block ID。
+这里描述的是 ReMe 传给 wrapper 的输入；实际 provider 请求中的表示方式由所选 AgentScope formatter 决定。
 记忆 Agent 同时读取文本与图像，不单独调用 caption 模型。这是一次 Agent 工作流，不保证只有一次 API 请求：
 调用写笔记等工具后，后续模型轮次仍可能携带图像。
 未显式设置图像数量上限时，直接模式会为全部输入图像保留 Agent 上下文容量。

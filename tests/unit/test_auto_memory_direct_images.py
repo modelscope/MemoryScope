@@ -111,6 +111,9 @@ async def test_enabled_default_is_direct_with_a_single_memory_reply(harness, mon
     caption = AsyncMock(side_effect=AssertionError("Direct mode must not caption images"))
     monkeypatch.setattr(_auto_memory_image, "generate_image_caption", caption)
     message = _message()
+    message.content[0].text += " Keep literal [Image 1]; image ID: gallery-before."
+    message.content.insert(2, TextBlock(text="Between observations; image ID: gallery-after."))
+    message.content.append(TextBlock(text="After both observations."))
     before = copy.deepcopy(message.model_dump())
 
     response = await _run(harness, [message])
@@ -126,16 +129,21 @@ async def test_enabled_default_is_direct_with_a_single_memory_reply(harness, mon
     inputs, kwargs = harness.wrapper.calls[0]
     assert isinstance(inputs, Msg)
     assert inputs.role == "user"
-    assert [block.type for block in inputs.content] == ["text", "text", "data", "text", "data"]
+    assert [block.type for block in inputs.content] == ["text", "data", "text", "data", "text"]
     assert "Remember this observation." in inputs.content[0].text
-    assert "# Your Task" in inputs.content[0].text
-    assert "[Image 1]" in inputs.content[0].text
-    assert "[Image 2]" in inputs.content[0].text
+    assert "Keep literal [Image 1]; image ID: gallery-before." in inputs.content[0].text
+    assert inputs.content[2].text.strip() == "Between observations; image ID: gallery-after."
+    assert "After both observations." in inputs.content[4].text
+    assert "# Your Task" in inputs.content[4].text
+    assert inputs.content[4].text.index("After both observations.") < inputs.content[4].text.index("# Your Task")
+    assert inputs.get_text_content().count("[Image 1]") == 1
+    assert "[Image 2]" not in inputs.get_text_content()
+    assert "__reme_image_" not in inputs.get_text_content()
     assert "TOOL_RESULT_MUST_NOT_BE_SAVED" not in inputs.get_text_content()
     assert "Caption (model-generated)" not in inputs.get_text_content()
     assert "image captions" not in kwargs["system_prompt"].lower()
-    assert inputs.content[2].model_dump() == message.content[1].model_dump()
-    assert inputs.content[4].model_dump() == message.content[2].model_dump()
+    assert inputs.content[1].model_dump() == message.content[1].model_dump()
+    assert inputs.content[3].model_dump() == message.content[3].model_dump()
     assert message.model_dump() == before
     assert harness.session_path.read_bytes() == _main_saved_line(message)
     assert not (harness.workspace / "resource").exists()
@@ -145,9 +153,19 @@ async def test_enabled_default_is_direct_with_a_single_memory_reply(harness, mon
 
     formatted = await harness.wrapper.as_llm.model.formatter.format([inputs])
     assert len(formatted) == 1
+    assert [part["type"] for part in formatted[0]["content"]] == [
+        "text",
+        "image_url",
+        "text",
+        "image_url",
+        "text",
+    ]
+    assert [part["text"] for part in formatted[0]["content"] if part["type"] == "text"] == [
+        block.text for block in inputs.content if block.type == "text"
+    ]
     image_parts = [part for part in formatted[0]["content"] if part["type"] == "image_url"]
     assert [part["image_url"]["url"] for part in image_parts] == [
-        f"data:image/png;base64,{message.content[index].source.data}" for index in (1, 2)
+        f"data:image/png;base64,{message.content[index].source.data}" for index in (1, 3)
     ]
 
 
@@ -155,7 +173,7 @@ async def test_enabled_default_is_direct_with_a_single_memory_reply(harness, mon
 @pytest.mark.parametrize("include_images", [None, False])
 async def test_disabled_keeps_original_string_and_does_not_prepare(harness, monkeypatch, include_images):
     prepare = AsyncMock(side_effect=AssertionError("Disabled images must not be inspected"))
-    monkeypatch.setattr("reme.steps.evolve.auto_memory.prepare_direct_messages", prepare)
+    monkeypatch.setattr("reme.steps.evolve.auto_memory.prepare_direct_message", prepare)
     original_component = harness.wrapper.as_llm
     original_model = original_component.model
     harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = SimpleNamespace(model=_DirectModel("vision"))
@@ -434,32 +452,118 @@ async def test_reply_context_override_has_shallow_precedence_without_mutating_so
 
 
 @pytest.mark.asyncio
-async def test_duplicate_block_ids_use_positions_and_repeated_images_are_not_deduplicated(harness):
+async def test_interleaving_preserves_whole_history_hook_and_image_only_turn_with_duplicate_ids(harness, monkeypatch):
     first = _message()
     first.content.insert(2, TextBlock(text="This separates the two observations."))
     second = _message("second", f"{_DAY}T11:00:00", images=False)
+    second.name = "user"
+    second.role = "user"
     second.content = [first.content[1].model_copy(deep=True)]
     messages = [first, second]
     originals = [message.model_dump() for message in messages]
     step = harness.step()
-    step.context = RuntimeContext()
 
-    prepared, attachments = await _auto_memory_image.prepare_direct_messages(step, messages)
+    def format_whole_history(history):
+        # Like LME/BEAM, the hook depends on the full slice, not one Msg per call.
+        return f"Source excerpt: L41-L{40 + len(history)}\n" + "\n\n".join(
+            f"[L{line} | {message.name} @ {message.created_at}]\n{message.get_text_content()}"
+            for line, message in enumerate(history, start=41)
+        )
 
-    assert [prepared[0].content[index].text for index in (1, 2, 3)] == [
-        "[Image 1]",
-        "This separates the two observations.",
-        "[Image 2]",
-    ]
-    assert prepared[1].content[0].text == "[Image 3]"
-    assert [block.text for block in attachments if block.type == "text"] == ["[Image 1]", "[Image 2]", "[Image 3]"]
-    data_blocks = [block for block in attachments if block.type == "data"]
+    hook = Mock(side_effect=format_whole_history)
+    monkeypatch.setattr(step, "_format_history", hook)
+
+    await step(session_id=_SESSION, date=_DAY, messages=messages, include_images=True)
+
+    inputs = harness.wrapper.calls[0][0]
+    assert step.context.response.metadata["auto_memory_images"]["status"] == "completed"
+    assert hook.call_count == 2  # Original fallback prompt, then the temporary multimodal history.
+    assert all(len(call.args[0]) == 2 for call in hook.call_args_list)
+    assert inputs.get_text_content().count("Source excerpt: L41-L42") == 1
+    assert "[L41 | assistant @" in inputs.content[0].text
+    assert inputs.content[2].text.strip() == "This separates the two observations."
+    assert f"[L42 | user @ {second.created_at}]" in inputs.content[4].text
+    assert "# Your Task" in inputs.content[-1].text
+    assert "__reme_image_" not in inputs.get_text_content()
+    assert "[Image" not in inputs.get_text_content()
+    assert [block.type for block in inputs.content] == ["text", "data", "text", "data", "text", "data", "text"]
+    data_blocks = [block for block in inputs.content if block.type == "data"]
     assert len(data_blocks) == 3
     assert len({block.id for block in data_blocks}) == 1
     assert data_blocks[0].source.data == data_blocks[2].source.data
     assert data_blocks[0].source.data != data_blocks[1].source.data
     assert [message.model_dump() for message in messages] == originals
-    assert all(after is not before for after, before in zip(prepared, messages))
+    assert harness.session_path.read_bytes() == b"".join(_main_saved_line(message) for message in messages)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("language,existing", [("en", False), ("zh", False), ("en", True), ("zh", True)])
+async def test_interleaving_keeps_localized_create_update_prompt_boundaries(harness, monkeypatch, language, existing):
+    step = harness.step(language=language)
+    note_path = f"daily/{_DAY}/existing.md"
+    if existing:
+        monkeypatch.setattr(step, "_list_session_note", AsyncMock(return_value={"path": note_path}))
+        monkeypatch.setattr(step, "_ensure_memory_frontmatter", AsyncMock())
+        monkeypatch.setattr(step, "_rename_from_frontmatter_name", AsyncMock(return_value=note_path))
+        monkeypatch.setattr("reme.steps.evolve.auto_memory.refresh_day_index", AsyncMock(return_value={}))
+    message = _message()
+
+    await step(session_id=_SESSION, date=_DAY, messages=[message], include_images=True)
+
+    inputs, options = harness.wrapper.calls[0]
+    assert step.context.response.success is True
+    assert step.context.response.metadata["auto_memory_images"]["status"] == "completed"
+    assert inputs.content[0].text.startswith("Today:" if language == "en" else "今天：")
+    assert "Remember this observation." in inputs.content[0].text
+    assert ("# Your Task" if language == "en" else "# 你的任务") in inputs.content[-1].text
+    assert ("frontmatter_update" if existing else "daily_write") in inputs.content[-1].text
+    assert [block.id for block in inputs.content if block.type == "data"] == [message.content[1].id] * 2
+    assert "__reme_image_" not in inputs.get_text_content()
+    assert "[Image" not in inputs.get_text_content()
+    if existing:
+        assert note_path in inputs.content[0].text
+        assert options["injected_job_kwargs"] == {"_allowed_paths": [note_path]}
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("template", ["No history requested.", "{history}\n{history}"])
+async def test_missing_or_repeated_history_falls_back_without_direct_overrides(harness, monkeypatch, template):
+    step = harness.step(prompt_dict={"user_message_create": template})
+    original_model = harness.wrapper.as_llm.model
+    original_options = {"context_config": {"trigger_ratio": 0.7}, "model_config": {"max_retries": 2}}
+    monkeypatch.setattr(step, "_reply_extra_kwargs", Mock(return_value=original_options))
+    harness.app_context.components[ComponentEnum.AS_LLM]["vision"] = SimpleNamespace(model=_DirectModel("vision"))
+    message = _message()
+
+    await step(session_id=_SESSION, date=_DAY, messages=[message], include_images=True)
+
+    response = step.context.response
+    inputs, options = harness.wrapper.calls[0]
+    assert response.success is True
+    assert response.metadata["auto_memory_images"]["status"] == "fallback"
+    assert response.metadata["auto_memory_images"]["reason"] == "prompt: ValueError"
+    assert inputs == template.format(history=step._format_history([message]))
+    assert "__reme_image_" not in inputs
+    assert "_model" not in options
+    assert options["context_config"] is original_options["context_config"]
+    assert original_options == {"context_config": {"trigger_ratio": 0.7}, "model_config": {"max_retries": 2}}
+    assert harness.wrapper.as_llm.model is original_model
+    harness.logger.warning.assert_called_once()
+    assert harness.session_path.read_bytes() == _main_saved_line(message)
+
+
+@pytest.mark.asyncio
+async def test_invalid_original_prompt_remains_an_error_before_image_preparation(harness, monkeypatch):
+    prepare = AsyncMock(side_effect=AssertionError("Invalid templates must fail before image processing"))
+    monkeypatch.setattr("reme.steps.evolve.auto_memory.prepare_direct_message", prepare)
+    step = harness.step(prompt_dict={"user_message_create": "{missing_variable}"})
+
+    with pytest.raises(KeyError, match="missing_variable"):
+        await step(session_id=_SESSION, date=_DAY, messages=[_message()], include_images=True)
+
+    prepare.assert_not_called()
+    harness.logger.warning.assert_not_called()
+    assert not harness.wrapper.calls
 
 
 @pytest.mark.asyncio
@@ -510,11 +614,11 @@ async def test_direct_and_caption_use_identical_normalized_provider_bytes(harnes
 
     monkeypatch.setattr(_auto_memory_image, "generate_image_caption", caption)
 
-    _, attachments = await _auto_memory_image.prepare_direct_messages(step, [message])
+    direct_message = await _auto_memory_image.prepare_direct_message(step, [message], step._format_history)
     await _auto_memory_image.prepare_image_messages(step, [message], _DAY)
 
     assert len(caption_payloads) == 1
-    image_input = attachments[1].source
+    image_input = next(block.source for block in direct_message.content if block.type == "data")
     assert image_input.media_type == caption_payloads[0]["mime"] == "image/jpeg"
     assert image_input.data == caption_payloads[0]["data_b64"]
     with Image.open(io.BytesIO(base64.b64decode(image_input.data))) as image:
@@ -534,7 +638,7 @@ async def test_workspace_file_is_bounded_and_materialized_before_sdk_input(harne
     response = await _run(harness, [message])
 
     assert response.metadata["auto_memory_images"]["status"] == "completed"
-    source_input = harness.wrapper.calls[0][0].content[2].source
+    source_input = next(block.source for block in harness.wrapper.calls[0][0].content if block.type == "data")
     assert source_input.type == "base64"
     assert base64.b64decode(source_input.data) == source.read_bytes() == _png()
     assert message.model_dump() == before

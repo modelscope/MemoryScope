@@ -1,13 +1,16 @@
 """Temporary session image inputs; no resource writes or transcript changes."""
 
 import base64
+from collections.abc import Callable
 from pathlib import Path
+import re
 from urllib.parse import unquote, urlsplit
+from uuid import uuid4
 
 import aiofiles
 import httpx
 from agentscope.agent import ContextConfig
-from agentscope.message import Base64Source, DataBlock, Msg, TextBlock
+from agentscope.message import Base64Source, DataBlock, Msg, TextBlock, UserMsg
 
 from ._image_caption import (
     DEFAULT_MAX_IMAGE_INPUT_BYTES,
@@ -21,12 +24,13 @@ from ...components.prompt_handler import PromptHandler
 from ...enumeration import ComponentEnum
 
 
-async def prepare_direct_messages(
+async def prepare_direct_message(
     step,
     messages: list[Msg],
+    render_prompt: Callable[[list[Msg]], str],
     reply_kwargs: dict | None = None,
-) -> tuple[list[Msg], list[TextBlock | DataBlock]]:
-    """Bind image positions to attachments for one multimodal memory workflow.
+) -> Msg | None:
+    """Interleave images with the existing rendered history and memory prompt.
 
     Use the same bounded source loading and provider preprocessing as captions,
     but retain image data instead of introducing a model-generated description.
@@ -41,7 +45,7 @@ async def prepare_direct_messages(
     metadata = {"mode": "direct", "status": "skipped", "image_count": len(images), "captioned_images": 0}
     step.context.response.metadata["auto_memory_images"] = metadata
     if not images:
-        return messages, []
+        return None
     stage = "backend"
     try:
         wrapper = step.agent_wrapper
@@ -63,36 +67,43 @@ async def prepare_direct_messages(
         if ContextConfig(**context_config).max_image_num < len(images):
             raise ValueError("The configured image limit would drop session images")
         prepared = [message.model_copy(deep=True) for message in messages]
-        attachments: list[TextBlock | DataBlock] = []
+        image_blocks: dict[str, DataBlock] = {}
+        marker_prefix = f"__reme_image_{uuid4().hex}_"
         for number, (message_index, block_index, block) in enumerate(images, 1):
             stage = "source"
             data = await _image_bytes(step, block.source)
             stage = "decode"
             payload = _build_image_request_payload(data, "")
-            label = f"[Image {number}]"
-            prepared[message_index].content[block_index] = TextBlock(text=label)
-            attachments.extend(
-                [
-                    TextBlock(text=label),
-                    block.model_copy(
-                        deep=True,
-                        update={"source": Base64Source(data=payload["data_b64"], media_type=payload["mime"])},
-                    ),
-                ],
+            marker = f"{marker_prefix}{number}__"
+            prepared[message_index].content[block_index] = TextBlock(text=marker)
+            image_blocks[marker] = block.model_copy(
+                deep=True,
+                update={"source": Base64Source(data=payload["data_b64"], media_type=payload["mime"])},
             )
+        # Reuse string templates and history hooks (including source line numbers),
+        # then remove every private marker before the model sees the message.
+        stage = "prompt"
+        prompt = render_prompt(prepared)
+        parts = re.split("(" + "|".join(map(re.escape, image_blocks)) + ")", prompt)
+        if [part for part in parts if part in image_blocks] != list(image_blocks):
+            raise ValueError("Memory prompt must preserve every image once in conversation order")
+        result = UserMsg(
+            name="user",
+            content=[image_blocks[part] if part in image_blocks else TextBlock(text=part) for part in parts if part],
+        )
     except Exception as exc:  # pylint: disable=broad-except
         reason = f"{stage}: {type(exc).__name__}"
         metadata.update(status="fallback", reason=reason)
         step.logger.warning(
             f"[{step.name}] Direct image preparation failed ({reason}); continuing with text-only memory.",
         )
-        return messages, []
+        return None
     if reply_kwargs is not None:
         reply_kwargs["context_config"] = context_config
         # Override only this Agent invocation; never rebind the shared wrapper.
         reply_kwargs["_model"] = model
     metadata["status"] = "prepared"
-    return prepared, attachments
+    return result
 
 
 def _workspace_path(step, path: str) -> Path:

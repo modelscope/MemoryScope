@@ -6,10 +6,10 @@ import zoneinfo
 
 import aiofiles
 import frontmatter
-from agentscope.message import Msg, TextBlock, UserMsg
+from agentscope.message import Msg
 
 from ._evolve import agent_reply_result_text, format_history, now
-from ._auto_memory_image import prepare_direct_messages, prepare_image_messages
+from ._auto_memory_image import prepare_direct_message, prepare_image_messages
 from ..base_step import BaseStep
 from ..file_io import extract_daily_date, parse_daily_date, refresh_day_index
 from ..file_io import validate_filename_component, validate_session_id
@@ -366,14 +366,13 @@ class AutoMemoryStep(BaseStep):
         if not isinstance(include_images, bool):
             raise ValueError("include_images must be a boolean")
         memory_messages, has_image_captions = messages, False
-        image_attachments = []
+        direct_message = None
         reply_kwargs = None
         image_mode = None
         if include_images:
             image_mode = self.context.get("image_mode", self.kwargs.get("image_mode", "direct"))
             if image_mode == "direct":
                 reply_kwargs = dict(self._reply_extra_kwargs(day))
-                memory_messages, image_attachments = await prepare_direct_messages(self, messages, reply_kwargs)
             elif image_mode == "caption-only":
                 memory_messages, has_image_captions = await prepare_image_messages(self, messages, day)
             else:
@@ -397,19 +396,24 @@ class AutoMemoryStep(BaseStep):
             f"created={created} msgs={len(messages)} hint={bool(memory_hint)}",
         )
         template_key = "user_message_create" if created else "user_message_update"
-        user_message = self.prompt_format(
-            template_key,
-            enable_tags=self._tags_enabled(),
-            today=day,
-            note=memory_hint or "(none)",
-            note_path=note_path,
-            session_id=session_id,
-            session_file=self._session_source_path(session_id),
-            history=self._format_history(memory_messages),
-        )
 
-        if image_attachments:
-            user_message = UserMsg(name="user", content=[TextBlock(text=user_message), *image_attachments])
+        def render_user_message(history_messages: list[Msg]) -> str:
+            return self.prompt_format(
+                template_key,
+                enable_tags=self._tags_enabled(),
+                today=day,
+                note=memory_hint or "(none)",
+                note_path=note_path,
+                session_id=session_id,
+                session_file=self._session_source_path(session_id),
+                history=self._format_history(history_messages),
+            )
+
+        user_message = render_user_message(memory_messages)
+        if include_images and image_mode == "direct":
+            direct_message = await prepare_direct_message(self, messages, render_user_message, reply_kwargs)
+            if direct_message is not None:
+                user_message = direct_message
 
         self.logger.info(f"[{self.name}] agent start path={note_path} template={template_key}")
         # Existing-note updates are restricted to the resolved note path. New
@@ -424,14 +428,14 @@ class AutoMemoryStep(BaseStep):
             system_prompt=self.prompt_format(
                 "system_prompt",
                 enable_tags=self._tags_enabled(),
-                include_images=has_image_captions or bool(image_attachments),
+                include_images=has_image_captions or direct_message is not None,
                 caption_only=include_images and image_mode == "caption-only" and has_image_captions,
-                direct_images=bool(image_attachments),
+                direct_images=direct_message is not None,
             ),
             job_tools=self.create_tools if created else self.update_tools,
             **reply_kwargs,
         )
-        if image_attachments:
+        if direct_message is not None:
             self.context.response.metadata["auto_memory_images"]["status"] = "completed"
         self.logger.info(f"[{self.name}] agent done path={note_path} has_result={bool(result.get('result'))}")
 
