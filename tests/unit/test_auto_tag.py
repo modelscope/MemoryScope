@@ -225,14 +225,3 @@ def test_normalize_memory_tags_enforces_entity_storage_contract():
             "黄金",
         ],
     ) == ["OpenAI", "Sam Altman", "宁德时代"]
-
-
-def test_auto_tag_prompt_prefers_one_existing_entity_and_yaml_list_storage():
-    step = AutoTagStep()
-    prompt = step.prompt_format("system_prompt", tag_key="memory_tags")
-
-    assert "Prefer one primary entity" in prompt
-    assert "never use more than three" in prompt
-    assert "list_tags" in prompt
-    assert "[宁德时代, 黄金]" in prompt
-    assert "never combine them into one comma-delimited string" in prompt

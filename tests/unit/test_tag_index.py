@@ -251,18 +251,32 @@ def test_tag_index_reads_configured_frontmatter_key() -> None:
     asyncio.run(run())
 
 
-@pytest.mark.parametrize("tag_key", ["", "   ", None, 123])
-def test_tag_index_rejects_invalid_frontmatter_key(tag_key) -> None:
-    """Reject keys that cannot identify a frontmatter field."""
-    with pytest.raises(ValueError, match="tag_key must be a non-empty string"):
-        LocalTagIndex(tag_key=tag_key)
+@pytest.mark.parametrize(
+    ("tag_key", "message", "at_runtime"),
+    [
+        ("", "tag_key must be a non-empty string", False),
+        ("   ", "tag_key must be a non-empty string", False),
+        (None, "tag_key must be a non-empty string", False),
+        (123, "tag_key must be a non-empty string", False),
+        ("name", "tag_key must not be a reserved frontmatter key", False),
+        ("description", "tag_key must not be a reserved frontmatter key", False),
+        ("", "tag_key must be a non-empty string", True),
+        ("name", "tag_key must not be a reserved frontmatter key", True),
+        ("description", "tag_key must not be a reserved frontmatter key", True),
+    ],
+)
+def test_tag_index_rejects_invalid_frontmatter_key(tag_key, message: str, at_runtime: bool) -> None:
+    """Apply the same frontmatter-key validation during construction and runtime updates."""
+    index = LocalTagIndex()
 
+    with pytest.raises(ValueError, match=message):
+        if at_runtime:
+            index.tag_key = tag_key
+        else:
+            LocalTagIndex(tag_key=tag_key)
 
-@pytest.mark.parametrize("tag_key", ["name", "description"])
-def test_tag_index_rejects_reserved_frontmatter_key(tag_key) -> None:
-    """Reject fields declared by FileFrontMatter as reserved metadata."""
-    with pytest.raises(ValueError, match="tag_key must not be a reserved frontmatter key"):
-        LocalTagIndex(tag_key=tag_key)
+    if at_runtime:
+        assert index.tag_key == "memory_tags"
 
 
 def test_tag_index_allows_model_config_as_frontmatter_key() -> None:
@@ -277,26 +291,6 @@ def test_changing_tag_key_invalidates_the_derived_index() -> None:
 
     assert index.tag_key == "keywords"
     assert not index.is_healthy
-
-
-def test_tag_index_rejects_invalid_runtime_frontmatter_key() -> None:
-    """Apply the same validation when a live component key is updated."""
-    index = LocalTagIndex()
-
-    with pytest.raises(ValueError, match="tag_key must be a non-empty string"):
-        index.tag_key = ""
-    assert index.tag_key == "memory_tags"
-
-
-@pytest.mark.parametrize("tag_key", ["name", "description"])
-def test_tag_index_rejects_reserved_runtime_frontmatter_key(tag_key: str) -> None:
-    """Runtime updates preserve the same reserved-field invariant as construction."""
-    index = LocalTagIndex()
-
-    with pytest.raises(ValueError, match="tag_key must not be a reserved frontmatter key"):
-        index.tag_key = tag_key
-
-    assert index.tag_key == "memory_tags"
 
 
 def test_file_store_updates_tag_index_from_file_nodes(monkeypatch, tmp_path: Path) -> None:
