@@ -63,7 +63,19 @@ def test_plugin_manifest_declares_complete_runtime_surface():
         "daily_paper_analyze_step",
         "daily_paper_digest_step",
     }
-    assert set(_plugin_config()["jobs"]) == {"daily_paper", "daily_paper_cron"}
+    jobs = _plugin_config()["jobs"]
+    assert set(jobs) == {"daily_paper", "daily_paper_cron"}
+    assert [step["backend"] for step in jobs["daily_paper"]["steps"]] == [
+        "daily_paper_collect_step",
+        "daily_paper_rank_step",
+        "daily_paper_select_step",
+        "daily_paper_analyze_step",
+        "daily_paper_digest_step",
+        "auto_tag_step",
+        "dingtalk_markdown_send_step",
+    ]
+    assert jobs["daily_paper"]["steps"][5]["max_tags_per_file"] == 3
+    assert jobs["daily_paper_cron"]["steps"] == jobs["daily_paper"]["steps"]
 
 
 class _QueuedAgentWrapper(BaseAgentWrapper):
@@ -898,6 +910,12 @@ async def test_pipeline_filters_strict_yesterday_and_writes_outputs(
         "Clear evidence",
     ]
     assert digest.metadata["arxiv_ids"] == ["2607.10001", "2607.10004", "2607.10005"]
+    assert context["changes"] == [
+        {"change": "added", "path": "daily/2026-07-21/记忆代理研究.md"},
+        {"change": "added", "path": "daily/2026-07-21/上下文压缩研究.md"},
+        {"change": "added", "path": "daily/2026-07-21/持续学习研究.md"},
+        {"change": "added", "path": "daily/2026-07-21/今日智能体论文简报.md"},
+    ]
     assert cc_wrapper.calls[0]["kwargs"] == {"output_schema": PaperPickList}
     assert "用户感兴趣的主题" not in cc_wrapper.calls[0]["inputs"]
     assert "用户未提供明确的 topic 倾向" in cc_wrapper.calls[0]["inputs"]

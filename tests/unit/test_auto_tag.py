@@ -1,6 +1,6 @@
 """Focused tests for the standalone automatic tagging Step."""
 
-# pylint: disable=missing-function-docstring
+# pylint: disable=missing-function-docstring,protected-access
 
 from pathlib import Path
 
@@ -210,3 +210,38 @@ async def test_auto_tag_uses_configured_key_and_normalizes_agent_output(tmp_path
         max_tags_per_file=2,
         max_tag_length=3,
     ) == ["one", "two"]
+
+
+@pytest.mark.asyncio
+async def test_auto_tag_syncs_successful_targets_and_reports_index_failures(tmp_path, monkeypatch):
+    store = LocalFileStore(name="store", embedding_store="", tag_index="")
+    step = AutoTagStep(file_store=store, agent_wrapper=_TaggingWrapper(tmp_path))
+    synced: list[list[dict[str, str]]] = []
+
+    async def sync_file_index(changes):
+        synced.append(changes)
+        return [
+            {"success": True, "path": "daily/ok.md"},
+            {"success": False, "path": "daily/stale.md", "error": "parse failed"},
+        ]
+
+    monkeypatch.setattr(step, "_sync_file_index", sync_file_index)
+    results = [
+        {"change": "added", "path": "daily/ok.md", "success": True},
+        {"change": "modified", "path": "daily/stale.md", "success": True},
+        {"change": "added", "path": "daily/tag-failed.md", "success": False, "error": "tagging failed"},
+    ]
+
+    updates = await step._sync_results(results)
+
+    assert synced == [
+        [
+            {"change": "added", "path": "daily/ok.md"},
+            {"change": "modified", "path": "daily/stale.md"},
+        ],
+    ]
+    assert updates[1]["error"] == "parse failed"
+    assert results[0]["success"] is True
+    assert results[1]["success"] is False
+    assert results[1]["error"] == "index update failed: parse failed"
+    assert results[2]["error"] == "tagging failed"

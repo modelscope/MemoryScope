@@ -12,6 +12,7 @@ from ..file_io import parse_daily_date, refresh_day_index
 from ..file_io._path import display_path, resolve_path
 from ..index import normalize_posix_path
 from ...components import R
+from ...components.runtime_context import RuntimeContext
 
 _DEFAULT_MAX_MEMORY_TAGS = 3
 _DEFAULT_MAX_MEMORY_TAG_LENGTH = 64
@@ -98,7 +99,12 @@ class AutoTagStep(BaseStep):
             change = str(item.get("change") or "").strip().lower()
             raw_path = str(item.get("path") or "").strip()
             if change not in _SUPPORTED_CHANGES:
-                ignored.append({"path": raw_path, "reason": f"unsupported change: {change or 'missing'}"})
+                ignored.append(
+                    {
+                        "path": raw_path,
+                        "reason": f"unsupported change: {change or 'missing'}",
+                    },
+                )
                 continue
 
             target, error = resolve_path(workspace, raw_path)
@@ -153,6 +159,38 @@ class AutoTagStep(BaseStep):
                 raise RuntimeError(str(response.answer))
         return agent_reply_result_text(result)
 
+    async def _sync_file_index(self, changes: list[dict[str, str]]) -> list[dict]:
+        """Synchronously expose freshly written tags through the file-store indexes."""
+        if not changes or self.app_context is None:
+            return []
+        step_cls, params = self._resolve_dispatch_step({"backend": "update_index_step", "persist": False})
+        response = await step_cls(**params)(RuntimeContext(changes=changes))
+        if not isinstance(response.answer, list):
+            raise RuntimeError(f"Unexpected update_index_step response: {response.answer!r}")
+        if not self.file_store.require_tag_index().is_healthy:
+            raise RuntimeError("tag index unavailable after update")
+        return response.answer
+
+    async def _sync_results(self, results: list[dict]) -> list[dict]:
+        """Sync successful targets and convert incremental-index errors into target failures."""
+        successful_changes = [{"change": item["change"], "path": item["path"]} for item in results if item["success"]]
+        index_updates: list[dict] = []
+        try:
+            index_updates = await self._sync_file_index(successful_changes)
+            index_failures = {
+                item["path"]: str(item.get("error") or "index update failed")
+                for item in index_updates
+                if not item.get("success")
+            }
+        except Exception as exc:  # pylint: disable=broad-exception-caught
+            index_failures = {item["path"]: str(exc) for item in successful_changes}
+            self.logger.warning(f"[{self.name}] failed to synchronize file index: {exc}")
+        for item in results:
+            if item["success"] and item["path"] in index_failures:
+                item["success"] = False
+                item["error"] = f"index update failed: {index_failures[item['path']]}"
+        return index_updates
+
     def _daily_date(self, path: str) -> str | None:
         daily_dir = normalize_posix_path(str(self.config_value("daily_dir"))).strip("/")
         prefix = f"{daily_dir}/"
@@ -204,13 +242,25 @@ class AutoTagStep(BaseStep):
             try:
                 summary = await self._process_target(target, tag_index.tag_key, max_tag_length)
                 results.append(
-                    {"change": target.change, "path": target.path, "success": True, "summary": summary},
+                    {
+                        "change": target.change,
+                        "path": target.path,
+                        "success": True,
+                        "summary": summary,
+                    },
                 )
             except Exception as exc:  # pylint: disable=broad-exception-caught
                 results.append(
-                    {"change": target.change, "path": target.path, "success": False, "error": str(exc)},
+                    {
+                        "change": target.change,
+                        "path": target.path,
+                        "success": False,
+                        "error": str(exc),
+                    },
                 )
                 self.logger.warning(f"[{self.name}] failed path={target.path}: {exc}")
+
+        index_updates = await self._sync_results(results)
 
         for day in sorted(dates):
             indexes.append(await refresh_day_index(self.file_store, day, self.config_value("daily_dir")))
@@ -230,6 +280,7 @@ class AutoTagStep(BaseStep):
             "failed": failed,
             "ignored": ignored,
             "results": results,
+            "index_updates": index_updates,
             "indexes": indexes,
         }
         return self.context.response
