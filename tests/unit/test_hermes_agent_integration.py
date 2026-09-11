@@ -470,14 +470,21 @@ def test_recall_timeout_includes_embedded_startup_failure_cleanup(monkeypatch, t
     import reme.config
 
     class SlowApplication:
+        instances = []
+
         def __init__(self, **config):
             del config
+            self.closed = threading.Event()
+            self.thread_pool = object()
+            self.__class__.instances.append(self)
 
         async def start(self):
-            await asyncio.sleep(10)
+            time.sleep(0.25)
 
         async def close(self):
             await asyncio.sleep(0.4)
+            self.thread_pool = None
+            self.closed.set()
 
     monkeypatch.setattr(reme, "Application", SlowApplication)
     monkeypatch.setattr(reme.config, "resolve_app_config", lambda **kwargs: kwargs)
@@ -502,6 +509,55 @@ def test_recall_timeout_includes_embedded_startup_failure_cleanup(monkeypatch, t
     assert backend._thread is not None
     backend._thread.join(timeout=1)
     assert backend._thread.is_alive() is False
+    app = SlowApplication.instances[0]
+    assert app.closed.is_set()
+    assert app.thread_pool is None
+
+
+def test_embedded_start_timeout_closes_real_application_resources(monkeypatch, tmp_path):
+    import reme
+    import reme.config
+
+    from reme.application import Application
+    from reme.components import BaseComponent
+
+    component_closed = threading.Event()
+
+    class SlowComponent(BaseComponent):
+        component_type = "slow_test"
+
+        async def _start(self):
+            time.sleep(0.25)
+
+        async def _close(self):
+            component_closed.set()
+
+    app = Application(
+        workspace_dir=str(tmp_path),
+        service={"backend": "cli"},
+        thread_pool_max_workers=1,
+        enable_logo=False,
+        log_to_console=False,
+        log_to_file=False,
+    )
+    component = SlowComponent(name="slow", app_context=app.context)
+    app.context.components["slow_test"] = {"slow": component}
+    monkeypatch.setattr(reme, "Application", lambda **config: app)
+    monkeypatch.setattr(reme.config, "resolve_app_config", lambda **kwargs: kwargs)
+    backend = EmbeddedReMeBackend(str(tmp_path), start_timeout=1)
+
+    started = time.monotonic()
+    with pytest.raises(ReMeBackendError, match="timed out"):
+        backend.start(deadline=started + 0.15)
+    elapsed = time.monotonic() - started
+
+    assert elapsed < 0.25
+    assert backend._thread is not None
+    backend._thread.join(timeout=1)
+    assert backend._thread.is_alive() is False
+    assert component_closed.is_set()
+    assert component.is_started is False
+    assert app.context.thread_pool is None
 
 
 def test_shutdown_discard_keeps_sentinel_for_inflight_writer():

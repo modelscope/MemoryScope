@@ -43,6 +43,7 @@ class EmbeddedReMeBackend:
         self._loop: asyncio.AbstractEventLoop | None = None
         self._thread: threading.Thread | None = None
         self._app: Any = None
+        self._app_close_future: concurrent.futures.Future[Any] | None = None
         self._failure: BaseException | None = None
 
     @property
@@ -148,6 +149,27 @@ class EmbeddedReMeBackend:
             self._app = None
             raise
 
+    async def _close_application(self, app: Any) -> None:
+        """Close one Application and release it only after cleanup completes."""
+        try:
+            await app.close()
+        finally:
+            with self._state_lock:
+                if self._app is app:
+                    self._app = None
+
+    def _stop_loop_after_app_close(self, future: concurrent.futures.Future[Any]) -> None:
+        """Finish deferred shutdown after Application cleanup leaves the foreground budget."""
+        try:
+            future.result()
+        except BaseException as exc:  # pragma: no cover - retained for diagnostics
+            with self._state_lock:
+                self._failure = self._failure or exc
+        with self._state_lock:
+            loop = self._loop
+        if loop is not None and loop.is_running():
+            loop.call_soon_threadsafe(loop.stop)
+
     def _fail(self, error: BaseException) -> None:
         with self._state_lock:
             self._failure = self._failure or error
@@ -252,6 +274,7 @@ class EmbeddedReMeBackend:
     def _close_locked(self, deadline: float) -> None:
         """Close while holding the operation lock so jobs cannot overlap shutdown."""
         close_error: BaseException | None = None
+        defer_loop_stop = False
         with self._state_lock:
             if self._state is _State.CLOSED:
                 return
@@ -261,27 +284,30 @@ class EmbeddedReMeBackend:
             self._state = _State.CLOSING
             loop = self._loop
             thread = self._thread
+            app = self._app
 
-        if loop is not None and loop.is_running() and self._app is not None:
+        if loop is not None and loop.is_running() and app is not None:
             remaining = max(0.0, deadline - time.monotonic())
-            try:
-                if remaining > 0:
-                    future = asyncio.run_coroutine_threadsafe(self._app.close(), loop)
-                    future.result(timeout=remaining)
-                else:
-                    close_error = TimeoutError(
-                        "Timed out before closing the embedded ReMe Application",
+            with self._state_lock:
+                future = self._app_close_future
+                if future is None:
+                    future = asyncio.run_coroutine_threadsafe(
+                        self._close_application(app),
+                        loop,
                     )
+                    self._app_close_future = future
+            try:
+                future.result(timeout=remaining)
             except concurrent.futures.TimeoutError:
-                future.cancel()
+                defer_loop_stop = True
                 close_error = TimeoutError(
                     "Timed out while closing the embedded ReMe Application",
                 )
             except BaseException as exc:
                 close_error = exc
-            finally:
-                self._app = None
-        if loop is not None and loop.is_running():
+            if defer_loop_stop:
+                future.add_done_callback(self._stop_loop_after_app_close)
+        if not defer_loop_stop and loop is not None and loop.is_running():
             loop.call_soon_threadsafe(loop.stop)
         if thread is not None and thread is not threading.current_thread():
             thread.join(timeout=max(0.0, deadline - time.monotonic()))
