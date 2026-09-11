@@ -1,18 +1,20 @@
-name: CI / TypeScript integrations
+name: CI / TypeScript plugins
 
 on:
   push:
     branches: [main, master, dev, develop]
     paths:
-      - '.github/workflows/ci-typescript.yml'
-      - '.github/workflows/release-typescript.yml'
-      - 'typescript/**'
+      - ".github/workflows/ci-typescript.yml"
+      - ".github/workflows/release-typescript-plugin.yml"
+      - "integrations/dsh/**"
+      - "integrations/openclaw/**"
   pull_request:
     branches: [main, master, dev, develop]
     paths:
-      - '.github/workflows/ci-typescript.yml'
-      - '.github/workflows/release-typescript.yml'
-      - 'typescript/**'
+      - ".github/workflows/ci-typescript.yml"
+      - ".github/workflows/release-typescript-plugin.yml"
+      - "integrations/dsh/**"
+      - "integrations/openclaw/**"
   workflow_dispatch:
 
 concurrency:
@@ -24,11 +26,19 @@ permissions:
 
 jobs:
   package:
-    name: Type-check, test, and pack
+    name: Validate ${{ matrix.name }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: DeepSeek Harness plugin
+            directory: integrations/dsh
+          - name: OpenClaw plugin
+            directory: integrations/openclaw
     defaults:
       run:
-        working-directory: typescript
+        working-directory: ${{ matrix.directory }}
 
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -37,9 +47,9 @@ jobs:
 
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
-          node-version: '22.22.3'
+          node-version: "24.16.0"
           cache: npm
-          cache-dependency-path: typescript/package-lock.json
+          cache-dependency-path: ${{ matrix.directory }}/package-lock.json
 
       - run: npm ci
       - run: npm run format:check
@@ -48,4 +58,5 @@ jobs:
       - run: npm test
       - run: npm run test:package
       - name: Validate OpenClaw package contract
+        if: matrix.directory == 'integrations/openclaw'
         run: npx --yes clawhub@0.23.3 package validate . --json
