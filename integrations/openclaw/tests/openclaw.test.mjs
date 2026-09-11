@@ -232,6 +232,8 @@ test("registers OpenClaw recall, capture, tool, and shutdown lifecycle", async (
   try {
     const hooks = new Map();
     const tools = [];
+    const routes = [];
+    const descriptors = [];
     let service;
     plugin.register({
       pluginConfig: {
@@ -243,6 +245,16 @@ test("registers OpenClaw recall, capture, tool, and shutdown lifecycle", async (
       registerTool(tool) {
         tools.push(tool);
       },
+      registerHttpRoute(route) {
+        routes.push(route);
+      },
+      session: {
+        controls: {
+          registerControlUiDescriptor(descriptor) {
+            descriptors.push(descriptor);
+          },
+        },
+      },
       on(name, handler) {
         hooks.set(name, handler);
       },
@@ -252,6 +264,10 @@ test("registers OpenClaw recall, capture, tool, and shutdown lifecycle", async (
     });
 
     assert.equal(tools[0].name, "reme_search");
+    assert.equal(routes[0].path, "/plugins/reme/status");
+    assert.equal(routes[0].auth, "gateway");
+    assert.equal(descriptors[0].id, "reme");
+    assert.equal(descriptors[0].path, "/plugins/reme/status/");
     await service.start();
     const recalled = await hooks.get("before_prompt_build")(
       { prompt: "deployment" },

@@ -3,7 +3,6 @@
   "name": "ReMe",
   "description": "ReMe file-native long-term memory",
   "kind": "memory",
-  "icon": "https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/reme_logo.png",
   "activation": {
     "onStartup": true,
     "onCapabilities": ["hook", "tool"]

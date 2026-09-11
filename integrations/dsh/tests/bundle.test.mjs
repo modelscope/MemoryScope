@@ -23,7 +23,8 @@ test("declares one installable DeepSeek Harness plugin", async () => {
   assert.equal(manifest.peerDependencies.openclaw, undefined);
   assert.match(patch, /remeMemory: true/);
   assert.doesNotMatch(patch, /@agentscope-ai\/reme\/dsh/);
-  assert.equal(patch.match(/@agentscope-ai\/reme-dsh-plugin/g)?.length, 2);
+  assert.equal(patch.match(/@agentscope-ai\/reme-dsh-plugin/g)?.length, 1);
+  assert.doesNotMatch(patch, /reme-memory-client/);
 });
 
 test("builds a lazy DSH browser module for the ReMe settings card", async () => {

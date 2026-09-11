@@ -1,4 +1,3 @@
-import type { PluginHookAgentContext } from "openclaw/plugin-sdk/types";
 import type { LoggerLike, ReMeClientLike, ReMeMessage } from "./reme/types.js";
 
 import { dateInTimezone, messagesDay, nextDailyRun } from "./scheduling.js";
@@ -6,6 +5,15 @@ import type { OpenClawReMeConfig } from "./config.js";
 import { captureLastTurn, openClawSessionId } from "./messages.js";
 
 const MAX_PENDING_PROMPTS = 256;
+
+/** Minimal hook context consumed by this adapter; supplied by OpenClaw hooks. */
+export interface OpenClawAgentContext {
+  runId?: string;
+  agentId?: string;
+  sessionKey?: string;
+  sessionId?: string;
+  trigger?: string;
+}
 
 interface PendingTurn {
   messages: ReMeMessage[];
@@ -20,6 +28,15 @@ interface SessionState {
   controller: AbortController;
 }
 
+export interface AutoMemoryActivity {
+  id: number;
+  status: "running" | "completed" | "failed" | "cancelled";
+  turns: number;
+  startedAt: string;
+  completedAt?: string;
+  error?: string;
+}
+
 export interface OpenClawRuntimeSnapshot {
   phase: "stopped" | "running" | "stopping";
   autoMemory: {
@@ -27,6 +44,7 @@ export interface OpenClawRuntimeSnapshot {
     interval: number;
     activeSessions: number;
     queuedTurns: number;
+    recentActivity: AutoMemoryActivity[];
   };
   autoDream: {
     enabled: boolean;
@@ -55,6 +73,8 @@ export class OpenClawReMeRuntime {
   private nextDreamAt: string | undefined;
   private dreamLastResult: "completed" | "failed" | "cancelled" | undefined;
   private dreamLastError: string | undefined;
+  private activitySequence = 0;
+  private readonly recentActivity: AutoMemoryActivity[] = [];
 
   constructor(
     readonly client: ReMeClientLike,
@@ -63,7 +83,7 @@ export class OpenClawReMeRuntime {
   ) {}
 
   /** Restrict automatic behavior to conversational root-agent turns. */
-  accepts(context: PluginHookAgentContext): boolean {
+  accepts(context: OpenClawAgentContext): boolean {
     if (
       this.config.rootAgentsOnly &&
       context.sessionKey?.includes(":subagent:")
@@ -77,7 +97,7 @@ export class OpenClawReMeRuntime {
   }
 
   /** Retain the unmodified user prompt so injected context is never recaptured. */
-  rememberPrompt(prompt: string, context: PluginHookAgentContext): void {
+  rememberPrompt(prompt: string, context: OpenClawAgentContext): void {
     if (!this.config.autoMemoryEnabled || !this.accepts(context)) return;
     const key = promptKey(context);
     const text = prompt.trim();
@@ -91,7 +111,7 @@ export class OpenClawReMeRuntime {
     }
   }
 
-  takePrompt(context: PluginHookAgentContext): string | undefined {
+  takePrompt(context: OpenClawAgentContext): string | undefined {
     const key = promptKey(context);
     if (!key) return undefined;
     const prompt = this.prompts.get(key);
@@ -102,7 +122,7 @@ export class OpenClawReMeRuntime {
   /** Queue one completed OpenClaw user/assistant pair for automatic memory. */
   capture(
     messages: unknown[],
-    context: PluginHookAgentContext,
+    context: OpenClawAgentContext,
     prompt?: string,
   ): void {
     if (!this.config.autoMemoryEnabled || !this.accepts(context)) return;
@@ -173,7 +193,7 @@ export class OpenClawReMeRuntime {
   }
 
   /** Flush one host session at an explicit OpenClaw session boundary. */
-  async disposeSession(context: PluginHookAgentContext): Promise<void> {
+  async disposeSession(context: OpenClawAgentContext): Promise<void> {
     const key = sessionKey(context);
     if (!key) return;
     const state = this.states.get(key);
@@ -219,6 +239,7 @@ export class OpenClawReMeRuntime {
             total + state.pendingTurns.length + state.unconfirmedTurns,
           0,
         ),
+        recentActivity: this.recentActivity.map((entry) => ({ ...entry })),
       },
       autoDream: {
         enabled: this.config.autoDreamEnabled,
@@ -268,6 +289,14 @@ export class OpenClawReMeRuntime {
     if (count === 0) return;
     const turns = state.pendingTurns.splice(0, count);
     const messages = turns.flatMap((turn) => turn.messages);
+    const activity: AutoMemoryActivity = {
+      id: ++this.activitySequence,
+      status: "running",
+      turns: turns.length,
+      startedAt: new Date().toISOString(),
+    };
+    this.recentActivity.unshift(activity);
+    if (this.recentActivity.length > 12) this.recentActivity.length = 12;
     state.unconfirmedTurns += turns.length;
     state.writes = state.writes.then(async () => {
       try {
@@ -275,19 +304,30 @@ export class OpenClawReMeRuntime {
           date: turns[0]?.day || "",
           signal: state.controller.signal,
         });
-        if (result.ok) return;
+        if (result.ok) {
+          activity.status = "completed";
+          return;
+        }
+        activity.status = "failed";
+        activity.error =
+          result.error || "ReMe rejected the automatic-memory request";
         state.pendingTurns.unshift(...turns);
         this.logger.warn?.("[reme] openclaw_auto_memory_failed", {
           sessionId: state.sessionId,
           error: result.error,
         });
       } catch (error) {
+        activity.status = state.controller.signal.aborted
+          ? "cancelled"
+          : "failed";
+        activity.error = errorMessage(error);
         state.pendingTurns.unshift(...turns);
         this.logger.warn?.("[reme] openclaw_auto_memory_failed", {
           sessionId: state.sessionId,
           error: errorMessage(error),
         });
       } finally {
+        activity.completedAt = new Date().toISOString();
         state.unconfirmedTurns -= turns.length;
       }
     });
@@ -354,11 +394,11 @@ export class OpenClawReMeRuntime {
   }
 }
 
-function sessionKey(context: PluginHookAgentContext): string {
+function sessionKey(context: OpenClawAgentContext): string {
   return context.sessionId || context.sessionKey || "";
 }
 
-function promptKey(context: PluginHookAgentContext): string {
+function promptKey(context: OpenClawAgentContext): string {
   if (context.runId) return `run:${context.runId}`;
   const key = sessionKey(context);
   return key ? `session:${context.agentId || "default"}\n${key}` : "";

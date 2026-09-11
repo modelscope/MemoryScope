@@ -13,6 +13,7 @@ import {
 } from "./config.js";
 import { OpenClawReMeRuntime } from "./runtime.js";
 import { registerOpenClawTools } from "./tools.js";
+import { createReMeStatusHandler } from "./status-page.js";
 
 /** Current OpenClaw entrypoint: manifest-owned kind plus SDK-owned contracts. */
 const plugin: OpenClawPluginDefinition = definePluginEntry({
@@ -27,6 +28,23 @@ const plugin: OpenClawPluginDefinition = definePluginEntry({
     const client = new ReMeClient(config);
     const runtime = new OpenClawReMeRuntime(client, config, api.logger);
     registerOpenClawTools(api, client, config);
+    api.registerHttpRoute({
+      path: "/plugins/reme/status",
+      match: "prefix",
+      auth: "gateway",
+      handler: createReMeStatusHandler({ client, config, runtime }),
+    });
+    api.session.controls.registerControlUiDescriptor({
+      surface: "tab",
+      id: "reme",
+      label: "ReMe Memory",
+      description: "Memory health, automatic capture, and consolidation.",
+      icon: "database",
+      group: "control",
+      order: 40,
+      requiredScopes: ["operator.read"],
+      path: "/plugins/reme/status/",
+    });
 
     // before_prompt_build is the current prompt-mutation hook. Keeping recall
     // here prevents ReMe context from leaking into the captured user message.

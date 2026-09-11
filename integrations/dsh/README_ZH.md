@@ -2,7 +2,7 @@
 
 本文介绍如何在 DeepSeek Harness（DSH）中安装、配置和使用 `@agentscope-ai/reme-dsh-plugin`，并解释插件提供的长期记忆指引、`reme_search` 工具、自动记忆和 ReMe 状态页面。
 
-本文截图来自一次真实的本地联调：DSH 选择 `default` 工作区，界面和 ReMe 指引均设置为 English，ReMe 使用隔离的临时 workspace，示例“Project Polaris”是为演示创建的英文数据。截图不包含 `.env` 内容、API Key 或真实个人记忆。
+本文截图来自针对当前 DSH 源码树的一次真实本地联调：界面与 ReMe 指引均设置为 English，隔离的 DSH/ReMe workspace 只包含虚构的 Project Aurora 数据。截图不包含 `.env` 内容、API Key、访问令牌或真实个人记忆。
 
 ## 1. 插件做了什么
 
@@ -26,8 +26,8 @@ DSH 启动新会话时，插件向根 Agent 注入一段“如何使用长期记
 ## 2. 环境要求
 
 - ReMe Python 服务已安装，且配置中提供 `search`、`auto_memory` 和 `auto_dream` Job。
-- DeepSeek Harness `0.1.2-rc.1` 或更高版本。
-- Node.js `22.22.3+`、`24.15.0+` 或 `25.9.0+` 中的一条受支持版本线。
+- DeepSeek Harness `0.1.2-rc.1` 或更高版本；本次已针对 `0.1.5-rc.2` 验证。
+- Node.js `^22.19.0` 或 `>=24.0.0`，与当前 DSH 的 engine 范围一致。
 - DSH 页面能够访问 ReMe HTTP 地址；跨机器部署时还要允许 DSH 页面所在的浏览器 Origin。
 
 ReMe HTTP 服务默认监听 `http://127.0.0.1:2333`，不使用 API Key 认证。因此不建议未经网络隔离直接暴露到公网。
@@ -39,7 +39,8 @@ ReMe HTTP 服务默认监听 `http://127.0.0.1:2333`，不使用 API Key 认证�
 ### 3.1 启动 ReMe
 
 ```bash
-reme start workspace_dir=/absolute/path/to/your/reme-workspace
+reme start workspace_dir=/absolute/path/to/your/reme-workspace \
+  service.host=127.0.0.1 service.port=3457
 ```
 
 开发或截图测试时建议使用仓库外的独立目录，例如 `/tmp/reme-dsh-demo`，不要把运行时记忆写入 ReMe 仓库自身的 `.reme/`。
@@ -52,16 +53,17 @@ reme start workspace_dir=/absolute/path/to/your/reme-workspace
 dsh plugin --profile web add @agentscope-ai/reme-dsh-plugin
 ```
 
-开发本仓库时，也可以把本地 TypeScript 包链接到 DSH workspace，然后仍按 DSH 的 bundle 协议加载：
+开发本仓库时，把本地包暴露给 DSH 源码 workspace，并将包目录安装到 `web` profile：
 
 ```bash
 cd /path/to/deepseek-harness
 pnpm link /path/to/ReMe/integrations/dsh --workspace-root
-dsh plugin --profile web add @agentscope-ai/reme-dsh-plugin
+dsh plugin --profile web add /path/to/ReMe/integrations/dsh
 ```
 
-包通过 `package.json` 的 `dsh.bundle.patch` 声明 `cordis.patch.yml`。该 patch 在独立 `remeMemory` realm 中加载
-`@agentscope-ai/reme-dsh-plugin` 的运行时和 Web 客户端入口，符合 DSH `0.1.2-rc.1` 的插件协议。
+第一条命令让 DSH 源码仓库的包解析器能找到本地插件，第二条命令把 bundle 安装到隔离 profile；已发布的 DSH 通常只需要 `dsh plugin ... add`。不要把与本机路径绑定的 `link:` 依赖提交到 DSH 仓库。
+
+包通过 `package.json#dsh.bundle.patch` 声明 `cordis.patch.yml`。patch 在独立 `remeMemory` realm 中只挂载一个 Host runtime；DSH 再通过 `package.json#dsh.client` 自动发现 Web 入口。当前 DSH 中若在 patch 内重复挂载同一个包，会触发 `remeMemory` 服务冲突。
 
 ### 3.3 启动 DSH Web
 
@@ -71,10 +73,27 @@ set -a
 source .env
 set +a
 
-dsh web --no-open --port 3080
+dsh web --no-open --port 3090
 ```
 
-打开输出中的本地地址，选择工作区 `default`。如果服务启用了访问令牌，使用启动日志给出的地址或按 DSH 提示完成认证；不要把令牌写进文档和截图。
+打开输出中的本地地址并选择工作区。如果服务启用了访问令牌，使用启动日志给出的地址或按 DSH 提示完成认证；不要把令牌写进文档和截图。
+
+### 3.4 使用 OpenAI 兼容协议做真实验证
+
+本地联调时，ReMe 与 DSH 可以共用 OpenAI 兼容模型端点，而不把密钥复制进 YAML：
+
+```bash
+set -a
+source /path/to/ReMe/.env
+set +a
+
+# DSH patch/settings 只写引用，不写真实值：
+# apiKeyEnv: LLM_API_KEY
+# baseURL: !!js process.env.LLM_BASE_URL
+dsh web --no-open --port 3090
+```
+
+在 DSH 的 `llm-pi-ai` route 中声明 `api: openai-completions`，选择 `LLM_MODEL_NAME`（或显式配置的模型 id）。任意 OpenAI 兼容网关应使用通用的 `@deepseek-ai/dsh-llm-pi-ai` 适配器；直接的 `llm-deepseek` 适配器会准备 DeepSeek 专用扩展，不适合作为任意兼容网关的通用层。不得打印、截图或提交展开后的密钥。
 
 ## 4. ReMe Memory 配置
 
@@ -82,7 +101,7 @@ dsh web --no-open --port 3080
 
 ![ReMe Memory 插件配置](./figures/reme-memory-settings.png)
 
-截图中的测试配置使用 `http://127.0.0.1:2333`、English 指引、默认搜索数量 5、搜索超时 10 秒，并启用了自动记忆和“Exclude subagents”。完整字段如下：
+截图中的测试配置使用 `http://127.0.0.1:3457`、English 指引、默认搜索数量 5、搜索超时 10 秒，并启用了自动记忆和“Exclude subagents”。完整字段如下：
 
 | 界面含义             | 配置键                | 默认值                  | 说明                                                                       |
 | -------------------- | --------------------- | ----------------------- | -------------------------------------------------------------------------- |
@@ -117,7 +136,7 @@ dsh web --no-open --port 3080
 
 注入记录带有 `plugin=reme-memory`、`form=instructions` 元数据。插件会检查当前会话和待处理消息，确保同一个会话不重复注入。`rootAgentsOnly=true` 时，来源标记为 `subagent` 的会话不会收到该指引。
 
-这张截图把注入内容与搜索回答放在同一屏，是为了说明“先收到规则，再按需检索”的顺序；注入块本身并不包含“北极星项目”的业务记忆。
+这张截图把注入内容与搜索回答放在同一屏，是为了说明“先收到规则，再按需检索”的顺序；注入块本身并不包含 Project Aurora 的业务记忆。
 
 ## 6. 使用 `reme_search` 工具
 
@@ -125,13 +144,13 @@ dsh web --no-open --port 3080
 
 ```text
 Use reme_search to look up my long-term memory: what are the weekly report time,
-report format, and primary database for Project Polaris? Answer in English based
-on the retrieved memory and cite the memory sources.
+report format, and primary database for Project Aurora? Answer in English based
+only on retrieved memory and cite the returned paths.
 ```
 
 ![使用 reme_search 检索长期记忆](./figures/memory-search-tool.png)
 
-截图中 Agent 发起了两次只读英文检索。最终回答从 Journal 和 Personal Knowledge Base 中交叉得到“Every Friday at 4:00 PM、Concise Markdown、PostgreSQL（Redis as cache）”，并列出了 `digest/wiki/polaris-project.md` 与 `daily/2026-09-04/dsh-plugin-demo.md` 两个来源。
+截图中 Agent 发起一次只读检索，从 `daily/2026-09-11/Project Aurora kickoff.md` 与 `digest/wiki/project-aurora.md` 返回排序后的证据，得到“Every Friday at 4:00 PM、Concise Markdown、PostgreSQL（Redis only for caching）”。
 
 工具参数：
 
@@ -149,7 +168,7 @@ on the retrieved memory and cite the memory sources.
 
 启用 `autoMemoryEnabled` 后，插件监听 DSH `session/event`，按会话收集完成的用户和助手消息。达到 `autoMemoryInterval` 后进入提交队列，后台调用 ReMe `auto_memory`。插件生成的上下文以及工具结果不会再次进入自动记忆，避免把指引或检索回显循环写回长期记忆。
 
-截图测试把间隔临时设为 1；运行记录中可以看到多个英文测试会话形成的已完成提交：
+截图测试把间隔临时设为 1；运行记录中可以看到英文测试会话形成的已完成提交：
 
 ![自动记忆运行记录](./figures/reme-status-auto-memory.png)
 
@@ -194,7 +213,7 @@ on the retrieved memory and cite the memory sources.
 
 ![ReMe 状态记忆整理](./figures/reme-status-auto-dream.png)
 
-该页展示下一次整理时间、cron、时区和本次进程中的最近执行结果。流程为“日记记录 → 整理与关联 → 个人知识库”。点击 **立即整理** 会手动发起一次 `auto_dream`，可能调用模型并修改 ReMe workspace，应只在确实需要整理时使用。
+该页展示下一次整理时间、cron、时区和本次进程中的执行结果。流程为“日记记录 → 整理与关联 → 个人知识库”。点击 **立即整理** 会手动发起一次 `auto_dream`，可能调用模型并修改 ReMe workspace，应只在确实需要整理时使用。截图中的完成提示来自真实调用，该调用为 `digest/wiki/project-aurora.md` 增加了新的来源链接。
 
 cron 按插件配置的 IANA 时区解释。截图中的 `0 23 * * *` 与 `Asia/Shanghai` 表示每天北京时间 23:00。修改计划后无需重启 DSH，插件会重新调度。
 
@@ -223,7 +242,7 @@ cron 按插件配置的 IANA 时区解释。截图中的 `0 23 * * *` 与 `Asia/
 
 ![ReMe 状态个人知识库](./figures/reme-status-knowledge.png)
 
-个人知识库页浏览 `digest` 下经过整理的长期知识。布局与日记页一致：左侧文件列表，右侧元数据与内容预览。截图中的 `polaris-project.md` 汇总了长期偏好和技术决策，并通过 wikilink 指回原始日记来源。
+个人知识库页浏览 `digest` 下经过整理的长期知识。布局与日记页一致：左侧文件列表，右侧元数据与内容预览。截图中的 `project-aurora.md` 汇总了长期偏好和技术决策，并通过 wikilink 指回原始日记来源。
 
 日记更接近按天产生的原始记录，个人知识库更适合稳定、去重、可持续召回的知识。`reme_search` 可以同时从服务配置允许的这些来源中检索。
 
@@ -272,13 +291,14 @@ cron 按插件配置的 IANA 时区解释。截图中的 `0 23 * * *` 与 `Asia/
 
 ## 11. 本文联调结果
 
-本次使用 `default` DSH 工作区完成了以下真实链路验证：
+本次使用 DSH `0.1.5-rc.2`、端口 `3457` 上的 ReMe `0.4.1.11` 和隔离的 Project Aurora workspace 完成了以下真实链路验证：
 
 - ReMe `0.4.1.11` 服务连接成功。
 - DSH 界面语言与 ReMe `Guidance language` 均已切换并保存为 English。
 - 新会话出现英文 `reme-memory` plugin context，来源元数据正确。
-- Agent 两次调用 `reme_search` 并从英文 `daily`、`digest` 返回一致答案。
-- 英文会话通过 `auto_memory` 完成后台提交，状态页无排队任务。
+- Agent 通过 OpenAI 兼容模型 route 调用一次 `reme_search`，并从英文 `daily`、`digest` 返回一致答案。
+- 英文会话通过 `auto_memory` 完成后台提交，状态页无排队任务，并生成 `daily/2026-09-11/project-aurora-conventions.md`。
+- 手动 `auto_dream` 成功完成，并更新 `digest/wiki/project-aurora.md` 的来源列表。
 - 总览、自动记忆、记忆整理、组件、日记、个人知识库六个标签均能读取并展示数据。
 
 DSH 截图统一放在 `integrations/dsh/figures/` 并随插件包发布。运行时演示记忆位于仓库外的临时 workspace，

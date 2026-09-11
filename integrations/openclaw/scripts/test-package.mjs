@@ -29,14 +29,17 @@ try {
     "openclaw.plugin.json",
     "README.md",
     "README_ZH.md",
+    "figures/status-overview.png",
+    "figures/plugin-installed.png",
+    "figures/plugin-configuration.png",
+    "figures/memory-search.png",
+    "figures/automatic-recall.png",
+    "figures/conversation-memory.png",
+    "figures/auto-dream.png",
   ]) {
     assert.ok(files.has(file), `missing ${file}`);
   }
-  assert.ok(
-    ![...files].some(
-      (file) => file.includes("cordis") || file.includes("figures/"),
-    ),
-  );
+  assert.ok(![...files].some((file) => file.includes("cordis")));
 } finally {
   await rm(temporaryDirectory, { force: true, recursive: true });
 }

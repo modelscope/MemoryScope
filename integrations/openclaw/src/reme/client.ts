@@ -53,6 +53,31 @@ export class ReMeClient {
     );
   }
 
+  /** Call a ReMe job for authenticated operator diagnostics. */
+  requestJob(
+    job: string,
+    payload: Record<string, unknown> = {},
+    options: { background?: boolean; signal?: AbortSignal } = {},
+  ): Promise<ReMeResult> {
+    if (!/^[a-z][a-z0-9_]*$/.test(job)) {
+      return Promise.resolve({
+        ok: false,
+        status: 0,
+        answer: "",
+        metadata: {},
+        error: "Invalid ReMe job name",
+      });
+    }
+    return this.request(
+      job,
+      payload,
+      options.background
+        ? this.config.backgroundTimeoutMs
+        : this.config.requestTimeoutMs,
+      options.signal,
+    );
+  }
+
   private async request(
     job: string,
     payload: Record<string, unknown>,

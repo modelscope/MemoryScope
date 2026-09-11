@@ -4,7 +4,7 @@
 
 This guide explains how to install, configure, and use `@agentscope-ai/reme-dsh-plugin` with DeepSeek Harness (DSH), including memory guidance injection, the `reme_search` tool, automatic memory, daily consolidation, and the ReMe Status page.
 
-The screenshots come from a real local integration test. DSH uses the `default` workspace, both the interface and ReMe guidance are set to English, and ReMe uses an isolated temporary workspace containing only the fictional Project Polaris test data. No `.env` values, API keys, or personal memories appear in the screenshots.
+The screenshots come from a real local integration test against the current DSH source tree. Both the interface and ReMe guidance are set to English, and the isolated DSH and ReMe workspaces contain only fictional Project Aurora data. No `.env` values, API keys, access tokens, or personal memories appear in the screenshots.
 
 ## 1. How the plugin works
 
@@ -26,8 +26,8 @@ The DSH adapter injects **usage guidance**, not every historical memory. Relevan
 ## 2. Requirements
 
 - ReMe is installed and its configuration exposes the `search`, `auto_memory`, and `auto_dream` jobs.
-- DeepSeek Harness `0.1.2-rc.1` or later.
-- Node.js `22.22.3+`, `24.15.0+`, or `25.9.0+` on the corresponding supported major-version line.
+- DeepSeek Harness `0.1.2-rc.1` or later; this integration is tested against `0.1.5-rc.2`.
+- Node.js `^22.19.0` or `>=24.0.0`, matching the current DSH engine range.
 - The browser running DSH can reach the configured ReMe HTTP endpoint. Cross-machine deployments must also allow the DSH browser origin.
 
 The default ReMe endpoint is `http://127.0.0.1:2333`. ReMe HTTP does not use API-key authentication, so do not expose it directly to an untrusted network.
@@ -40,7 +40,8 @@ host-specific plugin.
 ### 3.1 Start ReMe
 
 ```bash
-reme start workspace_dir=/absolute/path/to/your/reme-workspace
+reme start workspace_dir=/absolute/path/to/your/reme-workspace \
+  service.host=127.0.0.1 service.port=3457
 ```
 
 For development and screenshots, use an isolated directory outside the repository, such as `/tmp/reme-dsh-demo`. Do not write runtime memory into the repository's `.reme/` directory.
@@ -53,25 +54,42 @@ Install the published package:
 dsh plugin --profile web add @agentscope-ai/reme-dsh-plugin
 ```
 
-For local package development:
+For local package development, pass the package directory to DSH so the profile records a local link:
 
 ```bash
 cd /path/to/deepseek-harness
 pnpm link /path/to/ReMe/integrations/dsh --workspace-root
-dsh plugin --profile web add @agentscope-ai/reme-dsh-plugin
+dsh plugin --profile web add /path/to/ReMe/integrations/dsh
 ```
 
-The package declares `cordis.patch.yml` through `package.json#dsh.bundle.patch`. The patch loads the runtime and Web
-client faces of `@agentscope-ai/reme-dsh-plugin` in an isolated `remeMemory` realm, following the DSH `0.1.2-rc.1`
-plugin protocol.
+The first command makes a source checkout's package resolver see the local plugin; the second installs its bundle into the `web` profile. A published DSH installation normally needs only `dsh plugin ... add`. Do not commit a machine-specific `link:` dependency to DSH.
+
+The package declares `cordis.patch.yml` through `package.json#dsh.bundle.patch`. The patch mounts exactly one Host runtime in an isolated `remeMemory` realm. DSH discovers the Web entry separately through `package.json#dsh.client`; mounting the package twice causes a `remeMemory` service collision in current DSH releases.
 
 ### 3.3 Start DSH Web
 
 ```bash
-dsh web --no-open --port 3080
+dsh web --no-open --port 3090
 ```
 
-Open the local URL printed by DSH and select the `default` workspace. If DSH enables an access token, use the authenticated URL from its startup output and do not copy the token into documentation or screenshots.
+Open the local URL printed by DSH and select a workspace. If DSH enables an access token, use the authenticated URL from its startup output and do not copy the token into documentation or screenshots.
+
+### 3.4 Real OpenAI-compatible verification
+
+ReMe and DSH can share an OpenAI-compatible model endpoint during local verification without copying a secret into YAML. Load the ReMe repository's `.env` in the shell, then reference the environment variable from the DSH `llm-pi-ai` route:
+
+```bash
+set -a
+source /path/to/ReMe/.env
+set +a
+
+# The patch/settings document contains only these references, never the value.
+# apiKeyEnv: LLM_API_KEY
+# baseURL: !!js process.env.LLM_BASE_URL
+dsh web --no-open --port 3090
+```
+
+Declare the route with `api: openai-completions`, select `LLM_MODEL_NAME` (or an explicitly configured model id), and use DSH's generic `@deepseek-ai/dsh-llm-pi-ai` adapter. The direct `llm-deepseek` adapter adds DeepSeek-specific request extensions and is not the right compatibility layer for an arbitrary OpenAI-compatible gateway. Never print, screenshot, or commit the resolved key.
 
 ## 4. Configure ReMe Memory
 
@@ -118,13 +136,13 @@ A normal request can cause the agent to use memory automatically. For a determin
 
 ```text
 Use reme_search to look up my long-term memory: what are the weekly report time,
-report format, and primary database for Project Polaris? Answer in English based
-on the retrieved memory and cite the memory sources.
+report format, and primary database for Project Aurora? Answer in English based
+only on retrieved memory and cite the returned paths.
 ```
 
 ![Using reme_search](./figures/memory-search-tool.png)
 
-In the screenshot, the agent performs two read-only English searches. It corroborates the answer across `digest/wiki/polaris-project.md` and `daily/2026-09-04/dsh-plugin-demo.md`, then reports Friday at 4:00 PM, concise Markdown, and PostgreSQL with Redis as cache.
+In the screenshot, the agent performs one read-only search and returns ranked evidence from `daily/2026-09-11/Project Aurora kickoff.md` and `digest/wiki/project-aurora.md`. It reports Friday at 4:00 PM, concise Markdown, and PostgreSQL with Redis used only as cache.
 
 | Parameter   | Required | Description                                                         |
 | ----------- | -------- | ------------------------------------------------------------------- |
@@ -162,7 +180,7 @@ This tab reports active sessions, queued turns, running tasks, queued tasks, and
 
 ![ReMe Status Memory Consolidation](./figures/reme-status-auto-dream.png)
 
-This tab shows the next run, cron schedule, timezone, and most recent result. The flow is **Journal entries → Organize and connect → Personal knowledge base**. **Consolidate Memory Now** manually invokes `auto_dream`, which may call a model and modify workspace files.
+This tab shows the next run, cron schedule, timezone, and current-process result. The flow is **Journal entries → Organize and connect → Personal knowledge base**. **Consolidate Memory Now** manually invokes `auto_dream`, which may call a model and modify workspace files. The completion banner in the screenshot was produced by a real call that added a source link to `digest/wiki/project-aurora.md`.
 
 ### 8.4 Components
 
@@ -218,12 +236,13 @@ Personal Knowledge Base browses consolidated `digest` files. Journal entries pre
 
 ## 10. Validation represented by these screenshots
 
-The test used the DSH `default` workspace and verified:
+The test used DSH `0.1.5-rc.2`, ReMe `0.4.1.11` on port `3457`, and isolated Project Aurora workspaces. It verified:
 
 - DSH UI and ReMe guidance language set to English.
 - English `reme-memory` plugin context with correct provenance.
-- Two real `reme_search` calls returning consistent `daily` and `digest` evidence.
-- Successful background `auto_memory` submission with no queued task remaining.
+- One real `reme_search` call returning consistent `daily` and `digest` evidence through an OpenAI-compatible model route.
+- Successful background `auto_memory` submission with no queued task remaining and a new `daily/2026-09-11/project-aurora-conventions.md` file.
+- Successful manual `auto_dream` consolidation with an updated `digest/wiki/project-aurora.md` source list.
 - Working Overview, Auto Memory, Memory Consolidation, Components, Journal, and Personal Knowledge Base tabs.
 
 DSH screenshots live in `integrations/dsh/figures/` and ship with the plugin package.

@@ -7,5 +7,3 @@
       config:
         - id: reme-memory-runtime
           name: "@agentscope-ai/reme-dsh-plugin"
-        - id: reme-memory-client
-          name: "@agentscope-ai/reme-dsh-plugin"
