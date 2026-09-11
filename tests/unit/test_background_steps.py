@@ -1345,19 +1345,24 @@ def test_auto_resource_handles_file_removed_before_stat():
             _install_file_jobs(app_ctx, fs)
             try:
                 source = write_file(cwd / "resource" / "2026-01-01" / "vanishing.txt", "content")
+                original_is_file = Path.is_file
                 original_stat = Path.stat
-                source_stat_calls = 0
+
+                def existing_is_file(path, *args, **kwargs):
+                    if path == source:
+                        return True
+                    return original_is_file(path, *args, **kwargs)
 
                 def disappearing_stat(path, *args, **kwargs):
-                    nonlocal source_stat_calls
                     if path == source:
-                        source_stat_calls += 1
-                        if source_stat_calls > 1:
-                            raise FileNotFoundError("file disappeared")
+                        raise FileNotFoundError("file disappeared")
                     return original_stat(path, *args, **kwargs)
 
                 step = AutoTextResourceStep(app_context=app_ctx, file_store=fs)
-                with patch.object(Path, "stat", disappearing_stat):
+                with (
+                    patch.object(Path, "is_file", existing_is_file),
+                    patch.object(Path, "stat", disappearing_stat),
+                ):
                     resp = await step(
                         RuntimeContext(changes=[{"change": "added", "path": str(source)}]),
                     )
