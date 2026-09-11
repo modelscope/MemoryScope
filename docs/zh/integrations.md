@@ -76,7 +76,7 @@ Skill 不应：
 
 ## Hermes Agent
 
-`integrations/hermes_agent/` 提供 memory provider：模型调用前检索相关记忆，每轮结束后异步调用 `auto_memory`。完整配置见该目录 README。
+`integrations/hermes_agent/` 提供 HTTP 和 Embedded 双模式 memory provider：模型调用前检索相关记忆，每轮结束后异步调用 `auto_memory`，并通过 Hermes 通用配置面板展示设置。完整配置见该目录 README。
 
 ## 生产接入建议
 

@@ -56,8 +56,8 @@ and concise documentation together.
   `@agentscope-ai/reme_studio` npm static distribution.
 - `typescript/`: the independently published `@agentscope-ai/reme` package, including the shared TypeScript client and
   DeepSeek Harness and OpenClaw adapters.
-- `plugins/`: installable ReMe extensions, including Auto Fin and LME/BEAM benchmark Steps and application presets.
-- `integrations/`: adapters that connect ReMe to external agent hosts, such as Claude Code, DSH, and Hermes Agent.
+- `plugins/`: installable ReMe extensions, including Auto Fin and LME/BEAM plugins.
+- `integrations/`: adapters that connect ReMe to external agent hosts, including Claude Code and Hermes Agent.
 - `skills/`: standalone skills; `reme_memory` calls ReMe, while other skills may use separate tools or direct-file
   conventions.
 - `benchmark/` and `cookbook/`: runnable evaluations and example workflows.
