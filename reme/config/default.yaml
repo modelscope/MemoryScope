@@ -72,6 +72,7 @@ jobs:
       - backend: dream_integrate_step
       - backend: dream_finish_step
         file_catalog: dream
+      - backend: auto_tag_step
 
   optimize_index_cron:
     backend: cron
@@ -161,6 +162,7 @@ jobs:
       - backend: dream_integrate_step
       - backend: dream_finish_step
         file_catalog: dream
+      - backend: auto_tag_step
 
   auto_memory:
     backend: base
