@@ -155,7 +155,7 @@ jobs:
 
   publish-npm:
     if: >-
-      always() &&
+      !cancelled() &&
       needs.build.result == 'success' &&
       (inputs.publish_target == 'npm' ||
        (inputs.publish_target == 'both' && needs.publish-python.result == 'success'))
