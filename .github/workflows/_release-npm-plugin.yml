@@ -23,6 +23,11 @@ on:
         description: npm distribution tag
         required: true
         type: string
+      use_npm_token:
+        description: Use the npm environment NPM_TOKEN instead of Trusted Publishing
+        required: false
+        default: false
+        type: boolean
       validate_clawhub:
         description: Validate the package against the ClawHub contract
         required: false
@@ -32,6 +37,10 @@ on:
       version:
         description: Normalized package version
         value: ${{ jobs.build.outputs.version }}
+    secrets:
+      NPM_TOKEN:
+        description: Optional bootstrap or recovery token for npm publishing
+        required: false
 
 permissions:
   contents: read
@@ -128,7 +137,19 @@ jobs:
             echo "${PACKAGE_NAME}@${PACKAGE_VERSION} already exists" >&2
             exit 1
           fi
-      - name: Publish to npm
+      - name: Publish to npm with Trusted Publishing
+        if: ${{ !inputs.use_npm_token }}
         env:
           NPM_TAG: ${{ inputs.npm_tag }}
         run: npm publish dist/plugin/*.tgz --access public --tag "$NPM_TAG" --provenance
+      - name: Publish to npm with NPM_TOKEN
+        if: inputs.use_npm_token
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TAG: ${{ inputs.npm_tag }}
+        run: |
+          if [[ -z "${NODE_AUTH_TOKEN}" ]]; then
+            echo "NPM_TOKEN is required when use_npm_token is enabled" >&2
+            exit 1
+          fi
+          npm publish dist/plugin/*.tgz --access public --tag "$NPM_TAG" --provenance

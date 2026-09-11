@@ -18,6 +18,11 @@ on:
         options:
           - next
           - latest
+      use_npm_token:
+        description: Use the npm environment NPM_TOKEN instead of Trusted Publishing
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -33,9 +38,12 @@ jobs:
       contents: read
       id-token: write
     uses: ./.github/workflows/_release-npm-plugin.yml
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     with:
       directory: integrations/dsh
       package_name: '@agentscope-ai/reme-dsh-plugin'
       artifact_name: agentscope-ai-reme-dsh-plugin
       version: ${{ inputs.version }}
       npm_tag: ${{ inputs.npm_tag }}
+      use_npm_token: ${{ inputs.use_npm_token }}

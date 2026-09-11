@@ -18,6 +18,11 @@ on:
         options:
           - next
           - latest
+      use_npm_token:
+        description: Use the npm environment NPM_TOKEN instead of Trusted Publishing
+        required: true
+        default: false
+        type: boolean
       publish_clawhub:
         description: Also publish the package to ClawHub
         required: true
@@ -38,12 +43,15 @@ jobs:
       contents: read
       id-token: write
     uses: ./.github/workflows/_release-npm-plugin.yml
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     with:
       directory: integrations/openclaw
       package_name: '@agentscope-ai/reme-openclaw-plugin'
       artifact_name: agentscope-ai-reme-openclaw-plugin
       version: ${{ inputs.version }}
       npm_tag: ${{ inputs.npm_tag }}
+      use_npm_token: ${{ inputs.use_npm_token }}
       validate_clawhub: true
 
   publish-clawhub:

@@ -22,6 +22,11 @@ on:
         options:
           - next
           - latest
+      use_npm_token:
+        description: Use the npm environment NPM_TOKEN instead of Trusted Publishing
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -166,7 +171,19 @@ jobs:
             exit 1
           fi
 
-      - name: Publish ReMe Studio to npm
+      - name: Publish ReMe Studio to npm with Trusted Publishing
+        if: ${{ !inputs.use_npm_token }}
         env:
           NPM_TAG: ${{ inputs.npm_tag }}
         run: npm publish dist/studio-npm/*.tgz --access public --tag "${NPM_TAG}" --provenance
+      - name: Publish ReMe Studio to npm with NPM_TOKEN
+        if: inputs.use_npm_token
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TAG: ${{ inputs.npm_tag }}
+        run: |
+          if [[ -z "${NODE_AUTH_TOKEN}" ]]; then
+            echo "NPM_TOKEN is required when use_npm_token is enabled" >&2
+            exit 1
+          fi
+          npm publish dist/studio-npm/*.tgz --access public --tag "${NPM_TAG}" --provenance
