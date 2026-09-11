@@ -39,7 +39,8 @@ hermes plugins install agentscope-ai/ReMe/integrations/hermes_agent
 hermes memory setup
 ```
 
-本地开发时可以直接复制当前 checkout：
+本地同时开发 ReMe 和 Hermes 时，可以复制当前 checkout，也可以把它链接为 project-local plugin。软链接会让 Hermes 始终
+运行当前正在编辑的 ReMe 源码：
 
 ```bash
 mkdir -p "$HERMES_HOME/plugins/reme"
@@ -47,6 +48,16 @@ cp -R /path/to/ReMe/integrations/hermes_agent/. "$HERMES_HOME/plugins/reme/"
 hermes plugins enable reme
 hermes config set memory.provider reme
 ```
+
+```bash
+cd /path/to/hermes-agent
+mkdir -p .hermes/plugins
+ln -s /path/to/ReMe/integrations/hermes_agent .hermes/plugins/reme
+export HERMES_ENABLE_PROJECT_PLUGINS=1
+hermes config set memory.provider reme
+```
+
+Hermes 仓库会忽略 `.hermes/` 运行状态。不要提交这个链接、profile 配置、对话记录或生成的记忆文件。
 
 启动对话前检查真实发现路径：
 
@@ -58,7 +69,7 @@ hermes memory status
 Hermes Dashboard 的 **Plugins → Runtime provider plugins → Memory provider → reme** 会展示模式相关字段以及召回、健康、
 写入和关闭的高级设置。选择不同模式时，只显示 HTTP endpoint 或 Embedded workspace 对应字段。
 
-![Hermes 中处于 ready 和 active 状态的 ReMe provider](figures/hermes-provider-settings.jpg)
+![Hermes 中处于 ready 和 active 状态的 ReMe provider](figures/hermes-provider-settings.png)
 
 配置主路径为 `$HERMES_HOME/reme/config.json`。新文件未包含的字段仍会从旧 `$HERMES_HOME/reme.json` 继承，新文件中的
 值优先；后续 CLI 保存会写入完整的新配置，但不会删除旧文件。
@@ -72,7 +83,7 @@ reme start \
   workspace_dir="/absolute/path/to/reme-hermes-default" \
   service.backend=http \
   service.host=127.0.0.1 \
-  service.port=2333
+  service.port=3456
 ```
 
 配置示例：
@@ -80,9 +91,11 @@ reme start \
 ```json
 {
   "mode": "http",
-  "endpoint": "http://127.0.0.1:2333"
+  "endpoint": "http://127.0.0.1:3456"
 }
 ```
+
+本文使用 `3456` 做联调端口，以免与默认 `2333` 上的其他 ReMe 实例冲突；这不是修改 ReMe 默认端口。
 
 终端 setup 会在保存前调用 `health_check`。HTTP action 接口没有本集成专用的认证头，不要直接暴露到公网；跨主机使用时
 应放在可信网络、SSH tunnel 或带认证的反向代理后。
@@ -159,13 +172,61 @@ ReMe 搜索覆盖整个 workspace。多个 Hermes profile 指向同一个 worksp
 
 ## 真实端到端验证
 
-以下截图来自 Hermes 0.21.1、ReMe 0.4.1.11 和 OpenAI-compatible 模型接口的真实联调。HTTP 与 Embedded 分别使用隔离的
-临时 Hermes profile 和 ReMe workspace：第一个会话通过 `auto_memory` 写入合成事实，第二个全新会话通过自动
-`prefetch` 召回。图片不包含 API Key 或真实个人记忆。
+以下截图使用 Computer Use 从真实英文 Hermes 0.21.1 与 ReMe Studio 0.4.1.11 界面取得，模型通过
+OpenAI-compatible 接口调用。HTTP 与 Embedded 分别使用隔离的临时 Hermes profile 和 ReMe workspace：第一个会话通过
+`auto_memory` 写入合成事实，第二个全新会话通过自动 `prefetch` 召回。图片不包含 API Key、`.env` 内容、浏览器外框或
+真实个人记忆。
+
+### 复现验证
+
+先让聚焦单测使用真实 Hermes 源码，再通过 Hermes 自身的 loader 验证插件发现和注册：
+
+```bash
+cd /path/to/ReMe
+PYTHONPATH=/path/to/hermes-agent \
+  pytest tests/unit/test_hermes_agent_integration.py -v
+
+cd /path/to/hermes-agent
+hermes plugins doctor /path/to/ReMe/integrations/hermes_agent --ci
+hermes memory status
+```
+
+真实模型验证时，在 `3456` 启动 ReMe，把 provider endpoint 指向该服务，并使用两个全新的 Hermes 会话：第一个会话要求
+记住一条虚构事实，第二个会话要求重新回答。如果现有 ReMe `.env` 使用 `LLM_*` 变量，只在验证进程环境中映射它们：
+
+```bash
+set -a
+source /path/to/ReMe/.env
+set +a
+export OPENAI_API_KEY="$LLM_API_KEY"
+export OPENAI_BASE_URL="$LLM_BASE_URL"
+
+hermes --provider openai-api -m "$LLM_MODEL_NAME" -z \
+  "Remember this synthetic fact for a later session: Project Juniper's weekly review is Thursday at 14:30 UTC."
+hermes --provider openai-api -m "$LLM_MODEL_NAME" -z \
+  "From long-term memory, when is Project Juniper's weekly review?"
+
+unset OPENAI_API_KEY OPENAI_BASE_URL
+```
+
+第二条命令不要使用 `--resume`。随后确认所选 ReMe workspace 的 `daily/` 下出现新的 Markdown；不要把 ReMe 仓库自身的
+`.reme/` 用作测试 workspace。不要打印这些变量，也不要把映射后的凭据保存到 Hermes 配置。
+
+### Provider 配置
+
+![Hermes 中使用 3456 端口的 ReMe HTTP provider](figures/hermes-provider-settings.png)
+
+### 两个相互独立的 Hermes 会话
+
+![Hermes 会话总览中的写入会话和全新召回会话](figures/hermes-http-sessions.png)
 
 ### HTTP 模式召回
 
 ![Hermes 新会话从 ReMe 召回 HTTP 模式验证事实](figures/hermes-http-recall.png)
+
+### 文件原生的持久化结果
+
+![英文 ReMe Studio 中生成的 Project Juniper Markdown](figures/hermes-reme-daily-note.png)
 
 ### Embedded 模式召回
 
@@ -185,7 +246,7 @@ hermes config set memory.provider reme
 ### HTTP 模式显示 backend unavailable
 
 - 确认 `reme start` 仍在运行，端口与 `endpoint` 一致；
-- 直接执行 `curl -s http://127.0.0.1:2333/health_check -X POST -H 'Content-Type: application/json' -d '{}'`；
+- 直接执行 `curl -s http://127.0.0.1:3456/health_check -X POST -H 'Content-Type: application/json' -d '{}'`；
 - 容器或跨机器部署时，`127.0.0.1` 指向各自本机；
 - 不要把无认证的 ReMe HTTP action 服务直接暴露到公网。
 

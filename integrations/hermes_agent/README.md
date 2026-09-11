@@ -48,8 +48,9 @@ hermes plugins install agentscope-ai/ReMe/integrations/hermes_agent
 hermes memory setup
 ```
 
-For development from a local checkout, copy the integration into the active
-Hermes profile and enable it:
+For development from local ReMe and Hermes checkouts, either copy the integration
+into the active profile or link it as a project-local plugin. The link keeps
+Hermes on the exact ReMe source being edited:
 
 ```bash
 mkdir -p "$HERMES_HOME/plugins/reme"
@@ -57,6 +58,17 @@ cp -R /path/to/ReMe/integrations/hermes_agent/. "$HERMES_HOME/plugins/reme/"
 hermes plugins enable reme
 hermes config set memory.provider reme
 ```
+
+```bash
+cd /path/to/hermes-agent
+mkdir -p .hermes/plugins
+ln -s /path/to/ReMe/integrations/hermes_agent .hermes/plugins/reme
+export HERMES_ENABLE_PROJECT_PLUGINS=1
+hermes config set memory.provider reme
+```
+
+`.hermes/` is Hermes runtime state and is ignored by the Hermes repository. Do
+not commit the link, profile configuration, conversations, or generated memory.
 
 Verify discovery before starting a conversation:
 
@@ -70,7 +82,7 @@ recall, health, write, and shutdown controls. Select **Plugins → Runtime provi
 plugins → Memory provider → reme**. The active mode controls whether the HTTP
 endpoint or embedded workspace settings are shown.
 
-![ReMe selected as the active Hermes memory provider](figures/hermes-provider-settings.jpg)
+![ReMe selected as the active Hermes memory provider](figures/hermes-provider-settings.png)
 
 Configuration is profile-local at:
 
@@ -92,7 +104,7 @@ reme start \
   workspace_dir="$HOME/.reme-hermes-default" \
   service.backend=http \
   service.host=127.0.0.1 \
-  service.port=2333
+  service.port=3456
 ```
 
 Use this configuration in Hermes:
@@ -100,9 +112,12 @@ Use this configuration in Hermes:
 ```json
 {
   "mode": "http",
-  "endpoint": "http://127.0.0.1:2333"
+  "endpoint": "http://127.0.0.1:3456"
 }
 ```
+
+Port `3456` is used in this guide so the verification service does not collide
+with another ReMe instance on the default `2333` port. It is not a new default.
 
 The setup wizard checks `health_check` before replacing a valid configuration.
 The generic desktop settings endpoint validates field types and choices; a new
@@ -193,15 +208,70 @@ Run `hermes memory status` after installation, then start a new Hermes session.
 
 ## Verified end-to-end behavior
 
-The screenshots below come from real Hermes 0.21.1 conversations using an
-OpenAI-compatible model endpoint and ReMe 0.4.1.11. Each mode used an isolated
-temporary Hermes profile and ReMe workspace. The first session recorded a
-synthetic fact through `auto_memory`; a fresh session then recovered it through
-automatic `prefetch`. No API keys or personal memories appear in the images.
+The screenshots below were captured with Computer Use from real English Hermes
+0.21.1 and ReMe Studio 0.4.1.11 interfaces. The conversations used an
+OpenAI-compatible model endpoint. Each mode used an isolated temporary Hermes
+profile and ReMe workspace. The first session recorded a synthetic fact through
+`auto_memory`; a fresh session then recovered it through automatic `prefetch`.
+No API keys, `.env` contents, browser chrome, or personal memories appear in the
+images.
+
+### Reproduce the verification
+
+Run the focused compatibility suite against the Hermes checkout, then validate
+the plugin through Hermes' real loader:
+
+```bash
+cd /path/to/ReMe
+PYTHONPATH=/path/to/hermes-agent \
+  pytest tests/unit/test_hermes_agent_integration.py -v
+
+cd /path/to/hermes-agent
+hermes plugins doctor /path/to/ReMe/integrations/hermes_agent --ci
+hermes memory status
+```
+
+For a live model test, start ReMe on `3456`, select that endpoint in the ReMe
+provider settings, and use two new Hermes sessions: the first asks Hermes to
+remember a synthetic fact and the second asks for it back. When an existing
+ReMe `.env` uses `LLM_*` names, map them only in the process environment used
+for verification:
+
+```bash
+set -a
+source /path/to/ReMe/.env
+set +a
+export OPENAI_API_KEY="$LLM_API_KEY"
+export OPENAI_BASE_URL="$LLM_BASE_URL"
+
+hermes --provider openai-api -m "$LLM_MODEL_NAME" -z \
+  "Remember this synthetic fact for a later session: Project Juniper's weekly review is Thursday at 14:30 UTC."
+hermes --provider openai-api -m "$LLM_MODEL_NAME" -z \
+  "From long-term memory, when is Project Juniper's weekly review?"
+
+unset OPENAI_API_KEY OPENAI_BASE_URL
+```
+
+The second command must run without `--resume`. Confirm that a new Markdown
+note exists under the selected ReMe workspace's `daily/` directory; do not use
+the ReMe repository's `.reme/` directory for this check. Never print the loaded
+variables or save the mapped credentials in Hermes configuration.
+
+### Provider configuration
+
+![ReMe selected as the active HTTP memory provider on port 3456](figures/hermes-provider-settings.png)
+
+### Two independent Hermes sessions
+
+![The write session and fresh recall session in the Hermes session overview](figures/hermes-http-sessions.png)
 
 ### HTTP mode recall
 
 ![A fresh Hermes session recalls the HTTP-mode verification fact from ReMe](figures/hermes-http-recall.png)
+
+### File-native durable result
+
+![The generated Project Juniper Markdown in the English ReMe Studio interface](figures/hermes-reme-daily-note.png)
 
 ### Embedded mode recall
 
@@ -222,7 +292,7 @@ hermes memory status
 ### HTTP mode is unavailable
 
 - Confirm `reme start` is still running and its port matches `endpoint`.
-- Call the local `health_check` action and inspect ReMe service logs.
+- Call `POST http://127.0.0.1:3456/health_check` and inspect ReMe service logs.
 - In containers or on another host, remember that `127.0.0.1` refers to the
   Hermes machine; use a trusted tunnel or authenticated proxy.
 
