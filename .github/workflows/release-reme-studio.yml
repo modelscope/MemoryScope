@@ -27,6 +27,15 @@ on:
         required: true
         default: false
         type: boolean
+      publish_target:
+        description: Packages to publish; single-package modes are for release recovery
+        required: true
+        default: both
+        type: choice
+        options:
+          - both
+          - pypi
+          - npm
 
 permissions:
   contents: read
@@ -37,6 +46,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
@@ -123,6 +133,7 @@ jobs:
           if-no-files-found: error
 
   publish-python:
+    if: inputs.publish_target != 'npm'
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -143,8 +154,12 @@ jobs:
           skip-existing: true
 
   publish-npm:
-    if: github.ref == 'refs/heads/main'
-    needs: publish-python
+    if: >-
+      always() &&
+      needs.build.result == 'success' &&
+      (inputs.publish_target == 'npm' ||
+       (inputs.publish_target == 'both' && needs.publish-python.result == 'success'))
+    needs: [build, publish-python]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: npm
@@ -162,22 +177,61 @@ jobs:
           name: reme-studio-${{ inputs.version }}
           path: dist
 
-      - name: Reject an existing package version
+      - name: Verify the matching PyPI release for npm-only recovery
+        if: inputs.publish_target == 'npm'
         env:
           PACKAGE_VERSION: ${{ inputs.version }}
         run: |
-          if npm view "@agentscope-ai/reme_studio@${PACKAGE_VERSION#v}" version >/dev/null 2>&1; then
-            echo "@agentscope-ai/reme_studio@${PACKAGE_VERSION#v} already exists" >&2
+          python - <<'PY'
+          import os
+          import urllib.error
+          import urllib.request
+
+          version = os.environ["PACKAGE_VERSION"].removeprefix("v")
+          url = f"https://pypi.org/pypi/reme-studio/{version}/json"
+          try:
+              with urllib.request.urlopen(url, timeout=30) as response:
+                  if response.status != 200:
+                      raise SystemExit(f"Unexpected PyPI response for reme-studio {version}: {response.status}")
+          except urllib.error.HTTPError as exc:
+              raise SystemExit(f"reme-studio {version} must exist on PyPI before npm-only recovery") from exc
+          PY
+
+      - name: Check for an identical existing npm package
+        id: npm-version
+        env:
+          PACKAGE_VERSION: ${{ inputs.version }}
+        run: |
+          package_file=$(find dist/studio-npm -maxdepth 1 -name '*.tgz' -print -quit)
+          if [[ -z "${package_file}" ]]; then
+            echo "Studio npm artifact is missing" >&2
             exit 1
+          fi
+          local_integrity=$(node --input-type=module - "${package_file}" <<'JS'
+          import { createHash } from 'node:crypto';
+          import { readFileSync } from 'node:fs';
+          const digest = createHash('sha512').update(readFileSync(process.argv[2])).digest('base64');
+          console.log(`sha512-${digest}`);
+          JS
+          )
+          if remote_integrity=$(npm view "@agentscope-ai/reme_studio@${PACKAGE_VERSION#v}" dist.integrity 2>/dev/null); then
+            if [[ "${remote_integrity}" != "${local_integrity}" ]]; then
+              echo "Existing npm package has different contents" >&2
+              exit 1
+            fi
+            echo "exists=true" >> "${GITHUB_OUTPUT}"
+            echo "The identical npm package already exists; nothing to publish"
+          else
+            echo "exists=false" >> "${GITHUB_OUTPUT}"
           fi
 
       - name: Publish ReMe Studio to npm with Trusted Publishing
-        if: ${{ !inputs.use_npm_token }}
+        if: ${{ steps.npm-version.outputs.exists != 'true' && !inputs.use_npm_token }}
         env:
           NPM_TAG: ${{ inputs.npm_tag }}
         run: npm publish dist/studio-npm/*.tgz --access public --tag "${NPM_TAG}" --provenance
       - name: Publish ReMe Studio to npm with NPM_TOKEN
-        if: inputs.use_npm_token
+        if: ${{ steps.npm-version.outputs.exists != 'true' && inputs.use_npm_token }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TAG: ${{ inputs.npm_tag }}
