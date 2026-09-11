@@ -180,14 +180,9 @@ Restore a larger interval after testing to reduce model calls.
 
 ### Auto Dream
 
-Wait for `dreamCron`, or call the authenticated local operator endpoint to run one real consolidation:
-
-```bash
-curl -fsS -X POST http://127.0.0.1:18799/plugins/reme/status/api/dream \
-  -H 'Content-Type: application/json'
-```
-
-Reload **ReMe Memory → Memory Consolidation**, verify `Last result: completed`, and inspect the ReMe digest update.
+Wait for `dreamCron`, then reload **ReMe Memory → Memory Consolidation**, verify `Last result: completed`, and inspect
+the ReMe digest update. The plugin status route is read-only; memory consolidation runs only through the configured
+scheduler.
 
 ![Completed Auto Dream run](./figures/auto-dream.png)
 

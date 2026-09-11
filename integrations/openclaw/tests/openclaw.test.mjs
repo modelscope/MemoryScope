@@ -10,6 +10,21 @@ import plugin, {
   openClawSessionId,
   resolveOpenClawConfig,
 } from "../dist/index.js";
+import { createReMeStatusHandler } from "../dist/status-page.js";
+
+function responseRecorder() {
+  return {
+    body: "",
+    headers: new Map(),
+    statusCode: 0,
+    setHeader(name, value) {
+      this.headers.set(name, value);
+    },
+    end(body = "") {
+      this.body = String(body);
+    },
+  };
+}
 
 test("normalizes OpenClaw configuration and stable session ids", () => {
   const config = resolveOpenClawConfig(
@@ -213,6 +228,96 @@ test("runs one coalesced OpenClaw Auto Dream task", async () => {
   await Promise.all([first, second]);
   assert.equal(runtime.snapshot().autoDream.lastResult, "completed");
   await runtime.disposeAll();
+});
+
+test("keeps status routes read-only and reports unhealthy components", async () => {
+  let dreamCalls = 0;
+  const runtime = {
+    async runDream() {
+      dreamCalls += 1;
+    },
+    snapshot() {
+      return {
+        phase: "running",
+        autoMemory: {
+          enabled: true,
+          interval: 5,
+          activeSessions: 0,
+          queuedTurns: 0,
+          recentActivity: [],
+        },
+        autoDream: {
+          enabled: true,
+          cron: "0 23 * * *",
+          timezone: "Asia/Shanghai",
+          running: false,
+        },
+      };
+    },
+  };
+  const handler = createReMeStatusHandler({
+    config: resolveOpenClawConfig({}, {}),
+    runtime,
+    client: {
+      async requestJob(job) {
+        if (job === "health_check") {
+          return {
+            ok: true,
+            metadata: {
+              health: {
+                healthy: false,
+                version: "test",
+                components: {
+                  embedding_store: {
+                    default: { is_started: true, is_healthy: false },
+                  },
+                },
+              },
+            },
+          };
+        }
+        return { ok: true, metadata: { status: {} } };
+      },
+    },
+  });
+
+  const statusResponse = responseRecorder();
+  await handler(
+    { method: "GET", url: "/plugins/reme/status/api/status" },
+    statusResponse,
+  );
+  assert.equal(statusResponse.statusCode, 503);
+  assert.deepEqual(JSON.parse(statusResponse.body).reme, {
+    connected: true,
+    healthy: false,
+    health: {
+      health: {
+        healthy: false,
+        version: "test",
+        components: {
+          embedding_store: {
+            default: { is_started: true, is_healthy: false },
+          },
+        },
+      },
+    },
+    status: { status: {} },
+    error: "",
+  });
+
+  const pageResponse = responseRecorder();
+  await handler({ method: "GET", url: "/plugins/reme/status" }, pageResponse);
+  assert.equal(pageResponse.statusCode, 200);
+  assert.match(pageResponse.body, /class="metric bad">Unhealthy/);
+  assert.match(pageResponse.body, /class="bad">Unhealthy/);
+
+  const writeResponse = responseRecorder();
+  await handler(
+    { method: "POST", url: "/plugins/reme/status/api/dream" },
+    writeResponse,
+  );
+  assert.equal(writeResponse.statusCode, 404);
+  assert.equal(dreamCalls, 0);
 });
 
 test("registers OpenClaw recall, capture, tool, and shutdown lifecycle", async () => {

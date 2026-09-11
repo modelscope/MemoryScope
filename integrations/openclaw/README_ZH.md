@@ -174,15 +174,8 @@ ReMe 后台任务完成，再在另一个全新会话中禁止工具并询问该
 
 ### Auto Dream
 
-等待 `dreamCron`，或者在本机通过认证的运维端点执行一次真实整理：
-
-```bash
-curl -fsS -X POST http://127.0.0.1:18799/plugins/reme/status/api/dream \
-  -H 'Content-Type: application/json'
-```
-
-刷新 **ReMe Memory → Memory Consolidation**，确认 `Last result: completed`，并检查 ReMe workspace 中的 digest
-变更。
+等待 `dreamCron`，然后刷新 **ReMe Memory → Memory Consolidation**，确认 `Last result: completed`，并检查 ReMe
+workspace 中的 digest 变更。插件状态路由保持只读；记忆整理只由已配置的调度器触发。
 
 ![已完成的 Auto Dream](./figures/auto-dream.png)
 
