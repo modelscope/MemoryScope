@@ -56,8 +56,8 @@ def test_studio_packages_have_independent_identity() -> None:
     assert main_config["project"]["optional-dependencies"]["core"].count("reme-ai[as]") == 1
     assert main_config["project"]["optional-dependencies"]["core"].count("reme_studio") == 1
     assert "qwenpaw" not in main_config["project"]["optional-dependencies"]
-    assert auto_fin_config["project"]["version"] == "0.1.2"
-    assert daily_paper_config["project"]["version"] == "0.1.2"
+    assert auto_fin_config["project"]["version"] == "0.1.3"
+    assert daily_paper_config["project"]["version"] == "0.1.3"
     assert main_config["tool"]["setuptools"]["packages"]["find"]["include"] == ["reme", "reme.*"]
     assert "reme_studio*" in main_config["tool"]["setuptools"]["packages"]["find"]["exclude"]
 
@@ -167,8 +167,8 @@ def test_auto_fin_requires_reme_base() -> None:
 
     assert len(reme_requirements) == 1
     assert not reme_requirements[0].extras
-    assert Version("0.4.1.8") not in reme_requirements[0].specifier
-    assert Version("0.4.1.9") in reme_requirements[0].specifier
+    assert Version("0.4.1.11") not in reme_requirements[0].specifier
+    assert Version("0.4.1.12") in reme_requirements[0].specifier
 
 
 def test_daily_paper_license_matches_repository() -> None:
@@ -185,8 +185,8 @@ def test_daily_paper_declares_runtime_dependencies() -> None:
     by_name = {requirement.name: requirement for requirement in requirements}
 
     assert not by_name["reme-ai"].extras
-    assert Version("0.4.1.8") not in by_name["reme-ai"].specifier
-    assert Version("0.4.1.9") in by_name["reme-ai"].specifier
+    assert Version("0.4.1.11") not in by_name["reme-ai"].specifier
+    assert Version("0.4.1.12") in by_name["reme-ai"].specifier
     assert "pypdf" in by_name
 
 
